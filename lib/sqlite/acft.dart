@@ -76,7 +76,7 @@ class Acft {
   }
 
   Acft.fromMap(Map<String, dynamic> map) {
-    String mapRank = '', mapGender = 'male', mapAge = '22';
+    String mapRank = '', mapGender = 'Male', mapAge = '22';
     int altGo = 1;
     try {
       mapRank = map['rank'];

@@ -109,7 +109,7 @@ class MyAppState extends State<MyApp> {
     if (available) {
       final Stream purchaseUpdates = InAppPurchase.instance.purchaseStream;
       _streamSubscription = purchaseUpdates.listen((purchases) async {
-        premium = await listenToPurchaseUpdated(purchases);
+        // premium = await listenToPurchaseUpdated(purchases);
         setState(() {});
       });
       await InAppPurchase.instance.restorePurchases();

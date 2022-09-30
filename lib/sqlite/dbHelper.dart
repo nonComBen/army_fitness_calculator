@@ -94,8 +94,12 @@ class DBHelper {
   initDb() async {
     io.Directory documentsDirectory = await getApplicationDocumentsDirectory();
     String path = join(documentsDirectory.path, DB_NAME);
-    var db = await openDatabase(path,
-        version: 2, onCreate: _onCreate, onUpgrade: _onUpgrade);
+    var db = await openDatabase(
+      path,
+      version: 4,
+      onCreate: _onCreate,
+      onUpgrade: _onUpgrade,
+    );
     return db;
   }
 
@@ -123,20 +127,72 @@ class DBHelper {
   }
 
   _onUpgrade(Database db, int oldVersion, int newVersion) async {
-    if (oldVersion < 2) {
-      await db.execute("ALTER TABLE $ACFT_TABLE ADD $RANK TEXT");
-      await db.execute("ALTER TABLE $ACFT_TABLE ADD $GENDER TEXT");
-      await db.execute("ALTER TABLE $ACFT_TABLE ADD $AGE TEXT");
-      await db.execute("ALTER TABLE $ACFT_TABLE DROP $PHYS_CAT");
-      await db.execute("ALTER TABLE $APFT_TABLE ADD $RANK TEXT");
-      await db.execute("ALTER TABLE $APFT_TABLE ADD $AGE TEXT");
-      await db.execute("ALTER TABLE $APFT_TABLE DROP $AGE_GROUP");
-      await db.execute("ALTER TABLE $BF_TABLE ADD $RANK TEXT");
-      await db.execute("ALTER TABLE $BF_TABLE ADD $AGE TEXT");
-      await db.execute("ALTER TABLE $BF_TABLE ADD $HEIGHT_DOUBLE TEXT");
-      await db.execute("ALTER TABLE $BF_TABLE DROP $AGE_GROUP");
-      await db.execute("ALTER TABLE $APFT_TABLE ADD $ALT_PASS INTEGER");
-      await db.execute("ALTER TABLE $ACFT_TABLE ADD $ALT_PASS INTEGER");
+    if (oldVersion < 4) {
+      try {
+        await db.execute("ALTER TABLE $ACFT_TABLE ADD $RANK TEXT");
+      } on Exception catch (e) {
+        print('SQLite Error: $e');
+      }
+      try {
+        await db.execute("ALTER TABLE $ACFT_TABLE ADD $GENDER TEXT");
+      } on Exception catch (e) {
+        print('SQLite Error: $e');
+      }
+      try {
+        await db.execute("ALTER TABLE $ACFT_TABLE ADD $AGE TEXT");
+      } on Exception catch (e) {
+        print('SQLite Error: $e');
+      }
+      try {
+        await db.execute("ALTER TABLE $ACFT_TABLE DROP $PHYS_CAT");
+      } on Exception catch (e) {
+        print('SQLite Error: $e');
+      }
+      try {
+        await db.execute("ALTER TABLE $APFT_TABLE ADD $RANK TEXT");
+      } on Exception catch (e) {
+        print('SQLite Error: $e');
+      }
+      try {
+        await db.execute("ALTER TABLE $APFT_TABLE ADD $AGE TEXT");
+      } on Exception catch (e) {
+        print('SQLite Error: $e');
+      }
+      try {
+        await db.execute("ALTER TABLE $APFT_TABLE DROP $AGE_GROUP");
+      } on Exception catch (e) {
+        print('SQLite Error: $e');
+      }
+      try {
+        await db.execute("ALTER TABLE $BF_TABLE ADD $RANK TEXT");
+      } on Exception catch (e) {
+        print('SQLite Error: $e');
+      }
+      try {
+        await db.execute("ALTER TABLE $BF_TABLE ADD $AGE TEXT");
+      } on Exception catch (e) {
+        print('SQLite Error: $e');
+      }
+      try {
+        await db.execute("ALTER TABLE $BF_TABLE ADD $HEIGHT_DOUBLE TEXT");
+      } on Exception catch (e) {
+        print('SQLite Error: $e');
+      }
+      try {
+        await db.execute("ALTER TABLE $BF_TABLE DROP $AGE_GROUP");
+      } on Exception catch (e) {
+        print('SQLite Error: $e');
+      }
+      try {
+        await db.execute("ALTER TABLE $APFT_TABLE ADD $ALT_PASS INTEGER");
+      } on Exception catch (e) {
+        print('SQLite Error: $e');
+      }
+      try {
+        await db.execute("ALTER TABLE $ACFT_TABLE ADD $ALT_PASS INTEGER");
+      } on Exception catch (e) {
+        print('SQLite Error: $e');
+      }
     }
   }
 
@@ -150,12 +206,12 @@ class DBHelper {
     var dbClient = await db;
     List<Map> maps = await dbClient
         .rawQuery("SELECT * FROM $ACFT_TABLE ORDER BY $NAME, $DATE ASC");
-    List<Acft> acfts = [];
-    if (maps.length > 0) {
-      for (int i = 0; i < maps.length; i++) {
-        acfts.add(Acft.fromMap(maps[i]));
-      }
-    }
+    List<Acft> acfts = maps.map((e) => Acft.fromMap(e)).toList();
+    // if (maps.length > 0) {
+    //   for (int i = 0; i < maps.length; i++) {
+    //     acfts.add(Acft.fromMap(maps[i]));
+    //   }
+    // }
     return acfts;
   }
 
