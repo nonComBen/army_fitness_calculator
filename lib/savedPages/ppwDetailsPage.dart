@@ -29,62 +29,50 @@ class _PpwDetailsPageState extends State<PpwDetailsPage> {
   _updatePpw(BuildContext context, PPW ppw) {
     final _dateController = new TextEditingController(text: ppw.date);
     final _nameController = new TextEditingController(text: ppw.name);
-    final title = const Text('Update PPW Details');
     final textStyle = TextStyle(
         color: Theme.of(context).brightness == Brightness.dark
             ? Colors.yellow
             : Colors.amber);
-    final content = Container(
-      padding: EdgeInsets.all(8.0),
-      child: Material(
-        child: SingleChildScrollView(
-          child: Column(
-            children: <Widget>[
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child:
-                    const Text('Date and Name are the only editable fields.'),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: TextFormField(
-                  controller: _dateController,
-                  keyboardType: TextInputType.datetime,
-                  decoration: const InputDecoration(
-                    labelText: 'Date',
-                  ),
-                  autovalidateMode: AutovalidateMode.onUserInteraction,
-                  validator: (value) =>
-                      regExp.hasMatch(value) ? null : 'Use yyyy-MM-dd Format',
+    showModalBottomSheet(
+      context: context,
+      builder: (ctx) => Container(
+        padding: EdgeInsets.only(
+            left: 8,
+            right: 8,
+            bottom: MediaQuery.of(ctx).viewInsets.bottom + 24),
+        child: Material(
+          child: SingleChildScrollView(
+            child: Column(
+              children: <Widget>[
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child:
+                      const Text('Date and Name are the only editable fields.'),
                 ),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: TextFormField(
-                  controller: _nameController,
-                  decoration: const InputDecoration(labelText: 'Name'),
-                  keyboardType: TextInputType.text,
-                ),
-              )
-            ],
-          ),
-        ),
-      ),
-    );
-    if (Platform.isIOS) {
-      showCupertinoDialog(
-          context: context,
-          builder: (context2) => CupertinoAlertDialog(
-                title: title,
-                content: content,
-                actions: <Widget>[
-                  CupertinoDialogAction(
-                    child: Text('Cancel', style: textStyle),
-                    onPressed: () {
-                      Navigator.pop(context2);
-                    },
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: TextFormField(
+                    controller: _dateController,
+                    keyboardType: TextInputType.datetime,
+                    decoration: const InputDecoration(
+                      labelText: 'Date',
+                    ),
+                    autovalidateMode: AutovalidateMode.onUserInteraction,
+                    validator: (value) =>
+                        regExp.hasMatch(value) ? null : 'Use yyyy-MM-dd Format',
                   ),
-                  CupertinoDialogAction(
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: TextFormField(
+                    controller: _nameController,
+                    decoration: const InputDecoration(labelText: 'Name'),
+                    keyboardType: TextInputType.text,
+                  ),
+                ),
+                Padding(
+                  padding: EdgeInsets.all(8),
+                  child: ElevatedButton(
                     child: Text('Save', style: textStyle),
                     onPressed: () {
                       setState(() {
@@ -94,43 +82,16 @@ class _PpwDetailsPageState extends State<PpwDetailsPage> {
                       ppw.date = _dateController.text;
                       ppw.name = _nameController.text;
                       dbHelper.updatePPW(ppw);
-                      Navigator.pop(context2);
+                      Navigator.pop(context);
                     },
-                  )
-                ],
-              ));
-    } else {
-      showDialog(
-          context: context,
-          barrierDismissible: true,
-          builder: (BuildContext context2) {
-            return AlertDialog(
-              title: title,
-              content: content,
-              actions: <Widget>[
-                TextButton(
-                  child: Text('Cancel', style: textStyle),
-                  onPressed: () {
-                    Navigator.pop(context2);
-                  },
-                ),
-                TextButton(
-                  child: Text('Save', style: textStyle),
-                  onPressed: () {
-                    setState(() {
-                      _mainDateController.text = _dateController.text;
-                      _mainNameController.text = _nameController.text;
-                    });
-                    ppw.date = _dateController.text;
-                    ppw.name = _nameController.text;
-                    dbHelper.updatePPW(ppw);
-                    Navigator.pop(context2);
-                  },
+                  ),
                 )
               ],
-            );
-          });
-    }
+            ),
+          ),
+        ),
+      ),
+    );
   }
 
   deleteRecord(PPW ppw) {

@@ -29,86 +29,90 @@ class _ApftDetailsPageState extends State<ApftDetailsPage> {
     final _dateController = TextEditingController(text: apft.date);
     final _rankController = TextEditingController(text: apft.rank ?? '');
     final _nameController = TextEditingController(text: apft.name);
-    final content = Container(
-      padding: EdgeInsets.only(
-          left: 8, right: 8, bottom: MediaQuery.of(context).viewInsets.bottom),
-      child: Material(
-        child: SingleChildScrollView(
-          child: Column(
-            children: <Widget>[
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child:
-                    const Text('Date and Name are the only editable fields.'),
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                child: TextFormField(
-                  controller: _dateController,
-                  keyboardType: TextInputType.numberWithOptions(signed: true),
-                  inputFormatters: [
-                    FilteringTextInputFormatter.digitsOnly,
-                  ],
-                  decoration: const InputDecoration(
-                    labelText: 'Date',
+    showModalBottomSheet(
+      context: context,
+      builder: (ctx) => Container(
+        padding: EdgeInsets.only(
+            left: 8,
+            right: 8,
+            bottom: MediaQuery.of(ctx).viewInsets.bottom + 24),
+        child: Material(
+          child: SingleChildScrollView(
+            child: Column(
+              children: <Widget>[
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child:
+                      const Text('Date and Name are the only editable fields.'),
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                  child: TextFormField(
+                    controller: _dateController,
+                    keyboardType: TextInputType.numberWithOptions(signed: true),
+                    inputFormatters: [
+                      FilteringTextInputFormatter.digitsOnly,
+                    ],
+                    decoration: const InputDecoration(
+                      labelText: 'Date',
+                    ),
+                    autovalidateMode: AutovalidateMode.onUserInteraction,
+                    validator: (value) =>
+                        regExp.hasMatch(value) ? null : 'Use yyyyMMdd Format',
+                    autocorrect: false,
+                    autofocus: true,
+                    textInputAction: TextInputAction.next,
+                    onEditingComplete: () => FocusScope.of(context).nextFocus(),
                   ),
-                  autovalidateMode: AutovalidateMode.onUserInteraction,
-                  validator: (value) =>
-                      regExp.hasMatch(value) ? null : 'Use yyyyMMdd Format',
-                  autocorrect: false,
-                  autofocus: true,
-                  textInputAction: TextInputAction.next,
-                  onEditingComplete: () => FocusScope.of(context).nextFocus(),
                 ),
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                child: TextFormField(
-                  controller: _rankController,
-                  decoration: const InputDecoration(labelText: 'Rank'),
-                  keyboardType: TextInputType.text,
-                  textCapitalization: TextCapitalization.characters,
-                  autocorrect: false,
-                  textInputAction: TextInputAction.next,
-                  onEditingComplete: () => FocusScope.of(context).nextFocus(),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                  child: TextFormField(
+                    controller: _rankController,
+                    decoration: const InputDecoration(labelText: 'Rank'),
+                    keyboardType: TextInputType.text,
+                    textCapitalization: TextCapitalization.characters,
+                    autocorrect: false,
+                    textInputAction: TextInputAction.next,
+                    onEditingComplete: () => FocusScope.of(context).nextFocus(),
+                  ),
                 ),
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                child: TextFormField(
-                  controller: _nameController,
-                  decoration: const InputDecoration(labelText: 'Name'),
-                  keyboardType: TextInputType.text,
-                  textCapitalization: TextCapitalization.words,
-                  autocorrect: false,
-                  textInputAction: TextInputAction.done,
-                  onEditingComplete: () => FocusScope.of(context).unfocus(),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                  child: TextFormField(
+                    controller: _nameController,
+                    decoration: const InputDecoration(labelText: 'Name'),
+                    keyboardType: TextInputType.text,
+                    textCapitalization: TextCapitalization.words,
+                    autocorrect: false,
+                    textInputAction: TextInputAction.done,
+                    onEditingComplete: () => FocusScope.of(context).unfocus(),
+                  ),
                 ),
-              ),
-              Padding(
-                padding: EdgeInsets.all(8),
-                child: ElevatedButton(
-                  child: Text('Update APFT'),
-                  onPressed: () {
-                    setState(() {
-                      _mainDateController.text = _dateController.text;
-                      _mainNameController.text =
-                          '${_rankController.text} ${_nameController.text}';
-                    });
-                    apft.date = _dateController.text;
-                    apft.rank = _rankController.text;
-                    apft.name = _nameController.text;
-                    dbHelper.updateApft(apft);
-                    Navigator.pop(context);
-                  },
-                ),
-              )
-            ],
+                Padding(
+                  padding: EdgeInsets.all(8),
+                  child: ElevatedButton(
+                    child: Text('Update APFT'),
+                    onPressed: () {
+                      setState(() {
+                        _mainDateController.text = _dateController.text;
+                        _mainNameController.text =
+                            '${_rankController.text} ${_nameController.text}';
+                      });
+                      apft.date = _dateController.text;
+                      apft.rank = _rankController.text;
+                      apft.name = _nameController.text;
+                      dbHelper.updateApft(apft);
+                      Navigator.pop(context);
+                    },
+                  ),
+                )
+              ],
+            ),
           ),
         ),
       ),
     );
-    showModalBottomSheet(context: context, builder: (ctx) => content);
   }
 
   void _downloadPdf() {

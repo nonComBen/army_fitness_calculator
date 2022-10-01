@@ -30,86 +30,90 @@ class _BodyfatDetailsPageState extends State<BodyfatDetailsPage> {
     final _dateController = new TextEditingController(text: bf.date);
     final _rankController = TextEditingController(text: bf.rank ?? '');
     final _nameController = new TextEditingController(text: bf.name);
-    Widget content = Container(
-      padding: EdgeInsets.only(
-          left: 8, right: 8, bottom: MediaQuery.of(context).viewInsets.bottom),
-      child: Material(
-        child: SingleChildScrollView(
-          child: Column(
-            children: <Widget>[
-              Padding(
-                padding: EdgeInsets.all(8.0),
-                child:
-                    Text('Date, Rank, and Name are the only editable fields.'),
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                child: TextFormField(
-                  controller: _dateController,
-                  keyboardType: TextInputType.numberWithOptions(signed: true),
-                  inputFormatters: [
-                    FilteringTextInputFormatter.digitsOnly,
-                  ],
-                  decoration: InputDecoration(
-                    labelText: 'Date',
+    showModalBottomSheet(
+      context: context,
+      builder: (ctx) => Container(
+        padding: EdgeInsets.only(
+            left: 8,
+            right: 8,
+            bottom: MediaQuery.of(ctx).viewInsets.bottom + 24),
+        child: Material(
+          child: SingleChildScrollView(
+            child: Column(
+              children: <Widget>[
+                Padding(
+                  padding: EdgeInsets.all(8.0),
+                  child: Text(
+                      'Date, Rank, and Name are the only editable fields.'),
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                  child: TextFormField(
+                    controller: _dateController,
+                    keyboardType: TextInputType.numberWithOptions(signed: true),
+                    inputFormatters: [
+                      FilteringTextInputFormatter.digitsOnly,
+                    ],
+                    decoration: InputDecoration(
+                      labelText: 'Date',
+                    ),
+                    autovalidateMode: AutovalidateMode.onUserInteraction,
+                    validator: (value) =>
+                        regExp.hasMatch(value) ? null : 'Use yyyyMMdd Format',
+                    autofocus: true,
+                    autocorrect: false,
+                    textInputAction: TextInputAction.next,
+                    onEditingComplete: () => FocusScope.of(context).nextFocus(),
                   ),
-                  autovalidateMode: AutovalidateMode.onUserInteraction,
-                  validator: (value) =>
-                      regExp.hasMatch(value) ? null : 'Use yyyyMMdd Format',
-                  autofocus: true,
-                  autocorrect: false,
-                  textInputAction: TextInputAction.next,
-                  onEditingComplete: () => FocusScope.of(context).nextFocus(),
                 ),
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                child: TextFormField(
-                  controller: _rankController,
-                  decoration: InputDecoration(labelText: 'Rank'),
-                  keyboardType: TextInputType.text,
-                  textCapitalization: TextCapitalization.characters,
-                  autocorrect: false,
-                  textInputAction: TextInputAction.next,
-                  onEditingComplete: () => FocusScope.of(context).nextFocus(),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                  child: TextFormField(
+                    controller: _rankController,
+                    decoration: InputDecoration(labelText: 'Rank'),
+                    keyboardType: TextInputType.text,
+                    textCapitalization: TextCapitalization.characters,
+                    autocorrect: false,
+                    textInputAction: TextInputAction.next,
+                    onEditingComplete: () => FocusScope.of(context).nextFocus(),
+                  ),
                 ),
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                child: TextFormField(
-                  controller: _nameController,
-                  decoration: InputDecoration(labelText: 'Name'),
-                  keyboardType: TextInputType.text,
-                  textCapitalization: TextCapitalization.words,
-                  autocorrect: false,
-                  textInputAction: TextInputAction.done,
-                  onEditingComplete: () => FocusScope.of(context).unfocus(),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                  child: TextFormField(
+                    controller: _nameController,
+                    decoration: InputDecoration(labelText: 'Name'),
+                    keyboardType: TextInputType.text,
+                    textCapitalization: TextCapitalization.words,
+                    autocorrect: false,
+                    textInputAction: TextInputAction.done,
+                    onEditingComplete: () => FocusScope.of(context).unfocus(),
+                  ),
                 ),
-              ),
-              Padding(
-                padding: EdgeInsets.all(8),
-                child: ElevatedButton(
-                  child: Text('Update Body Comp'),
-                  onPressed: () {
-                    setState(() {
-                      _mainDateController.text = _dateController.text;
-                      _mainNameController.text =
-                          '${_rankController.text} ${_nameController.text}';
-                    });
-                    bf.date = _dateController.text;
-                    bf.rank = _rankController.text;
-                    bf.name = _nameController.text;
-                    dbHelper.updateBodyfat(bf);
-                    Navigator.pop(context);
-                  },
-                ),
-              )
-            ],
+                Padding(
+                  padding: EdgeInsets.all(8),
+                  child: ElevatedButton(
+                    child: Text('Update Body Comp'),
+                    onPressed: () {
+                      setState(() {
+                        _mainDateController.text = _dateController.text;
+                        _mainNameController.text =
+                            '${_rankController.text} ${_nameController.text}';
+                      });
+                      bf.date = _dateController.text;
+                      bf.rank = _rankController.text;
+                      bf.name = _nameController.text;
+                      dbHelper.updateBodyfat(bf);
+                      Navigator.pop(context);
+                    },
+                  ),
+                )
+              ],
+            ),
           ),
         ),
       ),
     );
-    showModalBottomSheet(context: context, builder: (ctx) => content);
   }
 
   // takeScreenshot() async {

@@ -29,85 +29,89 @@ class _AcftDetailsPageState extends State<AcftDetailsPage> {
     final _dateController = new TextEditingController(text: acft.date);
     final _rankController = TextEditingController(text: acft.rank ?? '');
     final _nameController = new TextEditingController(text: acft.name);
-    final content = Container(
-      padding: EdgeInsets.only(
-          left: 8, right: 8, bottom: MediaQuery.of(context).viewInsets.bottom),
-      child: SingleChildScrollView(
-        child: Column(
-          children: <Widget>[
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8.0),
-              child: Text(
-                'Date, Rank, and Name are the only editable fields.',
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
+    showModalBottomSheet(
+      context: context,
+      builder: (ctx) => Container(
+        padding: EdgeInsets.only(
+            left: 8,
+            right: 8,
+            bottom: MediaQuery.of(ctx).viewInsets.bottom + 24),
+        child: SingleChildScrollView(
+          child: Column(
+            children: <Widget>[
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Text(
+                  'Date, Rank, and Name are the only editable fields.',
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                  ),
+                  textAlign: TextAlign.center,
                 ),
-                textAlign: TextAlign.center,
               ),
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8.0),
-              child: TextFormField(
-                controller: _dateController,
-                keyboardType: TextInputType.numberWithOptions(signed: true),
-                inputFormatters: [
-                  FilteringTextInputFormatter.digitsOnly,
-                ],
-                decoration: const InputDecoration(
-                  labelText: 'Date',
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: TextFormField(
+                  controller: _dateController,
+                  keyboardType: TextInputType.numberWithOptions(signed: true),
+                  inputFormatters: [
+                    FilteringTextInputFormatter.digitsOnly,
+                  ],
+                  decoration: const InputDecoration(
+                    labelText: 'Date',
+                  ),
+                  autovalidateMode: AutovalidateMode.onUserInteraction,
+                  validator: (value) =>
+                      regExp.hasMatch(value) ? null : 'Use yyyyMMdd Format',
+                  autofocus: true,
+                  autocorrect: false,
+                  textInputAction: TextInputAction.next,
+                  onEditingComplete: () => FocusScope.of(context).nextFocus(),
                 ),
-                autovalidateMode: AutovalidateMode.onUserInteraction,
-                validator: (value) =>
-                    regExp.hasMatch(value) ? null : 'Use yyyyMMdd Format',
-                autofocus: true,
-                autocorrect: false,
-                textInputAction: TextInputAction.next,
-                onEditingComplete: () => FocusScope.of(context).nextFocus(),
               ),
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8.0),
-              child: TextFormField(
-                controller: _rankController,
-                decoration: const InputDecoration(labelText: 'Rank'),
-                keyboardType: TextInputType.text,
-                textCapitalization: TextCapitalization.characters,
-                autocorrect: false,
-                textInputAction: TextInputAction.next,
-                onEditingComplete: () => FocusScope.of(context).nextFocus(),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: TextFormField(
+                  controller: _rankController,
+                  decoration: const InputDecoration(labelText: 'Rank'),
+                  keyboardType: TextInputType.text,
+                  textCapitalization: TextCapitalization.characters,
+                  autocorrect: false,
+                  textInputAction: TextInputAction.next,
+                  onEditingComplete: () => FocusScope.of(context).nextFocus(),
+                ),
               ),
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8.0),
-              child: TextFormField(
-                controller: _nameController,
-                decoration: const InputDecoration(labelText: 'Name'),
-                keyboardType: TextInputType.text,
-                textCapitalization: TextCapitalization.words,
-                autocorrect: false,
-                textInputAction: TextInputAction.done,
-                onEditingComplete: () => FocusScope.of(context).unfocus(),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: TextFormField(
+                  controller: _nameController,
+                  decoration: const InputDecoration(labelText: 'Name'),
+                  keyboardType: TextInputType.text,
+                  textCapitalization: TextCapitalization.words,
+                  autocorrect: false,
+                  textInputAction: TextInputAction.done,
+                  onEditingComplete: () => FocusScope.of(context).unfocus(),
+                ),
               ),
-            ),
-            Padding(
-              padding: EdgeInsets.all(8),
-              child: ElevatedButton(
-                child: Text('Update'),
-                onPressed: () {
-                  acft.date = _dateController.text;
-                  acft.rank = _rankController.text;
-                  acft.name = _nameController.text;
-                  dbHelper.updateAcft(acft);
-                  Navigator.pop(context);
-                },
-              ),
-            )
-          ],
+              Padding(
+                padding: EdgeInsets.all(8),
+                child: ElevatedButton(
+                  child: Text('Update'),
+                  onPressed: () {
+                    acft.date = _dateController.text;
+                    acft.rank = _rankController.text;
+                    acft.name = _nameController.text;
+                    dbHelper.updateAcft(acft);
+                    Navigator.pop(context);
+                  },
+                ),
+              )
+            ],
+          ),
         ),
       ),
     );
-    showModalBottomSheet(context: context, builder: (ctx) => content);
   }
 
   void _downloadPdf() {
