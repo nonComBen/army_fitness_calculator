@@ -8,13 +8,9 @@ class DeleteRecord {
     final title = const Text('Delete Record');
     final content = Container(
       padding: EdgeInsets.all(8.0),
-      child: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Text('Are you sure you want to delete this record?'),
-          ),
-        ],
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Text('Are you sure you want to delete this record?'),
       ),
     );
     if (Platform.isIOS) {

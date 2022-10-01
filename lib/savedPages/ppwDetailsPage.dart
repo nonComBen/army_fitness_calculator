@@ -23,7 +23,6 @@ class _PpwDetailsPageState extends State<PpwDetailsPage> {
   TextEditingController _mainNameController;
   TextEditingController _mainDateController;
 
-  static GlobalKey previewContainer = new GlobalKey();
   GlobalKey<ScaffoldState> _scaffoldState = new GlobalKey<ScaffoldState>();
 
   _updatePpw(BuildContext context, PPW ppw) {
@@ -231,320 +230,313 @@ class _PpwDetailsPageState extends State<PpwDetailsPage> {
       body: Container(
         padding: const EdgeInsets.all(16.0),
         child: SingleChildScrollView(
-          child: RepaintBoundary(
-            key: previewContainer,
-            child: DecoratedBox(
-              decoration: BoxDecoration(
-                  color: Theme.of(context).scaffoldBackgroundColor),
-              child: Column(
+          child: Column(
+            children: <Widget>[
+              GridView.count(
+                crossAxisCount: width > 700 ? 2 : 1,
+                childAspectRatio: width > 700 ? width / 200 : width / 100,
+                mainAxisSpacing: 1.0,
+                crossAxisSpacing: 1.0,
+                primary: false,
+                shrinkWrap: true,
                 children: <Widget>[
-                  GridView.count(
-                    crossAxisCount: width > 700 ? 2 : 1,
-                    childAspectRatio: width > 700 ? width / 200 : width / 100,
-                    mainAxisSpacing: 1.0,
-                    crossAxisSpacing: 1.0,
-                    primary: false,
-                    shrinkWrap: true,
-                    children: <Widget>[
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: TextFormField(
-                          enabled: false,
-                          controller: _mainNameController,
-                          decoration: const InputDecoration(labelText: 'Name'),
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: TextFormField(
-                          enabled: false,
-                          controller: _mainDateController,
-                          decoration: const InputDecoration(labelText: 'Date'),
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: TextFormField(
-                          enabled: false,
-                          initialValue: widget.ppw.rank.toString(),
-                          decoration:
-                              const InputDecoration(labelText: 'Promotion To'),
-                        ),
-                      ),
-                    ],
-                  ),
-                  Card(
-                    color: Theme.of(context).colorScheme.primary,
-                    child: ListTile(
-                      title: Text(
-                        'Military Training',
-                        style: TextStyle(
-                            color: Theme.of(context).colorScheme.onPrimary),
-                      ),
-                      trailing: Text(
-                        '$milTrain/${widget.ppw.milTrainMax}',
-                        style: TextStyle(
-                            color: Theme.of(context).colorScheme.onPrimary),
-                      ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: TextFormField(
+                      enabled: false,
+                      controller: _mainNameController,
+                      decoration: const InputDecoration(labelText: 'Name'),
                     ),
                   ),
                   Padding(
                     padding: const EdgeInsets.all(8.0),
-                    child: GridView.count(
-                      crossAxisCount: 2,
-                      childAspectRatio: width / 200,
-                      mainAxisSpacing: 1.0,
-                      crossAxisSpacing: 1.0,
-                      primary: false,
-                      shrinkWrap: true,
-                      children: <Widget>[
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: TextFormField(
-                            decoration: InputDecoration(
-                                label: Text(widget.ppw.version == 1
-                                    ? 'ACFT Points'
-                                    : 'APFT Points')),
-                            enabled: false,
-                            initialValue: widget.ppw.ptTest.toString(),
-                            textAlign: TextAlign.right,
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: TextFormField(
-                            decoration: const InputDecoration(
-                                label: Text('Weapon Points')),
-                            enabled: false,
-                            initialValue: widget.ppw.weapons.toString(),
-                            textAlign: TextAlign.right,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(top: 8, bottom: 8),
-                    child: Divider(
-                        color: Theme.of(context).colorScheme.onSecondary),
-                  ),
-                  Card(
-                    color: Theme.of(context).colorScheme.primary,
-                    child: ListTile(
-                      title: Text(
-                        'Awards',
-                        style: TextStyle(
-                            color: Theme.of(context).colorScheme.onPrimary),
-                      ),
-                      trailing: Text(
-                        '$awards/${widget.ppw.awardsMax}',
-                        style: TextStyle(
-                            color: Theme.of(context).colorScheme.onPrimary),
-                      ),
+                    child: TextFormField(
+                      enabled: false,
+                      controller: _mainDateController,
+                      decoration: const InputDecoration(labelText: 'Date'),
                     ),
                   ),
                   Padding(
                     padding: const EdgeInsets.all(8.0),
-                    child: GridView.count(
-                      crossAxisCount: 2,
-                      childAspectRatio: width / 200,
-                      mainAxisSpacing: 1.0,
-                      crossAxisSpacing: 1.0,
-                      primary: false,
-                      shrinkWrap: true,
-                      children: <Widget>[
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: TextFormField(
-                            decoration: const InputDecoration(
-                                label: Text('Decoration Points')),
-                            enabled: false,
-                            initialValue: widget.ppw.awards.toString(),
-                            textAlign: TextAlign.right,
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: TextFormField(
-                            decoration: const InputDecoration(
-                                label: Text('Badge Points')),
-                            enabled: false,
-                            initialValue: widget.ppw.badges.toString(),
-                            textAlign: TextAlign.right,
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: TextFormField(
-                            decoration: const InputDecoration(
-                                label: Text('Airborne Advantage Points')),
-                            enabled: false,
-                            initialValue: widget.ppw.airborne.toString(),
-                            textAlign: TextAlign.right,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(top: 8, bottom: 8),
-                    child: Divider(
-                        color: Theme.of(context).colorScheme.onSecondary),
-                  ),
-                  Card(
-                    color: Theme.of(context).colorScheme.primary,
-                    child: ListTile(
-                      title: Text(
-                        'Military Education',
-                        style: TextStyle(
-                            color: Theme.of(context).colorScheme.onPrimary),
-                      ),
-                      trailing: Text(
-                        '$milEd/${widget.ppw.milEdMax}',
-                        style: TextStyle(
-                            color: Theme.of(context).colorScheme.onPrimary),
-                      ),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: GridView.count(
-                      crossAxisCount: 2,
-                      childAspectRatio: width / 200,
-                      mainAxisSpacing: 1.0,
-                      crossAxisSpacing: 1.0,
-                      primary: false,
-                      shrinkWrap: true,
-                      children: <Widget>[
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: TextFormField(
-                            decoration: const InputDecoration(
-                                label: Text('NCOES Points')),
-                            enabled: false,
-                            initialValue: widget.ppw.ncoes.toString(),
-                            textAlign: TextAlign.right,
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: TextFormField(
-                            decoration: const InputDecoration(
-                                label: Text('Resident Courses Points')),
-                            enabled: false,
-                            initialValue: widget.ppw.resident.toString(),
-                            textAlign: TextAlign.right,
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: TextFormField(
-                            decoration: const InputDecoration(
-                                label: Text('Web-Based Courses Points')),
-                            enabled: false,
-                            initialValue: widget.ppw.wbc.toString(),
-                            textAlign: TextAlign.right,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(top: 8, bottom: 8),
-                    child: Divider(
-                        color: Theme.of(context).colorScheme.onSecondary),
-                  ),
-                  Card(
-                    color: Theme.of(context).colorScheme.primary,
-                    child: ListTile(
-                      title: Text(
-                        'Civilian Education',
-                        style: TextStyle(
-                            color: Theme.of(context).colorScheme.onPrimary),
-                      ),
-                      trailing: Text(
-                        '$civEd/${widget.ppw.civEdMax}',
-                        style: TextStyle(
-                            color: Theme.of(context).colorScheme.onPrimary),
-                      ),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: GridView.count(
-                      crossAxisCount: 2,
-                      childAspectRatio: width / 200,
-                      mainAxisSpacing: 1.0,
-                      crossAxisSpacing: 1.0,
-                      primary: false,
-                      shrinkWrap: true,
-                      children: <Widget>[
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: TextFormField(
-                            decoration: const InputDecoration(
-                                label: Text('Semester Hour Points')),
-                            enabled: false,
-                            initialValue: widget.ppw.semesterHours.toString(),
-                            textAlign: TextAlign.right,
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: TextFormField(
-                            decoration: const InputDecoration(
-                                label: Text('Degree Completion Points')),
-                            enabled: false,
-                            initialValue: widget.ppw.degree.toString(),
-                            textAlign: TextAlign.right,
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: TextFormField(
-                            decoration: const InputDecoration(
-                                label: Text('Certification Points')),
-                            enabled: false,
-                            initialValue: widget.ppw.certs.toString(),
-                            textAlign: TextAlign.right,
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: TextFormField(
-                            decoration: const InputDecoration(
-                                label: Text('Foreign Language Points')),
-                            enabled: false,
-                            initialValue: widget.ppw.language.toString(),
-                            textAlign: TextAlign.right,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(top: 8, bottom: 8),
-                    child: Divider(
-                        color: Theme.of(context).colorScheme.onSecondary),
-                  ),
-                  Card(
-                    color: Theme.of(context).colorScheme.primary,
-                    child: ListTile(
-                      title: Text(
-                        'Total Points',
-                        style: TextStyle(
-                            color: Theme.of(context).colorScheme.onPrimary),
-                      ),
-                      trailing: Text(
-                        '${widget.ppw.total}/800',
-                        style: TextStyle(
-                            color: Theme.of(context).colorScheme.onPrimary),
-                      ),
+                    child: TextFormField(
+                      enabled: false,
+                      initialValue: widget.ppw.rank.toString(),
+                      decoration:
+                          const InputDecoration(labelText: 'Promotion To'),
                     ),
                   ),
                 ],
               ),
-            ),
+              Card(
+                color: Theme.of(context).colorScheme.primary,
+                child: ListTile(
+                  title: Text(
+                    'Military Training',
+                    style: TextStyle(
+                        color: Theme.of(context).colorScheme.onPrimary),
+                  ),
+                  trailing: Text(
+                    '$milTrain/${widget.ppw.milTrainMax}',
+                    style: TextStyle(
+                        color: Theme.of(context).colorScheme.onPrimary),
+                  ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: GridView.count(
+                  crossAxisCount: 2,
+                  childAspectRatio: width / 200,
+                  mainAxisSpacing: 1.0,
+                  crossAxisSpacing: 1.0,
+                  primary: false,
+                  shrinkWrap: true,
+                  children: <Widget>[
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: TextFormField(
+                        decoration: InputDecoration(
+                            label: Text(widget.ppw.version == 1
+                                ? 'ACFT Points'
+                                : 'APFT Points')),
+                        enabled: false,
+                        initialValue: widget.ppw.ptTest.toString(),
+                        textAlign: TextAlign.right,
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: TextFormField(
+                        decoration:
+                            const InputDecoration(label: Text('Weapon Points')),
+                        enabled: false,
+                        initialValue: widget.ppw.weapons.toString(),
+                        textAlign: TextAlign.right,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(top: 8, bottom: 8),
+                child:
+                    Divider(color: Theme.of(context).colorScheme.onSecondary),
+              ),
+              Card(
+                color: Theme.of(context).colorScheme.primary,
+                child: ListTile(
+                  title: Text(
+                    'Awards',
+                    style: TextStyle(
+                        color: Theme.of(context).colorScheme.onPrimary),
+                  ),
+                  trailing: Text(
+                    '$awards/${widget.ppw.awardsMax}',
+                    style: TextStyle(
+                        color: Theme.of(context).colorScheme.onPrimary),
+                  ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: GridView.count(
+                  crossAxisCount: 2,
+                  childAspectRatio: width / 200,
+                  mainAxisSpacing: 1.0,
+                  crossAxisSpacing: 1.0,
+                  primary: false,
+                  shrinkWrap: true,
+                  children: <Widget>[
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: TextFormField(
+                        decoration: const InputDecoration(
+                            label: Text('Decoration Points')),
+                        enabled: false,
+                        initialValue: widget.ppw.awards.toString(),
+                        textAlign: TextAlign.right,
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: TextFormField(
+                        decoration:
+                            const InputDecoration(label: Text('Badge Points')),
+                        enabled: false,
+                        initialValue: widget.ppw.badges.toString(),
+                        textAlign: TextAlign.right,
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: TextFormField(
+                        decoration: const InputDecoration(
+                            label: Text('Airborne Advantage Points')),
+                        enabled: false,
+                        initialValue: widget.ppw.airborne.toString(),
+                        textAlign: TextAlign.right,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(top: 8, bottom: 8),
+                child:
+                    Divider(color: Theme.of(context).colorScheme.onSecondary),
+              ),
+              Card(
+                color: Theme.of(context).colorScheme.primary,
+                child: ListTile(
+                  title: Text(
+                    'Military Education',
+                    style: TextStyle(
+                        color: Theme.of(context).colorScheme.onPrimary),
+                  ),
+                  trailing: Text(
+                    '$milEd/${widget.ppw.milEdMax}',
+                    style: TextStyle(
+                        color: Theme.of(context).colorScheme.onPrimary),
+                  ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: GridView.count(
+                  crossAxisCount: 2,
+                  childAspectRatio: width / 200,
+                  mainAxisSpacing: 1.0,
+                  crossAxisSpacing: 1.0,
+                  primary: false,
+                  shrinkWrap: true,
+                  children: <Widget>[
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: TextFormField(
+                        decoration:
+                            const InputDecoration(label: Text('NCOES Points')),
+                        enabled: false,
+                        initialValue: widget.ppw.ncoes.toString(),
+                        textAlign: TextAlign.right,
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: TextFormField(
+                        decoration: const InputDecoration(
+                            label: Text('Resident Courses Points')),
+                        enabled: false,
+                        initialValue: widget.ppw.resident.toString(),
+                        textAlign: TextAlign.right,
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: TextFormField(
+                        decoration: const InputDecoration(
+                            label: Text('Web-Based Courses Points')),
+                        enabled: false,
+                        initialValue: widget.ppw.wbc.toString(),
+                        textAlign: TextAlign.right,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(top: 8, bottom: 8),
+                child:
+                    Divider(color: Theme.of(context).colorScheme.onSecondary),
+              ),
+              Card(
+                color: Theme.of(context).colorScheme.primary,
+                child: ListTile(
+                  title: Text(
+                    'Civilian Education',
+                    style: TextStyle(
+                        color: Theme.of(context).colorScheme.onPrimary),
+                  ),
+                  trailing: Text(
+                    '$civEd/${widget.ppw.civEdMax}',
+                    style: TextStyle(
+                        color: Theme.of(context).colorScheme.onPrimary),
+                  ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: GridView.count(
+                  crossAxisCount: 2,
+                  childAspectRatio: width / 200,
+                  mainAxisSpacing: 1.0,
+                  crossAxisSpacing: 1.0,
+                  primary: false,
+                  shrinkWrap: true,
+                  children: <Widget>[
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: TextFormField(
+                        decoration: const InputDecoration(
+                            label: Text('Semester Hour Points')),
+                        enabled: false,
+                        initialValue: widget.ppw.semesterHours.toString(),
+                        textAlign: TextAlign.right,
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: TextFormField(
+                        decoration: const InputDecoration(
+                            label: Text('Degree Completion Points')),
+                        enabled: false,
+                        initialValue: widget.ppw.degree.toString(),
+                        textAlign: TextAlign.right,
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: TextFormField(
+                        decoration: const InputDecoration(
+                            label: Text('Certification Points')),
+                        enabled: false,
+                        initialValue: widget.ppw.certs.toString(),
+                        textAlign: TextAlign.right,
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: TextFormField(
+                        decoration: const InputDecoration(
+                            label: Text('Foreign Language Points')),
+                        enabled: false,
+                        initialValue: widget.ppw.language.toString(),
+                        textAlign: TextAlign.right,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(top: 8, bottom: 8),
+                child:
+                    Divider(color: Theme.of(context).colorScheme.onSecondary),
+              ),
+              Card(
+                color: Theme.of(context).colorScheme.primary,
+                child: ListTile(
+                  title: Text(
+                    'Total Points',
+                    style: TextStyle(
+                        color: Theme.of(context).colorScheme.onPrimary),
+                  ),
+                  trailing: Text(
+                    '${widget.ppw.total}/800',
+                    style: TextStyle(
+                        color: Theme.of(context).colorScheme.onPrimary),
+                  ),
+                ),
+              ),
+            ],
           ),
         ),
       ),

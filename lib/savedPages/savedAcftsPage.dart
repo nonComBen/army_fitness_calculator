@@ -12,15 +12,15 @@ class SavedAcftsPage extends StatefulWidget {
 }
 
 class _SavedAcftsPageState extends State<SavedAcftsPage> {
-  // Future<List<Acft>> acfts;
+  Future<List<Acft>> acfts;
   DBHelper dbHelper;
   Color onPrimary, onError;
 
-  // refreshList() {
-  //   setState(() {
-  //     acfts = dbHelper.getAcfts();
-  //   });
-  // }
+  refreshList() {
+    setState(() {
+      acfts = dbHelper.getAcfts();
+    });
+  }
 
   Widget nameHeader(List<Acft> acftList, String rank, String name) {
     return Padding(
@@ -109,7 +109,7 @@ class _SavedAcftsPageState extends State<SavedAcftsPage> {
                     onConfirm: () {
                       Navigator.pop(context);
                       dbHelper.deleteAcft(acftList[i].id);
-                      // refreshList();
+                      refreshList();
                     });
               },
             ),
@@ -135,6 +135,7 @@ class _SavedAcftsPageState extends State<SavedAcftsPage> {
   void initState() {
     super.initState();
     dbHelper = DBHelper();
+    refreshList();
   }
 
   @override
@@ -148,9 +149,9 @@ class _SavedAcftsPageState extends State<SavedAcftsPage> {
       ),
       body: Container(
         padding: const EdgeInsets.all(16.0),
-        child: StreamBuilder(
-          stream: dbHelper.getAcfts().asStream(),
-          builder: (context, snapshot) {
+        child: FutureBuilder(
+          future: acfts,
+          builder: (ctx, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return Center(
                 child: CircularProgressIndicator(),

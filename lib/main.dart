@@ -5,6 +5,7 @@ import 'package:acft_calculator/widgets/main_drawer.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -24,6 +25,7 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   final sharedPreferences = await SharedPreferences.getInstance();
+  SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
   runApp(
     ProviderScope(overrides: [
       // override the previous value with the new object
@@ -109,7 +111,7 @@ class MyAppState extends State<MyApp> {
     if (available) {
       final Stream purchaseUpdates = InAppPurchase.instance.purchaseStream;
       _streamSubscription = purchaseUpdates.listen((purchases) async {
-        // premium = await listenToPurchaseUpdated(purchases);
+        premium = await listenToPurchaseUpdated(purchases);
         setState(() {});
       });
       await InAppPurchase.instance.restorePurchases();

@@ -237,12 +237,12 @@ class DBHelper {
     var dbClient = await db;
     List<Map> maps = await dbClient
         .rawQuery("SELECT * FROM $APFT_TABLE ORDER BY $NAME, $DATE ASC");
-    List<Apft> apfts = [];
-    if (maps.length > 0) {
-      for (int i = 0; i < maps.length; i++) {
-        apfts.add(Apft.fromMap(maps[i]));
-      }
-    }
+    List<Apft> apfts = maps.map((e) => Apft.fromMap(e)).toList();
+    // if (maps.length > 0) {
+    //   for (int i = 0; i < maps.length; i++) {
+    //     apfts.add(Apft.fromMap(maps[i]));
+    //   }
+    // }
     return apfts;
   }
 
@@ -268,12 +268,12 @@ class DBHelper {
     var dbClient = await db;
     List<Map> maps = await dbClient
         .rawQuery("SELECT * FROM $BF_TABLE ORDER BY $NAME, $DATE ASC");
-    List<Bodyfat> bodyfats = [];
-    if (maps.length > 0) {
-      for (int i = 0; i < maps.length; i++) {
-        bodyfats.add(Bodyfat.fromMap(maps[i]));
-      }
-    }
+    List<Bodyfat> bodyfats = maps.map((e) => Bodyfat.fromMap(e)).toList();
+    // if (maps.length > 0) {
+    //   for (int i = 0; i < maps.length; i++) {
+    //     bodyfats.add(Bodyfat.fromMap(maps[i]));
+    //   }
+    // }
     return bodyfats;
   }
 
@@ -299,12 +299,12 @@ class DBHelper {
     var dbClient = await db;
     List<Map> maps = await dbClient
         .rawQuery("SELECT * FROM $PPW_TABLE ORDER BY $NAME, $DATE ASC");
-    List<PPW> ppws = [];
-    if (maps.length > 0) {
-      for (int i = 0; i < maps.length; i++) {
-        ppws.add(PPW.fromMap(maps[i]));
-      }
-    }
+    List<PPW> ppws = maps.map((e) => PPW.fromMap(e)).toList();
+    // if (maps.length > 0) {
+    //   for (int i = 0; i < maps.length; i++) {
+    //     ppws.add(PPW.fromMap(maps[i]));
+    //   }
+    // }
     return ppws;
   }
 
