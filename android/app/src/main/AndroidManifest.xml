@@ -12,7 +12,7 @@
          FlutterApplication and put your custom class here. -->
     <application
         android:name="androidx.multidex.MultiDexApplication"
-        android:label="ACFT Calculator"
+        android:label="Army Fitness Calculator"
         android:icon="@mipmap/ic_launcher">
         <meta-data
             android:name="flutterEmbedding"

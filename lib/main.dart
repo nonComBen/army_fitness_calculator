@@ -3,7 +3,6 @@ import 'dart:io';
 
 import 'package:acft_calculator/widgets/main_drawer.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -20,11 +19,13 @@ import './providers/theme_provider.dart';
 import './acftPage.dart';
 import './apftPage.dart';
 import './bodyfatPage.dart';
+import 'widgets/bullet_item.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   final sharedPreferences = await SharedPreferences.getInstance();
+  // hides system ui buttons on Android
   SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
   runApp(
     ProviderScope(overrides: [
@@ -190,119 +191,81 @@ class _MyHomePageState extends State<MyHomePage> {
   ];
 
   _upgrade() {
-    final title = const Text('Premium Upgrade');
-    final content = Container(
-      padding: EdgeInsets.all(8.0),
-      child: SingleChildScrollView(
+    showModalBottomSheet(
+      context: context,
+      builder: (ctx) => Container(
+        padding: EdgeInsets.all(8.0),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
-            const Text(
-              '- One time cost of \$1.99',
-              textAlign: TextAlign.start,
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: const Text(
+                'Premium Upgrade',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 18,
+                ),
+              ),
             ),
-            const Text(
-              '- Allows you to save scores, print DA Forms, and chart progress for you and your Soldiers',
-              textAlign: TextAlign.start,
+            const BulletItem(
+              text: 'One time cost of \$1.99',
             ),
-            const Text(
-              '- Removes ads',
-              textAlign: TextAlign.start,
+            const BulletItem(
+              text:
+                  'Allows you to save scores, print DA Forms, and chart progress for you and your Soldiers',
             ),
-            if (Platform.isIOS)
-              const Padding(
-                  padding: EdgeInsets.all(8.0),
-                  child: Text('To restore previous purchase, select Restore.'))
-          ],
-        ),
-      ),
-    );
-    if (Platform.isIOS) {
-      showCupertinoDialog(
-          context: context,
-          builder: (context2) => CupertinoAlertDialog(
-                title: title,
-                content: content,
-                actions: <Widget>[
-                  CupertinoDialogAction(
-                    child: const Text('Cancel'),
+            const BulletItem(
+              text: 'Removes ads',
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: ElevatedButton(
+                    child: const Text(
+                      'Cancel',
+                      style: TextStyle(color: Colors.white),
+                    ),
                     onPressed: () {
-                      Navigator.pop(context2);
+                      Navigator.pop(ctx);
                     },
                   ),
-                  CupertinoDialogAction(
-                    child: const Text('Restore'),
-                    onPressed: () {
-                      Navigator.pop(context2);
-                      InAppPurchase.instance.restorePurchases();
-                    },
-                  ),
-                  CupertinoDialogAction(
-                    child: const Text('Upgrade'),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: ElevatedButton(
+                    child: const Text('Upgrade',
+                        style: TextStyle(color: Colors.white)),
                     onPressed: () {
                       if (_products.isEmpty) {
-                        Navigator.pop(context2);
+                        Navigator.pop(ctx);
                         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                           content: const Text(
                               'Upgrading is not available at this time'),
                         ));
                       } else {
-                        Navigator.pop(context2);
+                        Navigator.pop(ctx);
                         ProductDetails product = _products.firstWhere(
                             (product) => product.id == 'premium_upgrade');
+
                         final PurchaseParam purchaseParam =
                             PurchaseParam(productDetails: product);
                         InAppPurchase.instance
                             .buyNonConsumable(purchaseParam: purchaseParam);
                       }
                     },
-                  )
-                ],
-              ));
-    } else {
-      showDialog(
-          context: context,
-          barrierDismissible: true,
-          builder: (BuildContext context2) {
-            return AlertDialog(
-              title: title,
-              content: content,
-              actions: <Widget>[
-                TextButton(
-                  child: const Text(
-                    'Cancel',
-                    style: TextStyle(color: Colors.white),
                   ),
-                  onPressed: () {
-                    Navigator.pop(context2);
-                  },
-                ),
-                TextButton(
-                  child: const Text('Upgrade',
-                      style: TextStyle(color: Colors.white)),
-                  onPressed: () {
-                    if (_products.isEmpty) {
-                      Navigator.pop(context2);
-                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                        content: const Text(
-                            'Upgrading is not available at this time'),
-                      ));
-                    } else {
-                      Navigator.pop(context2);
-                      ProductDetails product = _products.firstWhere(
-                          (product) => product.id == 'premium_upgrade');
-
-                      final PurchaseParam purchaseParam =
-                          PurchaseParam(productDetails: product);
-                      InAppPurchase.instance
-                          .buyNonConsumable(purchaseParam: purchaseParam);
-                    }
-                  },
                 )
               ],
-            );
-          });
-    }
+            ),
+          ],
+        ),
+      ),
+    );
   }
 
   upgradeNeeded() {
