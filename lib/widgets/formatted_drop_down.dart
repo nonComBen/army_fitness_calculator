@@ -22,7 +22,10 @@ class FormattedDropDown extends StatelessWidget {
         decoration: InputDecoration(labelText: label),
         items: items.map((event) {
           return DropdownMenuItem(
-            child: Text(event),
+            child: Text(
+              event,
+              style: TextStyle(fontSize: 22),
+            ),
             value: event,
           );
         }).toList(),

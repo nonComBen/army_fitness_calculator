@@ -19,6 +19,7 @@ import './widgets/formatted_drop_down.dart';
 import './widgets/formatted_radio.dart';
 import './widgets/grid_box.dart';
 import './widgets/increment_decrement_button.dart';
+import 'widgets/value_input_field.dart';
 
 class AcftPage extends ConsumerStatefulWidget {
   AcftPage(this.isPremium, this.upgradeNeeded);
@@ -46,47 +47,52 @@ class _AcftPageState extends ConsumerState<AcftPage> {
       plankScore,
       runScore,
       total;
-  bool ageValid,
-      mdlValid,
-      sptValid,
-      hrpValid,
-      sdcMinValid,
-      sdcSecValid,
-      plankMinsValid,
-      plankSecsValid,
-      runMinValid,
-      runSecValid,
+  bool isAgeValid,
+      isMdlValid,
+      isSptValid,
+      isHrpValid,
+      isSdcMinsValid,
+      isSdcSecsValid,
+      isPlankMinsValid,
+      isPlankSecsValid,
+      isRunMinsValid,
+      isRunSecsValid,
       mdlPass,
       sptPass,
       hrpPass,
       sdcPass,
       plkPass,
       runPass,
-      totalPass,
-      altEventWarning;
+      totalPass;
   double sptRaw;
   String ageGroup,
-      mdlMin,
+      mdlMinimum,
       mdl90,
       mdlMax,
-      sptMin,
+      sptMinimum,
       spt90,
       sptMax,
-      hrpMin,
+      hrpMinimum,
       hrp90,
       hrpMax,
-      sdcMin,
+      sdcMinimum,
       sdc90,
       sdcMax,
-      plkMin,
+      plkMinimum,
       plk90,
       plkMax,
-      runMin,
+      runMinimum,
       run90,
       runMax,
-      event,
+      aerobicEvent,
       gender;
-  List<String> mdlBMs, sptBMs, hrpBMs, sdcBMs, plkBMs, runBMs, altBMs;
+  List<String> mdlBenchmarks,
+      sptBenchmarks,
+      hrpBenchmarks,
+      sdcBenchmarks,
+      plkBenchmarks,
+      runBenchmarks,
+      altBenchmarks;
   SharedPreferences prefs;
   DBHelper dbHelper;
   RegExp regExp;
@@ -95,25 +101,25 @@ class _AcftPageState extends ConsumerState<AcftPage> {
   final _mdlController = new TextEditingController();
   final _sptController = new TextEditingController();
   final _hrpController = new TextEditingController();
-  final _sdcMinController = new TextEditingController();
-  final _sdcSecController = new TextEditingController();
-  final _plankMinController = new TextEditingController();
-  final _plankSecController = new TextEditingController();
-  final _runMinController = new TextEditingController();
-  final _runSecController = new TextEditingController();
+  final _sdcMinsController = new TextEditingController();
+  final _sdcSecsController = new TextEditingController();
+  final _plankMinsController = new TextEditingController();
+  final _plankSecsController = new TextEditingController();
+  final _runMinsController = new TextEditingController();
+  final _runSecsController = new TextEditingController();
 
   final _ageFocus = FocusNode();
   final _mdlFocus = FocusNode();
   final _sptFocus = FocusNode();
   final _hrpFocus = FocusNode();
-  final _sdcFocus = FocusNode();
-  final _sdcSecFocus = FocusNode();
-  final _plkFocus = FocusNode();
-  final _plkSecFocus = FocusNode();
-  final _runFocus = FocusNode();
-  final _runSecFocus = FocusNode();
+  final _sdcMinsFocus = FocusNode();
+  final _sdcSecsFocus = FocusNode();
+  final _plkMinsFocus = FocusNode();
+  final _plkSecsFocus = FocusNode();
+  final _runMinsFocus = FocusNode();
+  final _runSecsFocus = FocusNode();
 
-  List<String> events = ['Run', 'Walk', 'Bike', 'Swim', 'Row'];
+  List<String> aerobicEvents = ['Run', 'Walk', 'Bike', 'Swim', 'Row'];
   List<String> ageGroups = [
     '17-21',
     '22-26',
@@ -167,54 +173,77 @@ class _AcftPageState extends ConsumerState<AcftPage> {
     ageGroup = '62+';
   }
 
+  void calcAll() {
+    setBenchmarks();
+    mdlScore =
+        getMdlScore(mdlRaw, ageGroups.indexOf(ageGroup) + 1, gender == 'Male');
+    sptScore =
+        getSptScore(sptRaw, ageGroups.indexOf(ageGroup) + 1, gender == 'Male');
+    hrpScore =
+        getHrpScore(hrpRaw, ageGroups.indexOf(ageGroup) + 1, gender == 'Male');
+    sdcScore = getSdcScore(getTimeAsInt(sdcMins, sdcSecs),
+        ageGroups.indexOf(ageGroup) + 1, gender == 'Male');
+    plankScore = getPlkScore(getTimeAsInt(plankMins, plankSecs),
+        ageGroups.indexOf(ageGroup) + 1, gender == 'Male');
+    calcRunScore();
+    calcTotal();
+  }
+
   void setBenchmarks() {
-    mdlBMs = getMdlBenchmarks(ageGroups.indexOf(ageGroup), gender == "Male");
-    sptBMs = getSptBenchmarks(ageGroups.indexOf(ageGroup), gender == "Male");
-    hrpBMs = getHrpBenchmarks(ageGroups.indexOf(ageGroup), gender == "Male");
-    sdcBMs = getSdcBenchmarks(ageGroups.indexOf(ageGroup), gender == "Male");
-    plkBMs = getPlkBenchmarks(ageGroups.indexOf(ageGroup), gender == "Male");
-    runBMs = get2mrBenchmarks(ageGroups.indexOf(ageGroup), gender == "Male");
-    altBMs = getAltBenchmarks(ageGroups.indexOf(ageGroup), gender == "Male");
+    mdlBenchmarks =
+        getMdlBenchmarks(ageGroups.indexOf(ageGroup), gender == "Male");
+    sptBenchmarks =
+        getSptBenchmarks(ageGroups.indexOf(ageGroup), gender == "Male");
+    hrpBenchmarks =
+        getHrpBenchmarks(ageGroups.indexOf(ageGroup), gender == "Male");
+    sdcBenchmarks =
+        getSdcBenchmarks(ageGroups.indexOf(ageGroup), gender == "Male");
+    plkBenchmarks =
+        getPlkBenchmarks(ageGroups.indexOf(ageGroup), gender == "Male");
+    runBenchmarks =
+        get2mrBenchmarks(ageGroups.indexOf(ageGroup), gender == "Male");
+    altBenchmarks =
+        getAltBenchmarks(ageGroups.indexOf(ageGroup), gender == "Male");
 
-    mdlMin = mdlBMs[0];
-    mdl90 = mdlBMs[1];
-    mdlMax = mdlBMs[2];
-    sptMin = sptBMs[0];
-    spt90 = sptBMs[1];
-    sptMax = sptBMs[2];
-    hrpMin = hrpBMs[0];
-    hrp90 = hrpBMs[1];
-    hrpMax = hrpBMs[2];
-    sdcMin = sdcBMs[0];
-    sdc90 = sdcBMs[1];
-    sdcMax = sdcBMs[2];
-    plkMin = plkBMs[0];
-    plk90 = plkBMs[1];
-    plkMax = plkBMs[2];
+    mdlMinimum = mdlBenchmarks[0];
+    mdl90 = mdlBenchmarks[1];
+    mdlMax = mdlBenchmarks[2];
+    sptMinimum = sptBenchmarks[0];
+    spt90 = sptBenchmarks[1];
+    sptMax = sptBenchmarks[2];
+    hrpMinimum = hrpBenchmarks[0];
+    hrp90 = hrpBenchmarks[1];
+    hrpMax = hrpBenchmarks[2];
+    sdcMinimum = sdcBenchmarks[0];
+    sdc90 = sdcBenchmarks[1];
+    sdcMax = sdcBenchmarks[2];
+    plkMinimum = plkBenchmarks[0];
+    plk90 = plkBenchmarks[1];
+    plkMax = plkBenchmarks[2];
 
-    switch (event) {
+    switch (aerobicEvent) {
       case "Run":
-        runMin = runBMs[0];
-        run90 = runBMs[1];
-        runMax = runBMs[2];
+        runMinimum = runBenchmarks[0];
+        run90 = runBenchmarks[1];
+        runMax = runBenchmarks[2];
         break;
       case "Walk":
-        runMin = altBMs[0];
+        runMinimum = altBenchmarks[0];
         run90 = '-';
         runMax = '-';
         break;
       case "Bike":
-        runMin = altBMs[1];
+        runMinimum = altBenchmarks[1];
         run90 = '-';
         runMax = '-';
         break;
       case "Swim":
-        runMin = altBMs[2];
+        runMinimum = altBenchmarks[2];
         run90 = '-';
         runMax = '-';
         break;
       case "Row":
-        runMin = altBMs[2];
+        runMinimum = altBenchmarks[2];
         run90 = '-';
         runMax = '-';
         break;
@@ -222,19 +251,19 @@ class _AcftPageState extends ConsumerState<AcftPage> {
     setState(() {});
   }
 
-  int getIntTime(int mins, int secs) {
+  int getTimeAsInt(int mins, int secs) {
     String secString =
         secs.toString().length == 2 ? secs.toString() : '0' + secs.toString();
     return int.tryParse(mins.toString() + secString) ?? 0;
   }
 
   void calcRunScore() {
-    int time = getIntTime(runMins, runSecs);
-    if (event == 'Run') {
+    int time = getTimeAsInt(runMins, runSecs);
+    if (aerobicEvent == 'Run') {
       runScore =
           get2mrScore(time, ageGroups.indexOf(ageGroup) + 1, gender == 'Male');
     } else {
-      int min = int.tryParse(runMin.replaceRange(2, 3, "")) ?? 0;
+      int min = int.tryParse(runMinimum.replaceRange(2, 3, "")) ?? 0;
       if (time <= min) {
         runScore = 60;
       } else {
@@ -253,7 +282,7 @@ class _AcftPageState extends ConsumerState<AcftPage> {
       plkPass = plankScore >= 60;
       runPass = runScore >= 60;
 
-      if (event != 'Run') {
+      if (aerobicEvent != 'Run') {
         runPass = runScore == 60;
       }
       totalPass =
@@ -347,23 +376,23 @@ class _AcftPageState extends ConsumerState<AcftPage> {
     _mdlController.dispose();
     _sptController.dispose();
     _hrpController.dispose();
-    _sdcMinController.dispose();
-    _sdcSecController.dispose();
-    _plankMinController.dispose();
-    _plankSecController.dispose();
-    _runMinController.dispose();
-    _runSecController.dispose();
+    _sdcMinsController.dispose();
+    _sdcSecsController.dispose();
+    _plankMinsController.dispose();
+    _plankSecsController.dispose();
+    _runMinsController.dispose();
+    _runSecsController.dispose();
 
     _ageFocus.dispose();
     _mdlFocus.dispose();
     _sptFocus.dispose();
     _hrpFocus.dispose();
-    _sdcFocus.dispose();
-    _sdcSecFocus.dispose();
-    _plkFocus.dispose();
-    _plkSecFocus.dispose();
-    _runFocus.dispose();
-    _runSecFocus.dispose();
+    _sdcMinsFocus.dispose();
+    _sdcSecsFocus.dispose();
+    _plkMinsFocus.dispose();
+    _plkSecsFocus.dispose();
+    _runMinsFocus.dispose();
+    _runSecsFocus.dispose();
   }
 
   @override
@@ -384,12 +413,12 @@ class _AcftPageState extends ConsumerState<AcftPage> {
     _mdlController.text = mdlRaw.toString();
     _sptController.text = sptRaw.toString();
     _hrpController.text = hrpRaw.toString();
-    _sdcMinController.text = sdcMins.toString();
-    _sdcSecController.text = sdcSecs.toString();
-    _plankMinController.text = plankMins.toString();
-    _plankSecController.text = plankSecs.toString();
-    _runMinController.text = runMins.toString();
-    _runSecController.text = runSecs.toString();
+    _sdcMinsController.text = sdcMins.toString();
+    _sdcSecsController.text = sdcSecs.toString();
+    _plankMinsController.text = plankMins.toString();
+    _plankSecsController.text = plankSecs.toString();
+    _runMinsController.text = runMins.toString();
+    _runSecsController.text = runSecs.toString();
 
     _ageFocus.addListener(() {
       if (_ageFocus.hasFocus) {
@@ -415,60 +444,60 @@ class _AcftPageState extends ConsumerState<AcftPage> {
             baseOffset: 0, extentOffset: _hrpController.text.length);
       }
     });
-    _sdcFocus.addListener(() {
-      if (_sdcFocus.hasFocus) {
-        _sdcMinController.selection = TextSelection(
-            baseOffset: 0, extentOffset: _sdcMinController.text.length);
+    _sdcMinsFocus.addListener(() {
+      if (_sdcMinsFocus.hasFocus) {
+        _sdcMinsController.selection = TextSelection(
+            baseOffset: 0, extentOffset: _sdcMinsController.text.length);
       }
     });
-    _sdcSecFocus.addListener(() {
-      if (_sdcSecFocus.hasFocus) {
-        _sdcSecController.selection = TextSelection(
-            baseOffset: 0, extentOffset: _sdcSecController.text.length);
+    _sdcSecsFocus.addListener(() {
+      if (_sdcSecsFocus.hasFocus) {
+        _sdcSecsController.selection = TextSelection(
+            baseOffset: 0, extentOffset: _sdcSecsController.text.length);
       }
     });
-    _plkFocus.addListener(() {
-      if (_plkFocus.hasFocus) {
-        _plankMinController.selection = TextSelection(
-            baseOffset: 0, extentOffset: _plankMinController.text.length);
+    _plkMinsFocus.addListener(() {
+      if (_plkMinsFocus.hasFocus) {
+        _plankMinsController.selection = TextSelection(
+            baseOffset: 0, extentOffset: _plankMinsController.text.length);
       }
     });
-    _plkSecFocus.addListener(() {
-      if (_plkSecFocus.hasFocus) {
-        _plankSecController.selection = TextSelection(
-            baseOffset: 0, extentOffset: _plankSecController.text.length);
+    _plkSecsFocus.addListener(() {
+      if (_plkSecsFocus.hasFocus) {
+        _plankSecsController.selection = TextSelection(
+            baseOffset: 0, extentOffset: _plankSecsController.text.length);
       }
     });
-    _runFocus.addListener(() {
-      if (_runFocus.hasFocus) {
-        _runMinController.selection = TextSelection(
-            baseOffset: 0, extentOffset: _runMinController.text.length);
+    _runMinsFocus.addListener(() {
+      if (_runMinsFocus.hasFocus) {
+        _runMinsController.selection = TextSelection(
+            baseOffset: 0, extentOffset: _runMinsController.text.length);
       }
     });
-    _runSecFocus.addListener(() {
-      if (_runSecFocus.hasFocus) {
-        _runSecController.selection = TextSelection(
-            baseOffset: 0, extentOffset: (_runSecController).text.length);
+    _runSecsFocus.addListener(() {
+      if (_runSecsFocus.hasFocus) {
+        _runSecsController.selection = TextSelection(
+            baseOffset: 0, extentOffset: (_runSecsController).text.length);
       }
     });
 
-    ageValid = true;
-    mdlValid = true;
-    sptValid = true;
-    hrpValid = true;
-    sdcMinValid = true;
-    sdcSecValid = true;
-    plankMinsValid = true;
-    plankSecsValid = true;
-    runMinValid = true;
-    runSecValid = true;
+    isAgeValid = true;
+    isMdlValid = true;
+    isSptValid = true;
+    isHrpValid = true;
+    isSdcMinsValid = true;
+    isSdcSecsValid = true;
+    isPlankMinsValid = true;
+    isPlankSecsValid = true;
+    isRunMinsValid = true;
+    isRunSecsValid = true;
 
     prefs = ref.read(sharedPreferencesProvider);
 
     if (prefs.getString('acft_event') != null) {
-      event = prefs.getString('acft_event');
+      aerobicEvent = prefs.getString('acft_event');
     } else {
-      event = 'Run';
+      aerobicEvent = 'Run';
     }
     if (prefs.getString('gender') != null) {
       gender = prefs.getString('gender');
@@ -484,19 +513,7 @@ class _AcftPageState extends ConsumerState<AcftPage> {
 
     _ageController.text = age.toString();
 
-    setBenchmarks();
-    mdlScore =
-        getMdlScore(mdlRaw, ageGroups.indexOf(ageGroup) + 1, gender == 'Male');
-    sptScore =
-        getSptScore(sptRaw, ageGroups.indexOf(ageGroup) + 1, gender == 'Male');
-    hrpScore =
-        getHrpScore(hrpRaw, ageGroups.indexOf(ageGroup) + 1, gender == 'Male');
-    sdcScore = getSdcScore(getIntTime(sdcMins, sdcSecs),
-        ageGroups.indexOf(ageGroup) + 1, gender == 'Male');
-    plankScore = getPlkScore(getIntTime(plankMins, plankSecs),
-        ageGroups.indexOf(ageGroup) + 1, gender == 'Male');
-    calcRunScore();
-    calcTotal();
+    calcAll();
 
     regExp = new RegExp(r'^\d{4}(0[1-9]|1[012])(0[1-9]|[12][0-9]|3[01])$');
   }
@@ -522,19 +539,7 @@ class _AcftPageState extends ConsumerState<AcftPage> {
                   setState(() {
                     FocusScope.of(context).unfocus();
                     gender = value;
-                    setBenchmarks();
-                    mdlScore = getMdlScore(mdlRaw,
-                        ageGroups.indexOf(ageGroup) + 1, gender == 'Male');
-                    sptScore = getSptScore(sptRaw,
-                        ageGroups.indexOf(ageGroup) + 1, gender == 'Male');
-                    hrpScore = getHrpScore(hrpRaw,
-                        ageGroups.indexOf(ageGroup) + 1, gender == 'Male');
-                    sdcScore = getSdcScore(getIntTime(sdcMins, sdcSecs),
-                        ageGroups.indexOf(ageGroup) + 1, gender == 'Male');
-                    plankScore = getPlkScore(getIntTime(plankMins, plankSecs),
-                        ageGroups.indexOf(ageGroup) + 1, gender == 'Male');
-                    calcRunScore();
-                    calcTotal();
+                    calcAll();
                   });
                 }),
             Row(
@@ -544,52 +549,27 @@ class _AcftPageState extends ConsumerState<AcftPage> {
                   'Age',
                   style: TextStyle(fontSize: 22.0, fontWeight: FontWeight.bold),
                 ),
-                SizedBox(
-                  width: 70,
-                  child: TextField(
-                    controller: _ageController,
-                    focusNode: _ageFocus,
-                    textAlign: TextAlign.start,
-                    style: const TextStyle(
-                        fontSize: 18, fontWeight: FontWeight.normal),
-                    decoration: InputDecoration(
-                        border: OutlineInputBorder(),
-                        errorText: ageValid ? null : '17-80'),
-                    onChanged: (value) {
-                      int raw = int.tryParse(value) ?? 0;
-                      if (raw > 80) {
-                        ageValid = false;
-                        age = 80;
-                      } else if (raw < 17) {
-                        ageValid = false;
-                        age = 17;
-                      } else {
-                        age = raw;
-                        ageValid = true;
-                      }
-                      setAgeGroup();
-                      setBenchmarks();
-                      mdlScore = getMdlScore(mdlRaw,
-                          ageGroups.indexOf(ageGroup) + 1, gender == 'Male');
-                      sptScore = getSptScore(sptRaw,
-                          ageGroups.indexOf(ageGroup) + 1, gender == 'Male');
-                      hrpScore = getHrpScore(hrpRaw,
-                          ageGroups.indexOf(ageGroup) + 1, gender == 'Male');
-                      sdcScore = getSdcScore(getIntTime(sdcMins, sdcSecs),
-                          ageGroups.indexOf(ageGroup) + 1, gender == 'Male');
-                      plankScore = getPlkScore(getIntTime(plankMins, plankSecs),
-                          ageGroups.indexOf(ageGroup) + 1, gender == 'Male');
-                      calcRunScore();
-                      calcTotal();
-                    },
-                    keyboardType: TextInputType.numberWithOptions(signed: true),
-                    inputFormatters: [
-                      FilteringTextInputFormatter.digitsOnly,
-                    ],
-                    textInputAction: TextInputAction.next,
-                    onEditingComplete: () => _mdlFocus.requestFocus(),
-                  ),
-                )
+                ValueInputField(
+                  controller: _ageController,
+                  focusNode: _ageFocus,
+                  onEditingComplete: () => _mdlFocus.requestFocus(),
+                  errorText: isAgeValid ? null : '17-80',
+                  onChanged: (value) {
+                    int raw = int.tryParse(value) ?? 0;
+                    if (raw > 80) {
+                      isAgeValid = false;
+                      age = 80;
+                    } else if (raw < 17) {
+                      isAgeValid = false;
+                      age = 17;
+                    } else {
+                      age = raw;
+                      isAgeValid = true;
+                    }
+                    setAgeGroup();
+                    calcAll();
+                  },
+                ),
               ],
             ),
             Padding(
@@ -605,22 +585,10 @@ class _AcftPageState extends ConsumerState<AcftPage> {
                       } else {
                         age = 17;
                       }
-                      ageValid = true;
+                      isAgeValid = true;
                       setAgeGroup();
                       _ageController.text = age.toString();
-                      setBenchmarks();
-                      mdlScore = getMdlScore(mdlRaw,
-                          ageGroups.indexOf(ageGroup) + 1, gender == 'Male');
-                      sptScore = getSptScore(sptRaw,
-                          ageGroups.indexOf(ageGroup) + 1, gender == 'Male');
-                      hrpScore = getHrpScore(hrpRaw,
-                          ageGroups.indexOf(ageGroup) + 1, gender == 'Male');
-                      sdcScore = getSdcScore(getIntTime(sdcMins, sdcSecs),
-                          ageGroups.indexOf(ageGroup) + 1, gender == 'Male');
-                      plankScore = getPlkScore(getIntTime(plankMins, plankSecs),
-                          ageGroups.indexOf(ageGroup) + 1, gender == 'Male');
-                      calcRunScore();
-                      calcTotal();
+                      calcAll();
                     },
                   ),
                   Expanded(
@@ -632,25 +600,11 @@ class _AcftPageState extends ConsumerState<AcftPage> {
                       divisions: 64,
                       onChanged: (value) {
                         FocusScope.of(context).unfocus();
-                        ageValid = true;
+                        isAgeValid = true;
                         age = value.floor();
                         setAgeGroup();
                         _ageController.text = age.toString();
-                        setBenchmarks();
-                        mdlScore = getMdlScore(mdlRaw,
-                            ageGroups.indexOf(ageGroup) + 1, gender == 'Male');
-                        sptScore = getSptScore(sptRaw,
-                            ageGroups.indexOf(ageGroup) + 1, gender == 'Male');
-                        hrpScore = getHrpScore(hrpRaw,
-                            ageGroups.indexOf(ageGroup) + 1, gender == 'Male');
-                        sdcScore = getSdcScore(getIntTime(sdcMins, sdcSecs),
-                            ageGroups.indexOf(ageGroup) + 1, gender == 'Male');
-                        plankScore = getPlkScore(
-                            getIntTime(plankMins, plankSecs),
-                            ageGroups.indexOf(ageGroup) + 1,
-                            gender == 'Male');
-                        calcRunScore();
-                        calcTotal();
+                        calcAll();
                       },
                     ),
                   ),
@@ -663,22 +617,10 @@ class _AcftPageState extends ConsumerState<AcftPage> {
                       } else {
                         age = 80;
                       }
-                      ageValid = true;
+                      isAgeValid = true;
                       setAgeGroup();
                       _ageController.text = age.toString();
-                      setBenchmarks();
-                      mdlScore = getMdlScore(mdlRaw,
-                          ageGroups.indexOf(ageGroup) + 1, gender == 'Male');
-                      sptScore = getSptScore(sptRaw,
-                          ageGroups.indexOf(ageGroup) + 1, gender == 'Male');
-                      hrpScore = getHrpScore(hrpRaw,
-                          ageGroups.indexOf(ageGroup) + 1, gender == 'Male');
-                      sdcScore = getSdcScore(getIntTime(sdcMins, sdcSecs),
-                          ageGroups.indexOf(ageGroup) + 1, gender == 'Male');
-                      plankScore = getPlkScore(getIntTime(plankMins, plankSecs),
-                          ageGroups.indexOf(ageGroup) + 1, gender == 'Male');
-                      calcRunScore();
-                      calcTotal();
+                      calcAll();
                     },
                   ),
                 ],
@@ -686,12 +628,12 @@ class _AcftPageState extends ConsumerState<AcftPage> {
             ),
             FormattedDropDown(
               label: 'Aerobic Event',
-              value: event,
-              items: events,
+              value: aerobicEvent,
+              items: aerobicEvents,
               onChanged: (value) {
                 setState(() {
                   FocusScope.of(context).unfocus();
-                  event = value;
+                  aerobicEvent = value;
                 });
                 setBenchmarks();
                 calcRunScore();
@@ -708,41 +650,29 @@ class _AcftPageState extends ConsumerState<AcftPage> {
                   'Max Deadlift',
                   style: TextStyle(fontSize: 22.0, fontWeight: FontWeight.bold),
                 ),
-                SizedBox(
+                ValueInputField(
                   width: 70,
-                  child: TextField(
-                    controller: _mdlController,
-                    focusNode: _mdlFocus,
-                    keyboardType: TextInputType.numberWithOptions(signed: true),
-                    inputFormatters: [
-                      FilteringTextInputFormatter.digitsOnly,
-                    ],
-                    textInputAction: TextInputAction.next,
-                    onEditingComplete: () => _sptFocus.requestFocus(),
-                    textAlign: TextAlign.start,
-                    style: const TextStyle(
-                        fontSize: 18, fontWeight: FontWeight.normal),
-                    decoration: InputDecoration(
-                        border: OutlineInputBorder(),
-                        errorText: mdlValid ? null : '60-400'),
-                    onChanged: (value) {
-                      int raw = int.tryParse(value) ?? 0;
-                      if (raw > 400) {
-                        mdlValid = false;
-                        mdlRaw = 400;
-                      } else if (raw < 60) {
-                        mdlValid = false;
-                        mdlRaw = 60;
-                      } else {
-                        mdlRaw = raw;
-                        mdlValid = true;
-                      }
-                      mdlScore = getMdlScore(mdlRaw,
-                          ageGroups.indexOf(ageGroup) + 1, gender == 'Male');
-                      calcTotal();
-                    },
-                  ),
-                )
+                  controller: _mdlController,
+                  focusNode: _mdlFocus,
+                  onEditingComplete: () => _sptFocus.requestFocus(),
+                  errorText: isMdlValid ? null : '60-400',
+                  onChanged: (value) {
+                    int raw = int.tryParse(value) ?? 0;
+                    if (raw > 400) {
+                      isMdlValid = false;
+                      mdlRaw = 400;
+                    } else if (raw < 60) {
+                      isMdlValid = false;
+                      mdlRaw = 60;
+                    } else {
+                      mdlRaw = raw;
+                      isMdlValid = true;
+                    }
+                    mdlScore = getMdlScore(mdlRaw,
+                        ageGroups.indexOf(ageGroup) + 1, gender == 'Male');
+                    calcTotal();
+                  },
+                ),
               ],
             ),
             Padding(
@@ -760,7 +690,7 @@ class _AcftPageState extends ConsumerState<AcftPage> {
                         mdlRaw = 60;
                       }
                       _mdlController.text = mdlRaw.toString();
-                      mdlValid = true;
+                      isMdlValid = true;
                       mdlScore = getMdlScore(mdlRaw,
                           ageGroups.indexOf(ageGroup) + 1, gender == 'Male');
                       calcTotal();
@@ -778,7 +708,7 @@ class _AcftPageState extends ConsumerState<AcftPage> {
                         FocusScope.of(context).unfocus();
                         mdlRaw = value.floor();
                         _mdlController.text = mdlRaw.toString();
-                        mdlValid = true;
+                        isMdlValid = true;
                         mdlScore = getMdlScore(mdlRaw,
                             ageGroups.indexOf(ageGroup) + 1, gender == 'Male');
                         calcTotal();
@@ -797,7 +727,7 @@ class _AcftPageState extends ConsumerState<AcftPage> {
                       _mdlController.text = mdlRaw.toString();
                       mdlScore = getMdlScore(mdlRaw,
                           ageGroups.indexOf(ageGroup) + 1, gender == 'Male');
-                      mdlValid = true;
+                      isMdlValid = true;
                       calcTotal();
                     },
                   ),
@@ -814,42 +744,29 @@ class _AcftPageState extends ConsumerState<AcftPage> {
                   'Standing Power Throw',
                   style: TextStyle(fontSize: 22.0, fontWeight: FontWeight.bold),
                 ),
-                SizedBox(
+                ValueInputField(
                   width: 70,
-                  child: TextField(
-                    controller: _sptController,
-                    focusNode: _sptFocus,
-                    keyboardType: TextInputType.numberWithOptions(
-                        signed: true, decimal: true),
-                    inputFormatters: [
-                      FilteringTextInputFormatter.allow(RegExp(r"[0-9.]")),
-                    ],
-                    textInputAction: TextInputAction.next,
-                    onEditingComplete: () => _hrpFocus.requestFocus(),
-                    textAlign: TextAlign.start,
-                    style: const TextStyle(
-                        fontSize: 18, fontWeight: FontWeight.normal),
-                    decoration: InputDecoration(
-                        border: OutlineInputBorder(),
-                        errorText: sptValid ? null : '3.3-14.0'),
-                    onChanged: (value) {
-                      double raw = double.tryParse(value) ?? 0;
-                      if (raw > 14.0) {
-                        sptValid = false;
-                        sptRaw = 14.0;
-                      } else if (raw < 3.3) {
-                        sptValid = false;
-                        sptRaw = 3.3;
-                      } else {
-                        sptRaw = raw;
-                        sptValid = true;
-                      }
-                      sptScore = getSptScore(sptRaw,
-                          ageGroups.indexOf(ageGroup) + 1, gender == 'Male');
-                      calcTotal();
-                    },
-                  ),
-                )
+                  controller: _sptController,
+                  focusNode: _sptFocus,
+                  onEditingComplete: () => _hrpFocus.requestFocus(),
+                  errorText: isSptValid ? null : '3.3-14.0',
+                  onChanged: (value) {
+                    double raw = double.tryParse(value) ?? 0;
+                    if (raw > 14.0) {
+                      isSptValid = false;
+                      sptRaw = 14.0;
+                    } else if (raw < 3.3) {
+                      isSptValid = false;
+                      sptRaw = 3.3;
+                    } else {
+                      sptRaw = raw;
+                      isSptValid = true;
+                    }
+                    sptScore = getSptScore(sptRaw,
+                        ageGroups.indexOf(ageGroup) + 1, gender == 'Male');
+                    calcTotal();
+                  },
+                ),
               ],
             ),
             Padding(
@@ -868,7 +785,7 @@ class _AcftPageState extends ConsumerState<AcftPage> {
                         sptRaw = 3.3;
                       }
                       _sptController.text = sptRaw.toString();
-                      sptValid = true;
+                      isSptValid = true;
                       sptScore = getSptScore(sptRaw,
                           ageGroups.indexOf(ageGroup) + 1, gender == 'Male');
                       calcTotal();
@@ -886,7 +803,7 @@ class _AcftPageState extends ConsumerState<AcftPage> {
                         FocusScope.of(context).unfocus();
                         sptRaw = (value * 10).round() / 10;
                         _sptController.text = sptRaw.toString();
-                        sptValid = true;
+                        isSptValid = true;
                         sptScore = getSptScore(sptRaw,
                             ageGroups.indexOf(ageGroup) + 1, gender == 'Male');
                         calcTotal();
@@ -905,7 +822,7 @@ class _AcftPageState extends ConsumerState<AcftPage> {
                         sptRaw = 14.0;
                       }
                       _sptController.text = sptRaw.toString();
-                      sptValid = true;
+                      isSptValid = true;
                       sptScore = getSptScore(sptRaw,
                           ageGroups.indexOf(ageGroup) + 1, gender == 'Male');
                       calcTotal();
@@ -924,41 +841,28 @@ class _AcftPageState extends ConsumerState<AcftPage> {
                   'Hand Release Push Ups',
                   style: TextStyle(fontSize: 22.0, fontWeight: FontWeight.bold),
                 ),
-                SizedBox(
-                  width: 70,
-                  child: TextField(
-                    controller: _hrpController,
-                    focusNode: _hrpFocus,
-                    keyboardType: TextInputType.numberWithOptions(signed: true),
-                    inputFormatters: [
-                      FilteringTextInputFormatter.digitsOnly,
-                    ],
-                    textInputAction: TextInputAction.next,
-                    onEditingComplete: () => _sdcFocus.requestFocus(),
-                    textAlign: TextAlign.start,
-                    style:
-                        TextStyle(fontSize: 18, fontWeight: FontWeight.normal),
-                    decoration: InputDecoration(
-                        border: OutlineInputBorder(),
-                        errorText: hrpValid ? null : '0-80'),
-                    onChanged: (value) {
-                      int raw = int.tryParse(value) ?? -1;
-                      if (raw > 80) {
-                        hrpValid = false;
-                        hrpRaw = 80;
-                      } else if (raw < 0) {
-                        hrpValid = false;
-                        hrpRaw = 0;
-                      } else {
-                        hrpRaw = raw;
-                        hrpValid = true;
-                      }
-                      hrpScore = getHrpScore(hrpRaw,
-                          ageGroups.indexOf(ageGroup) + 1, gender == 'Male');
-                      calcTotal();
-                    },
-                  ),
-                )
+                ValueInputField(
+                  controller: _hrpController,
+                  focusNode: _hrpFocus,
+                  onEditingComplete: () => _sdcMinsFocus.requestFocus(),
+                  errorText: isHrpValid ? null : '0-80',
+                  onChanged: (value) {
+                    int raw = int.tryParse(value) ?? -1;
+                    if (raw > 80) {
+                      isHrpValid = false;
+                      hrpRaw = 80;
+                    } else if (raw < 0) {
+                      isHrpValid = false;
+                      hrpRaw = 0;
+                    } else {
+                      hrpRaw = raw;
+                      isHrpValid = true;
+                    }
+                    hrpScore = getHrpScore(hrpRaw,
+                        ageGroups.indexOf(ageGroup) + 1, gender == 'Male');
+                    calcTotal();
+                  },
+                ),
               ],
             ),
             Padding(
@@ -975,7 +879,7 @@ class _AcftPageState extends ConsumerState<AcftPage> {
                         hrpRaw = 0;
                       }
                       _hrpController.text = hrpRaw.toString();
-                      hrpValid = true;
+                      isHrpValid = true;
                       hrpScore = getHrpScore(hrpRaw,
                           ageGroups.indexOf(ageGroup) + 1, gender == 'Male');
                       calcTotal();
@@ -993,7 +897,7 @@ class _AcftPageState extends ConsumerState<AcftPage> {
                         FocusScope.of(context).unfocus();
                         hrpRaw = value.floor();
                         _hrpController.text = hrpRaw.toString();
-                        hrpValid = true;
+                        isHrpValid = true;
                         hrpScore = getHrpScore(hrpRaw,
                             ageGroups.indexOf(ageGroup) + 1, gender == 'Male');
                         calcTotal();
@@ -1010,7 +914,7 @@ class _AcftPageState extends ConsumerState<AcftPage> {
                         hrpRaw = 80;
                       }
                       _hrpController.text = hrpRaw.toString();
-                      hrpValid = true;
+                      isHrpValid = true;
                       hrpScore = getHrpScore(hrpRaw,
                           ageGroups.indexOf(ageGroup) + 1, gender == 'Male');
                       calcTotal();
@@ -1031,44 +935,28 @@ class _AcftPageState extends ConsumerState<AcftPage> {
                 ),
                 Row(
                   children: <Widget>[
-                    SizedBox(
-                      width: 60,
-                      child: TextField(
-                        controller: _sdcMinController,
-                        focusNode: _sdcFocus,
-                        keyboardType:
-                            TextInputType.numberWithOptions(signed: true),
-                        inputFormatters: [
-                          FilteringTextInputFormatter.digitsOnly,
-                        ],
-                        textInputAction: TextInputAction.next,
-                        onEditingComplete: () =>
-                            FocusScope.of(context).nextFocus(),
-                        textAlign: TextAlign.start,
-                        style: TextStyle(
-                            fontSize: 18, fontWeight: FontWeight.normal),
-                        decoration: InputDecoration(
-                            border: OutlineInputBorder(),
-                            errorText: sdcMinValid ? null : '0-5'),
-                        onChanged: (value) {
-                          int raw = int.tryParse(value) ?? -1;
-                          if (raw < 0) {
-                            sdcMinValid = false;
-                            sdcMins = 0;
-                          } else if (raw > 5) {
-                            sdcMinValid = false;
-                            sdcMins = 5;
-                          } else {
-                            sdcMinValid = true;
-                            sdcMins = raw;
-                          }
-                          sdcScore = getSdcScore(
-                              getIntTime(sdcMins, sdcSecs),
-                              ageGroups.indexOf(ageGroup) + 1,
-                              gender == 'Male');
-                          calcTotal();
-                        },
-                      ),
+                    ValueInputField(
+                      controller: _sdcMinsController,
+                      focusNode: _sdcMinsFocus,
+                      onEditingComplete: () =>
+                          FocusScope.of(context).nextFocus(),
+                      errorText: isSdcMinsValid ? null : '0-5',
+                      onChanged: (value) {
+                        int raw = int.tryParse(value) ?? -1;
+                        if (raw < 0) {
+                          isSdcMinsValid = false;
+                          sdcMins = 0;
+                        } else if (raw > 5) {
+                          isSdcMinsValid = false;
+                          sdcMins = 5;
+                        } else {
+                          isSdcMinsValid = true;
+                          sdcMins = raw;
+                        }
+                        sdcScore = getSdcScore(getTimeAsInt(sdcMins, sdcSecs),
+                            ageGroups.indexOf(ageGroup) + 1, gender == 'Male');
+                        calcTotal();
+                      },
                     ),
                     const Padding(
                       padding: EdgeInsets.fromLTRB(4.0, 0.0, 4.0, 8.0),
@@ -1078,44 +966,28 @@ class _AcftPageState extends ConsumerState<AcftPage> {
                         textAlign: TextAlign.center,
                       ),
                     ),
-                    SizedBox(
-                      width: 60,
-                      child: TextField(
-                        controller: _sdcSecController,
-                        focusNode: _sdcSecFocus,
-                        keyboardType:
-                            TextInputType.numberWithOptions(signed: true),
-                        inputFormatters: [
-                          FilteringTextInputFormatter.digitsOnly,
-                        ],
-                        textInputAction: TextInputAction.next,
-                        onEditingComplete: () => _plkFocus.requestFocus(),
-                        textAlign: TextAlign.start,
-                        style: const TextStyle(
-                            fontSize: 18, fontWeight: FontWeight.normal),
-                        decoration: InputDecoration(
-                            border: OutlineInputBorder(),
-                            errorText: sdcSecValid ? null : '0-59'),
-                        onChanged: (value) {
-                          int raw = int.tryParse(value) ?? -1;
-                          if (raw > 59) {
-                            sdcSecValid = false;
-                            sdcSecs = 59;
-                          } else if (raw < 0) {
-                            sdcSecValid = false;
-                            sdcSecs = 0;
-                          } else {
-                            sdcSecValid = true;
-                            sdcSecs = raw;
-                          }
-                          sdcScore = getSdcScore(
-                              getIntTime(sdcMins, sdcSecs),
-                              ageGroups.indexOf(ageGroup) + 1,
-                              gender == 'Male');
-                          calcTotal();
-                        },
-                      ),
-                    )
+                    ValueInputField(
+                      controller: _sdcSecsController,
+                      focusNode: _sdcSecsFocus,
+                      onEditingComplete: () => _plkMinsFocus.requestFocus(),
+                      errorText: isSdcSecsValid ? null : '0-59',
+                      onChanged: (value) {
+                        int raw = int.tryParse(value) ?? -1;
+                        if (raw > 59) {
+                          isSdcSecsValid = false;
+                          sdcSecs = 59;
+                        } else if (raw < 0) {
+                          isSdcSecsValid = false;
+                          sdcSecs = 0;
+                        } else {
+                          isSdcSecsValid = true;
+                          sdcSecs = raw;
+                        }
+                        sdcScore = getSdcScore(getTimeAsInt(sdcMins, sdcSecs),
+                            ageGroups.indexOf(ageGroup) + 1, gender == 'Male');
+                        calcTotal();
+                      },
+                    ),
                   ],
                 ),
               ],
@@ -1133,9 +1005,9 @@ class _AcftPageState extends ConsumerState<AcftPage> {
                       } else {
                         sdcMins = 0;
                       }
-                      _sdcMinController.text = sdcMins.toString();
-                      sdcMinValid = true;
-                      sdcScore = getSdcScore(getIntTime(sdcMins, sdcSecs),
+                      _sdcMinsController.text = sdcMins.toString();
+                      isSdcMinsValid = true;
+                      sdcScore = getSdcScore(getTimeAsInt(sdcMins, sdcSecs),
                           ageGroups.indexOf(ageGroup) + 1, gender == 'Male');
                       calcTotal();
                     },
@@ -1151,9 +1023,9 @@ class _AcftPageState extends ConsumerState<AcftPage> {
                       onChanged: (value) {
                         FocusScope.of(context).unfocus();
                         sdcMins = value.floor();
-                        _sdcMinController.text = sdcMins.toString();
-                        sdcMinValid = true;
-                        sdcScore = getSdcScore(getIntTime(sdcMins, sdcSecs),
+                        _sdcMinsController.text = sdcMins.toString();
+                        isSdcMinsValid = true;
+                        sdcScore = getSdcScore(getTimeAsInt(sdcMins, sdcSecs),
                             ageGroups.indexOf(ageGroup) + 1, gender == 'Male');
                         calcTotal();
                       },
@@ -1168,9 +1040,9 @@ class _AcftPageState extends ConsumerState<AcftPage> {
                       } else {
                         sdcMins = 5;
                       }
-                      _sdcMinController.text = sdcMins.toString();
-                      sdcMinValid = true;
-                      sdcScore = getSdcScore(getIntTime(sdcMins, sdcSecs),
+                      _sdcMinsController.text = sdcMins.toString();
+                      isSdcMinsValid = true;
+                      sdcScore = getSdcScore(getTimeAsInt(sdcMins, sdcSecs),
                           ageGroups.indexOf(ageGroup) + 1, gender == 'Male');
                       calcTotal();
                     },
@@ -1191,9 +1063,9 @@ class _AcftPageState extends ConsumerState<AcftPage> {
                       } else {
                         sdcSecs = 0;
                       }
-                      _sdcSecController.text = sdcSecs.toString();
-                      sdcSecValid = true;
-                      sdcScore = getSdcScore(getIntTime(sdcMins, sdcSecs),
+                      _sdcSecsController.text = sdcSecs.toString();
+                      isSdcSecsValid = true;
+                      sdcScore = getSdcScore(getTimeAsInt(sdcMins, sdcSecs),
                           ageGroups.indexOf(ageGroup) + 1, gender == 'Male');
                       calcTotal();
                     },
@@ -1209,9 +1081,9 @@ class _AcftPageState extends ConsumerState<AcftPage> {
                       onChanged: (value) {
                         FocusScope.of(context).unfocus();
                         sdcSecs = value.floor();
-                        _sdcSecController.text = sdcSecs.toString();
-                        sdcSecValid = true;
-                        sdcScore = getSdcScore(getIntTime(sdcMins, sdcSecs),
+                        _sdcSecsController.text = sdcSecs.toString();
+                        isSdcSecsValid = true;
+                        sdcScore = getSdcScore(getTimeAsInt(sdcMins, sdcSecs),
                             ageGroups.indexOf(ageGroup) + 1, gender == 'Male');
                         calcTotal();
                       },
@@ -1226,9 +1098,9 @@ class _AcftPageState extends ConsumerState<AcftPage> {
                       } else {
                         sdcSecs = 59;
                       }
-                      _sdcSecController.text = sdcSecs.toString();
-                      sdcSecValid = true;
-                      sdcScore = getSdcScore(getIntTime(sdcMins, sdcSecs),
+                      _sdcSecsController.text = sdcSecs.toString();
+                      isSdcSecsValid = true;
+                      sdcScore = getSdcScore(getTimeAsInt(sdcMins, sdcSecs),
                           ageGroups.indexOf(ageGroup) + 1, gender == 'Male');
                       calcTotal();
                     },
@@ -1248,44 +1120,30 @@ class _AcftPageState extends ConsumerState<AcftPage> {
                 ),
                 Row(
                   children: <Widget>[
-                    SizedBox(
-                      width: 60,
-                      child: TextField(
-                        controller: _plankMinController,
-                        focusNode: _plkFocus,
-                        keyboardType:
-                            TextInputType.numberWithOptions(signed: true),
-                        inputFormatters: [
-                          FilteringTextInputFormatter.digitsOnly,
-                        ],
-                        textInputAction: TextInputAction.next,
-                        onEditingComplete: () =>
-                            FocusScope.of(context).nextFocus(),
-                        textAlign: TextAlign.start,
-                        style: const TextStyle(
-                            fontSize: 18, fontWeight: FontWeight.normal),
-                        decoration: InputDecoration(
-                            border: OutlineInputBorder(),
-                            errorText: plankMinsValid ? null : '0-4'),
-                        onChanged: (value) {
-                          int raw = int.tryParse(value) ?? -1;
-                          if (raw < 0) {
-                            plankMinsValid = false;
-                            plankMins = 0;
-                          } else if (raw > 4) {
-                            plankMinsValid = false;
-                            plankMins = 4;
-                          } else {
-                            plankMinsValid = true;
-                            plankMins = raw;
-                          }
-                          plankScore = getPlkScore(
-                              getIntTime(plankMins, plankSecs),
-                              ageGroups.indexOf(ageGroup) + 1,
-                              gender == 'Male');
-                          calcTotal();
-                        },
-                      ),
+                    ValueInputField(
+                      controller: _plankMinsController,
+                      focusNode: _plkMinsFocus,
+                      onEditingComplete: () =>
+                          FocusScope.of(context).nextFocus(),
+                      errorText: isPlankMinsValid ? null : '0-4',
+                      onChanged: (value) {
+                        int raw = int.tryParse(value) ?? -1;
+                        if (raw < 0) {
+                          isPlankMinsValid = false;
+                          plankMins = 0;
+                        } else if (raw > 4) {
+                          isPlankMinsValid = false;
+                          plankMins = 4;
+                        } else {
+                          isPlankMinsValid = true;
+                          plankMins = raw;
+                        }
+                        plankScore = getPlkScore(
+                            getTimeAsInt(plankMins, plankSecs),
+                            ageGroups.indexOf(ageGroup) + 1,
+                            gender == 'Male');
+                        calcTotal();
+                      },
                     ),
                     const Padding(
                       padding: EdgeInsets.fromLTRB(4.0, 0.0, 4.0, 8.0),
@@ -1295,44 +1153,30 @@ class _AcftPageState extends ConsumerState<AcftPage> {
                         textAlign: TextAlign.center,
                       ),
                     ),
-                    SizedBox(
-                      width: 60,
-                      child: TextField(
-                        controller: _plankSecController,
-                        focusNode: _plkSecFocus,
-                        keyboardType:
-                            TextInputType.numberWithOptions(signed: true),
-                        inputFormatters: [
-                          FilteringTextInputFormatter.digitsOnly,
-                        ],
-                        textInputAction: TextInputAction.next,
-                        onEditingComplete: () => _runFocus.requestFocus(),
-                        textAlign: TextAlign.start,
-                        style: const TextStyle(
-                            fontSize: 18, fontWeight: FontWeight.normal),
-                        decoration: InputDecoration(
-                            border: OutlineInputBorder(),
-                            errorText: plankSecsValid ? null : '0-59'),
-                        onChanged: (value) {
-                          int raw = int.tryParse(value) ?? -1;
-                          if (raw > 59) {
-                            plankSecsValid = false;
-                            plankSecs = 59;
-                          } else if (raw < 0) {
-                            plankSecsValid = false;
-                            plankSecs = 0;
-                          } else {
-                            plankSecsValid = true;
-                            plankSecs = raw;
-                          }
-                          plankScore = getPlkScore(
-                              getIntTime(plankMins, plankSecs),
-                              ageGroups.indexOf(ageGroup) + 1,
-                              gender == 'Male');
-                          calcTotal();
-                        },
-                      ),
-                    )
+                    ValueInputField(
+                      controller: _plankSecsController,
+                      focusNode: _plkSecsFocus,
+                      onEditingComplete: () => _runMinsFocus.requestFocus(),
+                      errorText: isPlankSecsValid ? null : '0-59',
+                      onChanged: (value) {
+                        int raw = int.tryParse(value) ?? -1;
+                        if (raw > 59) {
+                          isPlankSecsValid = false;
+                          plankSecs = 59;
+                        } else if (raw < 0) {
+                          isPlankSecsValid = false;
+                          plankSecs = 0;
+                        } else {
+                          isPlankSecsValid = true;
+                          plankSecs = raw;
+                        }
+                        plankScore = getPlkScore(
+                            getTimeAsInt(plankMins, plankSecs),
+                            ageGroups.indexOf(ageGroup) + 1,
+                            gender == 'Male');
+                        calcTotal();
+                      },
+                    ),
                   ],
                 ),
               ],
@@ -1350,10 +1194,12 @@ class _AcftPageState extends ConsumerState<AcftPage> {
                       } else {
                         plankMins = 0;
                       }
-                      _plankMinController.text = plankMins.toString();
-                      plankMinsValid = true;
-                      plankScore = getPlkScore(getIntTime(plankMins, plankSecs),
-                          ageGroups.indexOf(ageGroup) + 1, gender == 'Male');
+                      _plankMinsController.text = plankMins.toString();
+                      isPlankMinsValid = true;
+                      plankScore = getPlkScore(
+                          getTimeAsInt(plankMins, plankSecs),
+                          ageGroups.indexOf(ageGroup) + 1,
+                          gender == 'Male');
                       calcTotal();
                     },
                   ),
@@ -1368,10 +1214,10 @@ class _AcftPageState extends ConsumerState<AcftPage> {
                       onChanged: (value) {
                         FocusScope.of(context).unfocus();
                         plankMins = value.floor();
-                        _plankMinController.text = plankMins.toString();
-                        plankMinsValid = true;
+                        _plankMinsController.text = plankMins.toString();
+                        isPlankMinsValid = true;
                         plankScore = getPlkScore(
-                            getIntTime(plankMins, plankSecs),
+                            getTimeAsInt(plankMins, plankSecs),
                             ageGroups.indexOf(ageGroup) + 1,
                             gender == 'Male');
                         calcTotal();
@@ -1387,10 +1233,12 @@ class _AcftPageState extends ConsumerState<AcftPage> {
                       } else {
                         plankMins = 4;
                       }
-                      _plankMinController.text = plankMins.toString();
-                      plankMinsValid = true;
-                      plankScore = getPlkScore(getIntTime(plankMins, plankSecs),
-                          ageGroups.indexOf(ageGroup) + 1, gender == 'Male');
+                      _plankMinsController.text = plankMins.toString();
+                      isPlankMinsValid = true;
+                      plankScore = getPlkScore(
+                          getTimeAsInt(plankMins, plankSecs),
+                          ageGroups.indexOf(ageGroup) + 1,
+                          gender == 'Male');
                       calcTotal();
                     },
                   ),
@@ -1410,10 +1258,12 @@ class _AcftPageState extends ConsumerState<AcftPage> {
                       } else {
                         plankSecs = 0;
                       }
-                      _plankSecController.text = plankSecs.toString();
-                      plankSecsValid = true;
-                      plankScore = getPlkScore(getIntTime(plankMins, plankSecs),
-                          ageGroups.indexOf(ageGroup) + 1, gender == 'Male');
+                      _plankSecsController.text = plankSecs.toString();
+                      isPlankSecsValid = true;
+                      plankScore = getPlkScore(
+                          getTimeAsInt(plankMins, plankSecs),
+                          ageGroups.indexOf(ageGroup) + 1,
+                          gender == 'Male');
                       calcTotal();
                     },
                   ),
@@ -1428,10 +1278,10 @@ class _AcftPageState extends ConsumerState<AcftPage> {
                       onChanged: (value) {
                         FocusScope.of(context).unfocus();
                         plankSecs = value.floor();
-                        _plankSecController.text = plankSecs.toString();
-                        plankSecsValid = true;
+                        _plankSecsController.text = plankSecs.toString();
+                        isPlankSecsValid = true;
                         plankScore = getPlkScore(
-                            getIntTime(plankMins, plankSecs),
+                            getTimeAsInt(plankMins, plankSecs),
                             ageGroups.indexOf(ageGroup) + 1,
                             gender == 'Male');
                         calcTotal();
@@ -1447,10 +1297,12 @@ class _AcftPageState extends ConsumerState<AcftPage> {
                       } else {
                         plankSecs = 59;
                       }
-                      _plankSecController.text = plankSecs.toString();
-                      plankSecsValid = true;
-                      plankScore = getPlkScore(getIntTime(plankMins, plankSecs),
-                          ageGroups.indexOf(ageGroup) + 1, gender == 'Male');
+                      _plankSecsController.text = plankSecs.toString();
+                      isPlankSecsValid = true;
+                      plankScore = getPlkScore(
+                          getTimeAsInt(plankMins, plankSecs),
+                          ageGroups.indexOf(ageGroup) + 1,
+                          gender == 'Male');
                       calcTotal();
                     },
                   ),
@@ -1464,47 +1316,32 @@ class _AcftPageState extends ConsumerState<AcftPage> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
                 Text(
-                  event,
+                  aerobicEvent,
                   style: const TextStyle(
                       fontSize: 22.0, fontWeight: FontWeight.bold),
                 ),
                 Row(
                   children: <Widget>[
-                    SizedBox(
-                      width: 60,
-                      child: TextField(
-                        controller: _runMinController,
-                        focusNode: _runFocus,
-                        keyboardType:
-                            TextInputType.numberWithOptions(signed: true),
-                        inputFormatters: [
-                          FilteringTextInputFormatter.digitsOnly,
-                        ],
-                        textInputAction: TextInputAction.next,
-                        onEditingComplete: () =>
-                            FocusScope.of(context).nextFocus(),
-                        textAlign: TextAlign.start,
-                        style: const TextStyle(
-                            fontSize: 18, fontWeight: FontWeight.normal),
-                        decoration: InputDecoration(
-                            border: OutlineInputBorder(),
-                            errorText: runMinValid ? null : '10-40'),
-                        onChanged: (value) {
-                          int raw = int.tryParse(value) ?? -1;
-                          if (raw < 10) {
-                            runMinValid = false;
-                            runMins = 10;
-                          } else if (raw > 40) {
-                            runMinValid = false;
-                            runMins = 40;
-                          } else {
-                            runMinValid = true;
-                            runMins = raw;
-                          }
-                          calcRunScore();
-                          calcTotal();
-                        },
-                      ),
+                    ValueInputField(
+                      controller: _runMinsController,
+                      focusNode: _runMinsFocus,
+                      onEditingComplete: () => _runSecsFocus.requestFocus(),
+                      errorText: isRunMinsValid ? null : '10-40',
+                      onChanged: (value) {
+                        int raw = int.tryParse(value) ?? -1;
+                        if (raw < 10) {
+                          isRunMinsValid = false;
+                          runMins = 10;
+                        } else if (raw > 40) {
+                          isRunMinsValid = false;
+                          runMins = 40;
+                        } else {
+                          isRunMinsValid = true;
+                          runMins = raw;
+                        }
+                        calcRunScore();
+                        calcTotal();
+                      },
                     ),
                     const Padding(
                       padding: EdgeInsets.fromLTRB(4.0, 0.0, 4.0, 8.0),
@@ -1514,42 +1351,28 @@ class _AcftPageState extends ConsumerState<AcftPage> {
                         textAlign: TextAlign.center,
                       ),
                     ),
-                    SizedBox(
-                      width: 60,
-                      child: TextField(
-                        controller: _runSecController,
-                        focusNode: _runSecFocus,
-                        keyboardType:
-                            TextInputType.numberWithOptions(signed: true),
-                        inputFormatters: [
-                          FilteringTextInputFormatter.digitsOnly,
-                        ],
-                        textInputAction: TextInputAction.done,
-                        onEditingComplete: () =>
-                            FocusScope.of(context).unfocus(),
-                        textAlign: TextAlign.start,
-                        style: const TextStyle(
-                            fontSize: 18, fontWeight: FontWeight.normal),
-                        decoration: InputDecoration(
-                            border: OutlineInputBorder(),
-                            errorText: runSecValid ? null : '0-59'),
-                        onChanged: (value) {
-                          int raw = int.tryParse(value) ?? -1;
-                          if (raw > 59) {
-                            runSecValid = false;
-                            runSecs = 59;
-                          } else if (raw < 0) {
-                            runSecValid = false;
-                            runSecs = 0;
-                          } else {
-                            runSecValid = true;
-                            runSecs = raw;
-                          }
-                          calcRunScore();
-                          calcTotal();
-                        },
-                      ),
-                    )
+                    ValueInputField(
+                      controller: _runSecsController,
+                      focusNode: _runSecsFocus,
+                      textInputAction: TextInputAction.done,
+                      onEditingComplete: () => _runSecsFocus.unfocus(),
+                      errorText: isRunSecsValid ? null : '0-59',
+                      onChanged: (value) {
+                        int raw = int.tryParse(value) ?? -1;
+                        if (raw > 59) {
+                          isRunSecsValid = false;
+                          runSecs = 59;
+                        } else if (raw < 0) {
+                          isRunSecsValid = false;
+                          runSecs = 0;
+                        } else {
+                          isRunSecsValid = true;
+                          runSecs = raw;
+                        }
+                        calcRunScore();
+                        calcTotal();
+                      },
+                    ),
                   ],
                 ),
               ],
@@ -1567,8 +1390,8 @@ class _AcftPageState extends ConsumerState<AcftPage> {
                       } else {
                         runMins = 10;
                       }
-                      _runMinController.text = runMins.toString();
-                      runMinValid = true;
+                      _runMinsController.text = runMins.toString();
+                      isRunMinsValid = true;
                       calcRunScore();
                       calcTotal();
                     },
@@ -1584,8 +1407,8 @@ class _AcftPageState extends ConsumerState<AcftPage> {
                       onChanged: (value) {
                         FocusScope.of(context).unfocus();
                         runMins = value.floor();
-                        _runMinController.text = runMins.toString();
-                        runMinValid = true;
+                        _runMinsController.text = runMins.toString();
+                        isRunMinsValid = true;
                         calcRunScore();
                         calcTotal();
                       },
@@ -1600,8 +1423,8 @@ class _AcftPageState extends ConsumerState<AcftPage> {
                       } else {
                         runMins = 40;
                       }
-                      _runMinController.text = runMins.toString();
-                      runMinValid = true;
+                      _runMinsController.text = runMins.toString();
+                      isRunMinsValid = true;
                       calcRunScore();
                       calcTotal();
                     },
@@ -1622,8 +1445,8 @@ class _AcftPageState extends ConsumerState<AcftPage> {
                       } else {
                         runSecs = 0;
                       }
-                      _runSecController.text = runSecs.toString();
-                      runSecValid = true;
+                      _runSecsController.text = runSecs.toString();
+                      isRunSecsValid = true;
                       calcRunScore();
                       calcTotal();
                     },
@@ -1639,8 +1462,8 @@ class _AcftPageState extends ConsumerState<AcftPage> {
                       onChanged: (value) {
                         FocusScope.of(context).unfocus();
                         runSecs = value.floor();
-                        _runSecController.text = runSecs.toString();
-                        runSecValid = true;
+                        _runSecsController.text = runSecs.toString();
+                        isRunSecsValid = true;
                         calcRunScore();
                         calcTotal();
                       },
@@ -1655,8 +1478,8 @@ class _AcftPageState extends ConsumerState<AcftPage> {
                       } else {
                         runSecs = 59;
                       }
-                      _runSecController.text = runSecs.toString();
-                      runSecValid = true;
+                      _runSecsController.text = runSecs.toString();
+                      isRunSecsValid = true;
                       calcRunScore();
                       calcTotal();
                     },
@@ -1679,31 +1502,26 @@ class _AcftPageState extends ConsumerState<AcftPage> {
                 children: <Widget>[
                   GridBox(
                     title: 'Event',
-                    centered: true,
                     background: primaryColor,
                     textColor: onPrimary,
                   ),
                   GridBox(
                     title: 'Min',
-                    centered: true,
                     background: primaryColor,
                     textColor: onPrimary,
                   ),
                   GridBox(
                     title: '90%',
-                    centered: true,
                     background: primaryColor,
                     textColor: onPrimary,
                   ),
                   GridBox(
                     title: 'Max',
-                    centered: true,
                     background: primaryColor,
                     textColor: onPrimary,
                   ),
                   GridBox(
                     title: 'Score',
-                    centered: true,
                     background: primaryColor,
                     textColor: onPrimary,
                   ),
@@ -1714,20 +1532,16 @@ class _AcftPageState extends ConsumerState<AcftPage> {
                     textColor: onPrimary,
                   ),
                   GridBox(
-                    title: mdlMin,
-                    centered: true,
+                    title: mdlMinimum,
                   ),
                   GridBox(
                     title: mdl90,
-                    centered: true,
                   ),
                   GridBox(
                     title: mdlMax,
-                    centered: true,
                   ),
                   GridBox(
                     title: mdlScore.toString(),
-                    centered: true,
                     background: mdlPass ? backgroundColor : failColor,
                   ),
                   GridBox(
@@ -1737,20 +1551,16 @@ class _AcftPageState extends ConsumerState<AcftPage> {
                     textColor: onPrimary,
                   ),
                   GridBox(
-                    title: sptMin,
-                    centered: true,
+                    title: sptMinimum,
                   ),
                   GridBox(
                     title: spt90,
-                    centered: true,
                   ),
                   GridBox(
                     title: sptMax,
-                    centered: true,
                   ),
                   GridBox(
                     title: sptScore.toString(),
-                    centered: true,
                     background: sptPass ? backgroundColor : failColor,
                   ),
                   GridBox(
@@ -1760,20 +1570,16 @@ class _AcftPageState extends ConsumerState<AcftPage> {
                     textColor: onPrimary,
                   ),
                   GridBox(
-                    title: hrpMin,
-                    centered: true,
+                    title: hrpMinimum,
                   ),
                   GridBox(
                     title: hrp90,
-                    centered: true,
                   ),
                   GridBox(
                     title: hrpMax,
-                    centered: true,
                   ),
                   GridBox(
                     title: hrpScore.toString(),
-                    centered: true,
                     background: hrpPass ? backgroundColor : failColor,
                   ),
                   GridBox(
@@ -1783,20 +1589,16 @@ class _AcftPageState extends ConsumerState<AcftPage> {
                     textColor: onPrimary,
                   ),
                   GridBox(
-                    title: sdcMin,
-                    centered: true,
+                    title: sdcMinimum,
                   ),
                   GridBox(
                     title: sdc90,
-                    centered: true,
                   ),
                   GridBox(
                     title: sdcMax,
-                    centered: true,
                   ),
                   GridBox(
                     title: sdcScore.toString(),
-                    centered: true,
                     background: sdcPass ? backgroundColor : failColor,
                   ),
                   GridBox(
@@ -1806,20 +1608,16 @@ class _AcftPageState extends ConsumerState<AcftPage> {
                     textColor: onPrimary,
                   ),
                   GridBox(
-                    title: plkMin,
-                    centered: true,
+                    title: plkMinimum,
                   ),
                   GridBox(
                     title: plk90,
-                    centered: true,
                   ),
                   GridBox(
                     title: plkMax,
-                    centered: true,
                   ),
                   GridBox(
                     title: plankScore.toString(),
-                    centered: true,
                     background: plkPass ? backgroundColor : failColor,
                   ),
                   GridBox(
@@ -1829,20 +1627,16 @@ class _AcftPageState extends ConsumerState<AcftPage> {
                     textColor: onPrimary,
                   ),
                   GridBox(
-                    title: runMin,
-                    centered: true,
+                    title: runMinimum,
                   ),
                   GridBox(
                     title: run90,
-                    centered: true,
                   ),
                   GridBox(
                     title: runMax,
-                    centered: true,
                   ),
                   GridBox(
                     title: runScore.toString(),
-                    centered: true,
                     background: runPass ? backgroundColor : failColor,
                   ),
                   GridBox(
@@ -1851,21 +1645,11 @@ class _AcftPageState extends ConsumerState<AcftPage> {
                     background: primaryColor,
                     textColor: onPrimary,
                   ),
-                  GridBox(
-                    title: '',
-                    centered: true,
-                  ),
-                  GridBox(
-                    title: '',
-                    centered: true,
-                  ),
-                  GridBox(
-                    title: '',
-                    centered: true,
-                  ),
+                  GridBox(),
+                  GridBox(),
+                  GridBox(),
                   GridBox(
                     title: total.toString(),
-                    centered: true,
                     background: totalPass ? backgroundColor : failColor,
                   ),
                 ],
@@ -1902,13 +1686,13 @@ class _AcftPageState extends ConsumerState<AcftPage> {
                         sptScore: sptScore.toString(),
                         hrpRaw: hrpRaw.toString(),
                         hrpScore: hrpScore.toString(),
-                        sdcRaw: sdcMins.toString() + ':' + sdcSeconds,
+                        sdcRaw: '${sdcMins.toString()}:$sdcSeconds',
                         sdcScore: sdcScore.toString(),
                         plkRaw: '${plankMins.toString()}:$plankSeconds',
                         plkScore: plankScore.toString(),
-                        runRaw: runMins.toString() + ':' + runSeconds,
+                        runRaw: '${runMins.toString()}:$runSeconds',
                         runScore: runScore.toString(),
-                        runEvent: event,
+                        runEvent: aerobicEvent,
                         total: total.toString(),
                         altPass: runPass ? 1 : 0,
                         pass: totalPass ? 1 : 0);

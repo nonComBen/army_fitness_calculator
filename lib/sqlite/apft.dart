@@ -58,12 +58,12 @@ class Apft {
   }
 
   Apft.fromMap(Map<String, dynamic> map) {
-    String newRank = '', newAge = '';
+    String newRank = '', newAge = '22';
     int altGo = 1;
     try {
-      newRank = map['rank'];
-      newAge = map['age'];
-      altGo = map['altPass'];
+      newRank = map['rank'] ?? '';
+      newAge = map['age'] ?? '22';
+      altGo = map['altPass'] ?? 1;
     } catch (e) {
       print('Error: $e');
     }

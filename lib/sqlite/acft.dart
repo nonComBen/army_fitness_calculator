@@ -79,10 +79,10 @@ class Acft {
     String mapRank = '', mapGender = 'Male', mapAge = '22';
     int altGo = 1;
     try {
-      mapRank = map['rank'];
-      mapGender = map['gender'];
-      mapAge = map['age'];
-      altGo = map['altPass'];
+      mapRank = map['rank'] ?? '';
+      mapGender = map['gender'] ?? 'Male';
+      mapAge = map['age'] ?? '22';
+      altGo = map['altPass'] ?? 1;
     } catch (e) {
       print('Error: $e');
     }

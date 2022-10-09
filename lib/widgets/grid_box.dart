@@ -2,7 +2,11 @@ import 'package:flutter/material.dart';
 
 class GridBox extends StatelessWidget {
   const GridBox(
-      {Key key, this.title, this.centered, this.background, this.textColor})
+      {Key key,
+      this.title = '',
+      this.centered = true,
+      this.background,
+      this.textColor})
       : super(key: key);
   final String title;
   final bool centered;

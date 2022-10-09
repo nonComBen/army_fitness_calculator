@@ -64,11 +64,11 @@ class Bodyfat {
   }
 
   Bodyfat.fromMap(Map<String, dynamic> map) {
-    String newRank = '', newAge = '', newHeightDouble = map['height'];
+    String newRank = '', newAge = '22', newHeightDouble = map['height'];
     try {
-      newRank = map['rank'];
-      newAge = map['age'];
-      newHeightDouble = map['heightDouble'];
+      newRank = map['rank'] ?? '';
+      newAge = map['age'] ?? '22';
+      newHeightDouble = map['heightDouble'] ?? map['height'];
     } catch (e) {
       print('Error: $e');
     }
