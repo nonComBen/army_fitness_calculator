@@ -12,6 +12,7 @@ import './widgets/increment_decrement_button.dart';
 import './calculators/bfCalculator.dart';
 import './sqlite/bodyfat.dart';
 import './savedPages/savedBodyfatsPage.dart';
+import 'widgets/value_input_field.dart';
 
 class BodyfatPage extends ConsumerStatefulWidget {
   BodyfatPage(this.isPremium, this.upgradeNeeded);
@@ -23,18 +24,25 @@ class BodyfatPage extends ConsumerStatefulWidget {
 }
 
 class _BodyfatPageState extends ConsumerState<BodyfatPage> {
-  int age, height, weight, percent, min, max, percentMax, overUnder;
-  double heightDouble, neck, waist, hip;
-  String ageGroup, gender;
-  bool bmiPass,
-      bfPass,
-      underWeight,
-      ageValid,
-      heightValid,
-      weightValid,
-      neckValid,
-      waistValid,
-      hipValid;
+  int age = 22,
+      height = 68,
+      weight = 150,
+      bfPercent,
+      weightMin,
+      weightMax,
+      percentMax,
+      overUnder;
+  double heightDouble, neck = 16.0, waist = 34.0, hip = 34.0;
+  String ageGroup, gender = 'Male';
+  bool bmiPass = true,
+      bfPass = true,
+      isUnderWeight = false,
+      isAgeValid = true,
+      isHeightValid = true,
+      isWeightValid = true,
+      isNeckValid = true,
+      isWaistValid = true,
+      isHipValid = true;
   SharedPreferences prefs;
   RegExp regExp;
   DBHelper dbHelper;
@@ -60,25 +68,25 @@ class _BodyfatPageState extends ConsumerState<BodyfatPage> {
     List<int> benchmarks =
         setBfBenchmarks(gender == 'Male', ageGroups.indexOf(ageGroup), height);
     setState(() {
-      min = benchmarks[0];
-      max = benchmarks[1];
+      weightMin = benchmarks[0];
+      weightMax = benchmarks[1];
       percentMax = benchmarks[2];
     });
   }
 
   void calcBmi() {
     setState(() {
-      if (weight <= max) {
-        if (weight >= min) {
+      if (weight <= weightMax) {
+        if (weight >= weightMin) {
           bmiPass = true;
           bfPass = true;
         } else {
           bmiPass = false;
-          underWeight = true;
+          isUnderWeight = true;
         }
       } else {
         bmiPass = false;
-        underWeight = false;
+        isUnderWeight = false;
         calcBf();
       }
     });
@@ -92,8 +100,8 @@ class _BodyfatPageState extends ConsumerState<BodyfatPage> {
       cirValue = waist + hip - neck;
     }
     setState(() {
-      percent = getBfPercent(gender == 'Male', heightDouble, cirValue);
-      overUnder = percent - percentMax;
+      bfPercent = getBfPercent(gender == 'Male', heightDouble, cirValue);
+      overUnder = bfPercent - percentMax;
       if (overUnder <= 0) {
         bfPass = true;
       } else
@@ -217,15 +225,9 @@ class _BodyfatPageState extends ConsumerState<BodyfatPage> {
     super.initState();
     dbHelper = new DBHelper();
 
-    age = 22;
-    height = 68;
-    weight = 150;
     _weightController.text = weight.toString();
-    neck = 16.0;
     _neckController.text = neck.toString();
-    waist = 34.0;
     _waistController.text = waist.toString();
-    hip = 34.0;
     _hipController.text = hip.toString();
 
     _ageFocus.addListener(() {
@@ -264,19 +266,6 @@ class _BodyfatPageState extends ConsumerState<BodyfatPage> {
             baseOffset: 0, extentOffset: _hipController.text.length);
       }
     });
-
-    gender = 'Male';
-
-    bmiPass = true;
-    bfPass = true;
-    underWeight = false;
-
-    ageValid = true;
-    heightValid = true;
-    weightValid = true;
-    neckValid = true;
-    waistValid = true;
-    hipValid = true;
 
     regExp = new RegExp(r'^\d{4}(0[1-9]|1[012])(0[1-9]|[12][0-9]|3[01])$');
 
@@ -336,42 +325,31 @@ class _BodyfatPageState extends ConsumerState<BodyfatPage> {
                   'Age',
                   style: TextStyle(fontSize: 22.0, fontWeight: FontWeight.bold),
                 ),
-                SizedBox(
-                  width: 70,
-                  child: TextField(
-                    controller: _ageController,
-                    focusNode: _ageFocus,
-                    textAlign: TextAlign.start,
-                    style: const TextStyle(
-                        fontSize: 18, fontWeight: FontWeight.normal),
-                    decoration: InputDecoration(
-                        border: OutlineInputBorder(),
-                        errorText: ageValid ? null : '17-80'),
-                    onChanged: (value) {
-                      int raw = int.tryParse(value) ?? 0;
-                      if (raw > 80) {
-                        ageValid = false;
-                        age = 80;
-                      } else if (raw < 17) {
-                        ageValid = false;
-                        age = 17;
-                      } else {
-                        age = raw;
-                        ageValid = true;
-                      }
-                      ageGroup = getAgeGroup(age);
-                      setBenchmarks();
-                      calcBmi();
-                      calcBf();
-                    },
-                    keyboardType: TextInputType.numberWithOptions(signed: true),
-                    inputFormatters: [
-                      FilteringTextInputFormatter.digitsOnly,
-                    ],
-                    textInputAction: TextInputAction.next,
-                    onEditingComplete: () => _heightFocus.requestFocus(),
-                  ),
-                )
+                ValueInputField(
+                  width: 60,
+                  controller: _ageController,
+                  focusNode: _ageFocus,
+                  textInputAction: TextInputAction.next,
+                  onEditingComplete: () => _heightFocus.requestFocus(),
+                  errorText: isAgeValid ? null : '17-80',
+                  onChanged: (value) {
+                    int raw = int.tryParse(value) ?? 0;
+                    if (raw > 80) {
+                      isAgeValid = false;
+                      age = 80;
+                    } else if (raw < 17) {
+                      isAgeValid = false;
+                      age = 17;
+                    } else {
+                      age = raw;
+                      isAgeValid = true;
+                    }
+                    ageGroup = getAgeGroup(age);
+                    setBenchmarks();
+                    calcBmi();
+                    calcBf();
+                  },
+                ),
               ],
             ),
             Padding(
@@ -387,7 +365,7 @@ class _BodyfatPageState extends ConsumerState<BodyfatPage> {
                       } else {
                         age = 17;
                       }
-                      ageValid = true;
+                      isAgeValid = true;
                       ageGroup = getAgeGroup(age);
                       _ageController.text = age.toString();
                       setBenchmarks();
@@ -404,7 +382,7 @@ class _BodyfatPageState extends ConsumerState<BodyfatPage> {
                       divisions: 64,
                       onChanged: (value) {
                         FocusScope.of(context).unfocus();
-                        ageValid = true;
+                        isAgeValid = true;
                         age = value.floor();
                         ageGroup = getAgeGroup(age);
                         _ageController.text = age.toString();
@@ -423,7 +401,7 @@ class _BodyfatPageState extends ConsumerState<BodyfatPage> {
                       } else {
                         age = 80;
                       }
-                      ageValid = true;
+                      isAgeValid = true;
                       ageGroup = getAgeGroup(age);
                       _ageController.text = age.toString();
                       setBenchmarks();
@@ -441,45 +419,34 @@ class _BodyfatPageState extends ConsumerState<BodyfatPage> {
                   'Height',
                   style: TextStyle(fontSize: 22.0, fontWeight: FontWeight.bold),
                 ),
-                SizedBox(
-                  width: 70,
-                  child: TextField(
-                    controller: _heightController,
-                    focusNode: _heightFocus,
-                    keyboardType: TextInputType.numberWithOptions(signed: true),
-                    inputFormatters: [
-                      FilteringTextInputFormatter.digitsOnly,
-                    ],
-                    textInputAction: TextInputAction.next,
-                    onEditingComplete: () => _weightFocus.requestFocus(),
-                    textAlign: TextAlign.start,
-                    style: const TextStyle(
-                        fontSize: 18, fontWeight: FontWeight.normal),
-                    decoration: InputDecoration(
-                        border: OutlineInputBorder(),
-                        errorText: heightValid ? null : '50-90'),
-                    onChanged: (value) {
-                      int raw = int.tryParse(value) ?? 0;
-                      setState(() {
-                        if (raw < 58) {
-                          height = 58;
-                          heightValid = false;
-                        } else if (raw > 80) {
-                          height = 80;
-                          heightValid = false;
-                        } else {
-                          height = raw;
-                          heightValid = true;
-                        }
-                        heightDouble = height.toDouble();
-                        _heightDoubleController.text = heightDouble.toString();
-                        setBenchmarks();
-                        calcBmi();
-                        calcBf();
-                      });
-                    },
-                  ),
-                )
+                ValueInputField(
+                  width: 60,
+                  controller: _heightController,
+                  focusNode: _heightFocus,
+                  textInputAction: TextInputAction.next,
+                  onEditingComplete: () => _weightFocus.requestFocus(),
+                  errorText: isHeightValid ? null : '50-90',
+                  onChanged: (value) {
+                    int raw = int.tryParse(value) ?? 0;
+                    setState(() {
+                      if (raw < 58) {
+                        height = 58;
+                        isHeightValid = false;
+                      } else if (raw > 80) {
+                        height = 80;
+                        isHeightValid = false;
+                      } else {
+                        height = raw;
+                        isHeightValid = true;
+                      }
+                      heightDouble = height.toDouble();
+                      _heightDoubleController.text = heightDouble.toString();
+                      setBenchmarks();
+                      calcBmi();
+                      calcBf();
+                    });
+                  },
+                ),
               ],
             ),
             Padding(
@@ -554,42 +521,31 @@ class _BodyfatPageState extends ConsumerState<BodyfatPage> {
                   'Weight',
                   style: TextStyle(fontSize: 22.0, fontWeight: FontWeight.bold),
                 ),
-                SizedBox(
+                ValueInputField(
                   width: 70,
-                  child: TextField(
-                    controller: _weightController,
-                    focusNode: _weightFocus,
-                    keyboardType: TextInputType.numberWithOptions(signed: true),
-                    inputFormatters: [
-                      FilteringTextInputFormatter.digitsOnly,
-                    ],
-                    textInputAction: TextInputAction.done,
-                    onEditingComplete: () => FocusScope.of(context).unfocus(),
-                    textAlign: TextAlign.start,
-                    style: const TextStyle(
-                        fontSize: 18, fontWeight: FontWeight.normal),
-                    decoration: InputDecoration(
-                        border: OutlineInputBorder(),
-                        errorText: weightValid ? null : '50-350'),
-                    onChanged: (value) {
-                      int raw = int.tryParse(value) ?? 0;
-                      setState(() {
-                        if (raw < 50) {
-                          weight = 50;
-                          weightValid = false;
-                        } else if (raw > 350) {
-                          weight = 350;
-                          weightValid = false;
-                        } else {
-                          weight = raw;
-                          weightValid = true;
-                        }
-                        calcBmi();
-                        calcBf();
-                      });
-                    },
-                  ),
-                )
+                  controller: _weightController,
+                  focusNode: _weightFocus,
+                  textInputAction: TextInputAction.done,
+                  onEditingComplete: () => FocusScope.of(context).unfocus(),
+                  errorText: isWeightValid ? null : '50-350',
+                  onChanged: (value) {
+                    int raw = int.tryParse(value) ?? 0;
+                    setState(() {
+                      if (raw < 50) {
+                        weight = 50;
+                        isWeightValid = false;
+                      } else if (raw > 350) {
+                        weight = 350;
+                        isWeightValid = false;
+                      } else {
+                        weight = raw;
+                        isWeightValid = true;
+                      }
+                      calcBmi();
+                      calcBf();
+                    });
+                  },
+                ),
               ],
             ),
             Padding(
@@ -659,25 +615,21 @@ class _BodyfatPageState extends ConsumerState<BodyfatPage> {
                 children: <Widget>[
                   GridBox(
                     title: ageGroup,
-                    centered: true,
                     background: primaryColor,
                     textColor: textColor,
                   ),
                   GridBox(
                     title: 'Min',
-                    centered: true,
                     background: primaryColor,
                     textColor: textColor,
                   ),
                   GridBox(
                     title: 'Max',
-                    centered: true,
                     background: primaryColor,
                     textColor: textColor,
                   ),
                   GridBox(
                     title: 'Pass/Fail',
-                    centered: true,
                     background: primaryColor,
                     textColor: textColor,
                   ),
@@ -688,29 +640,26 @@ class _BodyfatPageState extends ConsumerState<BodyfatPage> {
                     textColor: textColor,
                   ),
                   GridBox(
-                    title: min.toString(),
-                    centered: true,
+                    title: weightMin.toString(),
                   ),
                   GridBox(
-                    title: max.toString(),
-                    centered: true,
+                    title: weightMax.toString(),
                   ),
                   GridBox(
                     title: bmiPass ? 'Pass' : 'Fail',
-                    centered: true,
                     background: bmiPass ? backgroundColor : errorColor,
                   ),
                 ],
               ),
             ),
-            if (underWeight)
+            if (isUnderWeight)
               Center(
                 child: const Text(
                   'Underweight',
                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                 ),
               ),
-            if (!bmiPass && !underWeight)
+            if (!bmiPass && !isUnderWeight)
               Column(
                 children: <Widget>[
                   Divider(
@@ -785,43 +734,30 @@ class _BodyfatPageState extends ConsumerState<BodyfatPage> {
                         style: TextStyle(
                             fontSize: 22.0, fontWeight: FontWeight.bold),
                       ),
-                      SizedBox(
+                      ValueInputField(
                         width: 70,
-                        child: TextField(
-                          controller: _neckController,
-                          focusNode: _neckFocus,
-                          keyboardType: TextInputType.numberWithOptions(
-                              signed: true, decimal: true),
-                          inputFormatters: [
-                            FilteringTextInputFormatter.allow(
-                                RegExp(r"[0-9.]")),
-                          ],
-                          textInputAction: TextInputAction.next,
-                          onEditingComplete: () => _waistFocus.requestFocus(),
-                          textAlign: TextAlign.start,
-                          style: const TextStyle(
-                              fontSize: 18, fontWeight: FontWeight.normal),
-                          decoration: InputDecoration(
-                              border: OutlineInputBorder(),
-                              errorText: neckValid ? null : '10-30'),
-                          onChanged: (value) {
-                            double raw = double.tryParse(value) ?? 10.0;
-                            setState(() {
-                              if (raw < 10) {
-                                neck = 10;
-                                neckValid = false;
-                              } else if (raw > 30) {
-                                neck = 30;
-                                neckValid = false;
-                              } else {
-                                neck = raw;
-                                neckValid = true;
-                              }
-                              calcBf();
-                            });
-                          },
-                        ),
-                      )
+                        controller: _neckController,
+                        focusNode: _neckFocus,
+                        textInputAction: TextInputAction.next,
+                        onEditingComplete: () => _waistFocus.requestFocus(),
+                        errorText: isNeckValid ? null : '10-30',
+                        onChanged: (value) {
+                          double raw = double.tryParse(value) ?? 10.0;
+                          setState(() {
+                            if (raw < 10) {
+                              neck = 10;
+                              isNeckValid = false;
+                            } else if (raw > 30) {
+                              neck = 30;
+                              isNeckValid = false;
+                            } else {
+                              neck = raw;
+                              isNeckValid = true;
+                            }
+                            calcBf();
+                          });
+                        },
+                      ),
                     ],
                   ),
                   Padding(
@@ -884,47 +820,34 @@ class _BodyfatPageState extends ConsumerState<BodyfatPage> {
                         style: TextStyle(
                             fontSize: 22.0, fontWeight: FontWeight.bold),
                       ),
-                      SizedBox(
+                      ValueInputField(
                         width: 70,
-                        child: TextField(
-                          controller: _waistController,
-                          focusNode: _waistFocus,
-                          keyboardType: TextInputType.numberWithOptions(
-                              signed: true, decimal: true),
-                          inputFormatters: [
-                            FilteringTextInputFormatter.allow(
-                                RegExp(r"[0-9.]")),
-                          ],
-                          textInputAction: gender == 'Female'
-                              ? TextInputAction.next
-                              : TextInputAction.done,
-                          onEditingComplete: () => gender == 'Female'
-                              ? _hipFocus.requestFocus()
-                              : FocusScope.of(context).unfocus(),
-                          textAlign: TextAlign.start,
-                          style: const TextStyle(
-                              fontSize: 18, fontWeight: FontWeight.normal),
-                          decoration: InputDecoration(
-                              border: OutlineInputBorder(),
-                              errorText: waistValid ? null : '20-50'),
-                          onChanged: (value) {
-                            double raw = double.tryParse(value) ?? 0.0;
-                            setState(() {
-                              if (raw < 20) {
-                                waist = 20;
-                                waistValid = false;
-                              } else if (raw > 50) {
-                                waist = 50;
-                                waistValid = false;
-                              } else {
-                                waist = raw;
-                                waistValid = true;
-                              }
-                              calcBf();
-                            });
-                          },
-                        ),
-                      )
+                        controller: _waistController,
+                        focusNode: _waistFocus,
+                        textInputAction: gender == 'Female'
+                            ? TextInputAction.next
+                            : TextInputAction.done,
+                        onEditingComplete: () => gender == 'Female'
+                            ? _hipFocus.requestFocus()
+                            : FocusScope.of(context).unfocus(),
+                        errorText: isWaistValid ? null : '20-50',
+                        onChanged: (value) {
+                          double raw = double.tryParse(value) ?? 0.0;
+                          setState(() {
+                            if (raw < 20) {
+                              waist = 20;
+                              isWaistValid = false;
+                            } else if (raw > 50) {
+                              waist = 50;
+                              isWaistValid = false;
+                            } else {
+                              waist = raw;
+                              isWaistValid = true;
+                            }
+                            calcBf();
+                          });
+                        },
+                      ),
                     ],
                   ),
                   Padding(
@@ -988,44 +911,31 @@ class _BodyfatPageState extends ConsumerState<BodyfatPage> {
                           style: TextStyle(
                               fontSize: 22.0, fontWeight: FontWeight.bold),
                         ),
-                        SizedBox(
+                        ValueInputField(
                           width: 70,
-                          child: TextField(
-                            controller: _hipController,
-                            focusNode: _hipFocus,
-                            keyboardType: TextInputType.numberWithOptions(
-                                signed: true, decimal: true),
-                            inputFormatters: [
-                              FilteringTextInputFormatter.allow(
-                                  RegExp(r"[0-9.]")),
-                            ],
-                            textInputAction: TextInputAction.done,
-                            onEditingComplete: () =>
-                                FocusScope.of(context).unfocus(),
-                            textAlign: TextAlign.start,
-                            style: const TextStyle(
-                                fontSize: 18, fontWeight: FontWeight.normal),
-                            decoration: InputDecoration(
-                                border: OutlineInputBorder(),
-                                errorText: hipValid ? null : '20-50'),
-                            onChanged: (value) {
-                              double raw = double.tryParse(value) ?? 0.0;
-                              setState(() {
-                                if (raw < 20) {
-                                  hip = 20;
-                                  hipValid = false;
-                                } else if (raw > 50) {
-                                  hip = 50;
-                                  hipValid = false;
-                                } else {
-                                  hip = raw;
-                                  hipValid = true;
-                                }
-                                calcBf();
-                              });
-                            },
-                          ),
-                        )
+                          controller: _hipController,
+                          focusNode: _hipFocus,
+                          textInputAction: TextInputAction.done,
+                          onEditingComplete: () =>
+                              FocusScope.of(context).unfocus(),
+                          errorText: isHipValid ? null : '20-50',
+                          onChanged: (value) {
+                            double raw = double.tryParse(value) ?? 0.0;
+                            setState(() {
+                              if (raw < 20) {
+                                hip = 20;
+                                isHipValid = false;
+                              } else if (raw > 50) {
+                                hip = 50;
+                                isHipValid = false;
+                              } else {
+                                hip = raw;
+                                isHipValid = true;
+                              }
+                              calcBf();
+                            });
+                          },
+                        ),
                       ],
                     ),
                   if (gender == 'Female')
@@ -1090,31 +1000,26 @@ class _BodyfatPageState extends ConsumerState<BodyfatPage> {
                       children: <Widget>[
                         GridBox(
                           title: '${heightDouble.toString()} in.',
-                          centered: true,
                           background: primaryColor,
                           textColor: textColor,
                         ),
                         GridBox(
                           title: 'BF %',
-                          centered: true,
                           background: primaryColor,
                           textColor: textColor,
                         ),
                         GridBox(
                           title: 'Max %',
-                          centered: true,
                           background: primaryColor,
                           textColor: textColor,
                         ),
                         GridBox(
                           title: 'O/U',
-                          centered: true,
                           background: primaryColor,
                           textColor: textColor,
                         ),
                         GridBox(
                           title: 'P/F',
-                          centered: true,
                           background: primaryColor,
                           textColor: textColor,
                         ),
@@ -1127,20 +1032,16 @@ class _BodyfatPageState extends ConsumerState<BodyfatPage> {
                           textColor: textColor,
                         ),
                         GridBox(
-                          title: percent.toString(),
-                          centered: true,
+                          title: bfPercent.toString(),
                         ),
                         GridBox(
                           title: percentMax.toString(),
-                          centered: true,
                         ),
                         GridBox(
                           title: overUnder.toString(),
-                          centered: true,
                         ),
                         GridBox(
                           title: bfPass ? 'Pass' : 'Fail',
-                          centered: true,
                         ),
                       ],
                     ),
@@ -1164,13 +1065,13 @@ class _BodyfatPageState extends ConsumerState<BodyfatPage> {
                         age: age.toString(),
                         height: height.toString(),
                         weight: weight.toString(),
-                        maxWeight: max.toString(),
+                        maxWeight: weightMax.toString(),
                         bmiPass: bmiPass ? 1 : 0,
                         heightDouble: heightDouble.toString(),
                         neck: neck.toString(),
                         waist: waist.toString(),
                         hip: hip.toString(),
-                        bfPercent: percent.toString(),
+                        bfPercent: bfPercent.toString(),
                         maxPercent: percentMax.toString(),
                         overUnder: overUnder.toString(),
                         bfPass: bfPass ? 1 : 0);
