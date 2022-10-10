@@ -16,6 +16,10 @@ import './sqlite/dbHelper.dart';
 import './sqlite/ppw.dart';
 import './widgets/formatted_expansion_tile.dart';
 import './widgets/formatted_radio.dart';
+import 'widgets/badge_card.dart';
+import 'widgets/decoration_card.dart';
+import 'classes/award_decoration.dart';
+import 'widgets/formatted_text_field.dart';
 
 class PromotionPointPage extends ConsumerStatefulWidget {
   PromotionPointPage(this.isPremium, this.upgradeNeeded);
@@ -27,45 +31,56 @@ class PromotionPointPage extends ConsumerStatefulWidget {
 }
 
 class _PromotionPointPageState extends ConsumerState<PromotionPointPage> {
-  int ptScore,
-      ptPts,
-      weaponHits,
-      weaponPts,
-      milTrainPts,
-      awardPts,
-      badgePts,
-      airbornePts,
-      awardsTotal,
-      ncoesPts,
-      wbcHrs,
-      wbcPts,
-      resHrs,
-      resPts,
-      tabPts,
-      ar350Pts,
-      milEdPts,
-      semHrs,
-      semHrPts,
-      mosCerts,
-      crossCerts,
-      personalCerts,
-      certPts,
-      degreePts,
-      langPts,
-      civEdPts,
-      totalPts,
-      milTrainMax,
-      awardsMax,
-      milEdMax,
-      civEdMax;
-  String rank = 'SGT', weapons, airborneLvl, ncoes;
-  bool ranger, sf, sapper, degree, fornLang, newVersion;
-  bool ptValid, weaponValid, coaValid, wbcValid, resValid, semValid, certValid;
+  int ptScore = 0,
+      ptPts = 0,
+      weaponHits = 0,
+      weaponPts = 0,
+      milTrainPts = 0,
+      awardPts = 0,
+      badgePts = 0,
+      airbornePts = 0,
+      awardsTotal = 0,
+      ncoesPts = 0,
+      wbcHrs = 0,
+      wbcPts = 0,
+      resHrs = 0,
+      resPts = 0,
+      tabPts = 0,
+      ar350Pts = 0,
+      milEdPts = 0,
+      semHrs = 0,
+      semHrPts = 0,
+      mosCerts = 0,
+      crossCerts = 0,
+      personalCerts = 0,
+      certPts = 0,
+      degreePts = 0,
+      langPts = 0,
+      civEdPts = 0,
+      totalPts = 0,
+      milTrainMax = 340,
+      awardsMax = 125,
+      milEdMax = 200,
+      civEdMax = 135;
+  String rank = 'SGT', weapons, airborneLvl = 'None', ncoes = 'None';
+  bool isRanger = false,
+      isSf = false,
+      isSapper = false,
+      degreeCompleted = false,
+      hasFornLang = false,
+      isNewVersion = false;
+  bool isPtValid = true,
+      isWeaponValid = true,
+      isCoaValid = true,
+      isWbcValid = true,
+      isResValid = true,
+      isSemValid = true,
+      isCertValid = true;
   SharedPreferences prefs;
   RegExp regExp;
   DBHelper dbHelper;
 
-  List<dynamic> _decorations = [];
+  List<AwardDecoration> decorations = [];
   List<dynamic> _badges = [];
   List<String> versions = ['Before 1 Apr 23', 'After 1 Apr 23'];
   List<String> proRanks = ['SGT', 'SSG'];
@@ -80,61 +95,7 @@ class _PromotionPointPageState extends ConsumerState<PromotionPointPage> {
     'DA 7820-1'
   ];
   List<String> airborne = ['None', 'Basic', 'Senior', 'Master'];
-  List<String> awards = [
-    'None',
-    'Soldiers Medal',
-    'Purple Heart',
-    'BSM',
-    'BSM w/V Device',
-    'MSM/DMSM',
-    'ARCOM/JSCOM/Equiv',
-    'ARCOM/Air Medal w/V Device',
-    'AAM/JSAM/Equiv',
-    'MOVSM',
-    'AGCM/AF Res Medal',
-    'COA'
-  ];
-  List<String> badges = [
-    'None',
-    'EIB/EFMB/ESB',
-    'CIB/CMB/CAB',
-    'Master Parachute Badge',
-    'Master EOD Badge',
-    'Master/Gold Recruiter Badge',
-    'Master Gunner Badge',
-    'Divers Badge (First Class)',
-    'Master Aviation Badge',
-    'Master Instructor Badge',
-    'Instructor Badge (Basic/Senior)',
-    'Senior Parachute Badge',
-    'Senior EOD Badge',
-    'Presidential Service Badge',
-    'VP Service Badge',
-    'Drill Sergeant Badge',
-    'Recruiter Badge (Basic)',
-    'Divers Badge (Supervisor/Salvage)',
-    'Parachute Combat Badge (Senior)',
-    'Senior Aviation Badge',
-    'Free Fall Badge (Master)',
-    'Senior Space Badge',
-    'Parachute Badge',
-    'Parachute Combat Badge (Basic)',
-    'Rigger Badge',
-    'Divers Badge (SCUBA/2nd Class)',
-    'EOD Badge (Basic)',
-    'Pathfinder Badge',
-    'Air Assault Badge',
-    'Aviation Badge',
-    'Army Staff ID Badge',
-    'JCoS ID Badge',
-    'SecDef Service Badge',
-    'Space Badge',
-    'Free Fall Badge (Basic)',
-    'Special Operations Divers Badge (Basic)',
-    'Tomb Guard ID Badge',
-    'Military Horseman ID Badge',
-    'Driver/Mech Badge',
-  ];
+
   List<String> ncoesHonors = [
     'None',
     'Commandant\'s List',
@@ -162,7 +123,7 @@ class _PromotionPointPageState extends ConsumerState<PromotionPointPage> {
 
   void _resetMaximums() {
     if (rank == 'SGT') {
-      if (newVersion) {
+      if (isNewVersion) {
         milTrainMax = 280;
         awardsMax = 145;
         milEdMax = 240;
@@ -174,7 +135,7 @@ class _PromotionPointPageState extends ConsumerState<PromotionPointPage> {
         civEdMax = 135;
       }
     } else {
-      if (newVersion) {
+      if (isNewVersion) {
         milTrainMax = 230;
         awardsMax = 165;
         milEdMax = 245;
@@ -189,7 +150,7 @@ class _PromotionPointPageState extends ConsumerState<PromotionPointPage> {
   }
 
   void _calcPtPts() {
-    if (newVersion) {
+    if (isNewVersion) {
       ptPts = acftPts(ptScore);
     } else {
       ptPts = apftPts(ptScore, rank);
@@ -198,20 +159,20 @@ class _PromotionPointPageState extends ConsumerState<PromotionPointPage> {
 
   void _calcWeaponPts() {
     weaponPts = newWeaponsPts(
-        weaponCards.indexOf(weapons), rank, weaponHits, newVersion);
+        weaponCards.indexOf(weapons), rank, weaponHits, isNewVersion);
   }
 
   void _calcAwardPts() {
-    awardPts = calcAwardpts(_decorations);
+    awardPts = calcAwardpts(decorations);
   }
 
   void _calcBadgePts() {
-    badgePts = newBadgePts(_badges, newVersion);
+    badgePts = newBadgePts(_badges, isNewVersion);
   }
 
   void _calcAirbornePts() {
     int index = airborne.indexOf(airborneLvl);
-    if (newVersion) {
+    if (isNewVersion) {
       if (index == 0) {
         airbornePts = 0;
       } else if (index == 1) {
@@ -245,13 +206,13 @@ class _PromotionPointPageState extends ConsumerState<PromotionPointPage> {
 
   void _calcTabPts() {
     tabPts = 0;
-    if (ranger) {
+    if (isRanger) {
       tabPts += 40;
     }
-    if (sf) {
+    if (isSf) {
       tabPts += 40;
     }
-    if (sapper) {
+    if (isSapper) {
       tabPts += 40;
     }
     _calcResPts();
@@ -259,7 +220,7 @@ class _PromotionPointPageState extends ConsumerState<PromotionPointPage> {
 
   void _calcResPts() {
     resPts = (resHrs / 10).floor() + tabPts;
-    if (newVersion) {
+    if (isNewVersion) {
       if (rank == 'SGT' && resPts > 110) {
         resPts = 110;
       } else if (rank == 'SSG' && resPts > 115) {
@@ -276,7 +237,7 @@ class _PromotionPointPageState extends ConsumerState<PromotionPointPage> {
 
   void _calcWbcPts() {
     wbcPts = (wbcHrs / 5).floor();
-    if (!newVersion && rank == 'SGT' && wbcPts > 80) {
+    if (!isNewVersion && rank == 'SGT' && wbcPts > 80) {
       wbcPts = 80;
     } else if (wbcPts > 90) {
       wbcPts = 90;
@@ -288,7 +249,7 @@ class _PromotionPointPageState extends ConsumerState<PromotionPointPage> {
   }
 
   void _calcDegreePts() {
-    if (degree) {
+    if (degreeCompleted) {
       degreePts = 20;
     } else {
       degreePts = 0;
@@ -296,7 +257,7 @@ class _PromotionPointPageState extends ConsumerState<PromotionPointPage> {
   }
 
   void _calcLangPts() {
-    if (fornLang) {
+    if (hasFornLang) {
       langPts = 25;
     } else {
       langPts = 0;
@@ -304,7 +265,7 @@ class _PromotionPointPageState extends ConsumerState<PromotionPointPage> {
   }
 
   void _calcCertPts() {
-    if (newVersion) {
+    if (isNewVersion) {
       certPts = (mosCerts * 15) + (crossCerts * 10) + (personalCerts * 5);
     } else {
       certPts = mosCerts * 10;
@@ -401,9 +362,9 @@ class _PromotionPointPageState extends ConsumerState<PromotionPointPage> {
     );
   }
 
-  void _delete(int index, String type) {
-    final title = Text('Delete $type?');
-    final content = Text('Are you sure you want to delete this $type?');
+  void _deleteAwardWarning(int index, String awardType) {
+    final title = Text('Delete $awardType?');
+    final content = Text('Are you sure you want to delete this $awardType?');
     final textStyle = TextStyle(color: Theme.of(context).colorScheme.onPrimary);
 
     if (Platform.isIOS) {
@@ -423,7 +384,7 @@ class _PromotionPointPageState extends ConsumerState<PromotionPointPage> {
                     child: Text('Delete', style: textStyle),
                     onPressed: () {
                       Navigator.pop(context2);
-                      _deleteAward(index, type);
+                      _deleteAward(index, awardType);
                     },
                   )
                 ],
@@ -447,7 +408,7 @@ class _PromotionPointPageState extends ConsumerState<PromotionPointPage> {
                   child: Text('Delete', style: textStyle),
                   onPressed: () {
                     Navigator.pop(context2);
-                    _deleteAward(index, type);
+                    _deleteAward(index, awardType);
                   },
                 )
               ],
@@ -459,7 +420,7 @@ class _PromotionPointPageState extends ConsumerState<PromotionPointPage> {
   void _deleteAward(int index, String type) {
     setState(() {
       if (type == 'Decoration') {
-        _decorations.removeAt(index);
+        decorations.removeAt(index);
         _calcAwardPts();
       } else {
         _badges.removeAt(index);
@@ -470,80 +431,34 @@ class _PromotionPointPageState extends ConsumerState<PromotionPointPage> {
   }
 
   List<Widget> _decorationWidgets() {
-    List<Widget> decorations = [];
-    for (int i = 0; i < _decorations.length; i++) {
-      decorations.add(Padding(
-        padding: const EdgeInsets.all(4.0),
-        child: GestureDetector(
-          onLongPress: () => _delete(i, 'Decoration'),
-          child: Card(
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Expanded(
-                    flex: 3,
-                    child: DropdownButtonFormField(
-                      isExpanded: true,
-                      value: _decorations[i]['name'],
-                      decoration:
-                          const InputDecoration(labelText: 'Decoration'),
-                      items: awards.map((award) {
-                        return DropdownMenuItem(
-                          child: Text(
-                            award,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                          value: award,
-                        );
-                      }).toList(),
-                      onChanged: (value) {
-                        setState(() {
-                          _decorations[i]['name'] = value;
-                          _calcAwardPts();
-                          _calcTotalPts();
-                        });
-                      },
-                    ),
-                  ),
-                  Expanded(
-                    flex: 1,
-                    child: SizedBox(
-                      width: 60,
-                      child: TextFormField(
-                        initialValue: _decorations[i]['number'].toString(),
-                        keyboardType:
-                            TextInputType.numberWithOptions(signed: true),
-                        inputFormatters: [
-                          FilteringTextInputFormatter.digitsOnly,
-                        ],
-                        textInputAction: TextInputAction.done,
-                        textAlign: TextAlign.start,
-                        style: const TextStyle(
-                            fontSize: 18, fontWeight: FontWeight.normal),
-                        decoration: const InputDecoration(
-                          border: OutlineInputBorder(),
-                        ),
-                        onChanged: (value) {
-                          int raw = int.tryParse(value) ?? 0;
-                          setState(() {
-                            _decorations[i]['number'] = raw;
-                            _calcAwardPts();
-                            _calcTotalPts();
-                          });
-                        },
-                      ),
-                    ),
-                  )
-                ],
-              ),
-            ),
+    List<Widget> decorationCards = [];
+    for (int i = 0; i < decorations.length; i++) {
+      decorationCards.add(
+        Padding(
+          padding: const EdgeInsets.all(4.0),
+          child: DecorationCard(
+            onLongPressed: () => _deleteAwardWarning(i, 'Decoration'),
+            decoration: decorations[i],
+            onAwardChosen: (value) {
+              setState(() {
+                decorations[i].name = value;
+                _calcAwardPts();
+                _calcTotalPts();
+              });
+            },
+            onAwardNumberChanged: (value) {
+              int raw = int.tryParse(value) ?? 0;
+              setState(() {
+                decorations[i].number = raw;
+                _calcAwardPts();
+                _calcTotalPts();
+              });
+            },
           ),
         ),
-      ));
+      );
     }
-    return decorations;
+    return decorationCards;
   }
 
   List<Widget> _badgeWidgets() {
@@ -551,31 +466,16 @@ class _PromotionPointPageState extends ConsumerState<PromotionPointPage> {
     for (int i = 0; i < _badges.length; i++) {
       badgeWidgets.add(Padding(
         padding: const EdgeInsets.all(4.0),
-        child: GestureDetector(
-          onLongPress: () => _delete(i, 'Badge'),
-          child: Card(
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: DropdownButtonFormField(
-                isExpanded: true,
-                value: _badges[i]['name'],
-                decoration: const InputDecoration(labelText: 'Badge'),
-                items: badges.map((badge) {
-                  return DropdownMenuItem(
-                    child: Text(badge, overflow: TextOverflow.ellipsis),
-                    value: badge,
-                  );
-                }).toList(),
-                onChanged: (value) {
-                  setState(() {
-                    _badges[i]['name'] = value;
-                    _calcBadgePts();
-                    _calcTotalPts();
-                  });
-                },
-              ),
-            ),
-          ),
+        child: BadgeCard(
+          onLongPressed: () => _deleteAwardWarning(i, 'Badge'),
+          badgeName: _badges[i]['name'],
+          onBadgeChosen: (value) {
+            setState(() {
+              _badges[i]['name'] = value;
+              _calcBadgePts();
+              _calcTotalPts();
+            });
+          },
         ),
       ));
     }
@@ -608,51 +508,7 @@ class _PromotionPointPageState extends ConsumerState<PromotionPointPage> {
   void initState() {
     dbHelper = new DBHelper();
 
-    ptScore = 0;
-    ptPts = 0;
-    weaponHits = 0;
-    weaponPts = 0;
-    milTrainPts = 0;
-    awardPts = 0;
-    badgePts = 0;
-    airbornePts = 0;
-    awardsTotal = 0;
-    ncoesPts = 0;
-    wbcHrs = 0;
-    wbcPts = 0;
-    resHrs = 0;
-    resPts = 0;
-    tabPts = 0;
-    ar350Pts = 0;
-    milEdPts = 0;
-    semHrs = 0;
-    semHrPts = 0;
-    mosCerts = 0;
-    crossCerts = 0;
-    personalCerts = 0;
-    certPts = 0;
-    degreePts = 0;
-    langPts = 0;
-    civEdPts = 0;
-    totalPts = 0;
-
-    milTrainMax = 340;
-    awardsMax = 125;
-    milEdMax = 200;
-    civEdMax = 135;
-
-    newVersion = false;
-    ptValid = true;
-    weaponValid = true;
-    coaValid = true;
-    wbcValid = true;
-    resValid = true;
-    semValid = true;
-    certValid = true;
-
     weapons = 'DA 3595-R / 5790-R / 5789-R / 7801 (M16/M4)';
-    ncoes = 'None';
-    airborneLvl = 'None';
 
     _apftController.text = ptScore.toString();
     _weaponController.text = weaponHits.toString();
@@ -712,12 +568,6 @@ class _PromotionPointPageState extends ConsumerState<PromotionPointPage> {
       }
     });
 
-    ranger = false;
-    sf = false;
-    sapper = false;
-    degree = false;
-    fornLang = false;
-
     regExp = new RegExp(r'^\d{4}(0[1-9]|1[012])(0[1-9]|[12][0-9]|3[01])$');
 
     prefs = ref.read(sharedPreferencesProvider);
@@ -757,6 +607,12 @@ class _PromotionPointPageState extends ConsumerState<PromotionPointPage> {
                           _resetMaximums();
                           _calcPtPts();
                           _calcWeaponPts();
+                          _calcAwardPts();
+                          _calcBadgePts();
+                          _calcAirbornePts();
+                          _calcResPts();
+                          _calcWbcPts();
+                          _calcCertPts();
                           _calcTotalPts();
                         });
                       }),
@@ -765,11 +621,11 @@ class _PromotionPointPageState extends ConsumerState<PromotionPointPage> {
                     child: SwitchListTile(
                       activeColor: Theme.of(context).colorScheme.onSecondary,
                       title: Text(
-                          newVersion ? 'After 1 Apr 23' : 'Before 1 Apr 23'),
-                      value: newVersion,
+                          isNewVersion ? 'After 1 Apr 23' : 'Before 1 Apr 23'),
+                      value: isNewVersion,
                       onChanged: (value) {
                         setState(() {
-                          newVersion = value;
+                          isNewVersion = value;
                           _resetMaximums();
                           _calcPtPts();
                           _calcWeaponPts();
@@ -798,85 +654,61 @@ class _PromotionPointPageState extends ConsumerState<PromotionPointPage> {
                     shrinkWrap: true,
                     primary: false,
                     children: <Widget>[
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: TextField(
-                          controller: _apftController,
-                          focusNode: _apftFocus,
-                          keyboardType:
-                              TextInputType.numberWithOptions(signed: true),
-                          inputFormatters: [
-                            FilteringTextInputFormatter.digitsOnly,
-                          ],
-                          textInputAction: TextInputAction.next,
-                          textAlign: TextAlign.start,
-                          style: const TextStyle(
-                              fontSize: 18, fontWeight: FontWeight.normal),
-                          decoration: InputDecoration(
-                              label: Text(
-                                  (newVersion ? 'ACFT' : 'APFT') + ' Score'),
-                              border: OutlineInputBorder(),
-                              errorText: ptValid
-                                  ? null
-                                  : newVersion
-                                      ? '0-600'
-                                      : '0-300'),
-                          onChanged: (value) {
-                            int raw = int.tryParse(value) ?? 0;
-                            setState(() {
-                              if (raw < 0) {
-                                ptScore = 0;
-                                ptValid = false;
-                              } else if ((newVersion && raw > 600) ||
-                                  (!newVersion && raw > 300)) {
-                                ptScore = newVersion ? 600 : 300;
-                                ptValid = false;
-                              } else {
-                                ptScore = raw;
-                                ptValid = true;
-                              }
-                              _calcPtPts();
-                              _calcTotalPts();
-                            });
-                          },
-                        ),
+                      FormattedTextField(
+                        contoller: _apftController,
+                        focusNode: _apftFocus,
+                        textInputAction: TextInputAction.next,
+                        onEditingComplete: () => _weaponFocus.requestFocus(),
+                        label: (isNewVersion ? 'ACFT' : 'APFT') + ' Score',
+                        errorText: isPtValid
+                            ? null
+                            : isNewVersion
+                                ? '0-600'
+                                : '0-300',
+                        onChanged: (value) {
+                          int raw = int.tryParse(value) ?? 0;
+                          setState(() {
+                            if (raw < 0) {
+                              ptScore = 0;
+                              isPtValid = false;
+                            } else if ((isNewVersion && raw > 600) ||
+                                (!isNewVersion && raw > 300)) {
+                              ptScore = isNewVersion ? 600 : 300;
+                              isPtValid = false;
+                            } else {
+                              ptScore = raw;
+                              isPtValid = true;
+                            }
+                            _calcPtPts();
+                            _calcTotalPts();
+                          });
+                        },
                       ),
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: TextField(
-                          controller: _weaponController,
-                          focusNode: _weaponFocus,
-                          keyboardType:
-                              TextInputType.numberWithOptions(signed: true),
-                          inputFormatters: [
-                            FilteringTextInputFormatter.digitsOnly,
-                          ],
-                          textInputAction: TextInputAction.done,
-                          textAlign: TextAlign.start,
-                          style: const TextStyle(
-                              fontSize: 18, fontWeight: FontWeight.normal),
-                          decoration: InputDecoration(
-                              label: Text('Weapons Hits'),
-                              border: OutlineInputBorder(),
-                              errorText: weaponValid ? null : '0-300'),
-                          onChanged: (value) {
-                            int raw = int.tryParse(value) ?? 0;
-                            setState(() {
-                              if (raw < 0) {
-                                weaponHits = 0;
-                                weaponValid = false;
-                              } else if (raw > 300) {
-                                weaponHits = 300;
-                                weaponValid = false;
-                              } else {
-                                weaponHits = raw;
-                                weaponValid = true;
-                              }
-                              _calcWeaponPts();
-                              _calcTotalPts();
-                            });
-                          },
-                        ),
+                      FormattedTextField(
+                        contoller: _weaponController,
+                        focusNode: _weaponFocus,
+                        textInputAction: TextInputAction.done,
+                        onEditingComplete: () =>
+                            FocusScope.of(context).unfocus(),
+                        label: 'Weapons Hits',
+                        errorText: isWeaponValid ? null : '0-300',
+                        onChanged: (value) {
+                          int raw = int.tryParse(value) ?? 0;
+                          setState(() {
+                            if (raw < 0) {
+                              weaponHits = 0;
+                              isWeaponValid = false;
+                            } else if (raw > 300) {
+                              weaponHits = 300;
+                              isWeaponValid = false;
+                            } else {
+                              weaponHits = raw;
+                              isWeaponValid = true;
+                            }
+                            _calcWeaponPts();
+                            _calcTotalPts();
+                          });
+                        },
                       ),
                     ]),
                 Padding(
@@ -930,7 +762,8 @@ class _PromotionPointPageState extends ConsumerState<PromotionPointPage> {
                             onPressed: () {
                               FocusScope.of(context).unfocus();
                               setState(() {
-                                _decorations.add({'name': 'None', 'number': 0});
+                                decorations.add(
+                                    AwardDecoration(name: 'None', number: 0));
                               });
                             },
                             icon: Icon(Icons.add))
@@ -938,7 +771,7 @@ class _PromotionPointPageState extends ConsumerState<PromotionPointPage> {
                     ),
                   ),
                 ),
-                if (_decorations.length > 0)
+                if (decorations.length > 0)
                   GridView.count(
                     crossAxisCount: width > 700 ? 2 : 1,
                     childAspectRatio: width > 700 ? width / 230 : width / 115,
@@ -1043,69 +876,43 @@ class _PromotionPointPageState extends ConsumerState<PromotionPointPage> {
                   shrinkWrap: true,
                   primary: false,
                   children: [
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: TextField(
-                        controller: _resCourseController,
-                        focusNode: _resFocus,
-                        keyboardType:
-                            TextInputType.numberWithOptions(signed: true),
-                        inputFormatters: [
-                          FilteringTextInputFormatter.digitsOnly,
-                        ],
-                        textInputAction: TextInputAction.next,
-                        textAlign: TextAlign.start,
-                        style: const TextStyle(
-                            fontSize: 18, fontWeight: FontWeight.normal),
-                        decoration: const InputDecoration(
-                          label: Text('Resident Course Hours'),
-                          border: OutlineInputBorder(),
-                        ),
-                        onChanged: (value) {
-                          int raw = int.tryParse(value) ?? 0;
-                          setState(() {
-                            if (raw < 0) {
-                              resHrs = 0;
-                            } else {
-                              resHrs = raw;
-                            }
-                            _calcResPts();
-                            _calcTotalPts();
-                          });
-                        },
-                      ),
+                    FormattedTextField(
+                      contoller: _resCourseController,
+                      focusNode: _resFocus,
+                      textInputAction: TextInputAction.next,
+                      onEditingComplete: () => _wbcFocus.requestFocus(),
+                      label: 'Resident Course Hours',
+                      onChanged: (value) {
+                        int raw = int.tryParse(value) ?? 0;
+                        setState(() {
+                          if (raw < 0) {
+                            resHrs = 0;
+                          } else {
+                            resHrs = raw;
+                          }
+                          _calcResPts();
+                          _calcTotalPts();
+                        });
+                      },
                     ),
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: TextField(
-                        controller: _wbcController,
-                        focusNode: _wbcFocus,
-                        keyboardType:
-                            TextInputType.numberWithOptions(signed: true),
-                        inputFormatters: [
-                          FilteringTextInputFormatter.digitsOnly,
-                        ],
-                        textInputAction: TextInputAction.done,
-                        textAlign: TextAlign.start,
-                        style: const TextStyle(
-                            fontSize: 18, fontWeight: FontWeight.normal),
-                        decoration: const InputDecoration(
-                          label: Text('Web-Based Course Hours'),
-                          border: OutlineInputBorder(),
-                        ),
-                        onChanged: (value) {
-                          int raw = int.tryParse(value) ?? 0;
-                          setState(() {
-                            if (raw < 0) {
-                              wbcHrs = 0;
-                            } else {
-                              wbcHrs = raw;
-                            }
-                            _calcWbcPts();
-                            _calcTotalPts();
-                          });
-                        },
-                      ),
+                    FormattedTextField(
+                      contoller: _wbcController,
+                      focusNode: _wbcFocus,
+                      textInputAction: TextInputAction.done,
+                      onEditingComplete: () => FocusScope.of(context).unfocus(),
+                      label: 'Web-Based Course Hours',
+                      onChanged: (value) {
+                        int raw = int.tryParse(value) ?? 0;
+                        setState(() {
+                          if (raw < 0) {
+                            wbcHrs = 0;
+                          } else {
+                            wbcHrs = raw;
+                          }
+                          _calcWbcPts();
+                          _calcTotalPts();
+                        });
+                      },
                     ),
                   ],
                 ),
@@ -1131,10 +938,10 @@ class _PromotionPointPageState extends ConsumerState<PromotionPointPage> {
                             title: const Text('Ranger'),
                             activeColor:
                                 Theme.of(context).colorScheme.onSecondary,
-                            value: ranger,
+                            value: isRanger,
                             onChanged: (value) {
                               setState(() {
-                                ranger = value;
+                                isRanger = value;
                                 _calcTabPts();
                                 _calcTotalPts();
                               });
@@ -1143,10 +950,10 @@ class _PromotionPointPageState extends ConsumerState<PromotionPointPage> {
                             title: const Text('Special Forces'),
                             activeColor:
                                 Theme.of(context).colorScheme.onSecondary,
-                            value: sf,
+                            value: isSf,
                             onChanged: (value) {
                               setState(() {
-                                sf = value;
+                                isSf = value;
                                 _calcTabPts();
                                 _calcTotalPts();
                               });
@@ -1155,10 +962,10 @@ class _PromotionPointPageState extends ConsumerState<PromotionPointPage> {
                             title: const Text('Sapper'),
                             activeColor:
                                 Theme.of(context).colorScheme.onSecondary,
-                            value: sapper,
+                            value: isSapper,
                             onChanged: (value) {
                               setState(() {
-                                sapper = value;
+                                isSapper = value;
                                 _calcTabPts();
                                 _calcTotalPts();
                               });
@@ -1184,43 +991,30 @@ class _PromotionPointPageState extends ConsumerState<PromotionPointPage> {
                   shrinkWrap: true,
                   primary: false,
                   children: <Widget>[
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: TextField(
-                        controller: _semHrsController,
-                        focusNode: _semHrsFocus,
-                        keyboardType:
-                            TextInputType.numberWithOptions(signed: true),
-                        inputFormatters: [
-                          FilteringTextInputFormatter.digitsOnly,
-                        ],
-                        textInputAction: TextInputAction.done,
-                        textAlign: TextAlign.start,
-                        style: const TextStyle(
-                            fontSize: 18, fontWeight: FontWeight.normal),
-                        decoration: const InputDecoration(
-                          label: Text('Semester Hours'),
-                          border: OutlineInputBorder(),
-                        ),
-                        onChanged: (value) {
-                          int raw = int.tryParse(value) ?? 0;
-                          setState(() {
-                            if (raw < 0) {
-                              semHrs = 0;
-                            } else {
-                              semHrs = raw;
-                            }
-                            _calcSemPts();
-                            _calcTotalPts();
-                          });
-                        },
-                      ),
+                    FormattedTextField(
+                      contoller: _semHrsController,
+                      focusNode: _semHrsFocus,
+                      textInputAction: TextInputAction.done,
+                      onEditingComplete: () => FocusScope.of(context).unfocus(),
+                      label: 'Semester Hours',
+                      onChanged: (value) {
+                        int raw = int.tryParse(value) ?? 0;
+                        setState(() {
+                          if (raw < 0) {
+                            semHrs = 0;
+                          } else {
+                            semHrs = raw;
+                          }
+                          _calcSemPts();
+                          _calcTotalPts();
+                        });
+                      },
                     ),
                     Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: CheckboxListTile(
                         activeColor: Theme.of(context).colorScheme.onSecondary,
-                        value: degree,
+                        value: degreeCompleted,
                         title: const Text(
                           'Degree',
                           style: TextStyle(fontSize: 18),
@@ -1231,118 +1025,85 @@ class _PromotionPointPageState extends ConsumerState<PromotionPointPage> {
                                 : 'in current grade')),
                         onChanged: (value) {
                           setState(() {
-                            degree = value;
+                            degreeCompleted = value;
                             _calcDegreePts();
                             _calcTotalPts();
                           });
                         },
                       ),
                     ),
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: TextField(
-                        controller: _mosCertsController,
-                        focusNode: _mosCertsFocus,
-                        keyboardType:
-                            TextInputType.numberWithOptions(signed: true),
-                        inputFormatters: [
-                          FilteringTextInputFormatter.digitsOnly,
-                        ],
+                    FormattedTextField(
+                      contoller: _mosCertsController,
+                      focusNode: _mosCertsFocus,
+                      textInputAction: isNewVersion
+                          ? TextInputAction.next
+                          : TextInputAction.done,
+                      onEditingComplete: () => isNewVersion
+                          ? _crossCertsFocus.requestFocus()
+                          : FocusScope.of(context).unfocus(),
+                      label: isNewVersion
+                          ? 'MOS Enhancing Credentials'
+                          : 'Tech/Pro Certifications',
+                      onChanged: (value) {
+                        int raw = int.tryParse(value) ?? 0;
+                        setState(() {
+                          if (raw < 0) {
+                            mosCerts = 0;
+                          } else {
+                            mosCerts = raw;
+                          }
+                          _calcCertPts();
+                          _calcTotalPts();
+                        });
+                      },
+                    ),
+                    if (isNewVersion)
+                      FormattedTextField(
+                        contoller: _crossCertsController,
+                        focusNode: _crossCertsFocus,
                         textInputAction: TextInputAction.next,
-                        textAlign: TextAlign.start,
-                        style: const TextStyle(
-                            fontSize: 18, fontWeight: FontWeight.normal),
-                        decoration: InputDecoration(
-                          label: Text(newVersion
-                              ? 'MOS Enhancing Credentials'
-                              : 'Tech/Pro Certifications'),
-                          border: OutlineInputBorder(),
-                        ),
+                        onEditingComplete: () =>
+                            _personalCertsFocus.requestFocus(),
+                        label: 'Cross-Functional Credentials',
                         onChanged: (value) {
                           int raw = int.tryParse(value) ?? 0;
                           setState(() {
                             if (raw < 0) {
-                              mosCerts = 0;
+                              crossCerts = 0;
                             } else {
-                              mosCerts = raw;
+                              crossCerts = raw;
                             }
                             _calcCertPts();
                             _calcTotalPts();
                           });
                         },
                       ),
-                    ),
-                    if (newVersion)
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: TextField(
-                          controller: _crossCertsController,
-                          focusNode: _crossCertsFocus,
-                          keyboardType:
-                              TextInputType.numberWithOptions(signed: true),
-                          inputFormatters: [
-                            FilteringTextInputFormatter.digitsOnly,
-                          ],
-                          textInputAction: TextInputAction.next,
-                          textAlign: TextAlign.start,
-                          style: const TextStyle(
-                              fontSize: 18, fontWeight: FontWeight.normal),
-                          decoration: const InputDecoration(
-                            label: Text('Cross-Functional Credentials'),
-                            border: OutlineInputBorder(),
-                          ),
-                          onChanged: (value) {
-                            int raw = int.tryParse(value) ?? 0;
-                            setState(() {
-                              if (raw < 0) {
-                                crossCerts = 0;
-                              } else {
-                                crossCerts = raw;
-                              }
-                              _calcCertPts();
-                              _calcTotalPts();
-                            });
-                          },
-                        ),
-                      ),
-                    if (newVersion)
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: TextField(
-                          controller: _personalCertsController,
-                          focusNode: _personalCertsFocus,
-                          keyboardType:
-                              TextInputType.numberWithOptions(signed: true),
-                          inputFormatters: [
-                            FilteringTextInputFormatter.digitsOnly,
-                          ],
-                          textInputAction: TextInputAction.done,
-                          textAlign: TextAlign.start,
-                          style: const TextStyle(
-                              fontSize: 18, fontWeight: FontWeight.normal),
-                          decoration: const InputDecoration(
-                            label: Text('Personal Credentials'),
-                            border: OutlineInputBorder(),
-                          ),
-                          onChanged: (value) {
-                            int raw = int.tryParse(value) ?? 0;
-                            setState(() {
-                              if (raw < 0) {
-                                personalCerts = 0;
-                              } else {
-                                personalCerts = raw;
-                              }
-                              _calcCertPts();
-                              _calcTotalPts();
-                            });
-                          },
-                        ),
+                    if (isNewVersion)
+                      FormattedTextField(
+                        contoller: _personalCertsController,
+                        focusNode: _personalCertsFocus,
+                        textInputAction: TextInputAction.done,
+                        onEditingComplete: () =>
+                            FocusScope.of(context).unfocus(),
+                        label: 'Personal Credentials',
+                        onChanged: (value) {
+                          int raw = int.tryParse(value) ?? 0;
+                          setState(() {
+                            if (raw < 0) {
+                              personalCerts = 0;
+                            } else {
+                              personalCerts = raw;
+                            }
+                            _calcCertPts();
+                            _calcTotalPts();
+                          });
+                        },
                       ),
                     Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: CheckboxListTile(
                         activeColor: Theme.of(context).colorScheme.onSecondary,
-                        value: fornLang,
+                        value: hasFornLang,
                         title: const Text(
                           'Foreign Language',
                           style: TextStyle(fontSize: 18),
@@ -1350,7 +1111,7 @@ class _PromotionPointPageState extends ConsumerState<PromotionPointPage> {
                         subtitle: const Text('Valid for one year'),
                         onChanged: (value) {
                           setState(() {
-                            fornLang = value;
+                            hasFornLang = value;
                             _calcLangPts();
                             _calcTotalPts();
                           });
@@ -1398,7 +1159,7 @@ class _PromotionPointPageState extends ConsumerState<PromotionPointPage> {
                       null,
                       null,
                       rank,
-                      newVersion ? 1 : 0,
+                      isNewVersion ? 1 : 0,
                       ptPts,
                       weaponPts,
                       awardPts,

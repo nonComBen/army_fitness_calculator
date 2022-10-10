@@ -1,9 +1,10 @@
-int calcAwardpts(List<dynamic> awards) {
+import '../classes/award_decoration.dart';
+
+int calcAwardpts(List<AwardDecoration> awards) {
   int points = 0;
-  for (Map<String, dynamic> award in awards) {
-    int pts =
-        awardTable[awardTypes.indexOf(award['name'])][1] * award['number'];
-    if (award['name'] == 'COA' && pts > 20) {
+  for (AwardDecoration award in awards) {
+    int pts = awardTable[awardTypes.indexOf(award.name)][1] * award.number;
+    if (award.name == 'COA' && pts > 20) {
       pts = 20;
     }
     points += pts;
