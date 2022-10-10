@@ -11,16 +11,15 @@ import './widgets/formatted_radio.dart';
 import 'package:flutter/material.dart';
 
 class SettingsPage extends ConsumerStatefulWidget {
-  SettingsPage({this.premium});
-  final bool premium;
+  SettingsPage({this.isPremium});
+  final bool isPremium;
   @override
   _SettingsPageState createState() => _SettingsPageState();
 }
 
 class _SettingsPageState extends ConsumerState<SettingsPage> {
-  String event = 'Run',
+  String apftEvent = 'Run',
       acftEvent = 'Run',
-      core = 'Leg Tuck',
       gender = 'Male',
       brightness = 'Light',
       rank = 'SGT';
@@ -97,7 +96,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
     _ageController = TextEditingController();
     _heightController = TextEditingController();
 
-    if (!widget.premium) {
+    if (!widget.isPremium) {
       myBanner.load();
     }
 
@@ -105,18 +104,9 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
 
     if (prefs.getString('acft_event') != null) {
       acftEvent = prefs.getString('acft_event');
-    } else {
-      acftEvent = 'Run';
-    }
-    if (prefs.getString('core_event') != null) {
-      core = prefs.getString('core_event');
-    } else {
-      core = 'Leg Tuck';
     }
     if (prefs.getString('gender') != null) {
       gender = prefs.getString('gender');
-    } else {
-      gender = 'Male';
     }
     if (prefs.getInt('age') != null) {
       _ageController.text = prefs.getInt('age').toString();
@@ -124,14 +114,10 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
       _ageController.text = '17';
     }
     if (prefs.getString('apft_event') != null) {
-      event = prefs.getString('apft_event');
-    } else {
-      event = 'Run';
+      apftEvent = prefs.getString('apft_event');
     }
     if (prefs.getBool('jr_soldier') != null) {
       jrSoldier = prefs.getBool('jr_soldier');
-    } else {
-      jrSoldier = false;
     }
     if (prefs.getInt('height') != null) {
       _heightController.text = prefs.getInt('height').toString();
@@ -140,13 +126,9 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
     }
     if (prefs.getString('brightness') != null) {
       brightness = prefs.getString('brightness');
-    } else {
-      brightness = 'Light';
     }
     if (prefs.getString('rank') != null) {
       rank = prefs.getString('rank');
-    } else {
-      rank = 'SGT';
     }
   }
 
@@ -240,11 +222,11 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                       ),
                       FormattedDropDown(
                           label: 'Default APFT Aerobic Event',
-                          value: event,
+                          value: apftEvent,
                           items: events,
                           onChanged: (value) {
                             setState(() {
-                              event = value;
+                              apftEvent = value;
                               prefs.setString('apft_event', value);
                             });
                           }),
@@ -289,7 +271,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                 ],
               ),
             ),
-            if (!widget.premium)
+            if (!widget.isPremium)
               Container(
                 constraints: const BoxConstraints(maxHeight: 90),
                 alignment: Alignment.center,

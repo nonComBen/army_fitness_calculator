@@ -94,7 +94,7 @@ class MainDrawer extends StatelessWidget {
                   context,
                   MaterialPageRoute(
                       builder: (context) => AcftVerbiagePage(
-                            premium: isPremium,
+                            isPremium: isPremium,
                           )));
             },
           ),
@@ -107,7 +107,7 @@ class MainDrawer extends StatelessWidget {
                   context,
                   MaterialPageRoute(
                       builder: (context) => ApftVerbiagePage(
-                            premium: isPremium,
+                            isPremium: isPremium,
                           )));
             },
           ),
@@ -120,7 +120,7 @@ class MainDrawer extends StatelessWidget {
                   context,
                   MaterialPageRoute(
                       builder: (context) => BodyfatVerbiagePage(
-                            premium: isPremium,
+                            isPremium: isPremium,
                           )));
             },
           ),
@@ -182,7 +182,8 @@ class MainDrawer extends StatelessWidget {
               Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => SettingsPage(premium: isPremium)));
+                      builder: (context) =>
+                          SettingsPage(isPremium: isPremium)));
             },
           ),
         ],

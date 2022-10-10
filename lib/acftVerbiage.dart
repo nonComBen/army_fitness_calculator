@@ -4,16 +4,16 @@ import 'package:flutter/material.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 
 class AcftVerbiagePage extends StatefulWidget {
-  final bool premium;
+  final bool isPremium;
   final bool nonPersonalizedAds;
-  AcftVerbiagePage({this.premium, this.nonPersonalizedAds});
+  AcftVerbiagePage({this.isPremium, this.nonPersonalizedAds});
   @override
   _AcftVerbiagePageState createState() => _AcftVerbiagePageState();
 }
 
 class Verbiage {
-  Verbiage(this.expanded, this.header, this.body);
-  bool expanded;
+  Verbiage(this.isExpanded, this.header, this.body);
+  bool isExpanded;
   final String header;
   final Widget body;
 }
@@ -215,7 +215,7 @@ class _AcftVerbiagePageState extends State<AcftVerbiagePage> {
         listener: BannerAdListener(),
         request: AdRequest(nonPersonalizedAds: widget.nonPersonalizedAds));
 
-    if (!widget.premium) {
+    if (!widget.isPremium) {
       myBanner.load();
     }
   }
@@ -238,10 +238,10 @@ class _AcftVerbiagePageState extends State<AcftVerbiagePage> {
                       setState(() {
                         for (int i = 0; i < _verbiages.length; i++) {
                           if (i == index) {
-                            _verbiages[index].expanded =
-                                !_verbiages[index].expanded;
+                            _verbiages[index].isExpanded =
+                                !_verbiages[index].isExpanded;
                           } else
-                            _verbiages[i].expanded = false;
+                            _verbiages[i].isExpanded = false;
                         }
                       });
                     },
@@ -259,7 +259,7 @@ class _AcftVerbiagePageState extends State<AcftVerbiagePage> {
                             ),
                           );
                         },
-                        isExpanded: verbiage.expanded,
+                        isExpanded: verbiage.isExpanded,
                         body: verbiage.body,
                       );
                     }).toList(),
@@ -267,7 +267,7 @@ class _AcftVerbiagePageState extends State<AcftVerbiagePage> {
                 ],
               ),
             ),
-            if (!widget.premium)
+            if (!widget.isPremium)
               Container(
                 constraints: BoxConstraints(maxHeight: 90),
                 alignment: Alignment.center,
