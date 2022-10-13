@@ -19,27 +19,15 @@ class Download5500Widget extends StatelessWidget {
   final _waist2Controller = TextEditingController();
   final _waist3Controller = TextEditingController();
 
-  // @override
-  // void dispose() {
-  //   super.dispose();
-
-  //   _preparedByController.dispose();
-  //   _preparedByRankController.dispose();
-  //   _approvedByController.dispose();
-  //   _approvedByRankController.dispose();
-  //   _neck1Controller.dispose();
-  //   _neck2Controller.dispose();
-  //   _neck3Controller.dispose();
-  //   _waist1Controller.dispose();
-  //   _waist2Controller.dispose();
-  //   _waist3Controller.dispose();
-  // }
-
   @override
   Widget build(BuildContext context) {
     return Container(
       padding: EdgeInsets.only(
-          left: 8, right: 8, bottom: MediaQuery.of(context).viewInsets.bottom),
+          left: 8,
+          right: 8,
+          bottom: MediaQuery.of(context).viewInsets.bottom == 0
+              ? MediaQuery.of(context).padding.bottom
+              : MediaQuery.of(context).viewInsets.bottom),
       child: SingleChildScrollView(
         child: Column(children: [
           Padding(

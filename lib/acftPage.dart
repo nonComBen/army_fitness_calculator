@@ -302,7 +302,9 @@ class _AcftPageState extends ConsumerState<AcftPage> {
             padding: EdgeInsets.only(
                 left: 8,
                 right: 8,
-                bottom: MediaQuery.of(ctx).viewInsets.bottom + 8),
+                bottom: MediaQuery.of(ctx).viewInsets.bottom == 0
+                    ? MediaQuery.of(ctx).padding.bottom
+                    : MediaQuery.of(ctx).viewInsets.bottom),
             child: SingleChildScrollView(
               child: Column(
                 children: <Widget>[

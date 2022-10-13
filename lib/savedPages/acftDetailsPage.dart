@@ -35,7 +35,9 @@ class _AcftDetailsPageState extends State<AcftDetailsPage> {
         padding: EdgeInsets.only(
             left: 8,
             right: 8,
-            bottom: MediaQuery.of(ctx).viewInsets.bottom + 24),
+            bottom: MediaQuery.of(ctx).viewInsets.bottom == 0
+                ? MediaQuery.of(ctx).padding.bottom
+                : MediaQuery.of(ctx).viewInsets.bottom + 24),
         child: SingleChildScrollView(
           child: Column(
             children: <Widget>[

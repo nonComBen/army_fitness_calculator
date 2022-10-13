@@ -4,7 +4,6 @@ import 'dart:io';
 import 'package:acft_calculator/widgets/main_drawer.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -25,8 +24,6 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   final sharedPreferences = await SharedPreferences.getInstance();
-  // hides system ui buttons on Android
-  SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
   runApp(
     ProviderScope(overrides: [
       // override the previous value with the new object
@@ -141,24 +138,30 @@ class MyAppState extends State<MyApp> {
               _loadingAnchoredBanner = true;
               _createBannerAd(context);
             }
-            return Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Flexible(child: MyHomePage(premium)),
-                if (!premium && adLoaded)
-                  Container(
-                    constraints: BoxConstraints(maxHeight: 90),
-                    alignment: Alignment.center,
-                    child: AdWidget(
-                      ad: myBanner,
-                    ),
-                    width:
-                        myBanner != null ? myBanner.size.width.toDouble() : 320,
-                    height: myBanner != null
-                        ? myBanner.size.height.toDouble()
-                        : 100,
-                  )
-              ],
+            return Padding(
+              padding: EdgeInsets.only(
+                  left: MediaQuery.of(context).viewPadding.left,
+                  right: MediaQuery.of(context).viewPadding.right),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Flexible(child: MyHomePage(premium)),
+                  if (!premium && adLoaded)
+                    Container(
+                      constraints: BoxConstraints(maxHeight: 90),
+                      alignment: Alignment.center,
+                      child: AdWidget(
+                        ad: myBanner,
+                      ),
+                      width: myBanner != null
+                          ? myBanner.size.width.toDouble()
+                          : 320,
+                      height: myBanner != null
+                          ? myBanner.size.height.toDouble()
+                          : 100,
+                    )
+                ],
+              ),
             );
           }));
     });
@@ -194,7 +197,8 @@ class _MyHomePageState extends State<MyHomePage> {
     showModalBottomSheet(
       context: context,
       builder: (ctx) => Container(
-        padding: EdgeInsets.all(8.0),
+        padding:
+            EdgeInsets.only(bottom: MediaQuery.of(context).viewPadding.bottom),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.stretch,

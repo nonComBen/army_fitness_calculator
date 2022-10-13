@@ -26,7 +26,11 @@ class Download5501Widget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       padding: EdgeInsets.only(
-          left: 8, right: 8, bottom: MediaQuery.of(context).viewInsets.bottom),
+          left: 8,
+          right: 8,
+          bottom: MediaQuery.of(context).viewInsets.bottom == 0
+              ? MediaQuery.of(context).padding.bottom
+              : MediaQuery.of(context).viewInsets.bottom),
       child: SingleChildScrollView(
         child: Column(children: [
           Padding(
