@@ -1,12 +1,12 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:acft_calculator/widgets/main_drawer.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:rate_my_app/rate_my_app.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:in_app_purchase/in_app_purchase.dart';
@@ -19,6 +19,7 @@ import './acftPage.dart';
 import './apftPage.dart';
 import './bodyfatPage.dart';
 import 'widgets/bullet_item.dart';
+import 'widgets/main_drawer.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -150,8 +151,12 @@ class MyAppState extends State<MyApp> {
                     Container(
                       constraints: BoxConstraints(maxHeight: 90),
                       alignment: Alignment.center,
-                      child: AdWidget(
-                        ad: myBanner,
+                      child: Padding(
+                        padding: EdgeInsets.only(
+                            bottom: MediaQuery.of(context).viewPadding.bottom),
+                        child: AdWidget(
+                          ad: myBanner,
+                        ),
                       ),
                       width: myBanner != null
                           ? myBanner.size.width.toDouble()
@@ -192,6 +197,13 @@ class _MyHomePageState extends State<MyHomePage> {
     'Body Composition Calculator',
     'Promotion Point Calculator'
   ];
+
+  RateMyApp _rateMyApp = RateMyApp(
+    minDays: 0,
+    minLaunches: 2,
+    remindDays: 0,
+    remindLaunches: 3,
+  );
 
   _upgrade() {
     showModalBottomSheet(
@@ -295,20 +307,34 @@ class _MyHomePageState extends State<MyHomePage> {
     super.initState();
     productIds = ['premium_upgrade'].toSet();
 
-    initialize();
-  }
+    _rateMyApp.init().then((_) {
+      if (_rateMyApp.shouldOpenDialog) {
+        _rateMyApp.showRateDialog(
+          context,
+          title: 'Rate Army Fitness Calculator',
+          message:
+              'If you like Army Fitness Calculator, please take a minute to rate '
+              ' and review the app.  Or if you are having an issue with the app, '
+              'please email me at armynoncomtools@gmail.com.',
+          onDismissed: () =>
+              _rateMyApp.callEvent(RateMyAppEventType.laterButtonPressed),
+          rateButton: 'Rate',
+          laterButton: 'Not Now',
+          noButton: 'No Thanks',
+        );
+      }
+    });
 
-  initialize() async {
-    bool storeAvailable = await InAppPurchase.instance.isAvailable();
-
-    if (storeAvailable) {
-      final ProductDetailsResponse response =
-          await InAppPurchase.instance.queryProductDetails(productIds);
-      if (response.notFoundIDs.isEmpty) {}
-      setState(() {
-        _products = response.productDetails;
-      });
-    }
+    InAppPurchase.instance.isAvailable().then((isStoreAvailable) {
+      if (isStoreAvailable) {
+        InAppPurchase.instance.queryProductDetails(productIds).then((response) {
+          if (response.notFoundIDs.isEmpty) {}
+          setState(() {
+            _products = response.productDetails;
+          });
+        });
+      }
+    });
   }
 
   @override
