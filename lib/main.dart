@@ -18,6 +18,7 @@ import './providers/theme_provider.dart';
 import './acftPage.dart';
 import './apftPage.dart';
 import './bodyfatPage.dart';
+import 'table_pages/acft_table_page.dart';
 import 'widgets/bullet_item.dart';
 import 'widgets/main_drawer.dart';
 
@@ -284,6 +285,17 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
+  void _openTablePage() {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (ctx) => AcftTablePage(
+          ageGroup: AcftPageState.ageGroup,
+          gender: AcftPageState.gender,
+        ),
+      ),
+    );
+  }
+
   upgradeNeeded() {
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
       content:
@@ -349,6 +361,12 @@ class _MyHomePageState extends State<MyHomePage> {
         key: _scaffoldState,
         appBar: AppBar(
           title: Text(title),
+          actions: [
+            if (_selectedIndex == 0)
+              IconButton(
+                  onPressed: () => _openTablePage(),
+                  icon: Icon(Icons.table_chart))
+          ],
         ),
         drawer: MainDrawer(
             context: context,

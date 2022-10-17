@@ -19,6 +19,8 @@ import './widgets/formatted_drop_down.dart';
 import './widgets/formatted_radio.dart';
 import './widgets/grid_box.dart';
 import './widgets/increment_decrement_button.dart';
+import 'constants/pt_age_group_table.dart';
+import 'constants/acft_aerobic_event_table.dart';
 import 'widgets/value_input_field.dart';
 
 class AcftPage extends ConsumerStatefulWidget {
@@ -27,10 +29,10 @@ class AcftPage extends ConsumerStatefulWidget {
   final VoidCallback upgradeNeeded;
 
   @override
-  _AcftPageState createState() => _AcftPageState();
+  AcftPageState createState() => AcftPageState();
 }
 
-class _AcftPageState extends ConsumerState<AcftPage> {
+class AcftPageState extends ConsumerState<AcftPage> {
   int age,
       mdlRaw,
       hrpRaw,
@@ -65,8 +67,8 @@ class _AcftPageState extends ConsumerState<AcftPage> {
       runPass,
       totalPass;
   double sptRaw;
-  String ageGroup,
-      mdlMinimum,
+  static String ageGroup, gender;
+  String mdlMinimum,
       mdl90,
       mdlMax,
       sptMinimum,
@@ -84,8 +86,7 @@ class _AcftPageState extends ConsumerState<AcftPage> {
       runMinimum,
       run90,
       runMax,
-      aerobicEvent,
-      gender;
+      aerobicEvent;
   List<String> mdlBenchmarks,
       sptBenchmarks,
       hrpBenchmarks,
@@ -118,20 +119,6 @@ class _AcftPageState extends ConsumerState<AcftPage> {
   final _plkSecsFocus = FocusNode();
   final _runMinsFocus = FocusNode();
   final _runSecsFocus = FocusNode();
-
-  List<String> aerobicEvents = ['Run', 'Walk', 'Bike', 'Swim', 'Row'];
-  List<String> ageGroups = [
-    '17-21',
-    '22-26',
-    '27-31',
-    '32-36',
-    '37-41',
-    '42-46',
-    '47-51',
-    '52-56',
-    '57-61',
-    '62+'
-  ];
 
   void setAgeGroup() {
     if (age < 22) {
@@ -175,35 +162,35 @@ class _AcftPageState extends ConsumerState<AcftPage> {
 
   void calcAll() {
     setBenchmarks();
-    mdlScore =
-        getMdlScore(mdlRaw, ageGroups.indexOf(ageGroup) + 1, gender == 'Male');
-    sptScore =
-        getSptScore(sptRaw, ageGroups.indexOf(ageGroup) + 1, gender == 'Male');
-    hrpScore =
-        getHrpScore(hrpRaw, ageGroups.indexOf(ageGroup) + 1, gender == 'Male');
+    mdlScore = getMdlScore(
+        mdlRaw, ptAgeGroups.indexOf(ageGroup) + 1, gender == 'Male');
+    sptScore = getSptScore(
+        sptRaw, ptAgeGroups.indexOf(ageGroup) + 1, gender == 'Male');
+    hrpScore = getHrpScore(
+        hrpRaw, ptAgeGroups.indexOf(ageGroup) + 1, gender == 'Male');
     sdcScore = getSdcScore(getTimeAsInt(sdcMins, sdcSecs),
-        ageGroups.indexOf(ageGroup) + 1, gender == 'Male');
+        ptAgeGroups.indexOf(ageGroup) + 1, gender == 'Male');
     plankScore = getPlkScore(getTimeAsInt(plankMins, plankSecs),
-        ageGroups.indexOf(ageGroup) + 1, gender == 'Male');
+        ptAgeGroups.indexOf(ageGroup) + 1, gender == 'Male');
     calcRunScore();
     calcTotal();
   }
 
   void setBenchmarks() {
     mdlBenchmarks =
-        getMdlBenchmarks(ageGroups.indexOf(ageGroup), gender == "Male");
+        getMdlBenchmarks(ptAgeGroups.indexOf(ageGroup), gender == "Male");
     sptBenchmarks =
-        getSptBenchmarks(ageGroups.indexOf(ageGroup), gender == "Male");
+        getSptBenchmarks(ptAgeGroups.indexOf(ageGroup), gender == "Male");
     hrpBenchmarks =
-        getHrpBenchmarks(ageGroups.indexOf(ageGroup), gender == "Male");
+        getHrpBenchmarks(ptAgeGroups.indexOf(ageGroup), gender == "Male");
     sdcBenchmarks =
-        getSdcBenchmarks(ageGroups.indexOf(ageGroup), gender == "Male");
+        getSdcBenchmarks(ptAgeGroups.indexOf(ageGroup), gender == "Male");
     plkBenchmarks =
-        getPlkBenchmarks(ageGroups.indexOf(ageGroup), gender == "Male");
+        getPlkBenchmarks(ptAgeGroups.indexOf(ageGroup), gender == "Male");
     runBenchmarks =
-        get2mrBenchmarks(ageGroups.indexOf(ageGroup), gender == "Male");
+        get2mrBenchmarks(ptAgeGroups.indexOf(ageGroup), gender == "Male");
     altBenchmarks =
-        getAltBenchmarks(ageGroups.indexOf(ageGroup), gender == "Male");
+        getAltBenchmarks(ptAgeGroups.indexOf(ageGroup), gender == "Male");
 
     mdlMinimum = mdlBenchmarks[0];
     mdl90 = mdlBenchmarks[1];
@@ -260,8 +247,8 @@ class _AcftPageState extends ConsumerState<AcftPage> {
   void calcRunScore() {
     int time = getTimeAsInt(runMins, runSecs);
     if (aerobicEvent == 'Run') {
-      runScore =
-          get2mrScore(time, ageGroups.indexOf(ageGroup) + 1, gender == 'Male');
+      runScore = get2mrScore(
+          time, ptAgeGroups.indexOf(ageGroup) + 1, gender == 'Male');
     } else {
       int min = int.tryParse(runMinimum.replaceRange(2, 3, "")) ?? 0;
       if (time <= min) {
@@ -631,7 +618,7 @@ class _AcftPageState extends ConsumerState<AcftPage> {
             FormattedDropDown(
               label: 'Aerobic Event',
               value: aerobicEvent,
-              items: aerobicEvents,
+              items: acftAerobicEvents,
               onChanged: (value) {
                 setState(() {
                   FocusScope.of(context).unfocus();
@@ -671,7 +658,7 @@ class _AcftPageState extends ConsumerState<AcftPage> {
                       isMdlValid = true;
                     }
                     mdlScore = getMdlScore(mdlRaw,
-                        ageGroups.indexOf(ageGroup) + 1, gender == 'Male');
+                        ptAgeGroups.indexOf(ageGroup) + 1, gender == 'Male');
                     calcTotal();
                   },
                 ),
@@ -694,7 +681,7 @@ class _AcftPageState extends ConsumerState<AcftPage> {
                       _mdlController.text = mdlRaw.toString();
                       isMdlValid = true;
                       mdlScore = getMdlScore(mdlRaw,
-                          ageGroups.indexOf(ageGroup) + 1, gender == 'Male');
+                          ptAgeGroups.indexOf(ageGroup) + 1, gender == 'Male');
                       calcTotal();
                     },
                   ),
@@ -711,8 +698,10 @@ class _AcftPageState extends ConsumerState<AcftPage> {
                         mdlRaw = value.floor();
                         _mdlController.text = mdlRaw.toString();
                         isMdlValid = true;
-                        mdlScore = getMdlScore(mdlRaw,
-                            ageGroups.indexOf(ageGroup) + 1, gender == 'Male');
+                        mdlScore = getMdlScore(
+                            mdlRaw,
+                            ptAgeGroups.indexOf(ageGroup) + 1,
+                            gender == 'Male');
                         calcTotal();
                       },
                     ),
@@ -728,7 +717,7 @@ class _AcftPageState extends ConsumerState<AcftPage> {
                       }
                       _mdlController.text = mdlRaw.toString();
                       mdlScore = getMdlScore(mdlRaw,
-                          ageGroups.indexOf(ageGroup) + 1, gender == 'Male');
+                          ptAgeGroups.indexOf(ageGroup) + 1, gender == 'Male');
                       isMdlValid = true;
                       calcTotal();
                     },
@@ -765,7 +754,7 @@ class _AcftPageState extends ConsumerState<AcftPage> {
                       isSptValid = true;
                     }
                     sptScore = getSptScore(sptRaw,
-                        ageGroups.indexOf(ageGroup) + 1, gender == 'Male');
+                        ptAgeGroups.indexOf(ageGroup) + 1, gender == 'Male');
                     calcTotal();
                   },
                 ),
@@ -789,7 +778,7 @@ class _AcftPageState extends ConsumerState<AcftPage> {
                       _sptController.text = sptRaw.toString();
                       isSptValid = true;
                       sptScore = getSptScore(sptRaw,
-                          ageGroups.indexOf(ageGroup) + 1, gender == 'Male');
+                          ptAgeGroups.indexOf(ageGroup) + 1, gender == 'Male');
                       calcTotal();
                     },
                   ),
@@ -806,8 +795,10 @@ class _AcftPageState extends ConsumerState<AcftPage> {
                         sptRaw = (value * 10).round() / 10;
                         _sptController.text = sptRaw.toString();
                         isSptValid = true;
-                        sptScore = getSptScore(sptRaw,
-                            ageGroups.indexOf(ageGroup) + 1, gender == 'Male');
+                        sptScore = getSptScore(
+                            sptRaw,
+                            ptAgeGroups.indexOf(ageGroup) + 1,
+                            gender == 'Male');
                         calcTotal();
                       },
                     ),
@@ -826,7 +817,7 @@ class _AcftPageState extends ConsumerState<AcftPage> {
                       _sptController.text = sptRaw.toString();
                       isSptValid = true;
                       sptScore = getSptScore(sptRaw,
-                          ageGroups.indexOf(ageGroup) + 1, gender == 'Male');
+                          ptAgeGroups.indexOf(ageGroup) + 1, gender == 'Male');
                       calcTotal();
                     },
                   ),
@@ -861,7 +852,7 @@ class _AcftPageState extends ConsumerState<AcftPage> {
                       isHrpValid = true;
                     }
                     hrpScore = getHrpScore(hrpRaw,
-                        ageGroups.indexOf(ageGroup) + 1, gender == 'Male');
+                        ptAgeGroups.indexOf(ageGroup) + 1, gender == 'Male');
                     calcTotal();
                   },
                 ),
@@ -883,7 +874,7 @@ class _AcftPageState extends ConsumerState<AcftPage> {
                       _hrpController.text = hrpRaw.toString();
                       isHrpValid = true;
                       hrpScore = getHrpScore(hrpRaw,
-                          ageGroups.indexOf(ageGroup) + 1, gender == 'Male');
+                          ptAgeGroups.indexOf(ageGroup) + 1, gender == 'Male');
                       calcTotal();
                     },
                   ),
@@ -900,8 +891,10 @@ class _AcftPageState extends ConsumerState<AcftPage> {
                         hrpRaw = value.floor();
                         _hrpController.text = hrpRaw.toString();
                         isHrpValid = true;
-                        hrpScore = getHrpScore(hrpRaw,
-                            ageGroups.indexOf(ageGroup) + 1, gender == 'Male');
+                        hrpScore = getHrpScore(
+                            hrpRaw,
+                            ptAgeGroups.indexOf(ageGroup) + 1,
+                            gender == 'Male');
                         calcTotal();
                       },
                     ),
@@ -918,7 +911,7 @@ class _AcftPageState extends ConsumerState<AcftPage> {
                       _hrpController.text = hrpRaw.toString();
                       isHrpValid = true;
                       hrpScore = getHrpScore(hrpRaw,
-                          ageGroups.indexOf(ageGroup) + 1, gender == 'Male');
+                          ptAgeGroups.indexOf(ageGroup) + 1, gender == 'Male');
                       calcTotal();
                     },
                   ),
@@ -955,8 +948,10 @@ class _AcftPageState extends ConsumerState<AcftPage> {
                           isSdcMinsValid = true;
                           sdcMins = raw;
                         }
-                        sdcScore = getSdcScore(getTimeAsInt(sdcMins, sdcSecs),
-                            ageGroups.indexOf(ageGroup) + 1, gender == 'Male');
+                        sdcScore = getSdcScore(
+                            getTimeAsInt(sdcMins, sdcSecs),
+                            ptAgeGroups.indexOf(ageGroup) + 1,
+                            gender == 'Male');
                         calcTotal();
                       },
                     ),
@@ -985,8 +980,10 @@ class _AcftPageState extends ConsumerState<AcftPage> {
                           isSdcSecsValid = true;
                           sdcSecs = raw;
                         }
-                        sdcScore = getSdcScore(getTimeAsInt(sdcMins, sdcSecs),
-                            ageGroups.indexOf(ageGroup) + 1, gender == 'Male');
+                        sdcScore = getSdcScore(
+                            getTimeAsInt(sdcMins, sdcSecs),
+                            ptAgeGroups.indexOf(ageGroup) + 1,
+                            gender == 'Male');
                         calcTotal();
                       },
                     ),
@@ -1010,7 +1007,7 @@ class _AcftPageState extends ConsumerState<AcftPage> {
                       _sdcMinsController.text = sdcMins.toString();
                       isSdcMinsValid = true;
                       sdcScore = getSdcScore(getTimeAsInt(sdcMins, sdcSecs),
-                          ageGroups.indexOf(ageGroup) + 1, gender == 'Male');
+                          ptAgeGroups.indexOf(ageGroup) + 1, gender == 'Male');
                       calcTotal();
                     },
                   ),
@@ -1027,8 +1024,10 @@ class _AcftPageState extends ConsumerState<AcftPage> {
                         sdcMins = value.floor();
                         _sdcMinsController.text = sdcMins.toString();
                         isSdcMinsValid = true;
-                        sdcScore = getSdcScore(getTimeAsInt(sdcMins, sdcSecs),
-                            ageGroups.indexOf(ageGroup) + 1, gender == 'Male');
+                        sdcScore = getSdcScore(
+                            getTimeAsInt(sdcMins, sdcSecs),
+                            ptAgeGroups.indexOf(ageGroup) + 1,
+                            gender == 'Male');
                         calcTotal();
                       },
                     ),
@@ -1045,7 +1044,7 @@ class _AcftPageState extends ConsumerState<AcftPage> {
                       _sdcMinsController.text = sdcMins.toString();
                       isSdcMinsValid = true;
                       sdcScore = getSdcScore(getTimeAsInt(sdcMins, sdcSecs),
-                          ageGroups.indexOf(ageGroup) + 1, gender == 'Male');
+                          ptAgeGroups.indexOf(ageGroup) + 1, gender == 'Male');
                       calcTotal();
                     },
                   ),
@@ -1068,7 +1067,7 @@ class _AcftPageState extends ConsumerState<AcftPage> {
                       _sdcSecsController.text = sdcSecs.toString();
                       isSdcSecsValid = true;
                       sdcScore = getSdcScore(getTimeAsInt(sdcMins, sdcSecs),
-                          ageGroups.indexOf(ageGroup) + 1, gender == 'Male');
+                          ptAgeGroups.indexOf(ageGroup) + 1, gender == 'Male');
                       calcTotal();
                     },
                   ),
@@ -1085,8 +1084,10 @@ class _AcftPageState extends ConsumerState<AcftPage> {
                         sdcSecs = value.floor();
                         _sdcSecsController.text = sdcSecs.toString();
                         isSdcSecsValid = true;
-                        sdcScore = getSdcScore(getTimeAsInt(sdcMins, sdcSecs),
-                            ageGroups.indexOf(ageGroup) + 1, gender == 'Male');
+                        sdcScore = getSdcScore(
+                            getTimeAsInt(sdcMins, sdcSecs),
+                            ptAgeGroups.indexOf(ageGroup) + 1,
+                            gender == 'Male');
                         calcTotal();
                       },
                     ),
@@ -1103,7 +1104,7 @@ class _AcftPageState extends ConsumerState<AcftPage> {
                       _sdcSecsController.text = sdcSecs.toString();
                       isSdcSecsValid = true;
                       sdcScore = getSdcScore(getTimeAsInt(sdcMins, sdcSecs),
-                          ageGroups.indexOf(ageGroup) + 1, gender == 'Male');
+                          ptAgeGroups.indexOf(ageGroup) + 1, gender == 'Male');
                       calcTotal();
                     },
                   ),
@@ -1142,7 +1143,7 @@ class _AcftPageState extends ConsumerState<AcftPage> {
                         }
                         plankScore = getPlkScore(
                             getTimeAsInt(plankMins, plankSecs),
-                            ageGroups.indexOf(ageGroup) + 1,
+                            ptAgeGroups.indexOf(ageGroup) + 1,
                             gender == 'Male');
                         calcTotal();
                       },
@@ -1174,7 +1175,7 @@ class _AcftPageState extends ConsumerState<AcftPage> {
                         }
                         plankScore = getPlkScore(
                             getTimeAsInt(plankMins, plankSecs),
-                            ageGroups.indexOf(ageGroup) + 1,
+                            ptAgeGroups.indexOf(ageGroup) + 1,
                             gender == 'Male');
                         calcTotal();
                       },
@@ -1200,7 +1201,7 @@ class _AcftPageState extends ConsumerState<AcftPage> {
                       isPlankMinsValid = true;
                       plankScore = getPlkScore(
                           getTimeAsInt(plankMins, plankSecs),
-                          ageGroups.indexOf(ageGroup) + 1,
+                          ptAgeGroups.indexOf(ageGroup) + 1,
                           gender == 'Male');
                       calcTotal();
                     },
@@ -1220,7 +1221,7 @@ class _AcftPageState extends ConsumerState<AcftPage> {
                         isPlankMinsValid = true;
                         plankScore = getPlkScore(
                             getTimeAsInt(plankMins, plankSecs),
-                            ageGroups.indexOf(ageGroup) + 1,
+                            ptAgeGroups.indexOf(ageGroup) + 1,
                             gender == 'Male');
                         calcTotal();
                       },
@@ -1239,7 +1240,7 @@ class _AcftPageState extends ConsumerState<AcftPage> {
                       isPlankMinsValid = true;
                       plankScore = getPlkScore(
                           getTimeAsInt(plankMins, plankSecs),
-                          ageGroups.indexOf(ageGroup) + 1,
+                          ptAgeGroups.indexOf(ageGroup) + 1,
                           gender == 'Male');
                       calcTotal();
                     },
@@ -1264,7 +1265,7 @@ class _AcftPageState extends ConsumerState<AcftPage> {
                       isPlankSecsValid = true;
                       plankScore = getPlkScore(
                           getTimeAsInt(plankMins, plankSecs),
-                          ageGroups.indexOf(ageGroup) + 1,
+                          ptAgeGroups.indexOf(ageGroup) + 1,
                           gender == 'Male');
                       calcTotal();
                     },
@@ -1284,7 +1285,7 @@ class _AcftPageState extends ConsumerState<AcftPage> {
                         isPlankSecsValid = true;
                         plankScore = getPlkScore(
                             getTimeAsInt(plankMins, plankSecs),
-                            ageGroups.indexOf(ageGroup) + 1,
+                            ptAgeGroups.indexOf(ageGroup) + 1,
                             gender == 'Male');
                         calcTotal();
                       },
@@ -1303,7 +1304,7 @@ class _AcftPageState extends ConsumerState<AcftPage> {
                       isPlankSecsValid = true;
                       plankScore = getPlkScore(
                           getTimeAsInt(plankMins, plankSecs),
-                          ageGroups.indexOf(ageGroup) + 1,
+                          ptAgeGroups.indexOf(ageGroup) + 1,
                           gender == 'Male');
                       calcTotal();
                     },
