@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:charts_flutter/flutter.dart' as charts;
 
-import '../sqlite/ppw.dart';
+import '../../sqlite/ppw.dart';
 
 class PpwChartPage extends StatefulWidget {
   PpwChartPage({this.ppws, this.soldier});

@@ -3,9 +3,9 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import './savedPpwPage.dart';
-import '../sqlite/ppw.dart';
-import '../sqlite/dbHelper.dart';
+import '../saved_pages/saved_ppw_page.dart';
+import '../../sqlite/ppw.dart';
+import '../../sqlite/db_helper.dart';
 
 class PpwDetailsPage extends StatefulWidget {
   PpwDetailsPage({this.ppw});

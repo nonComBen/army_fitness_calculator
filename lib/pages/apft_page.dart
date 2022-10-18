@@ -4,18 +4,18 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:intl/intl.dart';
 
-import './providers/shared_preferences_provider.dart';
-import './sqlite/dbHelper.dart';
-import './widgets/formatted_drop_down.dart';
-import './widgets/formatted_radio.dart';
-import './widgets/grid_box.dart';
-import './widgets/increment_decrement_button.dart';
-import './calculators/puCalculator.dart';
-import './calculators/suCalculator.dart';
-import './calculators/runCalculator.dart';
-import './sqlite/apft.dart';
-import './savedPages/savedApftsPage.dart';
-import 'widgets/value_input_field.dart';
+import '../providers/shared_preferences_provider.dart';
+import '../sqlite/db_helper.dart';
+import '../widgets/formatted_drop_down.dart';
+import '../widgets/formatted_radio.dart';
+import '../widgets/grid_box.dart';
+import '../widgets/increment_decrement_button.dart';
+import '../calculators/pu_calculator.dart';
+import '../calculators/su_calculator.dart';
+import '../calculators/run_calculator.dart';
+import '../sqlite/apft.dart';
+import 'saved_pages/saved_apfts_page.dart';
+import '../widgets/value_input_field.dart';
 
 class ApftPage extends ConsumerStatefulWidget {
   ApftPage(this.isPremium, this.upgradeNeeded);

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:charts_flutter/flutter.dart' as charts;
 
-import '../sqlite/bodyfat.dart';
+import '../../sqlite/bodyfat.dart';
 
 class BodyfatChartPage extends StatefulWidget {
   BodyfatChartPage({this.bodyfats, this.soldier});

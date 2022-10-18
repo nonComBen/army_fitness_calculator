@@ -1,22 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-import '../methods/delete_record.dart';
-import '../widgets/download_5501_widget.dart';
-import './savedBodyfatsPage.dart';
-import '../sqlite/dbHelper.dart';
-import '../sqlite/bodyfat.dart';
-import '../widgets/download_5500_widget.dart';
+import '../../methods/delete_record.dart';
+import '../../widgets/download_apft_widget.dart';
+import '../saved_pages/saved_apfts_page.dart';
+import '../../sqlite/db_helper.dart';
+import '../../sqlite/apft.dart';
 
-class BodyfatDetailsPage extends StatefulWidget {
-  BodyfatDetailsPage({this.bf});
-  final Bodyfat bf;
+class ApftDetailsPage extends StatefulWidget {
+  ApftDetailsPage({this.apft});
+  final Apft apft;
 
   @override
-  _BodyfatDetailsPageState createState() => _BodyfatDetailsPageState();
+  _ApftDetailsPageState createState() => _ApftDetailsPageState();
 }
 
-class _BodyfatDetailsPageState extends State<BodyfatDetailsPage> {
+class _ApftDetailsPageState extends State<ApftDetailsPage> {
   RegExp regExp;
   DBHelper dbHelper;
 
@@ -26,10 +25,10 @@ class _BodyfatDetailsPageState extends State<BodyfatDetailsPage> {
   static GlobalKey previewContainer = new GlobalKey();
   GlobalKey<ScaffoldState> _scaffoldState = new GlobalKey<ScaffoldState>();
 
-  _updateBf(BuildContext context, Bodyfat bf) {
-    final _dateController = new TextEditingController(text: bf.date);
-    final _rankController = TextEditingController(text: bf.rank ?? '');
-    final _nameController = new TextEditingController(text: bf.name);
+  _updateApft(BuildContext context, Apft apft) {
+    final _dateController = TextEditingController(text: apft.date);
+    final _rankController = TextEditingController(text: apft.rank ?? '');
+    final _nameController = TextEditingController(text: apft.name);
     showModalBottomSheet(
       context: context,
       builder: (ctx) => Container(
@@ -44,9 +43,9 @@ class _BodyfatDetailsPageState extends State<BodyfatDetailsPage> {
             child: Column(
               children: <Widget>[
                 Padding(
-                  padding: EdgeInsets.all(8.0),
-                  child: Text(
-                      'Date, Rank, and Name are the only editable fields.'),
+                  padding: const EdgeInsets.all(8.0),
+                  child:
+                      const Text('Date and Name are the only editable fields.'),
                 ),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 8.0),
@@ -56,14 +55,14 @@ class _BodyfatDetailsPageState extends State<BodyfatDetailsPage> {
                     inputFormatters: [
                       FilteringTextInputFormatter.digitsOnly,
                     ],
-                    decoration: InputDecoration(
+                    decoration: const InputDecoration(
                       labelText: 'Date',
                     ),
                     autovalidateMode: AutovalidateMode.onUserInteraction,
                     validator: (value) =>
                         regExp.hasMatch(value) ? null : 'Use yyyyMMdd Format',
-                    autofocus: true,
                     autocorrect: false,
+                    autofocus: true,
                     textInputAction: TextInputAction.next,
                     onEditingComplete: () => FocusScope.of(context).nextFocus(),
                   ),
@@ -72,7 +71,7 @@ class _BodyfatDetailsPageState extends State<BodyfatDetailsPage> {
                   padding: const EdgeInsets.symmetric(horizontal: 8.0),
                   child: TextFormField(
                     controller: _rankController,
-                    decoration: InputDecoration(labelText: 'Rank'),
+                    decoration: const InputDecoration(labelText: 'Rank'),
                     keyboardType: TextInputType.text,
                     textCapitalization: TextCapitalization.characters,
                     autocorrect: false,
@@ -84,7 +83,7 @@ class _BodyfatDetailsPageState extends State<BodyfatDetailsPage> {
                   padding: const EdgeInsets.symmetric(horizontal: 8.0),
                   child: TextFormField(
                     controller: _nameController,
-                    decoration: InputDecoration(labelText: 'Name'),
+                    decoration: const InputDecoration(labelText: 'Name'),
                     keyboardType: TextInputType.text,
                     textCapitalization: TextCapitalization.words,
                     autocorrect: false,
@@ -95,17 +94,17 @@ class _BodyfatDetailsPageState extends State<BodyfatDetailsPage> {
                 Padding(
                   padding: EdgeInsets.all(8),
                   child: ElevatedButton(
-                    child: Text('Update Body Comp'),
+                    child: Text('Update APFT'),
                     onPressed: () {
                       setState(() {
                         _mainDateController.text = _dateController.text;
                         _mainNameController.text =
                             '${_rankController.text} ${_nameController.text}';
                       });
-                      bf.date = _dateController.text;
-                      bf.rank = _rankController.text;
-                      bf.name = _nameController.text;
-                      dbHelper.updateBodyfat(bf);
+                      apft.date = _dateController.text;
+                      apft.rank = _rankController.text;
+                      apft.name = _nameController.text;
+                      dbHelper.updateApft(apft);
                       Navigator.pop(context);
                     },
                   ),
@@ -115,6 +114,14 @@ class _BodyfatDetailsPageState extends State<BodyfatDetailsPage> {
           ),
         ),
       ),
+    );
+  }
+
+  void _downloadPdf() {
+    // DownloadApft.downloadPdf(context: context, apft: widget.apft);
+    showModalBottomSheet(
+      context: context,
+      builder: (ctx) => DownloadApftWidget(widget.apft),
     );
   }
 
@@ -153,96 +160,6 @@ class _BodyfatDetailsPageState extends State<BodyfatDetailsPage> {
   //   }
   // }
 
-  Widget measurements(double width) {
-    return Column(
-      children: <Widget>[
-        Divider(
-          color: Colors.blue,
-        ),
-        GridView.count(
-          crossAxisCount: 3,
-          childAspectRatio: width / 300,
-          primary: false,
-          shrinkWrap: true,
-          children: <Widget>[
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: 8.0),
-              child: TextFormField(
-                enabled: false,
-                initialValue: widget.bf.neck + ' in.',
-                decoration: const InputDecoration(labelText: 'Neck'),
-              ),
-            ),
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: 8.0),
-              child: TextFormField(
-                enabled: false,
-                initialValue: widget.bf.waist + ' in.',
-                decoration: const InputDecoration(labelText: 'Waist'),
-              ),
-            ),
-            if (widget.bf.gender == 'Female')
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: 8.0),
-                child: TextFormField(
-                  enabled: false,
-                  initialValue: widget.bf.hip + ' in.',
-                  decoration: const InputDecoration(labelText: 'Hip'),
-                ),
-              ),
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: 8.0),
-              child: TextFormField(
-                enabled: false,
-                initialValue: widget.bf.bfPercent + '%',
-                decoration: const InputDecoration(labelText: 'BF %'),
-              ),
-            ),
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: 8.0),
-              child: TextFormField(
-                enabled: false,
-                initialValue: widget.bf.maxPercent + '%',
-                decoration: const InputDecoration(labelText: 'Max BF %'),
-              ),
-            ),
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: 8.0),
-              child: TextFormField(
-                enabled: false,
-                initialValue: widget.bf.overUnder + '%',
-                decoration: const InputDecoration(labelText: 'Over/Under'),
-              ),
-            ),
-          ],
-        ),
-      ],
-    );
-  }
-
-  void _downloadPdf() {
-    if (widget.bf.bmiPass == 1) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Soldier passed Height / Weight'),
-        ),
-      );
-      return;
-    } else {
-      if (widget.bf.gender == 'Male') {
-        showModalBottomSheet(
-          context: context,
-          builder: (ctx) => Download5500Widget(widget.bf),
-        );
-      } else {
-        showModalBottomSheet(
-          context: context,
-          builder: (ctx) => Download5501Widget(widget.bf),
-        );
-      }
-    }
-  }
-
   @override
   void dispose() {
     _mainNameController.dispose();
@@ -254,11 +171,11 @@ class _BodyfatDetailsPageState extends State<BodyfatDetailsPage> {
   void initState() {
     dbHelper = new DBHelper();
 
-    _mainDateController = new TextEditingController(text: widget.bf.date);
+    _mainDateController = new TextEditingController(text: widget.apft.date);
     _mainNameController = new TextEditingController(
-        text: widget.bf.rank == ''
-            ? widget.bf.name
-            : '${widget.bf.rank} ${widget.bf.name}');
+        text: widget.apft.rank == ''
+            ? widget.apft.name
+            : '${widget.apft.rank} ${widget.apft.name}');
 
     regExp = new RegExp(r'^\d{4}(0[1-9]|1[012])(0[1-9]|[12][0-9]|3[01])$');
 
@@ -267,11 +184,11 @@ class _BodyfatDetailsPageState extends State<BodyfatDetailsPage> {
 
   @override
   Widget build(BuildContext context) {
-    final width = MediaQuery.of(context).size.width;
+    double width = MediaQuery.of(context).size.width;
     return Scaffold(
       key: _scaffoldState,
       appBar: AppBar(
-        title: const Text('Body Comp Details'),
+        title: Text('APFT Details'),
         actions: <Widget>[
           IconButton(
             icon: Icon(Icons.picture_as_pdf),
@@ -286,11 +203,11 @@ class _BodyfatDetailsPageState extends State<BodyfatDetailsPage> {
                 context: context,
                 onConfirm: () {
                   Navigator.pop(context);
-                  dbHelper.deleteBodyfat(widget.bf.id);
+                  dbHelper.deleteApft(widget.apft.id);
                   Navigator.pushReplacement(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => SavedBodyfatsPage()));
+                          builder: (context) => SavedApftsPage()));
                 },
               );
             },
@@ -300,7 +217,7 @@ class _BodyfatDetailsPageState extends State<BodyfatDetailsPage> {
       floatingActionButton: FloatingActionButton(
         child: const Icon(Icons.edit),
         onPressed: () {
-          _updateBf(context, widget.bf);
+          _updateApft(context, widget.apft);
         },
       ),
       body: Container(
@@ -347,7 +264,7 @@ class _BodyfatDetailsPageState extends State<BodyfatDetailsPage> {
                         padding: EdgeInsets.symmetric(horizontal: 8.0),
                         child: TextFormField(
                           enabled: false,
-                          initialValue: widget.bf.gender,
+                          initialValue: widget.apft.gender,
                           decoration:
                               const InputDecoration(labelText: 'Gender'),
                         ),
@@ -356,53 +273,111 @@ class _BodyfatDetailsPageState extends State<BodyfatDetailsPage> {
                         padding: EdgeInsets.symmetric(horizontal: 8.0),
                         child: TextFormField(
                           enabled: false,
-                          initialValue: widget.bf.age,
+                          initialValue: widget.apft.age,
                           decoration: const InputDecoration(labelText: 'Age'),
-                        ),
-                      ),
-                      Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 8.0),
-                        child: TextFormField(
-                          enabled: false,
-                          initialValue:
-                              widget.bf.heightDouble.toString() + ' in.',
-                          decoration:
-                              const InputDecoration(labelText: 'Height'),
-                        ),
-                      ),
-                      Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 8.0),
-                        child: TextFormField(
-                          enabled: false,
-                          initialValue: widget.bf.weight + ' lbs.',
-                          decoration:
-                              const InputDecoration(labelText: 'Weight'),
-                        ),
-                      ),
-                      Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 8.0),
-                        child: TextFormField(
-                          enabled: false,
-                          initialValue: widget.bf.maxWeight + ' lbs.',
-                          decoration:
-                              const InputDecoration(labelText: 'Max Weight'),
-                        ),
-                      ),
-                      Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 8.0),
-                        child: TextFormField(
-                          enabled: false,
-                          initialValue: (int.tryParse(widget.bf.weight) -
-                                      int.tryParse(widget.bf.maxWeight))
-                                  .toString() +
-                              ' lbs.',
-                          decoration:
-                              const InputDecoration(labelText: 'Over/Under'),
                         ),
                       ),
                     ],
                   ),
-                  if (widget.bf.bmiPass == 0) measurements(width),
+                  GridView.count(
+                    crossAxisCount: 3,
+                    childAspectRatio: width / 300,
+                    primary: false,
+                    shrinkWrap: true,
+                    children: <Widget>[
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(8.0, 24.0, 8.0, 0.0),
+                        child: const Text(
+                          'PU',
+                          style: TextStyle(fontSize: 18.0),
+                        ),
+                      ),
+                      Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 8.0),
+                        child: TextFormField(
+                          enabled: false,
+                          initialValue: widget.apft.puRaw,
+                          decoration: const InputDecoration(labelText: 'Raw'),
+                        ),
+                      ),
+                      Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 8.0),
+                        child: TextFormField(
+                          enabled: false,
+                          initialValue: widget.apft.puScore,
+                          decoration: const InputDecoration(labelText: 'Score'),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(8.0, 24.0, 8.0, 0.0),
+                        child: const Text(
+                          'SU',
+                          style: TextStyle(fontSize: 18.0),
+                        ),
+                      ),
+                      Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 8.0),
+                        child: TextFormField(
+                          enabled: false,
+                          initialValue: widget.apft.suRaw,
+                          decoration: const InputDecoration(labelText: 'Raw'),
+                        ),
+                      ),
+                      Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 8.0),
+                        child: TextFormField(
+                          enabled: false,
+                          initialValue: widget.apft.suScore,
+                          decoration: const InputDecoration(labelText: 'Score'),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(8.0, 24.0, 8.0, 0.0),
+                        child: Text(
+                          widget.apft.runEvent,
+                          style: const TextStyle(fontSize: 18.0),
+                        ),
+                      ),
+                      Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 8.0),
+                        child: TextFormField(
+                          enabled: false,
+                          initialValue: widget.apft.runRaw,
+                          decoration: const InputDecoration(labelText: 'Raw'),
+                        ),
+                      ),
+                      Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 8.0),
+                        child: TextFormField(
+                          enabled: false,
+                          initialValue: widget.apft.runScore,
+                          decoration: const InputDecoration(labelText: 'Score'),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(8.0, 24.0, 8.0, 0.0),
+                        child: const Text(
+                          'Total',
+                          style: TextStyle(fontSize: 18.0),
+                        ),
+                      ),
+                      Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 8.0),
+                        child: const Text(
+                          '',
+                          style: TextStyle(fontSize: 18.0),
+                        ),
+                      ),
+                      Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 8.0),
+                        child: TextFormField(
+                          enabled: false,
+                          initialValue: widget.apft.total,
+                          decoration: const InputDecoration(labelText: 'Score'),
+                        ),
+                      ),
+                    ],
+                  )
                 ],
               ),
             ),

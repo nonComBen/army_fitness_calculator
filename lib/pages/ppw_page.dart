@@ -7,19 +7,19 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import './calculators/award_pts_calculator.dart';
-import './calculators/pt_pts_calculator.dart';
-import './calculators/weapons_pts_calculator.dart';
-import './providers/shared_preferences_provider.dart';
-import './savedPages/savedPpwPage.dart';
-import './sqlite/dbHelper.dart';
-import './sqlite/ppw.dart';
-import './widgets/formatted_expansion_tile.dart';
-import './widgets/formatted_radio.dart';
-import 'widgets/badge_card.dart';
-import 'widgets/decoration_card.dart';
-import 'classes/award_decoration.dart';
-import 'widgets/formatted_text_field.dart';
+import '../calculators/award_pts_calculator.dart';
+import '../calculators/pt_pts_calculator.dart';
+import '../calculators/weapons_pts_calculator.dart';
+import '../providers/shared_preferences_provider.dart';
+import 'saved_pages/saved_ppw_page.dart';
+import '../sqlite/db_helper.dart';
+import '../sqlite/ppw.dart';
+import '../widgets/formatted_expansion_tile.dart';
+import '../widgets/formatted_radio.dart';
+import '../widgets/badge_card.dart';
+import '../widgets/decoration_card.dart';
+import '../classes/award_decoration.dart';
+import '../widgets/formatted_text_field.dart';
 
 class PromotionPointPage extends ConsumerStatefulWidget {
   PromotionPointPage(this.isPremium, this.upgradeNeeded);

@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 
-import '../methods/delete_record.dart';
-import './apftChartPage.dart';
-import './apftDetailsPage.dart';
-import '../sqlite/apft.dart';
-import '../sqlite/dbHelper.dart';
+import '../../methods/delete_record.dart';
+import '../chart_pages/apft_chart_page.dart';
+import '../detail_pages/apft_details_page.dart';
+import '../../sqlite/apft.dart';
+import '../../sqlite/db_helper.dart';
 
 class SavedApftsPage extends StatefulWidget {
   @override

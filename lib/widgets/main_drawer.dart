@@ -2,15 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:launch_review/launch_review.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
-import '../acftVerbiage.dart';
-import '../apftVerbiage.dart';
-import '../bodyfatVerbiage.dart';
-import '../privacyPolicyPage.dart';
-import '../savedPages/savedAcftsPage.dart';
-import '../savedPages/savedApftsPage.dart';
-import '../savedPages/savedBodyfatsPage.dart';
-import '../savedPages/savedPpwPage.dart';
-import '../settingsPage.dart';
+import '../pages/verbiage_pages/apft_verbiage_page.dart';
+import '../pages/verbiage_pages/acft_verbiage_page.dart';
+import '../pages/verbiage_pages/bodyfat_verbiage_page.dart';
+import '../pages/privacy_policy_page.dart';
+import '../pages/saved_pages/saved_acfts_page.dart';
+import '../pages/saved_pages/saved_apfts_page.dart';
+import '../pages/saved_pages/saved_bodyfats_page.dart';
+import '../pages/saved_pages/saved_ppw_page.dart';
+import '../pages/settings_page.dart';
 
 class MainDrawer extends StatelessWidget {
   const MainDrawer({

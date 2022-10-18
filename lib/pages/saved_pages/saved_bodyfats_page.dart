@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 
-import '../methods/delete_record.dart';
-import './bodyfatChartPage.dart';
-import './bodyfatDetailsPage.dart';
-import '../sqlite/bodyfat.dart';
-import '../sqlite/dbHelper.dart';
+import '../../methods/delete_record.dart';
+import '../chart_pages/bodyfat_chart_page.dart';
+import '../detail_pages/bodyfat_details_page.dart';
+import '../../sqlite/bodyfat.dart';
+import '../../sqlite/db_helper.dart';
 
 class SavedBodyfatsPage extends StatefulWidget {
   @override

@@ -2,10 +2,10 @@ import 'package:acft_calculator/widgets/download_acft_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-import '../methods/delete_record.dart';
-import './savedAcftsPage.dart';
-import '../sqlite/dbHelper.dart';
-import '../sqlite/acft.dart';
+import '../../methods/delete_record.dart';
+import '../saved_pages/saved_acfts_page.dart';
+import '../../sqlite/db_helper.dart';
+import '../../sqlite/acft.dart';
 
 class AcftDetailsPage extends StatefulWidget {
   AcftDetailsPage({this.acft});

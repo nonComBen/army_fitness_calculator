@@ -4,15 +4,15 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import './providers/shared_preferences_provider.dart';
-import './sqlite/dbHelper.dart';
-import './widgets/formatted_radio.dart';
-import './widgets/grid_box.dart';
-import './widgets/increment_decrement_button.dart';
-import './calculators/bfCalculator.dart';
-import './sqlite/bodyfat.dart';
-import './savedPages/savedBodyfatsPage.dart';
-import 'widgets/value_input_field.dart';
+import '../providers/shared_preferences_provider.dart';
+import '../sqlite/db_helper.dart';
+import '../widgets/formatted_radio.dart';
+import '../widgets/grid_box.dart';
+import '../widgets/increment_decrement_button.dart';
+import '../calculators/bf_calculator.dart';
+import '../sqlite/bodyfat.dart';
+import 'saved_pages/saved_bodyfats_page.dart';
+import '../widgets/value_input_field.dart';
 
 class BodyfatPage extends ConsumerStatefulWidget {
   BodyfatPage(this.isPremium, this.upgradeNeeded);

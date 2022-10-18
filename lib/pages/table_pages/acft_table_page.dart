@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '../constants/pt_age_group_table.dart';
-import '../widgets/acft_table.dart';
+import '../../constants/pt_age_group_table.dart';
+import '../../widgets/acft_table.dart';
 
 class AcftTablePage extends StatefulWidget {
   const AcftTablePage({Key key, this.ageGroup, this.gender}) : super(key: key);

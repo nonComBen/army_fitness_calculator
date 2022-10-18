@@ -3,10 +3,10 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import './ppwChartsPage.dart';
-import './ppwDetailsPage.dart';
-import '../sqlite/ppw.dart';
-import '../sqlite/dbHelper.dart';
+import '../chart_pages/ppw_charts_page.dart';
+import '../detail_pages/ppw_details_page.dart';
+import '../../sqlite/ppw.dart';
+import '../../sqlite/db_helper.dart';
 
 class SavedPpwsPage extends StatefulWidget {
   @override

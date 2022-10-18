@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-import '../methods/delete_record.dart';
-import '../widgets/download_apft_widget.dart';
-import './savedApftsPage.dart';
-import '../sqlite/dbHelper.dart';
-import '../sqlite/apft.dart';
+import '../../methods/delete_record.dart';
+import '../../widgets/download_apft_widget.dart';
+import '../saved_pages/saved_apfts_page.dart';
+import '../../sqlite/db_helper.dart';
+import '../../sqlite/apft.dart';
 
 class ApftDetailsPage extends StatefulWidget {
   ApftDetailsPage({this.apft});
@@ -118,47 +118,11 @@ class _ApftDetailsPageState extends State<ApftDetailsPage> {
   }
 
   void _downloadPdf() {
-    // DownloadApft.downloadPdf(context: context, apft: widget.apft);
     showModalBottomSheet(
       context: context,
       builder: (ctx) => DownloadApftWidget(widget.apft),
     );
   }
-
-  // takeScreenshot() async {
-  //   bool permissionGranted;
-  //   if (Platform.isAndroid) {
-  //     permissionGranted = await Permission.storage.request().isGranted;
-  //   } else {
-  //     permissionGranted = await Permission.photos.request().isGranted;
-  //   }
-
-  //   if (permissionGranted) {
-  //     try {
-  //       RenderRepaintBoundary boundary =
-  //           previewContainer.currentContext.findRenderObject();
-  //       ui.Image image = await boundary.toImage();
-  //       ByteData byteData =
-  //           await image.toByteData(format: ui.ImageByteFormat.png);
-  //       Uint8List pngBytes = byteData.buffer.asUint8List();
-  //       await PhotosSaver.saveFile(fileData: pngBytes);
-  //       String location =
-  //           Platform.isAndroid ? 'Gallery Album "Pictures"' : 'Photos';
-  //       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-  //         content: Text('Image saved to $location'),
-  //       ));
-  //     } catch (e) {
-  //       print('Error: $e');
-  //       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-  //         content: Text('Failed to save image'),
-  //       ));
-  //     }
-  //   } else {
-  //     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-  //       content: Text('You must allow permission to save screenshot'),
-  //     ));
-  //   }
-  // }
 
   @override
   void dispose() {

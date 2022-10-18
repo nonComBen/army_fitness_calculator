@@ -4,10 +4,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import './providers/shared_preferences_provider.dart';
-import './providers/theme_provider.dart';
-import './widgets/formatted_drop_down.dart';
-import './widgets/formatted_radio.dart';
+import '../providers/shared_preferences_provider.dart';
+import '../providers/theme_provider.dart';
+import '../widgets/formatted_drop_down.dart';
+import '../widgets/formatted_radio.dart';
 import 'package:flutter/material.dart';
 
 class SettingsPage extends ConsumerStatefulWidget {
