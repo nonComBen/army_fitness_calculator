@@ -63,6 +63,29 @@ flutter:
     - assets/documents/da_form_705.pdf
     - assets/documents/da_form_5500.pdf
     - assets/documents/da_form_5501.pdf
+    - assets/mdl_images/120_pounds.png
+    - assets/mdl_images/130_pounds.png
+    - assets/mdl_images/140_pounds.png
+    - assets/mdl_images/150_pounds.png
+    - assets/mdl_images/160_pounds.png
+    - assets/mdl_images/170_pounds.png
+    - assets/mdl_images/180_pounds.png
+    - assets/mdl_images/190_pounds.png
+    - assets/mdl_images/200_pounds.png
+    - assets/mdl_images/210_pounds.png
+    - assets/mdl_images/220_pounds.png
+    - assets/mdl_images/230_pounds.png
+    - assets/mdl_images/240_pounds.png
+    - assets/mdl_images/250_pounds.png
+    - assets/mdl_images/260_pounds.png
+    - assets/mdl_images/270_pounds.png
+    - assets/mdl_images/280_pounds.png
+    - assets/mdl_images/290_pounds.png
+    - assets/mdl_images/300_pounds.png
+    - assets/mdl_images/310_pounds.png
+    - assets/mdl_images/320_pounds.png
+    - assets/mdl_images/330_pounds.png
+    - assets/mdl_images/340_pounds.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.

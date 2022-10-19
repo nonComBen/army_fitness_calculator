@@ -1,3 +1,4 @@
+import 'package:acft_calculator/pages/mdl_setup_page.dart';
 import 'package:flutter/material.dart';
 import 'package:launch_review/launch_review.dart';
 import 'package:url_launcher/url_launcher_string.dart';
@@ -96,6 +97,19 @@ class MainDrawer extends StatelessWidget {
                       builder: (context) => AcftVerbiagePage(
                             isPremium: isPremium,
                           )));
+            },
+          ),
+          ListTile(
+            title: const Text('MDL Setup'),
+            leading: const Icon(Icons.fitness_center),
+            onTap: () {
+              Navigator.of(context).pop();
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => MdlSetupPage(),
+                ),
+              );
             },
           ),
           ListTile(
