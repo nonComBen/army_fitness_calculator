@@ -31,7 +31,7 @@ class MdlSetupCard extends StatelessWidget {
                     child: Column(
                       children: [
                         BulletItem(
-                          text: '60 Lb Hex Bar',
+                          text: '60 lb Hex Bar',
                         ),
                         ...weights
                             .map((e) => BulletItem(

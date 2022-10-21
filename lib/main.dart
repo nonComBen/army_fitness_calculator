@@ -135,8 +135,10 @@ class MyAppState extends State<MyApp> {
             }
             return Padding(
               padding: EdgeInsets.only(
-                  left: MediaQuery.of(context).viewPadding.left,
-                  right: MediaQuery.of(context).viewPadding.right),
+                left: MediaQuery.of(context).viewPadding.left,
+                right: MediaQuery.of(context).viewPadding.right,
+                bottom: MediaQuery.of(context).viewPadding.bottom + 8,
+              ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
@@ -145,12 +147,8 @@ class MyAppState extends State<MyApp> {
                     Container(
                       constraints: BoxConstraints(maxHeight: 90),
                       alignment: Alignment.center,
-                      child: Padding(
-                        padding: EdgeInsets.only(
-                            bottom: MediaQuery.of(context).viewPadding.bottom),
-                        child: AdWidget(
-                          ad: myBanner,
-                        ),
+                      child: AdWidget(
+                        ad: myBanner,
                       ),
                       width: myBanner != null
                           ? myBanner.size.width.toDouble()

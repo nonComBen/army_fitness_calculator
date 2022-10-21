@@ -36,10 +36,10 @@ class _MyHomePageState extends State<MyHomePage> {
   ];
 
   RateMyApp _rateMyApp = RateMyApp(
-    minDays: 0,
-    minLaunches: 2,
-    remindDays: 0,
-    remindLaunches: 3,
+    minDays: 7,
+    minLaunches: 5,
+    remindDays: 7,
+    remindLaunches: 5,
   );
 
   _upgrade() {

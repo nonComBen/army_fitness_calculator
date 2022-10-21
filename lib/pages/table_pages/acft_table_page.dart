@@ -30,7 +30,12 @@ class _AcftTablePageState extends State<AcftTablePage> {
         title: Text('ACFT Table'),
       ),
       body: Container(
-        padding: EdgeInsets.all(8),
+        padding: EdgeInsets.only(
+          bottom: MediaQuery.of(context).viewPadding.bottom,
+          left: 8,
+          right: 8,
+          top: 8,
+        ),
         child: SingleChildScrollView(
           child: Column(
             children: [
