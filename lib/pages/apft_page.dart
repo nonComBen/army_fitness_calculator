@@ -291,7 +291,7 @@ class _ApftPageState extends ConsumerState<ApftPage> {
     _puFocus.dispose();
     _suFocus.dispose();
     _minsFocus.dispose();
-    _secsController.dispose();
+    _secsFocus.dispose();
   }
 
   @override

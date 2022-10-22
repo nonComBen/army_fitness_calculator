@@ -49,23 +49,28 @@ class AcftPageState extends ConsumerState<AcftPage> {
       plankScore,
       runScore,
       total;
-  bool isAgeValid,
-      isMdlValid,
-      isSptValid,
-      isHrpValid,
-      isSdcMinsValid,
-      isSdcSecsValid,
-      isPlankMinsValid,
-      isPlankSecsValid,
-      isRunMinsValid,
-      isRunSecsValid,
-      mdlPass,
-      sptPass,
-      hrpPass,
-      sdcPass,
-      plkPass,
-      runPass,
-      totalPass;
+  bool isAgeValid = true,
+      isMdlValid = true,
+      isSptValid = true,
+      isHrpValid = true,
+      isSdcMinsValid = true,
+      isSdcSecsValid = true,
+      isPlankMinsValid = true,
+      isPlankSecsValid = true,
+      isRunMinsValid = true,
+      isRunSecsValid = true,
+      hasMdlProfile = false,
+      hasSptProfile = false,
+      hasHrpProfile = false,
+      hasSdcProfile = false,
+      hasPlkProfile = false,
+      mdlPass = true,
+      sptPass = true,
+      hrpPass = true,
+      sdcPass = true,
+      plkPass = true,
+      runPass = true,
+      totalPass = true;
   double sptRaw;
   static String ageGroup, gender;
   String mdlMinimum,
@@ -262,11 +267,11 @@ class AcftPageState extends ConsumerState<AcftPage> {
   void calcTotal() {
     setState(() {
       total = mdlScore + sptScore + hrpScore + sdcScore + plankScore + runScore;
-      mdlPass = mdlScore >= 60;
-      sptPass = sptScore >= 60;
-      hrpPass = hrpScore >= 60;
-      sdcPass = sdcScore >= 60;
-      plkPass = plankScore >= 60;
+      mdlPass = mdlScore >= 60 || hasMdlProfile;
+      sptPass = sptScore >= 60 || hasSptProfile;
+      hrpPass = hrpScore >= 60 || hasHrpProfile;
+      sdcPass = sdcScore >= 60 || hasSdcProfile;
+      plkPass = plankScore >= 60 || hasPlkProfile;
       runPass = runScore >= 60;
 
       if (aerobicEvent != 'Run') {
@@ -470,17 +475,6 @@ class AcftPageState extends ConsumerState<AcftPage> {
       }
     });
 
-    isAgeValid = true;
-    isMdlValid = true;
-    isSptValid = true;
-    isHrpValid = true;
-    isSdcMinsValid = true;
-    isSdcSecsValid = true;
-    isPlankMinsValid = true;
-    isPlankSecsValid = true;
-    isRunMinsValid = true;
-    isRunSecsValid = true;
-
     prefs = ref.read(sharedPreferencesProvider);
 
     if (prefs.getString('acft_event') != null) {
@@ -644,16 +638,18 @@ class AcftPageState extends ConsumerState<AcftPage> {
                   controller: _mdlController,
                   focusNode: _mdlFocus,
                   onEditingComplete: () => _sptFocus.requestFocus(),
-                  errorText: isMdlValid ? null : '60-400',
+                  errorText: isMdlValid ? null : '0-400',
                   onChanged: (value) {
                     int raw = int.tryParse(value) ?? 0;
                     if (raw > 400) {
+                      hasMdlProfile = false;
                       isMdlValid = false;
                       mdlRaw = 400;
-                    } else if (raw < 60) {
+                    } else if (raw < 0) {
                       isMdlValid = false;
-                      mdlRaw = 60;
+                      mdlRaw = 0;
                     } else {
+                      hasMdlProfile = false;
                       mdlRaw = raw;
                       isMdlValid = true;
                     }
@@ -672,11 +668,11 @@ class AcftPageState extends ConsumerState<AcftPage> {
                     child: '-',
                     onPressed: () {
                       FocusScope.of(context).unfocus();
-                      if (mdlRaw > 60) {
+                      if (mdlRaw > 0) {
                         mdlRaw = mdlRaw - 10;
                         calcTotal();
                       } else {
-                        mdlRaw = 60;
+                        mdlRaw = 0;
                       }
                       _mdlController.text = mdlRaw.toString();
                       isMdlValid = true;
@@ -690,12 +686,16 @@ class AcftPageState extends ConsumerState<AcftPage> {
                     child: Slider(
                       activeColor: primaryColor,
                       value: mdlRaw.toDouble(),
-                      min: 60,
+                      min: 0,
                       max: 400,
-                      divisions: 34,
+                      divisions: 40,
                       onChanged: (value) {
                         FocusScope.of(context).unfocus();
-                        mdlRaw = value.floor();
+                        if (hasMdlProfile) {
+                          mdlRaw = 0;
+                        } else {
+                          mdlRaw = (value / 10).round() * 10;
+                        }
                         _mdlController.text = mdlRaw.toString();
                         isMdlValid = true;
                         mdlScore = getMdlScore(
@@ -710,10 +710,14 @@ class AcftPageState extends ConsumerState<AcftPage> {
                     child: '+',
                     onPressed: () {
                       FocusScope.of(context).unfocus();
-                      if (mdlRaw < 400) {
-                        mdlRaw = mdlRaw + 10;
+                      if (hasMdlProfile) {
+                        mdlRaw = 0;
                       } else {
-                        mdlRaw = 400;
+                        if (mdlRaw < 400) {
+                          mdlRaw = mdlRaw + 10;
+                        } else {
+                          mdlRaw = 400;
+                        }
                       }
                       _mdlController.text = mdlRaw.toString();
                       mdlScore = getMdlScore(mdlRaw,
@@ -724,6 +728,27 @@ class AcftPageState extends ConsumerState<AcftPage> {
                   ),
                 ],
               ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: CheckboxListTile(
+                  title: const Text('Profile'),
+                  value: hasMdlProfile,
+                  controlAffinity: ListTileControlAffinity.leading,
+                  activeColor: onPrimary,
+                  onChanged: (value) {
+                    FocusScope.of(context).unfocus();
+                    setState(() {
+                      hasMdlProfile = value;
+                      if (value) {
+                        mdlRaw = 0;
+                        _mdlController.text = mdlRaw.toString();
+                      }
+                      mdlScore = 0;
+                      isMdlValid = true;
+                      calcTotal();
+                    });
+                  }),
             ),
             Divider(
               color: Colors.yellow,
@@ -740,16 +765,18 @@ class AcftPageState extends ConsumerState<AcftPage> {
                   controller: _sptController,
                   focusNode: _sptFocus,
                   onEditingComplete: () => _hrpFocus.requestFocus(),
-                  errorText: isSptValid ? null : '3.3-14.0',
+                  errorText: isSptValid ? null : '0-14.0',
                   onChanged: (value) {
                     double raw = double.tryParse(value) ?? 0;
                     if (raw > 14.0) {
+                      hasSptProfile = false;
                       isSptValid = false;
                       sptRaw = 14.0;
-                    } else if (raw < 3.3) {
+                    } else if (raw < 0.0) {
                       isSptValid = false;
-                      sptRaw = 3.3;
+                      sptRaw = 0.0;
                     } else {
+                      hasSptProfile = false;
                       sptRaw = raw;
                       isSptValid = true;
                     }
@@ -768,12 +795,12 @@ class AcftPageState extends ConsumerState<AcftPage> {
                     child: '-',
                     onPressed: () {
                       FocusScope.of(context).unfocus();
-                      if (sptRaw > 3.3) {
+                      if (sptRaw > 0.0) {
                         sptRaw = double.tryParse(
                                 (sptRaw - 0.1).toStringAsFixed(1)) ??
                             sptRaw - 0.1;
                       } else {
-                        sptRaw = 3.3;
+                        sptRaw = 0.0;
                       }
                       _sptController.text = sptRaw.toString();
                       isSptValid = true;
@@ -787,12 +814,16 @@ class AcftPageState extends ConsumerState<AcftPage> {
                     child: Slider(
                       activeColor: Theme.of(context).colorScheme.primary,
                       value: sptRaw,
-                      min: 3.3,
+                      min: 0,
                       max: 14.0,
-                      divisions: 108,
+                      divisions: 141,
                       onChanged: (value) {
                         FocusScope.of(context).unfocus();
-                        sptRaw = (value * 10).round() / 10;
+                        if (hasSptProfile) {
+                          sptRaw = 0;
+                        } else {
+                          sptRaw = (value * 10).round() / 10;
+                        }
                         _sptController.text = sptRaw.toString();
                         isSptValid = true;
                         sptScore = getSptScore(
@@ -807,12 +838,16 @@ class AcftPageState extends ConsumerState<AcftPage> {
                     child: '+',
                     onPressed: () {
                       FocusScope.of(context).unfocus();
-                      if (sptRaw < 14.0) {
-                        sptRaw = double.tryParse(
-                                (sptRaw + 0.1).toStringAsFixed(1)) ??
-                            sptRaw + 0.1;
+                      if (hasSptProfile) {
+                        sptRaw = 0;
                       } else {
-                        sptRaw = 14.0;
+                        if (sptRaw < 14.0) {
+                          sptRaw = double.tryParse(
+                                  (sptRaw + 0.1).toStringAsFixed(1)) ??
+                              sptRaw + 0.1;
+                        } else {
+                          sptRaw = 14.0;
+                        }
                       }
                       _sptController.text = sptRaw.toString();
                       isSptValid = true;
@@ -823,6 +858,27 @@ class AcftPageState extends ConsumerState<AcftPage> {
                   ),
                 ],
               ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: CheckboxListTile(
+                  title: const Text('Profile'),
+                  value: hasSptProfile,
+                  controlAffinity: ListTileControlAffinity.leading,
+                  activeColor: onPrimary,
+                  onChanged: (value) {
+                    FocusScope.of(context).unfocus();
+                    setState(() {
+                      hasSptProfile = value;
+                      if (value) {
+                        sptRaw = 0;
+                        _sptController.text = sptRaw.toString();
+                      }
+                      sptScore = 0;
+                      isSptValid = true;
+                      calcTotal();
+                    });
+                  }),
             ),
             Divider(
               color: Colors.yellow,
@@ -842,12 +898,14 @@ class AcftPageState extends ConsumerState<AcftPage> {
                   onChanged: (value) {
                     int raw = int.tryParse(value) ?? -1;
                     if (raw > 80) {
+                      hasHrpProfile = false;
                       isHrpValid = false;
                       hrpRaw = 80;
                     } else if (raw < 0) {
                       isHrpValid = false;
                       hrpRaw = 0;
                     } else {
+                      hasHrpProfile = false;
                       hrpRaw = raw;
                       isHrpValid = true;
                     }
@@ -888,7 +946,11 @@ class AcftPageState extends ConsumerState<AcftPage> {
                       divisions: 81,
                       onChanged: (value) {
                         FocusScope.of(context).unfocus();
-                        hrpRaw = value.floor();
+                        if (hasHrpProfile) {
+                          hrpRaw = 0;
+                        } else {
+                          hrpRaw = value.floor();
+                        }
                         _hrpController.text = hrpRaw.toString();
                         isHrpValid = true;
                         hrpScore = getHrpScore(
@@ -903,10 +965,14 @@ class AcftPageState extends ConsumerState<AcftPage> {
                     child: '+',
                     onPressed: () {
                       FocusScope.of(context).unfocus();
-                      if (hrpRaw < 80) {
-                        hrpRaw++;
+                      if (hasHrpProfile) {
+                        hrpRaw = 0;
                       } else {
-                        hrpRaw = 80;
+                        if (hrpRaw < 80) {
+                          hrpRaw++;
+                        } else {
+                          hrpRaw = 80;
+                        }
                       }
                       _hrpController.text = hrpRaw.toString();
                       isHrpValid = true;
@@ -917,6 +983,27 @@ class AcftPageState extends ConsumerState<AcftPage> {
                   ),
                 ],
               ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: CheckboxListTile(
+                  title: const Text('Profile'),
+                  value: hasHrpProfile,
+                  controlAffinity: ListTileControlAffinity.leading,
+                  activeColor: onPrimary,
+                  onChanged: (value) {
+                    FocusScope.of(context).unfocus();
+                    setState(() {
+                      hasHrpProfile = value;
+                      if (value) {
+                        hrpRaw = 0;
+                        _hrpController.text = hrpRaw.toString();
+                      }
+                      hrpScore = 0;
+                      isHrpValid = true;
+                      calcTotal();
+                    });
+                  }),
             ),
             Divider(
               color: Colors.yellow,
@@ -942,9 +1029,11 @@ class AcftPageState extends ConsumerState<AcftPage> {
                           isSdcMinsValid = false;
                           sdcMins = 0;
                         } else if (raw > 5) {
+                          hasSdcProfile = false;
                           isSdcMinsValid = false;
                           sdcMins = 5;
                         } else {
+                          hasSdcProfile = false;
                           isSdcMinsValid = true;
                           sdcMins = raw;
                         }
@@ -971,12 +1060,14 @@ class AcftPageState extends ConsumerState<AcftPage> {
                       onChanged: (value) {
                         int raw = int.tryParse(value) ?? -1;
                         if (raw > 59) {
+                          hasSdcProfile = false;
                           isSdcSecsValid = false;
                           sdcSecs = 59;
                         } else if (raw < 0) {
                           isSdcSecsValid = false;
                           sdcSecs = 0;
                         } else {
+                          hasSdcProfile = false;
                           isSdcSecsValid = true;
                           sdcSecs = raw;
                         }
@@ -1021,7 +1112,11 @@ class AcftPageState extends ConsumerState<AcftPage> {
                       divisions: 6,
                       onChanged: (value) {
                         FocusScope.of(context).unfocus();
-                        sdcMins = value.floor();
+                        if (hasSdcProfile) {
+                          sdcMins = 0;
+                        } else {
+                          sdcMins = value.floor();
+                        }
                         _sdcMinsController.text = sdcMins.toString();
                         isSdcMinsValid = true;
                         sdcScore = getSdcScore(
@@ -1036,10 +1131,14 @@ class AcftPageState extends ConsumerState<AcftPage> {
                     child: '+',
                     onPressed: () {
                       FocusScope.of(context).unfocus();
-                      if (sdcMins < 5) {
-                        sdcMins++;
+                      if (hasSdcProfile) {
+                        sdcMins = 0;
                       } else {
-                        sdcMins = 5;
+                        if (sdcMins < 5) {
+                          sdcMins++;
+                        } else {
+                          sdcMins = 5;
+                        }
                       }
                       _sdcMinsController.text = sdcMins.toString();
                       isSdcMinsValid = true;
@@ -1081,7 +1180,11 @@ class AcftPageState extends ConsumerState<AcftPage> {
                       divisions: 60,
                       onChanged: (value) {
                         FocusScope.of(context).unfocus();
-                        sdcSecs = value.floor();
+                        if (hasSdcProfile) {
+                          sdcSecs = 0;
+                        } else {
+                          sdcSecs = value.floor();
+                        }
                         _sdcSecsController.text = sdcSecs.toString();
                         isSdcSecsValid = true;
                         sdcScore = getSdcScore(
@@ -1096,10 +1199,14 @@ class AcftPageState extends ConsumerState<AcftPage> {
                     child: '+',
                     onPressed: () {
                       FocusScope.of(context).unfocus();
-                      if (sdcSecs < 59) {
-                        sdcSecs++;
+                      if (hasSdcProfile) {
+                        sdcSecs = 0;
                       } else {
-                        sdcSecs = 59;
+                        if (sdcSecs < 59) {
+                          sdcSecs++;
+                        } else {
+                          sdcSecs = 59;
+                        }
                       }
                       _sdcSecsController.text = sdcSecs.toString();
                       isSdcSecsValid = true;
@@ -1110,6 +1217,30 @@ class AcftPageState extends ConsumerState<AcftPage> {
                   ),
                 ],
               ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: CheckboxListTile(
+                  title: const Text('Profile'),
+                  value: hasSdcProfile,
+                  controlAffinity: ListTileControlAffinity.leading,
+                  activeColor: onPrimary,
+                  onChanged: (value) {
+                    FocusScope.of(context).unfocus();
+                    setState(() {
+                      hasSdcProfile = value;
+                      if (value) {
+                        sdcMins = 0;
+                        sdcSecs = 0;
+                        _sdcMinsController.text = sdcMins.toString();
+                        _sdcSecsController.text = sdcSecs.toString();
+                      }
+                      sdcScore = 0;
+                      isSdcMinsValid = true;
+                      isSdcSecsValid = true;
+                      calcTotal();
+                    });
+                  }),
             ),
             Divider(
               color: Colors.yellow,
@@ -1135,9 +1266,11 @@ class AcftPageState extends ConsumerState<AcftPage> {
                           isPlankMinsValid = false;
                           plankMins = 0;
                         } else if (raw > 4) {
+                          hasPlkProfile = false;
                           isPlankMinsValid = false;
                           plankMins = 4;
                         } else {
+                          hasPlkProfile = false;
                           isPlankMinsValid = true;
                           plankMins = raw;
                         }
@@ -1164,12 +1297,14 @@ class AcftPageState extends ConsumerState<AcftPage> {
                       onChanged: (value) {
                         int raw = int.tryParse(value) ?? -1;
                         if (raw > 59) {
+                          hasPlkProfile = false;
                           isPlankSecsValid = false;
                           plankSecs = 59;
                         } else if (raw < 0) {
                           isPlankSecsValid = false;
                           plankSecs = 0;
                         } else {
+                          hasPlkProfile = false;
                           isPlankSecsValid = true;
                           plankSecs = raw;
                         }
@@ -1216,7 +1351,11 @@ class AcftPageState extends ConsumerState<AcftPage> {
                       divisions: 5,
                       onChanged: (value) {
                         FocusScope.of(context).unfocus();
-                        plankMins = value.floor();
+                        if (hasPlkProfile) {
+                          plankMins = 0;
+                        } else {
+                          plankMins = value.floor();
+                        }
                         _plankMinsController.text = plankMins.toString();
                         isPlankMinsValid = true;
                         plankScore = getPlkScore(
@@ -1231,10 +1370,14 @@ class AcftPageState extends ConsumerState<AcftPage> {
                     child: '+',
                     onPressed: () {
                       FocusScope.of(context).unfocus();
-                      if (plankMins < 4) {
-                        plankMins++;
+                      if (hasPlkProfile) {
+                        plankMins = 0;
                       } else {
-                        plankMins = 4;
+                        if (plankMins < 4) {
+                          plankMins++;
+                        } else {
+                          plankMins = 4;
+                        }
                       }
                       _plankMinsController.text = plankMins.toString();
                       isPlankMinsValid = true;
@@ -1280,7 +1423,11 @@ class AcftPageState extends ConsumerState<AcftPage> {
                       divisions: 60,
                       onChanged: (value) {
                         FocusScope.of(context).unfocus();
-                        plankSecs = value.floor();
+                        if (hasPlkProfile) {
+                          plankSecs = 0;
+                        } else {
+                          plankSecs = value.floor();
+                        }
                         _plankSecsController.text = plankSecs.toString();
                         isPlankSecsValid = true;
                         plankScore = getPlkScore(
@@ -1295,10 +1442,14 @@ class AcftPageState extends ConsumerState<AcftPage> {
                     child: '+',
                     onPressed: () {
                       FocusScope.of(context).unfocus();
-                      if (plankSecs < 59) {
-                        plankSecs++;
+                      if (hasPlkProfile) {
+                        plankSecs = 0;
                       } else {
-                        plankSecs = 59;
+                        if (plankSecs < 59) {
+                          plankSecs++;
+                        } else {
+                          plankSecs = 59;
+                        }
                       }
                       _plankSecsController.text = plankSecs.toString();
                       isPlankSecsValid = true;
@@ -1311,6 +1462,30 @@ class AcftPageState extends ConsumerState<AcftPage> {
                   ),
                 ],
               ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: CheckboxListTile(
+                  title: const Text('Profile'),
+                  value: hasPlkProfile,
+                  controlAffinity: ListTileControlAffinity.leading,
+                  activeColor: onPrimary,
+                  onChanged: (value) {
+                    FocusScope.of(context).unfocus();
+                    setState(() {
+                      hasPlkProfile = value;
+                      if (value) {
+                        plankMins = 0;
+                        plankSecs = 0;
+                        _plankMinsController.text = plankMins.toString();
+                        _plankSecsController.text = plankSecs.toString();
+                      }
+                      plankScore = 0;
+                      isPlankMinsValid = true;
+                      isPlankSecsValid = true;
+                      calcTotal();
+                    });
+                  }),
             ),
             Divider(
               color: Colors.yellow,
