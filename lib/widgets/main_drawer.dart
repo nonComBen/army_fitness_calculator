@@ -1,6 +1,5 @@
-import 'package:acft_calculator/pages/mdl_setup_page.dart';
 import 'package:flutter/material.dart';
-import 'package:launch_review/launch_review.dart';
+import 'package:rate_my_app/rate_my_app.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
 import '../pages/verbiage_pages/apft_verbiage_page.dart';
@@ -12,6 +11,7 @@ import '../pages/saved_pages/saved_apfts_page.dart';
 import '../pages/saved_pages/saved_bodyfats_page.dart';
 import '../pages/saved_pages/saved_ppw_page.dart';
 import '../pages/settings_page.dart';
+import '../pages/mdl_setup_page.dart';
 
 class MainDrawer extends StatelessWidget {
   const MainDrawer({
@@ -166,9 +166,8 @@ class MainDrawer extends StatelessWidget {
             leading: const Icon(Icons.rate_review),
             onTap: () {
               Navigator.pop(context);
-              LaunchReview.launch(
-                  androidAppId: 'com.armynoncomtools.acft_calculator',
-                  iOSAppId: '1482254260');
+              RateMyApp rateMyApp = RateMyApp();
+              rateMyApp.launchStore();
             },
           ),
           ListTile(

@@ -61,12 +61,13 @@ class _MyHomePageState extends State<MyHomePage> {
       nonPersonalizedAds = !status.isGranted;
     }
     myBanner = BannerAd(
-        adUnitId: Platform.isAndroid
-            ? 'ca-app-pub-3940256099942544/6300978111'
-            : 'ca-app-pub-3940256099942544/2934735716',
+        // test ad unit ids
         // adUnitId: Platform.isAndroid
-        //     ? 'ca-app-pub-2431077176117105/8950325543'
-        //     : 'ca-app-pub-2431077176117105/4488336359',
+        //     ? 'ca-app-pub-3940256099942544/6300978111'
+        //     : 'ca-app-pub-3940256099942544/2934735716',
+        adUnitId: Platform.isAndroid
+            ? 'ca-app-pub-2431077176117105/8950325543'
+            : 'ca-app-pub-2431077176117105/4488336359',
         size: AdSize(
             height: getSmartBannerHeight(context),
             width: MediaQuery.of(context).size.width.truncate()),
