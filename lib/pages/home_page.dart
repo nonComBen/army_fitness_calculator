@@ -1,5 +1,9 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:in_app_purchase/in_app_purchase.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:rate_my_app/rate_my_app.dart';
 
 import '../widgets/bullet_item.dart';
@@ -23,6 +27,7 @@ class _MyHomePageState extends State<MyHomePage> {
   int _selectedIndex = 0;
   Set<String> productIds;
   List<ProductDetails> _products;
+  bool adLoaded = false;
 
   GlobalKey<ScaffoldState> _scaffoldState = new GlobalKey<ScaffoldState>();
 
@@ -41,6 +46,55 @@ class _MyHomePageState extends State<MyHomePage> {
     remindDays: 7,
     remindLaunches: 5,
   );
+
+  BannerAd myBanner;
+
+  bool _loadingAnchoredBanner = false;
+
+  void _createBannerAd(BuildContext context) async {
+    bool nonPersonalizedAds = false;
+    if (Platform.isIOS) {
+      PermissionStatus status = await Permission.appTrackingTransparency.status;
+      if (status.isDenied) {
+        status = await Permission.appTrackingTransparency.request();
+      }
+      nonPersonalizedAds = !status.isGranted;
+    }
+    myBanner = BannerAd(
+        adUnitId: Platform.isAndroid
+            ? 'ca-app-pub-3940256099942544/6300978111'
+            : 'ca-app-pub-3940256099942544/2934735716',
+        // adUnitId: Platform.isAndroid
+        //     ? 'ca-app-pub-2431077176117105/8950325543'
+        //     : 'ca-app-pub-2431077176117105/4488336359',
+        size: AdSize(
+            height: getSmartBannerHeight(context),
+            width: MediaQuery.of(context).size.width.truncate()),
+        listener: BannerAdListener(
+          onAdLoaded: (Ad ad) {
+            setState(
+              () {
+                adLoaded = true;
+              },
+            );
+          },
+          onAdFailedToLoad: (Ad ad, LoadAdError error) {
+            ad.dispose();
+          },
+        ),
+        request: AdRequest(
+            keywords: <String>['army', 'military', 'fitness', 'outdoors'],
+            nonPersonalizedAds: nonPersonalizedAds));
+
+    myBanner.load();
+  }
+
+  int getSmartBannerHeight(BuildContext context) {
+    int height = MediaQuery.of(context).size.height.toInt();
+
+    if (height > 720.0) return 100;
+    return 50;
+  }
 
   _upgrade() {
     showModalBottomSheet(
@@ -187,6 +241,10 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
+    if (!_loadingAnchoredBanner && !widget.isPremium) {
+      _loadingAnchoredBanner = true;
+      _createBannerAd(context);
+    }
     _pages = <Widget>[
       AcftPage(widget.isPremium, upgradeNeeded),
       ApftPage(widget.isPremium, upgradeNeeded),
@@ -209,7 +267,22 @@ class _MyHomePageState extends State<MyHomePage> {
             isPremium: widget.isPremium,
             upgradeNeeded: upgradeNeeded,
             upgrade: _upgrade),
-        body: _pages.elementAt(_selectedIndex),
+        body: Column(
+          children: [
+            Expanded(child: _pages.elementAt(_selectedIndex)),
+            if (!widget.isPremium && adLoaded)
+              Container(
+                constraints: BoxConstraints(maxHeight: 90),
+                alignment: Alignment.center,
+                child: AdWidget(
+                  ad: myBanner,
+                ),
+                width: myBanner != null ? myBanner.size.width.toDouble() : 320,
+                height:
+                    myBanner != null ? myBanner.size.height.toDouble() : 100,
+              )
+          ],
+        ),
         bottomNavigationBar: BottomNavigationBar(
           items: const <BottomNavigationBarItem>[
             BottomNavigationBarItem(
