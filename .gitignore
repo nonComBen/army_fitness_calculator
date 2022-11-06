@@ -98,4 +98,4 @@ ios/firebase_app_id_file.json
 android/app/google-services.json
 functions/src/assets/
 functions/lib/assets/
-firebase_options.dart
+lib/firebase_options.dart
