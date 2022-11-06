@@ -94,6 +94,8 @@ app.*.symbols
 
 # Firebase configuration files / Google Services (e.g. APIs or Firebase)
 ios/Runner/GoogleService-Info.plist
+ios/firebase_app_id_file.json
 android/app/google-services.json
 functions/src/assets/
 functions/lib/assets/
+lib/firebase_options.dart
