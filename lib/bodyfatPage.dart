@@ -733,13 +733,16 @@ class _BodyfatPageState extends ConsumerState<BodyfatPage> {
                           fontSize: 16,
                           onPressed: () {
                             FocusScope.of(context).unfocus();
-                            if (!(heightDouble == (height.toDouble() - 0.5))) {
-                              setState(() {
-                                heightDouble = heightDouble - 0.5;
-                                _heightDoubleController.text =
-                                    heightDouble.toString();
-                              });
-                              calcBf();
+                            if (heightDouble > 58.0) {
+                              if (!(heightDouble ==
+                                  (height.toDouble() - 0.5))) {
+                                setState(() {
+                                  heightDouble = heightDouble - 0.5;
+                                  _heightDoubleController.text =
+                                      heightDouble.toString();
+                                });
+                                calcBf();
+                              }
                             }
                           },
                         ),
@@ -761,13 +764,16 @@ class _BodyfatPageState extends ConsumerState<BodyfatPage> {
                           fontSize: 16,
                           onPressed: () {
                             FocusScope.of(context).unfocus();
-                            if (!(heightDouble == (height.toDouble() + 0.5))) {
-                              setState(() {
-                                heightDouble = heightDouble + 0.5;
-                                _heightDoubleController.text =
-                                    heightDouble.toString();
-                              });
-                              calcBf();
+                            if (heightDouble < 80.0) {
+                              if (!(heightDouble ==
+                                  (height.toDouble() + 0.5))) {
+                                setState(() {
+                                  heightDouble = heightDouble + 0.5;
+                                  _heightDoubleController.text =
+                                      heightDouble.toString();
+                                });
+                                calcBf();
+                              }
                             }
                           },
                         ),
