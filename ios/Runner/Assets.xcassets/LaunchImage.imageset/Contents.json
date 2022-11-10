@@ -18,7 +18,8 @@
     {
       "filename" : "launch_image.jpg",
       "idiom" : "universal",
-      "scale" : "3x"
+      "scale" : "3x",
+      "unassigned" : true
     }
   ],
   "info" : {
