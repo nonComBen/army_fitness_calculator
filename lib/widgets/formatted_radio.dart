@@ -2,16 +2,16 @@ import 'package:flutter/material.dart';
 
 class FormattedRadio extends StatelessWidget {
   const FormattedRadio(
-      {Key key,
-      @required this.titles,
-      @required this.values,
-      @required this.groupValue,
-      @required this.onChanged})
+      {Key? key,
+      required this.titles,
+      required this.values,
+      required this.groupValue,
+      required this.onChanged})
       : super(key: key);
   final List<String> titles;
   final List<String> values;
-  final String groupValue;
-  final Function(String) onChanged;
+  final String? groupValue;
+  final Function(String?) onChanged;
 
   @override
   Widget build(BuildContext context) {
@@ -24,7 +24,7 @@ class FormattedRadio extends StatelessWidget {
             value: values[0],
             groupValue: groupValue,
             activeColor: Theme.of(context).colorScheme.onSecondary,
-            onChanged: (value) {
+            onChanged: (dynamic value) {
               onChanged(value);
             },
           ),
@@ -35,7 +35,7 @@ class FormattedRadio extends StatelessWidget {
             value: values[1],
             groupValue: groupValue,
             activeColor: Theme.of(context).colorScheme.onSecondary,
-            onChanged: (value) {
+            onChanged: (dynamic value) {
               onChanged(value);
             },
           ),

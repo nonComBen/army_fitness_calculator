@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
 class BulletItem extends StatelessWidget {
-  const BulletItem({Key key, this.text}) : super(key: key);
-  final String text;
+  const BulletItem({Key? key, this.text}) : super(key: key);
+  final String? text;
 
   @override
   Widget build(BuildContext context) {
@@ -14,7 +14,7 @@ class BulletItem extends StatelessWidget {
           Text('- '),
           Expanded(
             child: Text(
-              text,
+              text!,
               textAlign: TextAlign.left,
             ),
           ),

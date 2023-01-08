@@ -4,8 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 
 class AcftVerbiagePage extends StatefulWidget {
-  final bool isPremium;
-  final bool nonPersonalizedAds;
+  final bool? isPremium;
+  final bool? nonPersonalizedAds;
   AcftVerbiagePage({this.isPremium, this.nonPersonalizedAds});
   @override
   _AcftVerbiagePageState createState() => _AcftVerbiagePageState();
@@ -195,7 +195,7 @@ class _AcftVerbiagePageState extends State<AcftVerbiagePage> {
         )),
   ];
 
-  BannerAd myBanner;
+  BannerAd? myBanner;
 
   @override
   void dispose() {
@@ -215,8 +215,8 @@ class _AcftVerbiagePageState extends State<AcftVerbiagePage> {
         listener: BannerAdListener(),
         request: AdRequest(nonPersonalizedAds: widget.nonPersonalizedAds));
 
-    if (!widget.isPremium) {
-      myBanner.load();
+    if (!widget.isPremium!) {
+      myBanner!.load();
     }
   }
 
@@ -267,15 +267,15 @@ class _AcftVerbiagePageState extends State<AcftVerbiagePage> {
                 ],
               ),
             ),
-            if (!widget.isPremium)
+            if (!widget.isPremium!)
               Container(
                 constraints: BoxConstraints(maxHeight: 90),
                 alignment: Alignment.center,
                 child: AdWidget(
-                  ad: myBanner,
+                  ad: myBanner!,
                 ),
-                width: myBanner.size.width.toDouble(),
-                height: myBanner.size.height.toDouble(),
+                width: myBanner!.size.width.toDouble(),
+                height: myBanner!.size.height.toDouble(),
               )
           ],
         ),

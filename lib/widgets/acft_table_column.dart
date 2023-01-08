@@ -4,14 +4,14 @@ import 'grid_box.dart';
 
 class AcftTableColumn extends StatelessWidget {
   const AcftTableColumn(
-      {Key key,
+      {Key? key,
       this.header = '',
       this.table,
       this.tableIndex = 0,
       this.shaded = false})
       : super(key: key);
   final String header;
-  final List<List<num>> table;
+  final List<List<num>>? table;
   final int tableIndex;
   final bool shaded;
 
@@ -29,7 +29,7 @@ class AcftTableColumn extends StatelessWidget {
             title: header,
           ),
         ),
-        ...table.map((e) {
+        ...table!.map((e) {
           var title = e[tableIndex].toString();
           if (isTime) {
             title =

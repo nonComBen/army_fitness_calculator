@@ -5,18 +5,18 @@ import '../../sqlite/bodyfat.dart';
 
 class BodyfatChartPage extends StatefulWidget {
   BodyfatChartPage({this.bodyfats, this.soldier});
-  final List<Bodyfat> bodyfats;
-  final String soldier;
+  final List<Bodyfat>? bodyfats;
+  final String? soldier;
 
   @override
   _BodyfatChartPageState createState() => _BodyfatChartPageState();
 }
 
 class _BodyfatChartPageState extends State<BodyfatChartPage> {
-  bool bf;
+  bool? bf;
   static const secondaryMeasureAxisId = 'secondaryMeasureAxisId';
   List<charts.Series<Bodyfat, DateTime>> _seriesBarData = [];
-  List<Bodyfat> myData;
+  List<Bodyfat>? myData;
 
   static GlobalKey previewContainer = new GlobalKey();
   GlobalKey<ScaffoldState> _scaffoldState = new GlobalKey<ScaffoldState>();
@@ -25,7 +25,7 @@ class _BodyfatChartPageState extends State<BodyfatChartPage> {
     _seriesBarData.clear();
     _seriesBarData = [
       charts.Series(
-          domainFn: (bf, _) => DateTime.parse(bf.date),
+          domainFn: (bf, _) => DateTime.parse(bf.date!),
           measureFn: (bf, _) => int.tryParse(bf.weight),
           data: myData,
           id: 'Total',
@@ -33,9 +33,9 @@ class _BodyfatChartPageState extends State<BodyfatChartPage> {
               ? charts.Color.black
               : charts.Color.white),
     ];
-    if (bf) {
+    if (bf!) {
       _seriesBarData.add(charts.Series(
-        domainFn: (bf, _) => DateTime.parse(bf.date),
+        domainFn: (bf, _) => DateTime.parse(bf.date!),
         measureFn: (bf, _) => int.tryParse(bf.bfPercent),
         data: myData,
         id: 'Bodyfat',
@@ -46,7 +46,7 @@ class _BodyfatChartPageState extends State<BodyfatChartPage> {
 
   Widget _buildChart() {
     final width = MediaQuery.of(context).size.width;
-    _generateData(myData);
+    _generateData(myData!);
     return SizedBox(
       width: width - 32,
       height: MediaQuery.of(context).size.height / 2,
@@ -58,7 +58,7 @@ class _BodyfatChartPageState extends State<BodyfatChartPage> {
         primaryMeasureAxis: new charts.NumericAxisSpec(
             tickProviderSpec: new charts.BasicNumericTickProviderSpec(
                 zeroBound: false, desiredTickCount: 3)),
-        secondaryMeasureAxis: bf
+        secondaryMeasureAxis: bf!
             ? new charts.NumericAxisSpec(
                 tickProviderSpec: new charts.BasicNumericTickProviderSpec(
                     zeroBound: false, desiredTickCount: 3))

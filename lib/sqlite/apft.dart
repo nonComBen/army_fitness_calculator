@@ -1,8 +1,8 @@
 class Apft {
-  int id;
-  String date;
-  String rank;
-  String name;
+  int? id;
+  String? date;
+  String? rank;
+  String? name;
   String gender;
   String age;
   String puRaw;
@@ -21,18 +21,18 @@ class Apft {
     this.date,
     this.rank,
     this.name,
-    this.gender,
-    this.age,
-    this.puRaw,
-    this.puScore,
-    this.suRaw,
-    this.suScore,
-    this.runRaw,
-    this.runScore,
-    this.runEvent,
-    this.total,
-    this.altPass,
-    this.pass,
+    required this.gender,
+    required this.age,
+    required this.puRaw,
+    required this.puScore,
+    required this.suRaw,
+    required this.suScore,
+    required this.runRaw,
+    required this.runScore,
+    required this.runEvent,
+    required this.total,
+    required this.altPass,
+    required this.pass,
   });
 
   Map<String, dynamic> toMap() {
@@ -57,7 +57,7 @@ class Apft {
     return map;
   }
 
-  Apft.fromMap(Map<String, dynamic> map) {
+  factory Apft.fromMap(Map<String, dynamic> map) {
     String newRank = '', newAge = '22';
     int altGo = 1;
     try {
@@ -67,21 +67,24 @@ class Apft {
     } catch (e) {
       print('Error: $e');
     }
-    id = map['id'];
-    date = map['date'];
-    rank = newRank;
-    name = map['name'];
-    gender = map['gender'];
-    age = newAge;
-    puRaw = map['puRaw'];
-    puScore = map['puScore'];
-    suRaw = map['suRaw'];
-    suScore = map['suScore'];
-    runRaw = map['runRaw'];
-    runScore = map['runScore'];
-    runEvent = map['runEvent'];
-    total = map['total'];
-    altPass = altGo;
-    pass = map['pass'];
+
+    return Apft(
+      id: map['id'],
+      date: map['date'],
+      rank: newRank,
+      name: map['name'],
+      gender: map['gender'],
+      age: newAge,
+      puRaw: map['puRaw'],
+      puScore: map['puScore'],
+      suRaw: map['suRaw'],
+      suScore: map['suScore'],
+      runRaw: map['runRaw'],
+      runScore: map['runScore'],
+      runEvent: map['runEvent'],
+      total: map['total'],
+      altPass: altGo,
+      pass: map['pass'],
+    );
   }
 }

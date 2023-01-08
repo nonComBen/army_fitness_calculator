@@ -1,10 +1,10 @@
-int getPuScore(bool male, int ageGroupIndex, int puRaw) {
+int getPuScore(bool male, int ageGroupIndex, int? puRaw) {
   if (male) {
-    if (puRaw < 1) return 0;
+    if (puRaw! < 1) return 0;
     if (puRaw > 76) return 100;
     return maleTable[puRaw - 1][ageGroupIndex];
   } else {
-    if (puRaw < 1) return 0;
+    if (puRaw! < 1) return 0;
     if (puRaw > 49) return 100;
     return femaleTable[puRaw - 1][ageGroupIndex];
   }

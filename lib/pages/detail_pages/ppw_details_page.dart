@@ -8,7 +8,7 @@ import '../../sqlite/ppw.dart';
 import '../../sqlite/db_helper.dart';
 
 class PpwDetailsPage extends StatefulWidget {
-  PpwDetailsPage({this.ppw});
+  PpwDetailsPage({required this.ppw});
   final PPW ppw;
 
   @override
@@ -16,14 +16,54 @@ class PpwDetailsPage extends StatefulWidget {
 }
 
 class _PpwDetailsPageState extends State<PpwDetailsPage> {
-  RegExp regExp;
-  DBHelper dbHelper;
-  int milTrain, milTrainMax, awards, awardMax, milEd, milEdMax, civEd, civEdMax;
+  RegExp regExp =
+      new RegExp(r'^\d{4}-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])$');
+  DBHelper dbHelper = DBHelper();
+  int milTrain = 0, awards = 0, milEd = 0, civEd = 0;
 
-  TextEditingController _mainNameController;
-  TextEditingController _mainDateController;
+  final _mainNameController = TextEditingController();
+  final _mainDateController = TextEditingController();
 
   GlobalKey<ScaffoldState> _scaffoldState = new GlobalKey<ScaffoldState>();
+
+  @override
+  void dispose() {
+    _mainNameController.dispose();
+    _mainDateController.dispose();
+    super.dispose();
+  }
+
+  @override
+  void initState() {
+    milTrain = widget.ppw.ptTest + widget.ppw.weapons;
+    awards = widget.ppw.awards + widget.ppw.badges;
+    milEd = widget.ppw.ncoes +
+        widget.ppw.wbc +
+        widget.ppw.resident +
+        widget.ppw.tabs;
+    civEd = widget.ppw.semesterHours +
+        widget.ppw.degree +
+        widget.ppw.certs +
+        widget.ppw.language;
+    if (milTrain > widget.ppw.milTrainMax) {
+      milTrain = widget.ppw.milTrainMax;
+    }
+    if (awards > widget.ppw.awardsMax) {
+      awards = widget.ppw.awardsMax;
+    }
+    if (milEd > widget.ppw.milEdMax) {
+      milEd = widget.ppw.milEdMax;
+    }
+    if (civEd > widget.ppw.civEdMax) {
+      civEd = widget.ppw.civEdMax;
+    }
+    awards += widget.ppw.airborne;
+
+    _mainDateController.text = widget.ppw.date!;
+    _mainNameController.text = widget.ppw.name!;
+
+    super.initState();
+  }
 
   _updatePpw(BuildContext context, PPW ppw) {
     final _dateController = new TextEditingController(text: ppw.date);
@@ -59,8 +99,9 @@ class _PpwDetailsPageState extends State<PpwDetailsPage> {
                       labelText: 'Date',
                     ),
                     autovalidateMode: AutovalidateMode.onUserInteraction,
-                    validator: (value) =>
-                        regExp.hasMatch(value) ? null : 'Use yyyy-MM-dd Format',
+                    validator: (value) => regExp.hasMatch(value!)
+                        ? null
+                        : 'Use yyyy-MM-dd Format',
                   ),
                 ),
                 Padding(
@@ -122,7 +163,7 @@ class _PpwDetailsPageState extends State<PpwDetailsPage> {
                     child: Text('Yes', style: textStyle),
                     onPressed: () {
                       Navigator.pop(context2);
-                      dbHelper.deletePPW(ppw.id);
+                      dbHelper.deletePPW(ppw.id!);
                       Navigator.pushReplacement(
                           context,
                           MaterialPageRoute(
@@ -161,49 +202,6 @@ class _PpwDetailsPageState extends State<PpwDetailsPage> {
             );
           });
     }
-  }
-
-  @override
-  void dispose() {
-    _mainNameController.dispose();
-    _mainDateController.dispose();
-    super.dispose();
-  }
-
-  @override
-  void initState() {
-    dbHelper = new DBHelper();
-
-    milTrain = widget.ppw.ptTest + widget.ppw.weapons;
-    awards = widget.ppw.awards + widget.ppw.badges;
-    milEd = widget.ppw.ncoes +
-        widget.ppw.wbc +
-        widget.ppw.resident +
-        widget.ppw.tabs;
-    civEd = widget.ppw.semesterHours +
-        widget.ppw.degree +
-        widget.ppw.certs +
-        widget.ppw.language;
-    if (milTrain > widget.ppw.milTrainMax) {
-      milTrain = widget.ppw.milTrainMax;
-    }
-    if (awards > widget.ppw.awardsMax) {
-      awards = widget.ppw.awardsMax;
-    }
-    if (milEd > widget.ppw.milEdMax) {
-      milEd = widget.ppw.milEdMax;
-    }
-    if (civEd > widget.ppw.civEdMax) {
-      civEd = widget.ppw.civEdMax;
-    }
-    awards += widget.ppw.airborne;
-
-    _mainDateController = new TextEditingController(text: widget.ppw.date);
-    _mainNameController = new TextEditingController(text: widget.ppw.name);
-
-    regExp = new RegExp(r'^\d{4}-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])$');
-
-    super.initState();
   }
 
   @override

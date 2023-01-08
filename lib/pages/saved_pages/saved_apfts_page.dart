@@ -12,9 +12,9 @@ class SavedApftsPage extends StatefulWidget {
 }
 
 class _SavedApftsPageState extends State<SavedApftsPage> {
-  Future<List<Apft>> apfts;
-  DBHelper dbHelper;
-  Color onPrimary, onError;
+  Future<List<Apft>>? apfts;
+  DBHelper dbHelper = DBHelper();
+  Color? onPrimary, onError;
 
   refreshList() {
     setState(() {
@@ -22,14 +22,14 @@ class _SavedApftsPageState extends State<SavedApftsPage> {
     });
   }
 
-  Widget nameHeader(List<Apft> apftList, String rank, String name) {
+  Widget nameHeader(List<Apft> apftList, String? rank, String? name) {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
           Text(
-            rank == '' ? name : '$rank $name',
+            rank == '' ? name! : '$rank $name',
             style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
           ),
           IconButton(
@@ -53,7 +53,7 @@ class _SavedApftsPageState extends State<SavedApftsPage> {
 
   ListView _list(List<Apft> apftList, double width) {
     List<Widget> widgets = [];
-    String name;
+    String? name;
     for (int i = 0; i < apftList.length; i++) {
       bool pass = apftList[i].pass == 1;
       if (i == 0) {
@@ -145,10 +145,10 @@ class _SavedApftsPageState extends State<SavedApftsPage> {
       ),
       body: Container(
         padding: EdgeInsets.all(16.0),
-        child: FutureBuilder(
+        child: FutureBuilder<List<Apft>>(
           future: apfts,
           builder: (context, snapshot) {
-            if (snapshot.data == null || snapshot.data.length == 0) {
+            if (snapshot.data == null || snapshot.data!.isEmpty) {
               return const Center(
                   child: Text(
                 'No APFTs Found',
@@ -157,7 +157,7 @@ class _SavedApftsPageState extends State<SavedApftsPage> {
             }
 
             if (snapshot.hasData) {
-              return _list(snapshot.data, width);
+              return _list(snapshot.data!, width);
             }
 
             return const Center(child: CircularProgressIndicator());

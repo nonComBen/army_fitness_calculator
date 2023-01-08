@@ -28,7 +28,7 @@ class ApftPage extends ConsumerStatefulWidget {
 
 class _ApftPageState extends ConsumerState<ApftPage> {
   String gender = 'Male',
-      ageGroup,
+      ageGroup = '17-21',
       event = 'Run',
       puMin = '',
       pu90 = '',
@@ -39,7 +39,15 @@ class _ApftPageState extends ConsumerState<ApftPage> {
       runMin = '',
       run90 = '',
       runMax = '';
-  int age, pu, su, runMins, runSecs, puScore, suScore, runScore, totalScore;
+  int age = 22,
+      pu = 50,
+      su = 50,
+      runMins = 15,
+      runSecs = 30,
+      puScore = 0,
+      suScore = 0,
+      runScore = 0,
+      totalScore = 0;
   bool isJrSoldier = false,
       puPass = true,
       suPass = true,
@@ -50,9 +58,9 @@ class _ApftPageState extends ConsumerState<ApftPage> {
       isAgeValid = true,
       isMinsValid = true,
       isSecValid = true;
-  SharedPreferences prefs;
-  RegExp regExp;
-  DBHelper dbHelper;
+  late SharedPreferences prefs;
+  RegExp regExp = RegExp(r'^\d{4}(0[1-9]|1[012])(0[1-9]|[12][0-9]|3[01])$');
+  DBHelper dbHelper = DBHelper();
 
   final _ageController = new TextEditingController();
   final _ageFocus = new FocusNode();
@@ -65,7 +73,7 @@ class _ApftPageState extends ConsumerState<ApftPage> {
   final _secsController = new TextEditingController();
   final _secsFocus = new FocusNode();
 
-  List<String> ageGroups = [
+  List<String?> ageGroups = [
     '17-21',
     '22-26',
     '27-31',
@@ -84,6 +92,84 @@ class _ApftPageState extends ConsumerState<ApftPage> {
     'Bike',
     'Swim',
   ];
+
+  @override
+  void initState() {
+    super.initState();
+    dbHelper = new DBHelper();
+
+    _puController.text = pu.toString();
+    _suController.text = su.toString();
+    _minsController.text = runMins.toString();
+    _secsController.text = runSecs.toString();
+
+    _ageFocus.addListener(() {
+      if (_ageFocus.hasFocus) {
+        _ageController.selection = TextSelection(
+            baseOffset: 0, extentOffset: _ageController.text.length);
+      }
+    });
+    _puFocus.addListener(() {
+      if (_puFocus.hasFocus) {
+        _puController.selection = TextSelection(
+            baseOffset: 0, extentOffset: _puController.text.length);
+      }
+    });
+    _suFocus.addListener(() {
+      if (_suFocus.hasFocus) {
+        _suController.selection = TextSelection(
+            baseOffset: 0, extentOffset: _suController.text.length);
+      }
+    });
+    _minsFocus.addListener(() {
+      if (_minsFocus.hasFocus) {
+        _minsController.selection = TextSelection(
+            baseOffset: 0, extentOffset: _minsController.text.length);
+      }
+    });
+    _secsFocus.addListener(() {
+      if (_secsFocus.hasFocus) {
+        _secsController.selection = TextSelection(
+            baseOffset: 0, extentOffset: _secsController.text.length);
+      }
+    });
+
+    prefs = ref.read(sharedPreferencesProvider);
+
+    if (prefs.getString('gender') != null) {
+      gender = prefs.getString('gender')!;
+    }
+    if (prefs.getInt('age') != null) {
+      age = prefs.getInt('age')!;
+    }
+    if (prefs.getString('apft_event') != null) {
+      event = prefs.getString('apft_event')!;
+    }
+    if (prefs.getBool('jr_soldier') != null) {
+      isJrSoldier = prefs.getBool('jr_soldier')!;
+    }
+
+    _ageController.text = age.toString();
+    ageGroup = getAgeGroup(age);
+
+    calcAll();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _ageController.dispose();
+    _puController.dispose();
+    _suController.dispose();
+    _minsController.dispose();
+    _secsController.dispose();
+
+    _ageFocus.dispose();
+    _puFocus.dispose();
+    _suFocus.dispose();
+    _minsFocus.dispose();
+    _secsFocus.dispose();
+  }
 
   void calcAll() {
     setBenchmarks();
@@ -153,7 +239,7 @@ class _ApftPageState extends ConsumerState<ApftPage> {
     } else
       seconds = runSecs.toString();
 
-    int runTime = int.tryParse(runMins.toString() + seconds);
+    int? runTime = int.tryParse(runMins.toString() + seconds);
     if (event != 'Run') {
       runPass = passAltEvent(
           gender == "Male", ageGroups.indexOf(ageGroup), runTime, event);
@@ -168,7 +254,7 @@ class _ApftPageState extends ConsumerState<ApftPage> {
       }
     } else {
       runScore =
-          getRunScore(gender == "Male", ageGroups.indexOf(ageGroup), runTime);
+          getRunScore(gender == "Male", ageGroups.indexOf(ageGroup), runTime)!;
       if (runScore < 60) {
         runPass = false;
       } else
@@ -223,7 +309,7 @@ class _ApftPageState extends ConsumerState<ApftPage> {
                   ),
                   autovalidateMode: AutovalidateMode.onUserInteraction,
                   validator: (value) =>
-                      regExp.hasMatch(value) ? null : 'Use yyyyMMdd Format',
+                      regExp.hasMatch(value!) ? null : 'Use yyyyMMdd Format',
                   keyboardType: TextInputType.numberWithOptions(signed: true),
                   inputFormatters: [
                     FilteringTextInputFormatter.digitsOnly,
@@ -279,96 +365,6 @@ class _ApftPageState extends ConsumerState<ApftPage> {
   }
 
   @override
-  void dispose() {
-    super.dispose();
-    _ageController.dispose();
-    _puController.dispose();
-    _suController.dispose();
-    _minsController.dispose();
-    _secsController.dispose();
-
-    _ageFocus.dispose();
-    _puFocus.dispose();
-    _suFocus.dispose();
-    _minsFocus.dispose();
-    _secsFocus.dispose();
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    dbHelper = new DBHelper();
-
-    age = 22;
-    pu = 50;
-    _puController.text = pu.toString();
-    su = 50;
-    _suController.text = su.toString();
-    runMins = 15;
-    _minsController.text = runMins.toString();
-    runSecs = 30;
-    _secsController.text = runSecs.toString();
-
-    _ageFocus.addListener(() {
-      if (_ageFocus.hasFocus) {
-        _ageController.selection = TextSelection(
-            baseOffset: 0, extentOffset: _ageController.text.length);
-      }
-    });
-    _puFocus.addListener(() {
-      if (_puFocus.hasFocus) {
-        _puController.selection = TextSelection(
-            baseOffset: 0, extentOffset: _puController.text.length);
-      }
-    });
-    _suFocus.addListener(() {
-      if (_suFocus.hasFocus) {
-        _suController.selection = TextSelection(
-            baseOffset: 0, extentOffset: _suController.text.length);
-      }
-    });
-    _minsFocus.addListener(() {
-      if (_minsFocus.hasFocus) {
-        _minsController.selection = TextSelection(
-            baseOffset: 0, extentOffset: _minsController.text.length);
-      }
-    });
-    _secsFocus.addListener(() {
-      if (_secsFocus.hasFocus) {
-        _secsController.selection = TextSelection(
-            baseOffset: 0, extentOffset: _secsController.text.length);
-      }
-    });
-
-    puScore = 0;
-    suScore = 0;
-    runScore = 0;
-    totalScore = 0;
-
-    regExp = RegExp(r'^\d{4}(0[1-9]|1[012])(0[1-9]|[12][0-9]|3[01])$');
-
-    prefs = ref.read(sharedPreferencesProvider);
-
-    if (prefs.getString('gender') != null) {
-      gender = prefs.getString('gender');
-    }
-    if (prefs.getInt('age') != null) {
-      age = prefs.getInt('age');
-    }
-    if (prefs.getString('apft_event') != null) {
-      event = prefs.getString('apft_event');
-    }
-    if (prefs.getBool('jr_soldier') != null) {
-      isJrSoldier = prefs.getBool('jr_soldier');
-    }
-
-    _ageController.text = age.toString();
-    ageGroup = getAgeGroup(age);
-
-    calcAll();
-  }
-
-  @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
     final primaryColor = Theme.of(context).colorScheme.primary;
@@ -388,7 +384,7 @@ class _ApftPageState extends ConsumerState<ApftPage> {
                 onChanged: (value) {
                   FocusScope.of(context).unfocus();
                   setState(() {
-                    gender = value;
+                    gender = value!;
                     calcAll();
                   });
                 }),
@@ -485,7 +481,7 @@ class _ApftPageState extends ConsumerState<ApftPage> {
               onChanged: (value) {
                 FocusScope.of(context).unfocus();
                 setState(() {
-                  event = value;
+                  event = value!;
                 });
                 calcAll();
               },
@@ -584,7 +580,7 @@ class _ApftPageState extends ConsumerState<ApftPage> {
                   onChanged: (value) {
                     FocusScope.of(context).unfocus();
                     setState(() {
-                      hasPuProfile = value;
+                      hasPuProfile = value!;
                       if (value) {
                         pu = 0;
                         _puController.text = pu.toString();
@@ -693,7 +689,7 @@ class _ApftPageState extends ConsumerState<ApftPage> {
                   onChanged: (value) {
                     FocusScope.of(context).unfocus();
                     setState(() {
-                      hasSuProfile = value;
+                      hasSuProfile = value!;
                       if (value) {
                         su = 0;
                         _suController.text = su.toString();
@@ -891,7 +887,7 @@ class _ApftPageState extends ConsumerState<ApftPage> {
                   activeColor: onSecondary,
                   onChanged: (value) {
                     FocusScope.of(context).unfocus();
-                    if (value) {
+                    if (value!) {
                       if (hasPuProfile) puScore = 60;
                       if (hasSuProfile) suScore = 60;
                       if (event != 'Run')

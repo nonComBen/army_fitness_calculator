@@ -6,7 +6,7 @@ int acftPts(int score) {
   }
 }
 
-int apftPts(int score, String rank) {
+int apftPts(int score, String? rank) {
   int rankIndex = rank == 'SGT' ? 1 : 2;
   if (score < 180) {
     return 0;

@@ -11,7 +11,7 @@ import './apft.dart';
 import './bodyfat.dart';
 
 class DBHelper {
-  static Database _db;
+  static Database? _db;
   static const String DB_NAME = 'scores.db';
 
   static const String ID = 'id';
@@ -82,7 +82,7 @@ class DBHelper {
   static const String MIL_ED = 'milEd';
   static const String CIV_ED = 'civEd';
 
-  Future<Database> get db async {
+  Future<Database?> get db async {
     if (_db != null) {
       return _db;
     }
@@ -198,15 +198,15 @@ class DBHelper {
 
   //ACFT functions
   Future<void> saveAcft(Acft acft) async {
-    var dbClient = await db;
+    var dbClient = await (db as FutureOr<Database>);
     acft.id = await dbClient.insert(ACFT_TABLE, acft.toMap());
   }
 
   Future<List<Acft>> getAcfts() async {
-    var dbClient = await db;
+    var dbClient = await (db as FutureOr<Database>);
     List<Map> maps = await dbClient
         .rawQuery("SELECT * FROM $ACFT_TABLE ORDER BY $NAME, $DATE ASC");
-    List<Acft> acfts = maps.map((e) => Acft.fromMap(e)).toList();
+    List<Acft> acfts = maps.map((e) => Acft.fromMap(e as Map<String, dynamic>)).toList();
     // if (maps.length > 0) {
     //   for (int i = 0; i < maps.length; i++) {
     //     acfts.add(Acft.fromMap(maps[i]));
@@ -215,29 +215,29 @@ class DBHelper {
     return acfts;
   }
 
-  Future<int> deleteAcft(int id) async {
-    var dbClient = await db;
+  Future<int> deleteAcft(int? id) async {
+    var dbClient = await (db as FutureOr<Database>);
     return await dbClient.delete(ACFT_TABLE, where: '$ID = ?', whereArgs: [id]);
   }
 
   Future<int> updateAcft(Acft acft) async {
-    var dbClient = await db;
+    var dbClient = await (db as FutureOr<Database>);
     return await dbClient.update(ACFT_TABLE, acft.toMap(),
         where: '$ID = ?', whereArgs: [acft.id]);
   }
 
   //APFT functions
   Future<Apft> saveAPft(Apft apft) async {
-    var dbClient = await db;
+    var dbClient = await (db as FutureOr<Database>);
     apft.id = await dbClient.insert(APFT_TABLE, apft.toMap());
     return apft;
   }
 
   Future<List<Apft>> getApfts() async {
-    var dbClient = await db;
+    var dbClient = await (db as FutureOr<Database>);
     List<Map> maps = await dbClient
         .rawQuery("SELECT * FROM $APFT_TABLE ORDER BY $NAME, $DATE ASC");
-    List<Apft> apfts = maps.map((e) => Apft.fromMap(e)).toList();
+    List<Apft> apfts = maps.map((e) => Apft.fromMap(e as Map<String, dynamic>)).toList();
     // if (maps.length > 0) {
     //   for (int i = 0; i < maps.length; i++) {
     //     apfts.add(Apft.fromMap(maps[i]));
@@ -246,29 +246,29 @@ class DBHelper {
     return apfts;
   }
 
-  Future<int> deleteApft(int id) async {
-    var dbClient = await db;
+  Future<int> deleteApft(int? id) async {
+    var dbClient = await (db as FutureOr<Database>);
     return await dbClient.delete(APFT_TABLE, where: '$ID = ?', whereArgs: [id]);
   }
 
   Future<int> updateApft(Apft apft) async {
-    var dbClient = await db;
+    var dbClient = await (db as FutureOr<Database>);
     return await dbClient.update(APFT_TABLE, apft.toMap(),
         where: '$ID = ?', whereArgs: [apft.id]);
   }
 
   //BF functions
   Future<Bodyfat> saveBodyfat(Bodyfat bf) async {
-    var dbClient = await db;
+    var dbClient = await (db as FutureOr<Database>);
     bf.id = await dbClient.insert(BF_TABLE, bf.toMap());
     return bf;
   }
 
   Future<List<Bodyfat>> getBodyfats() async {
-    var dbClient = await db;
+    var dbClient = await (db as FutureOr<Database>);
     List<Map> maps = await dbClient
         .rawQuery("SELECT * FROM $BF_TABLE ORDER BY $NAME, $DATE ASC");
-    List<Bodyfat> bodyfats = maps.map((e) => Bodyfat.fromMap(e)).toList();
+    List<Bodyfat> bodyfats = maps.map((e) => Bodyfat.fromMap(e as Map<String, dynamic>)).toList();
     // if (maps.length > 0) {
     //   for (int i = 0; i < maps.length; i++) {
     //     bodyfats.add(Bodyfat.fromMap(maps[i]));
@@ -277,29 +277,29 @@ class DBHelper {
     return bodyfats;
   }
 
-  Future<int> deleteBodyfat(int id) async {
-    var dbClient = await db;
+  Future<int> deleteBodyfat(int? id) async {
+    var dbClient = await (db as FutureOr<Database>);
     return await dbClient.delete(BF_TABLE, where: '$ID = ?', whereArgs: [id]);
   }
 
   Future<int> updateBodyfat(Bodyfat bf) async {
-    var dbClient = await db;
+    var dbClient = await (db as FutureOr<Database>);
     return await dbClient
         .update(BF_TABLE, bf.toMap(), where: '$ID = ?', whereArgs: [bf.id]);
   }
 
   //PPW functions
   Future<PPW> savePPW(PPW ppw) async {
-    var dbClient = await db;
+    var dbClient = await (db as FutureOr<Database>);
     ppw.id = await dbClient.insert(PPW_TABLE, ppw.toMap());
     return ppw;
   }
 
   Future<List<PPW>> getPPWs() async {
-    var dbClient = await db;
+    var dbClient = await (db as FutureOr<Database>);
     List<Map> maps = await dbClient
         .rawQuery("SELECT * FROM $PPW_TABLE ORDER BY $NAME, $DATE ASC");
-    List<PPW> ppws = maps.map((e) => PPW.fromMap(e)).toList();
+    List<PPW> ppws = maps.map((e) => PPW.fromMap(e as Map<String, dynamic>)).toList();
     // if (maps.length > 0) {
     //   for (int i = 0; i < maps.length; i++) {
     //     ppws.add(PPW.fromMap(maps[i]));
@@ -308,19 +308,19 @@ class DBHelper {
     return ppws;
   }
 
-  Future<int> deletePPW(int id) async {
-    var dbClient = await db;
+  Future<int> deletePPW(int? id) async {
+    var dbClient = await (db as FutureOr<Database>);
     return await dbClient.delete(PPW_TABLE, where: '$ID = ?', whereArgs: [id]);
   }
 
   Future<int> updatePPW(PPW ppw) async {
-    var dbClient = await db;
+    var dbClient = await (db as FutureOr<Database>);
     return await dbClient
         .update(PPW_TABLE, ppw.toMap(), where: '$ID = ?', whereArgs: [ppw.id]);
   }
 
   Future close() async {
-    var dbClient = await db;
+    var dbClient = await (db as FutureOr<Database>);
     dbClient.close();
   }
 }

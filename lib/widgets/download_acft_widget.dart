@@ -6,7 +6,7 @@ import '../methods/download_acft.dart';
 
 class DownloadAcftWidget extends StatefulWidget {
   final Acft acft;
-  const DownloadAcftWidget(this.acft, {Key key}) : super(key: key);
+  const DownloadAcftWidget(this.acft, {Key? key}) : super(key: key);
 
   @override
   State<DownloadAcftWidget> createState() => _DownloadAcftWidgetState();
@@ -25,7 +25,7 @@ class _DownloadAcftWidgetState extends State<DownloadAcftWidget> {
   final _bmiDateFocus = FocusNode();
   final _bfFocus = FocusNode();
 
-  bool bodyComp = false, bmiPass = true, bfPass = true, altPass = true;
+  bool? bodyComp = false, bmiPass = true, bfPass = true, altPass = true;
 
   @override
   void dispose() {
@@ -48,7 +48,7 @@ class _DownloadAcftWidgetState extends State<DownloadAcftWidget> {
   void initState() {
     super.initState();
 
-    altPass = widget.acft.altPass == null ? true : widget.acft.altPass == 1;
+    altPass = widget.acft.altPass == 1;
   }
 
   @override
@@ -122,9 +122,7 @@ class _DownloadAcftWidgetState extends State<DownloadAcftWidget> {
               onEditingComplete: () => FocusScope.of(context).unfocus(),
             ),
           ),
-          if (widget.acft.altPass == null &&
-              widget.acft.runEvent != 'Run' &&
-              widget.acft.pass == 0)
+          if (widget.acft.runEvent != 'Run' && widget.acft.pass == 0)
             CheckboxListTile(
               value: altPass,
               onChanged: (value) {
@@ -139,7 +137,7 @@ class _DownloadAcftWidgetState extends State<DownloadAcftWidget> {
             onChanged: (value) {
               setState(() {
                 bodyComp = value;
-                if (value) {
+                if (value!) {
                   _bmiDateFocus.requestFocus();
                 } else {
                   FocusScope.of(context).unfocus();
@@ -148,7 +146,7 @@ class _DownloadAcftWidgetState extends State<DownloadAcftWidget> {
             },
             title: Text('Add Height/Weight Data'),
           ),
-          if (bodyComp)
+          if (bodyComp!)
             Column(
               children: [
                 // Padding(
@@ -200,7 +198,7 @@ class _DownloadAcftWidgetState extends State<DownloadAcftWidget> {
                   onChanged: (value) {
                     setState(() {
                       bmiPass = value;
-                      if (value) {
+                      if (value!) {
                         FocusScope.of(context).unfocus();
                       } else {
                         _bfFocus.requestFocus();
@@ -209,7 +207,7 @@ class _DownloadAcftWidgetState extends State<DownloadAcftWidget> {
                   },
                   title: Text('Height/Weight Pass'),
                 ),
-                if (!bmiPass)
+                if (!bmiPass!)
                   Padding(
                     padding: EdgeInsets.symmetric(horizontal: 8.0),
                     child: TextFormField(
@@ -226,7 +224,7 @@ class _DownloadAcftWidgetState extends State<DownloadAcftWidget> {
                       onEditingComplete: () => FocusScope.of(context).unfocus(),
                     ),
                   ),
-                if (!bmiPass)
+                if (!bmiPass!)
                   CheckboxListTile(
                     value: bfPass,
                     onChanged: (value) {
@@ -252,11 +250,11 @@ class _DownloadAcftWidgetState extends State<DownloadAcftWidget> {
                   oic: _oicController.text,
                   oicGrade: _oicGradeController.text,
                   // bmiDate: bodyComp ? _bmiDateController.text : '',
-                  height: bodyComp ? _heightController.text : '',
-                  weight: bodyComp ? _weightController.text : '',
-                  bf: bodyComp ? _bfController.text : '',
-                  bmiPass: bodyComp ? bmiPass : null,
-                  bfPass: bodyComp && !bmiPass ? bfPass : null,
+                  height: bodyComp! ? _heightController.text : '',
+                  weight: bodyComp! ? _weightController.text : '',
+                  bf: bodyComp! ? _bfController.text : '',
+                  bmiPass: bodyComp! ? bmiPass : null,
+                  bfPass: bodyComp! && !bmiPass! ? bfPass : null,
                   altPass: altPass,
                 );
               },

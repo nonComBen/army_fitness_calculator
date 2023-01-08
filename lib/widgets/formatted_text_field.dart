@@ -3,7 +3,7 @@ import 'package:flutter/services.dart';
 
 class FormattedTextField extends StatelessWidget {
   const FormattedTextField(
-      {Key key,
+      {Key? key,
       this.contoller,
       this.focusNode,
       this.textInputAction,
@@ -12,13 +12,13 @@ class FormattedTextField extends StatelessWidget {
       this.errorText,
       this.onChanged})
       : super(key: key);
-  final TextEditingController contoller;
-  final FocusNode focusNode;
-  final TextInputAction textInputAction;
-  final Function onEditingComplete;
-  final String label;
-  final String errorText;
-  final Function(String) onChanged;
+  final TextEditingController? contoller;
+  final FocusNode? focusNode;
+  final TextInputAction? textInputAction;
+  final Function? onEditingComplete;
+  final String? label;
+  final String? errorText;
+  final Function(String)? onChanged;
 
   @override
   Widget build(BuildContext context) {
@@ -35,7 +35,7 @@ class FormattedTextField extends StatelessWidget {
         textAlign: TextAlign.start,
         style: const TextStyle(fontSize: 18, fontWeight: FontWeight.normal),
         decoration: InputDecoration(
-          label: Text(label),
+          label: Text(label!),
           border: OutlineInputBorder(),
           errorText: errorText,
         ),

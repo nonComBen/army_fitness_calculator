@@ -9,7 +9,7 @@ List<int> setBfBenchmarks(bool male, int ageGroupIndex, int height) {
   return [min, max, percentMax];
 }
 
-int getBfPercent(bool male, double height, double cirValue) {
+int getBfPercent(bool male, double? height, double cirValue) {
   if (male) {
     if (cirValue < 10.5) {
       return 0;
@@ -53,7 +53,7 @@ const List<List<int>> heightWeightTable = [
 
 const List<int> percentTable = [20, 22, 24, 26, 30, 32, 34, 36];
 
-const List<double> heights = [
+const List<double?> heights = [
   58,
   58.5,
   59,

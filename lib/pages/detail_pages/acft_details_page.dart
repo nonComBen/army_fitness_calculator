@@ -8,7 +8,7 @@ import '../../sqlite/db_helper.dart';
 import '../../sqlite/acft.dart';
 
 class AcftDetailsPage extends StatefulWidget {
-  AcftDetailsPage({this.acft});
+  AcftDetailsPage({required this.acft});
   final Acft acft;
 
   @override
@@ -16,11 +16,11 @@ class AcftDetailsPage extends StatefulWidget {
 }
 
 class _AcftDetailsPageState extends State<AcftDetailsPage> {
-  RegExp regExp;
-  DBHelper dbHelper;
+  late RegExp regExp;
+  late DBHelper dbHelper;
 
-  TextEditingController _mainNameController;
-  TextEditingController _mainDateController;
+  TextEditingController? _mainNameController;
+  TextEditingController? _mainDateController;
 
   static GlobalKey previewContainer = new GlobalKey();
   GlobalKey<ScaffoldState> _scaffoldState = new GlobalKey<ScaffoldState>();
@@ -65,7 +65,7 @@ class _AcftDetailsPageState extends State<AcftDetailsPage> {
                   ),
                   autovalidateMode: AutovalidateMode.onUserInteraction,
                   validator: (value) =>
-                      regExp.hasMatch(value) ? null : 'Use yyyyMMdd Format',
+                      regExp.hasMatch(value!) ? null : 'Use yyyyMMdd Format',
                   autofocus: true,
                   autocorrect: false,
                   textInputAction: TextInputAction.next,
@@ -125,8 +125,8 @@ class _AcftDetailsPageState extends State<AcftDetailsPage> {
 
   @override
   void dispose() {
-    _mainNameController.dispose();
-    _mainDateController.dispose();
+    _mainNameController!.dispose();
+    _mainDateController!.dispose();
     super.dispose();
   }
 

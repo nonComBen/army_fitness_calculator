@@ -25,13 +25,13 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   String title = 'ACFT Calculator';
   int _selectedIndex = 0;
-  Set<String> productIds;
-  List<ProductDetails> _products;
+  late Set<String> productIds;
+  late List<ProductDetails> _products;
   bool adLoaded = false;
 
   GlobalKey<ScaffoldState> _scaffoldState = new GlobalKey<ScaffoldState>();
 
-  List<Widget> _pages;
+  late List<Widget> _pages;
 
   List<String> _titles = <String>[
     'ACFT Calculator',
@@ -47,7 +47,7 @@ class _MyHomePageState extends State<MyHomePage> {
     remindLaunches: 5,
   );
 
-  BannerAd myBanner;
+  BannerAd? myBanner;
 
   bool _loadingAnchoredBanner = false;
 
@@ -87,7 +87,7 @@ class _MyHomePageState extends State<MyHomePage> {
             keywords: <String>['army', 'military', 'fitness', 'outdoors'],
             nonPersonalizedAds: nonPersonalizedAds));
 
-    myBanner.load();
+    myBanner!.load();
   }
 
   int getSmartBannerHeight(BuildContext context) {
@@ -276,11 +276,11 @@ class _MyHomePageState extends State<MyHomePage> {
                 constraints: BoxConstraints(maxHeight: 90),
                 alignment: Alignment.center,
                 child: AdWidget(
-                  ad: myBanner,
+                  ad: myBanner!,
                 ),
-                width: myBanner != null ? myBanner.size.width.toDouble() : 320,
+                width: myBanner != null ? myBanner!.size.width.toDouble() : 320,
                 height:
-                    myBanner != null ? myBanner.size.height.toDouble() : 100,
+                    myBanner != null ? myBanner!.size.height.toDouble() : 100,
               )
           ],
         ),

@@ -12,9 +12,9 @@ class SavedBodyfatsPage extends StatefulWidget {
 }
 
 class _SavedBodyfatsPageState extends State<SavedBodyfatsPage> {
-  Future<List<Bodyfat>> bodyfats;
-  DBHelper dbHelper;
-  Color onPrimary, onError;
+  Future<List<Bodyfat>>? bodyfats;
+  DBHelper dbHelper = DBHelper();
+  Color? onPrimary, onError;
 
   refreshList() {
     setState(() {
@@ -44,14 +44,14 @@ class _SavedBodyfatsPageState extends State<SavedBodyfatsPage> {
     }
   }
 
-  Widget nameHeader(List<Bodyfat> bfList, String rank, String name) {
+  Widget nameHeader(List<Bodyfat> bfList, String? rank, String? name) {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
           Text(
-            rank == '' ? name : '$rank $name',
+            rank == '' ? name! : '$rank $name',
             style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
           ),
           IconButton(
@@ -74,7 +74,7 @@ class _SavedBodyfatsPageState extends State<SavedBodyfatsPage> {
 
   ListView _list(List<Bodyfat> bfList, double width) {
     List<Widget> widgets = [];
-    String name;
+    String? name;
     for (int i = 0; i < bfList.length; i++) {
       bool pass = bfList[i].bfPass == 1 || bfList[i].bmiPass == 1;
       if (i == 0) {
@@ -175,10 +175,10 @@ class _SavedBodyfatsPageState extends State<SavedBodyfatsPage> {
       ),
       body: Container(
         padding: const EdgeInsets.all(16.0),
-        child: FutureBuilder(
+        child: FutureBuilder<List<Bodyfat>>(
           future: bodyfats,
           builder: (context, snapshot) {
-            if (snapshot.data == null || snapshot.data.length == 0) {
+            if (snapshot.data == null || snapshot.data!.isEmpty) {
               return const Center(
                   child: Text(
                 'No Body Compositions Found',
@@ -187,7 +187,7 @@ class _SavedBodyfatsPageState extends State<SavedBodyfatsPage> {
             }
 
             if (snapshot.hasData) {
-              return _list(snapshot.data, width);
+              return _list(snapshot.data!, width);
             }
 
             return const Center(child: CircularProgressIndicator());

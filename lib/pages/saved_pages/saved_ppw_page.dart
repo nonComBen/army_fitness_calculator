@@ -14,9 +14,9 @@ class SavedPpwsPage extends StatefulWidget {
 }
 
 class _SavedPpwsPageState extends State<SavedPpwsPage> {
-  Future<List<PPW>> ppws;
-  DBHelper dbHelper;
-  Color onPrimary, onError;
+  Future<List<PPW>>? ppws;
+  DBHelper dbHelper = DBHelper();
+  Color? onPrimary, onError;
 
   refreshList() {
     setState(() {
@@ -117,7 +117,7 @@ class _SavedPpwsPageState extends State<SavedPpwsPage> {
 
   ListView _list(List<PPW> ppwList, double width) {
     List<Widget> widgets = [];
-    String name;
+    String? name;
     for (int i = 0; i < ppwList.length; i++) {
       int milTrain = ppwList[i].ptTest + ppwList[i].weapons;
       int awards = ppwList[i].awards + ppwList[i].badges;
@@ -144,10 +144,10 @@ class _SavedPpwsPageState extends State<SavedPpwsPage> {
       awards += ppwList[i].airborne;
       if (i == 0) {
         name = ppwList[i].name;
-        widgets.add(nameHeader(ppwList, ppwList[i].name));
+        widgets.add(nameHeader(ppwList, ppwList[i].name!));
       } else if (ppwList[i].name != name) {
         name = ppwList[i].name;
-        widgets.add(nameHeader(ppwList, ppwList[i].name));
+        widgets.add(nameHeader(ppwList, ppwList[i].name!));
       }
       widgets.add(Padding(
         padding: const EdgeInsets.all(8.0),
@@ -258,10 +258,10 @@ class _SavedPpwsPageState extends State<SavedPpwsPage> {
       ),
       body: Container(
         padding: const EdgeInsets.all(16.0),
-        child: FutureBuilder(
+        child: FutureBuilder<List<PPW>>(
           future: ppws,
           builder: (context, snapshot) {
-            if (snapshot.data == null || snapshot.data.length == 0) {
+            if (snapshot.data == null || snapshot.data!.isEmpty) {
               return Center(
                   child: Text(
                 'No PPWs Found',
@@ -272,7 +272,7 @@ class _SavedPpwsPageState extends State<SavedPpwsPage> {
             }
 
             if (snapshot.hasData) {
-              return _list(snapshot.data, width);
+              return _list(snapshot.data!, width);
             }
 
             return const Center(child: CircularProgressIndicator());

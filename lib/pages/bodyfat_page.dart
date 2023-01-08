@@ -24,16 +24,11 @@ class BodyfatPage extends ConsumerStatefulWidget {
 }
 
 class _BodyfatPageState extends ConsumerState<BodyfatPage> {
-  int age = 22,
-      height = 68,
-      weight = 150,
-      bfPercent,
-      weightMin,
-      weightMax,
-      percentMax,
-      overUnder;
-  double heightDouble, neck = 16.0, waist = 34.0, hip = 34.0;
-  String ageGroup, gender = 'Male';
+  int age = 22, height = 68, weight = 150;
+  int? bfPercent, weightMin, weightMax, percentMax, overUnder;
+  double? heightDouble;
+  double neck = 16.0, waist = 34.0, hip = 34.0;
+  String ageGroup = '17-20', gender = 'Male';
   bool bmiPass = true,
       bfPass = true,
       isUnderWeight = false,
@@ -43,11 +38,11 @@ class _BodyfatPageState extends ConsumerState<BodyfatPage> {
       isNeckValid = true,
       isWaistValid = true,
       isHipValid = true;
-  SharedPreferences prefs;
-  RegExp regExp;
-  DBHelper dbHelper;
+  late SharedPreferences prefs;
+  RegExp regExp = RegExp(r'^\d{4}(0[1-9]|1[012])(0[1-9]|[12][0-9]|3[01])$');
+  DBHelper dbHelper = DBHelper();
 
-  List<String> ageGroups = ['17-20', '21-27', '28-39', '40+'];
+  final List<String> ageGroups = ['17-20', '21-27', '28-39', '40+'];
 
   final _ageController = TextEditingController();
   final _heightController = TextEditingController();
@@ -64,6 +59,95 @@ class _BodyfatPageState extends ConsumerState<BodyfatPage> {
   final _waistFocus = FocusNode();
   final _hipFocus = FocusNode();
 
+  @override
+  void initState() {
+    super.initState();
+
+    _weightController.text = weight.toString();
+    _neckController.text = neck.toString();
+    _waistController.text = waist.toString();
+    _hipController.text = hip.toString();
+
+    _ageFocus.addListener(() {
+      if (_ageFocus.hasFocus) {
+        _ageController.selection = TextSelection(
+            baseOffset: 0, extentOffset: _ageController.text.length);
+      }
+    });
+    _heightFocus.addListener(() {
+      if (_heightFocus.hasFocus) {
+        _heightController.selection = TextSelection(
+            baseOffset: 0, extentOffset: _heightController.text.length);
+      }
+    });
+    _weightFocus.addListener(() {
+      if (_weightFocus.hasFocus) {
+        _weightController.selection = TextSelection(
+            baseOffset: 0, extentOffset: _weightController.text.length);
+      }
+    });
+    _neckFocus.addListener(() {
+      if (_neckFocus.hasFocus) {
+        _neckController.selection = TextSelection(
+            baseOffset: 0, extentOffset: _neckController.text.length);
+      }
+    });
+    _waistFocus.addListener(() {
+      if (_waistFocus.hasFocus) {
+        _waistController.selection = TextSelection(
+            baseOffset: 0, extentOffset: _waistController.text.length);
+      }
+    });
+    _hipFocus.addListener(() {
+      if (_hipFocus.hasFocus) {
+        _hipController.selection = TextSelection(
+            baseOffset: 0, extentOffset: _hipController.text.length);
+      }
+    });
+
+    prefs = ref.read(sharedPreferencesProvider);
+
+    if (prefs.getString('gender') != null) {
+      gender = prefs.getString('gender')!;
+    }
+    if (prefs.getInt('age') != null) {
+      age = prefs.getInt('age')!;
+    }
+    if (prefs.getInt('height') != null) {
+      height = prefs.getInt('height')!;
+    }
+
+    _ageController.text = age.toString();
+    ageGroup = getAgeGroup(age);
+    heightDouble = height.toDouble();
+    _heightController.text = height.toString();
+    _heightDoubleController.text = heightDouble.toString();
+
+    setBenchmarks();
+    calcBmi();
+    calcBf();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+
+    _ageController.dispose();
+    _heightController.dispose();
+    _heightDoubleController.dispose();
+    _weightController.dispose();
+    _neckController.dispose();
+    _waistController.dispose();
+    _hipController.dispose();
+
+    _ageFocus.dispose();
+    _heightFocus.dispose();
+    _weightFocus.dispose();
+    _neckFocus.dispose();
+    _waistFocus.dispose();
+    _hipFocus.dispose();
+  }
+
   void setBenchmarks() {
     List<int> benchmarks =
         setBfBenchmarks(gender == 'Male', ageGroups.indexOf(ageGroup), height);
@@ -76,8 +160,8 @@ class _BodyfatPageState extends ConsumerState<BodyfatPage> {
 
   void calcBmi() {
     setState(() {
-      if (weight <= weightMax) {
-        if (weight >= weightMin) {
+      if (weight <= weightMax!) {
+        if (weight >= weightMin!) {
           bmiPass = true;
           bfPass = true;
         } else {
@@ -101,8 +185,8 @@ class _BodyfatPageState extends ConsumerState<BodyfatPage> {
     }
     setState(() {
       bfPercent = getBfPercent(gender == 'Male', heightDouble, cirValue);
-      overUnder = bfPercent - percentMax;
-      if (overUnder <= 0) {
+      overUnder = bfPercent! - percentMax!;
+      if (overUnder! <= 0) {
         bfPass = true;
       } else
         bfPass = false;
@@ -145,7 +229,7 @@ class _BodyfatPageState extends ConsumerState<BodyfatPage> {
                   ),
                   autovalidateMode: AutovalidateMode.onUserInteraction,
                   validator: (value) =>
-                      regExp.hasMatch(value) ? null : 'Use yyyyMMdd Format',
+                      regExp.hasMatch(value!) ? null : 'Use yyyyMMdd Format',
                   keyboardType: TextInputType.numberWithOptions(signed: true),
                   inputFormatters: [
                     FilteringTextInputFormatter.digitsOnly,
@@ -203,98 +287,6 @@ class _BodyfatPageState extends ConsumerState<BodyfatPage> {
   }
 
   @override
-  void dispose() {
-    super.dispose();
-
-    _ageController.dispose();
-    _heightController.dispose();
-    _heightDoubleController.dispose();
-    _weightController.dispose();
-    _neckController.dispose();
-    _waistController.dispose();
-    _hipController.dispose();
-
-    _ageFocus.dispose();
-    _heightFocus.dispose();
-    _weightFocus.dispose();
-    _neckFocus.dispose();
-    _waistFocus.dispose();
-    _hipFocus.dispose();
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    dbHelper = new DBHelper();
-
-    _weightController.text = weight.toString();
-    _neckController.text = neck.toString();
-    _waistController.text = waist.toString();
-    _hipController.text = hip.toString();
-
-    _ageFocus.addListener(() {
-      if (_ageFocus.hasFocus) {
-        _ageController.selection = TextSelection(
-            baseOffset: 0, extentOffset: _ageController.text.length);
-      }
-    });
-    _heightFocus.addListener(() {
-      if (_heightFocus.hasFocus) {
-        _heightController.selection = TextSelection(
-            baseOffset: 0, extentOffset: _heightController.text.length);
-      }
-    });
-    _weightFocus.addListener(() {
-      if (_weightFocus.hasFocus) {
-        _weightController.selection = TextSelection(
-            baseOffset: 0, extentOffset: _weightController.text.length);
-      }
-    });
-    _neckFocus.addListener(() {
-      if (_neckFocus.hasFocus) {
-        _neckController.selection = TextSelection(
-            baseOffset: 0, extentOffset: _neckController.text.length);
-      }
-    });
-    _waistFocus.addListener(() {
-      if (_waistFocus.hasFocus) {
-        _waistController.selection = TextSelection(
-            baseOffset: 0, extentOffset: _waistController.text.length);
-      }
-    });
-    _hipFocus.addListener(() {
-      if (_hipFocus.hasFocus) {
-        _hipController.selection = TextSelection(
-            baseOffset: 0, extentOffset: _hipController.text.length);
-      }
-    });
-
-    regExp = new RegExp(r'^\d{4}(0[1-9]|1[012])(0[1-9]|[12][0-9]|3[01])$');
-
-    prefs = ref.read(sharedPreferencesProvider);
-
-    if (prefs.getString('gender') != null) {
-      gender = prefs.getString('gender');
-    }
-    if (prefs.getInt('age') != null) {
-      age = prefs.getInt('age');
-    }
-    if (prefs.getInt('height') != null) {
-      height = prefs.getInt('height');
-    }
-
-    _ageController.text = age.toString();
-    ageGroup = getAgeGroup(age);
-    heightDouble = height.toDouble();
-    _heightController.text = height.toString();
-    _heightDoubleController.text = heightDouble.toString();
-
-    setBenchmarks();
-    calcBmi();
-    calcBf();
-  }
-
-  @override
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
     final primaryColor = Theme.of(context).colorScheme.primary;
@@ -313,7 +305,7 @@ class _BodyfatPageState extends ConsumerState<BodyfatPage> {
               onChanged: (value) {
                 FocusScope.of(context).unfocus();
                 setState(() {
-                  gender = value;
+                  gender = value!;
                   setBenchmarks();
                   calcBmi();
                   calcBf();
@@ -684,11 +676,11 @@ class _BodyfatPageState extends ConsumerState<BodyfatPage> {
                           fontSize: 16,
                           onPressed: () {
                             FocusScope.of(context).unfocus();
-                            if (heightDouble > 58.0) {
+                            if (heightDouble! > 58.0) {
                               if (!(heightDouble ==
                                   (height.toDouble() - 0.5))) {
                                 setState(() {
-                                  heightDouble = heightDouble - 0.5;
+                                  heightDouble = heightDouble! - 0.5;
                                   _heightDoubleController.text =
                                       heightDouble.toString();
                                 });
@@ -715,11 +707,11 @@ class _BodyfatPageState extends ConsumerState<BodyfatPage> {
                           fontSize: 16,
                           onPressed: () {
                             FocusScope.of(context).unfocus();
-                            if (heightDouble < 80.0) {
+                            if (heightDouble! < 80.0) {
                               if (!(heightDouble ==
                                   (height.toDouble() + 0.5))) {
                                 setState(() {
-                                  heightDouble = heightDouble + 0.5;
+                                  heightDouble = heightDouble! + 0.5;
                                   _heightDoubleController.text =
                                       heightDouble.toString();
                                 });

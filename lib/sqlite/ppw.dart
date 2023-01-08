@@ -1,7 +1,7 @@
 class PPW {
-  int id;
-  String date;
-  String name;
+  int? id;
+  String? date;
+  String? name;
   String rank;
   int version;
   int ptTest;
@@ -24,31 +24,32 @@ class PPW {
   int civEdMax;
   int total;
 
-  PPW(
-      this.id,
-      this.date,
-      this.name,
-      this.rank,
-      this.version,
-      this.ptTest,
-      this.weapons,
-      this.awards,
-      this.badges,
-      this.airborne,
-      this.ncoes,
-      this.wbc,
-      this.resident,
-      this.tabs,
-      this.ar350,
-      this.semesterHours,
-      this.degree,
-      this.certs,
-      this.language,
-      this.milTrainMax,
-      this.awardsMax,
-      this.milEdMax,
-      this.civEdMax,
-      this.total);
+  PPW({
+    this.id,
+    this.date,
+    this.name,
+    required this.rank,
+    required this.version,
+    required this.ptTest,
+    required this.weapons,
+    required this.awards,
+    required this.badges,
+    required this.airborne,
+    required this.ncoes,
+    required this.wbc,
+    required this.resident,
+    required this.tabs,
+    required this.ar350,
+    required this.semesterHours,
+    required this.degree,
+    required this.certs,
+    required this.language,
+    required this.milTrainMax,
+    required this.awardsMax,
+    required this.milEdMax,
+    required this.civEdMax,
+    required this.total,
+  });
 
   Map<String, dynamic> toMap() {
     var map = <String, dynamic>{
@@ -82,30 +83,30 @@ class PPW {
 
   factory PPW.fromMap(Map<String, dynamic> map) {
     return PPW(
-      map['id'],
-      map['date'],
-      map['name'],
-      map['rank'],
-      map['version'],
-      map['ptTest'],
-      map['weapons'],
-      map['awards'],
-      map['badges'],
-      map['airborne'],
-      map['ncoes'],
-      map['wbc'],
-      map['resident'],
-      map['tabs'],
-      map['ar350'],
-      map['semesterHours'],
-      map['degree'],
-      map['certs'],
-      map['language'],
-      map['milTrain'],
-      map['awardsTotal'],
-      map['milEd'],
-      map['civEd'],
-      map['total'],
+      id: map['id'],
+      date: map['date'],
+      name: map['name'],
+      rank: map['rank'],
+      version: map['version'],
+      ptTest: map['ptTest'],
+      weapons: map['weapons'],
+      awards: map['awards'],
+      badges: map['badges'],
+      airborne: map['airborne'],
+      ncoes: map['ncoes'],
+      wbc: map['wbc'],
+      resident: map['resident'],
+      tabs: map['tabs'],
+      ar350: map['ar350'],
+      semesterHours: map['semesterHours'],
+      degree: map['degree'],
+      certs: map['certs'],
+      language: map['language'],
+      milTrainMax: map['milTrain'],
+      awardsMax: map['awardsTotal'],
+      milEdMax: map['milEd'],
+      civEdMax: map['civEd'],
+      total: map['total'],
     );
   }
 }

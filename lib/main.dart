@@ -39,7 +39,7 @@ class MyApp extends StatefulWidget {
 class MyAppState extends State<MyApp> {
   FirebaseAnalytics analytics = FirebaseAnalytics.instance;
   bool premium = true;
-  StreamSubscription<List<PurchaseDetails>> _streamSubscription;
+  late StreamSubscription<List<PurchaseDetails>> _streamSubscription;
 
   @override
   void dispose() {
@@ -63,7 +63,7 @@ class MyAppState extends State<MyApp> {
       _streamSubscription = purchaseUpdates.listen((purchases) async {
         premium = await listenToPurchaseUpdated(purchases);
         setState(() {});
-      });
+      }) as StreamSubscription<List<PurchaseDetails>>;
       await InAppPurchase.instance.restorePurchases();
     }
   }
@@ -77,11 +77,11 @@ class MyAppState extends State<MyApp> {
           theme: themeState,
           debugShowCheckedModeBanner: false,
           navigatorObservers: [FirebaseAnalyticsObserver(analytics: analytics)],
-          builder: (BuildContext context, Widget child) {
+          builder: (BuildContext context, Widget? child) {
             return MediaQuery(
               data:
                   MediaQuery.of(context).copyWith(alwaysUse24HourFormat: true),
-              child: child,
+              child: child!,
             );
           },
           home: Builder(builder: (BuildContext context) {

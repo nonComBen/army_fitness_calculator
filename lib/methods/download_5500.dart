@@ -10,20 +10,20 @@ import 'package:syncfusion_flutter_pdf/pdf.dart';
 
 class Download5500 {
   static Future<void> downloadPdf({
-    BuildContext context,
-    Bodyfat bf,
-    String firstNeck,
-    String secondNeck,
-    String thirdNeck,
-    String firstWaist,
-    String secondWaist,
-    String thirdWaist,
-    String preparedName,
-    String preparedGrade,
-    String superName,
-    String superGrade,
+    BuildContext? context,
+    required Bodyfat bf,
+    required String firstNeck,
+    required String secondNeck,
+    required String thirdNeck,
+    required String firstWaist,
+    required String secondWaist,
+    required String thirdWaist,
+    required String preparedName,
+    required String preparedGrade,
+    required String superName,
+    required String superGrade,
   }) async {
-    PdfDocument document;
+    late PdfDocument document;
     try {
       final byteData =
           await rootBundle.load('assets/documents/da_form_5500.pdf');
@@ -40,35 +40,35 @@ class Download5500 {
     //   string = string + '$i, ${form.fields[i].name}, ${form.fields[i]}\n';
     // }
 
-    PdfTextBoxField name = form.fields[1];
-    PdfTextBoxField rank = form.fields[3];
-    PdfTextBoxField height = form.fields[2];
-    PdfTextBoxField weight = form.fields[4];
-    PdfTextBoxField age = form.fields[5];
-    name.text = bf.name;
-    rank.text = bf.rank;
+    PdfTextBoxField name = form.fields[1] as PdfTextBoxField;
+    PdfTextBoxField rank = form.fields[3] as PdfTextBoxField;
+    PdfTextBoxField height = form.fields[2] as PdfTextBoxField;
+    PdfTextBoxField weight = form.fields[4] as PdfTextBoxField;
+    PdfTextBoxField age = form.fields[5] as PdfTextBoxField;
+    name.text = bf.name!;
+    rank.text = bf.rank!;
     height.text = bf.heightDouble;
     weight.text = bf.weight;
     age.text = bf.age;
-    PdfTextBoxField neck1 = form.fields[6];
-    PdfTextBoxField waist1 = form.fields[9];
-    PdfTextBoxField neck2 = form.fields[7];
-    PdfTextBoxField waist2 = form.fields[10];
-    PdfTextBoxField neck3 = form.fields[8];
-    PdfTextBoxField waist3 = form.fields[11];
+    PdfTextBoxField neck1 = form.fields[6] as PdfTextBoxField;
+    PdfTextBoxField waist1 = form.fields[9] as PdfTextBoxField;
+    PdfTextBoxField neck2 = form.fields[7] as PdfTextBoxField;
+    PdfTextBoxField waist2 = form.fields[10] as PdfTextBoxField;
+    PdfTextBoxField neck3 = form.fields[8] as PdfTextBoxField;
+    PdfTextBoxField waist3 = form.fields[11] as PdfTextBoxField;
     neck1.text = firstNeck;
     waist1.text = firstWaist;
     neck2.text = secondNeck;
     waist2.text = secondWaist;
     neck3.text = thirdNeck;
     waist3.text = thirdWaist;
-    PdfTextBoxField neckAve = form.fields[12];
-    PdfTextBoxField waistAve = form.fields[13];
-    PdfTextBoxField neckAveCir = form.fields[14];
-    PdfTextBoxField waistAveCir = form.fields[15];
-    PdfTextBoxField circValue = form.fields[16];
-    PdfTextBoxField height2 = form.fields[17];
-    PdfTextBoxField bfPercent = form.fields[18];
+    PdfTextBoxField neckAve = form.fields[12] as PdfTextBoxField;
+    PdfTextBoxField waistAve = form.fields[13] as PdfTextBoxField;
+    PdfTextBoxField neckAveCir = form.fields[14] as PdfTextBoxField;
+    PdfTextBoxField waistAveCir = form.fields[15] as PdfTextBoxField;
+    PdfTextBoxField circValue = form.fields[16] as PdfTextBoxField;
+    PdfTextBoxField height2 = form.fields[17] as PdfTextBoxField;
+    PdfTextBoxField bfPercent = form.fields[18] as PdfTextBoxField;
     neckAve.text = bf.neck;
     waistAve.text = bf.waist;
     neckAveCir.text = bf.neck;
@@ -83,25 +83,25 @@ class Download5500 {
     final remarks =
         'Weight: ${bf.weight} lbs.\nMax Weight: ${bf.maxWeight} lbs.\nOver: ${overWeight.toString()} lbs.\n'
         'Bodyfat Percentage: ${bf.bfPercent}%\nAllowed Percentage: ${bf.maxPercent}%\nOver/Under: ${bf.overUnder}%';
-    PdfTextBoxField remarksField = form.fields[0];
+    PdfTextBoxField remarksField = form.fields[0] as PdfTextBoxField;
     remarksField.text = remarks;
 
-    PdfCheckBoxField bfGo = form.fields[21];
-    PdfCheckBoxField bfNoGo = form.fields[20];
+    PdfCheckBoxField bfGo = form.fields[21] as PdfCheckBoxField;
+    PdfCheckBoxField bfNoGo = form.fields[20] as PdfCheckBoxField;
     bfGo.isChecked = bf.bfPass == 1;
     bfNoGo.isChecked = bf.bfPass == 0;
-    PdfTextBoxField preparedNameField = form.fields[22];
-    PdfTextBoxField preparedRank = form.fields[24];
-    PdfTextBoxField preparedDate = form.fields[25];
-    PdfTextBoxField superNameField = form.fields[19];
-    PdfTextBoxField superRank = form.fields[23];
-    PdfTextBoxField superDate = form.fields[26];
+    PdfTextBoxField preparedNameField = form.fields[22] as PdfTextBoxField;
+    PdfTextBoxField preparedRank = form.fields[24] as PdfTextBoxField;
+    PdfTextBoxField preparedDate = form.fields[25] as PdfTextBoxField;
+    PdfTextBoxField superNameField = form.fields[19] as PdfTextBoxField;
+    PdfTextBoxField superRank = form.fields[23] as PdfTextBoxField;
+    PdfTextBoxField superDate = form.fields[26] as PdfTextBoxField;
     preparedNameField.text = preparedName;
     preparedRank.text = preparedGrade;
-    preparedDate.text = bf.date;
+    preparedDate.text = bf.date!;
     superNameField.text = superName;
     superRank.text = superGrade;
-    superDate.text = bf.date;
+    superDate.text = bf.date!;
 
     var status = await Permission.storage.status;
     if (status != PermissionStatus.granted) {
@@ -115,7 +115,7 @@ class Download5500 {
         var file = File(fileName);
         file.writeAsBytesSync(document.saveSync());
 
-        ScaffoldMessenger.of(context).showSnackBar(
+        ScaffoldMessenger.of(context!).showSnackBar(
           SnackBar(
             content: Text(
                 'DA Form 5500 has been downloaded to a temporary folder. Open and save to a permanent folder.'),

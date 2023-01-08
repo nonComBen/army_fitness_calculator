@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 
 class BadgeCard extends StatelessWidget {
   const BadgeCard(
-      {Key key, this.onLongPressed, this.badgeName, this.onBadgeChosen})
+      {Key? key, this.onLongPressed, this.badgeName, this.onBadgeChosen})
       : super(key: key);
-  final Function onLongPressed;
-  final String badgeName;
-  final ValueChanged<String> onBadgeChosen;
+  final Function? onLongPressed;
+  final String? badgeName;
+  final ValueChanged<String?>? onBadgeChosen;
 
   static const List<String> badges = [
     'None',
@@ -53,7 +53,7 @@ class BadgeCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onLongPress: onLongPressed,
+      onLongPress: onLongPressed as void Function()?,
       child: Card(
         child: Padding(
           padding: const EdgeInsets.all(8.0),

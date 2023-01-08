@@ -2,16 +2,16 @@ import 'package:flutter/material.dart';
 
 class FormattedDropDown extends StatelessWidget {
   const FormattedDropDown(
-      {Key key,
-      @required this.label,
-      @required this.value,
-      @required this.items,
-      @required this.onChanged})
+      {Key? key,
+      required this.label,
+      required this.value,
+      required this.items,
+      required this.onChanged})
       : super(key: key);
   final String label;
-  final String value;
+  final String? value;
   final List<String> items;
-  final Function(String) onChanged;
+  final Function(String?) onChanged;
 
   @override
   Widget build(BuildContext context) {
@@ -29,7 +29,7 @@ class FormattedDropDown extends StatelessWidget {
             value: event,
           );
         }).toList(),
-        onChanged: (value) {
+        onChanged: (dynamic value) {
           onChanged(value);
         },
       ),

@@ -5,17 +5,17 @@ import '../../sqlite/acft.dart';
 
 class AcftChartPage extends StatefulWidget {
   AcftChartPage({this.acfts, this.soldier});
-  final List<Acft> acfts;
-  final String soldier;
+  final List<Acft>? acfts;
+  final String? soldier;
 
   @override
   _AcftChartPageState createState() => _AcftChartPageState();
 }
 
 class _AcftChartPageState extends State<AcftChartPage> {
-  bool mdl, spt, hrp, sdc, plk, run;
+  bool? mdl, spt, hrp, sdc, plk, run;
   List<charts.Series<Acft, DateTime>> _seriesBarData = [];
-  List<Acft> myData;
+  List<Acft>? myData;
 
   static GlobalKey previewContainer = new GlobalKey();
   GlobalKey<ScaffoldState> _scaffoldState = new GlobalKey<ScaffoldState>();
@@ -23,57 +23,57 @@ class _AcftChartPageState extends State<AcftChartPage> {
   _generateData(List<Acft> myData) {
     _seriesBarData.clear();
     _seriesBarData.add(charts.Series(
-        domainFn: (acft, _) => DateTime.parse(acft.date),
+        domainFn: (acft, _) => DateTime.parse(acft.date!),
         measureFn: (acft, _) => int.tryParse(acft.total),
         data: myData,
         id: 'Total',
         colorFn: (acft, _) => Theme.of(context).brightness == Brightness.light
             ? charts.Color.black
             : charts.Color.white));
-    if (mdl) {
+    if (mdl!) {
       _seriesBarData.add(charts.Series(
-          domainFn: (acft, _) => DateTime.parse(acft.date),
+          domainFn: (acft, _) => DateTime.parse(acft.date!),
           measureFn: (acft, _) => int.tryParse(acft.mdlScore),
           data: myData,
           id: 'MDL',
           colorFn: (acft, _) => charts.MaterialPalette.blue.shadeDefault));
     }
-    if (spt) {
+    if (spt!) {
       _seriesBarData.add(charts.Series(
-          domainFn: (acft, _) => DateTime.parse(acft.date),
+          domainFn: (acft, _) => DateTime.parse(acft.date!),
           measureFn: (acft, _) => int.tryParse(acft.sptScore),
           data: myData,
           id: 'SPT',
           colorFn: (acft, _) => charts.MaterialPalette.green.shadeDefault));
     }
-    if (hrp) {
+    if (hrp!) {
       _seriesBarData.add(charts.Series(
-          domainFn: (acft, _) => DateTime.parse(acft.date),
+          domainFn: (acft, _) => DateTime.parse(acft.date!),
           measureFn: (acft, _) => int.tryParse(acft.hrpScore),
           data: myData,
           id: 'HRP',
           colorFn: (acft, _) => charts.MaterialPalette.yellow.shadeDefault));
     }
-    if (sdc) {
+    if (sdc!) {
       _seriesBarData.add(charts.Series(
-          domainFn: (acft, _) => DateTime.parse(acft.date),
+          domainFn: (acft, _) => DateTime.parse(acft.date!),
           measureFn: (acft, _) => int.tryParse(acft.sdcScore),
           data: myData,
           id: 'SDC',
           colorFn: (acft, _) =>
               charts.MaterialPalette.deepOrange.shadeDefault));
     }
-    if (plk) {
+    if (plk!) {
       _seriesBarData.add(charts.Series(
-          domainFn: (acft, _) => DateTime.parse(acft.date),
+          domainFn: (acft, _) => DateTime.parse(acft.date!),
           measureFn: (acft, _) => int.tryParse(acft.plkScore),
           data: myData,
           id: 'PLK',
           colorFn: (acft, _) => charts.MaterialPalette.red.shadeDefault));
     }
-    if (run) {
+    if (run!) {
       _seriesBarData.add(charts.Series(
-          domainFn: (acft, _) => DateTime.parse(acft.date),
+          domainFn: (acft, _) => DateTime.parse(acft.date!),
           measureFn: (acft, _) => int.tryParse(acft.runScore),
           data: myData,
           id: 'Run',
@@ -83,7 +83,7 @@ class _AcftChartPageState extends State<AcftChartPage> {
 
   Widget _buildChart() {
     double width = MediaQuery.of(context).size.width;
-    _generateData(myData);
+    _generateData(myData!);
     return SizedBox(
       width: width - 32,
       height: MediaQuery.of(context).size.height / 2,

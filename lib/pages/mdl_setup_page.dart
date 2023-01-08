@@ -4,7 +4,7 @@ import '../constants/mdl_setup_table.dart';
 import '../widgets/mdl_setup_card.dart';
 
 class MdlSetupPage extends StatelessWidget {
-  const MdlSetupPage({Key key}) : super(key: key);
+  const MdlSetupPage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

@@ -10,9 +10,9 @@ import '../constants/spt_table.dart';
 import 'acft_table_column.dart';
 
 class AcftTable extends StatelessWidget {
-  const AcftTable({Key key, this.ageGroup, this.gender}) : super(key: key);
-  final String ageGroup;
-  final String gender;
+  const AcftTable({Key? key, this.ageGroup, this.gender}) : super(key: key);
+  final String? ageGroup;
+  final String? gender;
 
   @override
   Widget build(BuildContext context) {

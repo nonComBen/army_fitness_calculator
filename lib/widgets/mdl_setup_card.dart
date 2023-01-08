@@ -3,11 +3,11 @@ import 'package:flutter/material.dart';
 import 'bullet_item.dart';
 
 class MdlSetupCard extends StatelessWidget {
-  const MdlSetupCard({Key key, this.title, this.image, this.weights})
+  const MdlSetupCard({Key? key, this.title, this.image, this.weights})
       : super(key: key);
-  final Image image;
-  final String title;
-  final List<String> weights;
+  final Image? image;
+  final String? title;
+  final List<String>? weights;
 
   @override
   Widget build(BuildContext context) {
@@ -20,7 +20,7 @@ class MdlSetupCard extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             children: [
               Text(
-                title,
+                title!,
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                 textAlign: TextAlign.center,
               ),
@@ -33,7 +33,7 @@ class MdlSetupCard extends StatelessWidget {
                         BulletItem(
                           text: '60 lb Hex Bar',
                         ),
-                        ...weights
+                        ...weights!
                             .map((e) => BulletItem(
                                   text: e,
                                 ))

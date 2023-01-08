@@ -1,4 +1,4 @@
-int newWeaponsPts(int cardIndex, String rank, int hits, bool newVersion) {
+int newWeaponsPts(int cardIndex, String? rank, int hits, bool newVersion) {
   int rankIndex = rank == 'SGT' ? 1 : 2;
   if (newVersion) {
     switch (cardIndex) {
@@ -269,7 +269,7 @@ const List<List<int>> oldForm7820Table = [
   ],
 ];
 
-int form85Pts(String rank, int hits) {
+int form85Pts(String? rank, int hits) {
   if (hits >= 212) {
     return rank == 'SGT' ? 160 : 110;
   } else if (hits >= 208) {
@@ -343,7 +343,7 @@ const List<List<int>> oldForm85Table = [
   ],
 ];
 
-int form7304Pts(String rank, int hits) {
+int form7304Pts(String? rank, int hits) {
   if (hits >= 106) {
     return rank == 'SGT' ? 160 : 110;
   } else if (hits >= 105) {
@@ -387,7 +387,7 @@ int form7304Pts(String rank, int hits) {
   }
 }
 
-int formCidPts(String rank, int hits) {
+int formCidPts(String? rank, int hits) {
   if (hits == 300) {
     return rank == 'SGT' ? 160 : 110;
   } else if (hits >= 295) {

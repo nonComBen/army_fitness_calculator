@@ -9,7 +9,7 @@ import '../../sqlite/bodyfat.dart';
 import '../../widgets/download_5500_widget.dart';
 
 class BodyfatDetailsPage extends StatefulWidget {
-  BodyfatDetailsPage({this.bf});
+  BodyfatDetailsPage({required this.bf});
   final Bodyfat bf;
 
   @override
@@ -17,11 +17,11 @@ class BodyfatDetailsPage extends StatefulWidget {
 }
 
 class _BodyfatDetailsPageState extends State<BodyfatDetailsPage> {
-  RegExp regExp;
-  DBHelper dbHelper;
+  late RegExp regExp;
+  late DBHelper dbHelper;
 
-  TextEditingController _mainNameController;
-  TextEditingController _mainDateController;
+  TextEditingController? _mainNameController;
+  TextEditingController? _mainDateController;
 
   static GlobalKey previewContainer = new GlobalKey();
   GlobalKey<ScaffoldState> _scaffoldState = new GlobalKey<ScaffoldState>();
@@ -61,7 +61,7 @@ class _BodyfatDetailsPageState extends State<BodyfatDetailsPage> {
                     ),
                     autovalidateMode: AutovalidateMode.onUserInteraction,
                     validator: (value) =>
-                        regExp.hasMatch(value) ? null : 'Use yyyyMMdd Format',
+                        regExp.hasMatch(value!) ? null : 'Use yyyyMMdd Format',
                     autofocus: true,
                     autocorrect: false,
                     textInputAction: TextInputAction.next,
@@ -98,8 +98,8 @@ class _BodyfatDetailsPageState extends State<BodyfatDetailsPage> {
                     child: Text('Update Body Comp'),
                     onPressed: () {
                       setState(() {
-                        _mainDateController.text = _dateController.text;
-                        _mainNameController.text =
+                        _mainDateController!.text = _dateController.text;
+                        _mainNameController!.text =
                             '${_rankController.text} ${_nameController.text}';
                       });
                       bf.date = _dateController.text;
@@ -245,8 +245,8 @@ class _BodyfatDetailsPageState extends State<BodyfatDetailsPage> {
 
   @override
   void dispose() {
-    _mainNameController.dispose();
-    _mainDateController.dispose();
+    _mainNameController!.dispose();
+    _mainDateController!.dispose();
     super.dispose();
   }
 
@@ -392,8 +392,8 @@ class _BodyfatDetailsPageState extends State<BodyfatDetailsPage> {
                         padding: EdgeInsets.symmetric(horizontal: 8.0),
                         child: TextFormField(
                           enabled: false,
-                          initialValue: (int.tryParse(widget.bf.weight) -
-                                      int.tryParse(widget.bf.maxWeight))
+                          initialValue: (int.tryParse(widget.bf.weight)! -
+                                      int.tryParse(widget.bf.maxWeight)!)
                                   .toString() +
                               ' lbs.',
                           decoration:

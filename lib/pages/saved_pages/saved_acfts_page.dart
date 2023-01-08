@@ -12,9 +12,9 @@ class SavedAcftsPage extends StatefulWidget {
 }
 
 class _SavedAcftsPageState extends State<SavedAcftsPage> {
-  Future<List<Acft>> acfts;
-  DBHelper dbHelper;
-  Color onPrimary, onError;
+  Future<List<Acft>>? acfts;
+  DBHelper dbHelper = DBHelper();
+  Color? onPrimary, onError;
 
   refreshList() {
     setState(() {
@@ -22,14 +22,14 @@ class _SavedAcftsPageState extends State<SavedAcftsPage> {
     });
   }
 
-  Widget nameHeader(List<Acft> acftList, String rank, String name) {
+  Widget nameHeader(List<Acft> acftList, String rank, String? name) {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
           Text(
-            rank == '' ? name : '$rank $name',
+            rank == '' ? name! : '$rank $name',
             style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
           ),
           IconButton(
@@ -53,7 +53,7 @@ class _SavedAcftsPageState extends State<SavedAcftsPage> {
 
   ListView _list(List<Acft> acftList, double width) {
     List<Widget> widgets = [];
-    String name;
+    String? name;
     for (int i = 0; i < acftList.length; i++) {
       bool pass = acftList[i].pass == 1;
       if (i == 0) {
@@ -149,7 +149,7 @@ class _SavedAcftsPageState extends State<SavedAcftsPage> {
       ),
       body: Container(
         padding: const EdgeInsets.all(16.0),
-        child: FutureBuilder(
+        child: FutureBuilder<List<Acft>>(
           future: acfts,
           builder: (ctx, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
@@ -157,7 +157,7 @@ class _SavedAcftsPageState extends State<SavedAcftsPage> {
                 child: CircularProgressIndicator(),
               );
             }
-            if (snapshot.data == null || snapshot.data.length == 0) {
+            if (snapshot.data == null || snapshot.data!.isEmpty) {
               return const Center(
                   child: Text(
                 'No ACFTs Found',
@@ -166,7 +166,7 @@ class _SavedAcftsPageState extends State<SavedAcftsPage> {
             }
 
             if (snapshot.hasData) {
-              return _list(snapshot.data, width);
+              return _list(snapshot.data!, width);
             }
 
             return const Center(child: CircularProgressIndicator());

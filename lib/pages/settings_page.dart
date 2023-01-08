@@ -12,7 +12,7 @@ import 'package:flutter/material.dart';
 
 class SettingsPage extends ConsumerStatefulWidget {
   SettingsPage({this.isPremium});
-  final bool isPremium;
+  final bool? isPremium;
   @override
   _SettingsPageState createState() => _SettingsPageState();
 }
@@ -24,25 +24,73 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
       brightness = 'Light',
       rank = 'SGT';
   bool jrSoldier = true;
-  SharedPreferences prefs;
+  late SharedPreferences prefs;
 
-  TextEditingController _ageController;
-  TextEditingController _heightController;
+  final _ageController = TextEditingController();
+  final _heightController = TextEditingController();
 
-  List<String> events = [
+  final List<String> events = [
     'Run',
     'Walk',
     'Bike',
     'Swim',
   ];
 
-  List<String> acftEvents = [
+  final List<String> acftEvents = [
     'Run',
     'Walk',
     'Bike',
     'Row',
     'Swim',
   ];
+
+  @override
+  void dispose() {
+    _ageController.dispose();
+    _heightController.dispose();
+    myBanner.dispose();
+    super.dispose();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+
+    if (!widget.isPremium!) {
+      myBanner.load();
+    }
+
+    prefs = ref.read(sharedPreferencesProvider);
+
+    if (prefs.getString('acft_event') != null) {
+      acftEvent = prefs.getString('acft_event')!;
+    }
+    if (prefs.getString('gender') != null) {
+      gender = prefs.getString('gender')!;
+    }
+    if (prefs.getInt('age') != null) {
+      _ageController.text = prefs.getInt('age').toString();
+    } else {
+      _ageController.text = '17';
+    }
+    if (prefs.getString('apft_event') != null) {
+      apftEvent = prefs.getString('apft_event')!;
+    }
+    if (prefs.getBool('jr_soldier') != null) {
+      jrSoldier = prefs.getBool('jr_soldier')!;
+    }
+    if (prefs.getInt('height') != null) {
+      _heightController.text = prefs.getInt('height').toString();
+    } else {
+      _heightController.text = '68';
+    }
+    if (prefs.getString('brightness') != null) {
+      brightness = prefs.getString('brightness')!;
+    }
+    if (prefs.getString('rank') != null) {
+      rank = prefs.getString('rank')!;
+    }
+  }
 
   List<Widget> brightnessRadios(bool horizontal, double width,
       ThemeData themeState, ThemeStateNotifier notifier) {
@@ -54,7 +102,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
           activeColor: Theme.of(context).colorScheme.onSecondary,
           value: Brightness.light,
           groupValue: themeState.brightness,
-          onChanged: (Brightness value) {
+          onChanged: (Brightness? value) {
             notifier.switchTheme(ThemeState.lightTheme);
           },
         ),
@@ -66,7 +114,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
           activeColor: Theme.of(context).colorScheme.onSecondary,
           value: Brightness.dark,
           groupValue: themeState.brightness,
-          onChanged: (Brightness value) {
+          onChanged: (Brightness? value) {
             notifier.switchTheme(ThemeState.darkTheme);
           },
         ),
@@ -81,56 +129,6 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
       size: AdSize.banner,
       listener: BannerAdListener(),
       request: AdRequest());
-
-  @override
-  void dispose() {
-    _ageController.dispose();
-    _heightController.dispose();
-    myBanner?.dispose();
-    super.dispose();
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    _ageController = TextEditingController();
-    _heightController = TextEditingController();
-
-    if (!widget.isPremium) {
-      myBanner.load();
-    }
-
-    prefs = ref.read(sharedPreferencesProvider);
-
-    if (prefs.getString('acft_event') != null) {
-      acftEvent = prefs.getString('acft_event');
-    }
-    if (prefs.getString('gender') != null) {
-      gender = prefs.getString('gender');
-    }
-    if (prefs.getInt('age') != null) {
-      _ageController.text = prefs.getInt('age').toString();
-    } else {
-      _ageController.text = '17';
-    }
-    if (prefs.getString('apft_event') != null) {
-      apftEvent = prefs.getString('apft_event');
-    }
-    if (prefs.getBool('jr_soldier') != null) {
-      jrSoldier = prefs.getBool('jr_soldier');
-    }
-    if (prefs.getInt('height') != null) {
-      _heightController.text = prefs.getInt('height').toString();
-    } else {
-      _heightController.text = '68';
-    }
-    if (prefs.getString('brightness') != null) {
-      brightness = prefs.getString('brightness');
-    }
-    if (prefs.getString('rank') != null) {
-      rank = prefs.getString('rank');
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -193,7 +191,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                           items: acftEvents,
                           onChanged: (value) {
                             setState(() {
-                              acftEvent = value;
+                              acftEvent = value!;
                               prefs.setString('acft_event', value);
                             });
                           }),
@@ -203,7 +201,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                           groupValue: gender,
                           onChanged: (value) {
                             setState(() {
-                              gender = value;
+                              gender = value!;
                               prefs.setString('gender', value);
                             });
                           }),
@@ -226,7 +224,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                           items: events,
                           onChanged: (value) {
                             setState(() {
-                              apftEvent = value;
+                              apftEvent = value!;
                               prefs.setString('apft_event', value);
                             });
                           }),
@@ -262,7 +260,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                           groupValue: rank,
                           onChanged: (value) {
                             setState(() {
-                              rank = value;
+                              rank = value!;
                               prefs.setString('rank', value);
                             });
                           }),
@@ -271,7 +269,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                 ],
               ),
             ),
-            if (!widget.isPremium)
+            if (!widget.isPremium!)
               Container(
                 constraints: const BoxConstraints(maxHeight: 90),
                 alignment: Alignment.center,

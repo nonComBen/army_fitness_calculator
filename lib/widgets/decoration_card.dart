@@ -5,16 +5,16 @@ import '../classes/award_decoration.dart';
 
 class DecorationCard extends StatefulWidget {
   DecorationCard(
-      {Key key,
+      {Key? key,
       this.onLongPressed,
       this.decoration,
       this.onAwardChosen,
       this.onAwardNumberChanged})
       : super(key: key);
-  final Function onLongPressed;
-  final AwardDecoration decoration;
-  final Function(String) onAwardChosen;
-  final Function(String) onAwardNumberChanged;
+  final Function? onLongPressed;
+  final AwardDecoration? decoration;
+  final Function(String?)? onAwardChosen;
+  final Function(String)? onAwardNumberChanged;
 
   static const List<String> awards = [
     'None',
@@ -41,7 +41,7 @@ class _DecorationCardState extends State<DecorationCard> {
   @override
   void initState() {
     super.initState();
-    _awardNumberController.text = widget.decoration.number.toString();
+    _awardNumberController.text = widget.decoration!.number.toString();
   }
 
   @override
@@ -53,7 +53,7 @@ class _DecorationCardState extends State<DecorationCard> {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onLongPress: widget.onLongPressed,
+      onLongPress: widget.onLongPressed as void Function()?,
       child: Card(
         child: Padding(
           padding: const EdgeInsets.all(8.0),
@@ -64,7 +64,7 @@ class _DecorationCardState extends State<DecorationCard> {
                 flex: 3,
                 child: DropdownButtonFormField(
                   isExpanded: true,
-                  value: widget.decoration.name,
+                  value: widget.decoration!.name,
                   decoration: const InputDecoration(labelText: 'Decoration'),
                   items: DecorationCard.awards.map((award) {
                     return DropdownMenuItem(

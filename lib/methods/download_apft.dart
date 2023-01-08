@@ -11,22 +11,22 @@ import '../sqlite/apft.dart';
 
 class DownloadApft {
   static Future<void> downloadPdf({
-    BuildContext context,
-    Apft apft,
-    String unitLoc,
-    String mos,
-    bool altPass,
-    String oic,
-    String oicGrade,
+    BuildContext? context,
+    required Apft apft,
+    required String unitLoc,
+    required String mos,
+    bool? altPass,
+    required String oic,
+    required String oicGrade,
     String bmiDate = '',
     String height = '',
     String weight = '',
-    bool bmiPass,
+    bool? bmiPass,
     String bf = '',
-    bool bfPass,
+    bool? bfPass,
     String comments = '',
   }) async {
-    PdfDocument document;
+    late PdfDocument document;
     try {
       final byteData =
           await rootBundle.load('assets/documents/da_form_705.pdf');
@@ -43,16 +43,16 @@ class DownloadApft {
     //   string = string + '$i, ${form.fields[i].name}, ${form.fields[i]}\n';
     // }
 
-    PdfTextBoxField name = form.fields[49];
-    PdfTextBoxField unit = form.fields[90];
-    PdfTextBoxField gender = form.fields[0];
-    name.text = apft.name;
+    PdfTextBoxField name = form.fields[49] as PdfTextBoxField;
+    PdfTextBoxField unit = form.fields[90] as PdfTextBoxField;
+    PdfTextBoxField gender = form.fields[0] as PdfTextBoxField;
+    name.text = apft.name!;
     unit.text = unitLoc;
     gender.text = apft.gender;
-    PdfCheckBoxField bmiGo = form.fields[73];
-    PdfCheckBoxField bmiNoGo = form.fields[74];
-    PdfCheckBoxField bfGo = form.fields[78];
-    PdfCheckBoxField bfNoGo = form.fields[77];
+    PdfCheckBoxField bmiGo = form.fields[73] as PdfCheckBoxField;
+    PdfCheckBoxField bmiNoGo = form.fields[74] as PdfCheckBoxField;
+    PdfCheckBoxField bfGo = form.fields[78] as PdfCheckBoxField;
+    PdfCheckBoxField bfNoGo = form.fields[77] as PdfCheckBoxField;
     if (bmiPass != null) {
       bmiGo.isChecked = bmiPass;
       bmiNoGo.isChecked = !bmiPass;
@@ -61,28 +61,28 @@ class DownloadApft {
       bfGo.isChecked = bfPass;
       bfNoGo.isChecked = !bfPass;
     }
-    PdfTextBoxField bmiDateField = form.fields[52];
-    PdfTextBoxField heightField = form.fields[24];
-    PdfTextBoxField weightField = form.fields[27];
-    PdfTextBoxField bfField = form.fields[28];
-    PdfTextBoxField date = form.fields[91];
-    PdfTextBoxField mosField = form.fields[1];
-    PdfTextBoxField rank = form.fields[2];
-    PdfTextBoxField age = form.fields[17];
-    PdfTextBoxField puRaw = form.fields[70];
-    PdfTextBoxField puScore = form.fields[67];
-    PdfTextBoxField suRaw = form.fields[71];
-    PdfTextBoxField suScore = form.fields[68];
-    PdfTextBoxField runRaw = form.fields[72];
-    PdfTextBoxField runScore = form.fields[69];
-    PdfTextBoxField altRaw = form.fields[21];
+    PdfTextBoxField bmiDateField = form.fields[52] as PdfTextBoxField;
+    PdfTextBoxField heightField = form.fields[24] as PdfTextBoxField;
+    PdfTextBoxField weightField = form.fields[27] as PdfTextBoxField;
+    PdfTextBoxField bfField = form.fields[28] as PdfTextBoxField;
+    PdfTextBoxField date = form.fields[91] as PdfTextBoxField;
+    PdfTextBoxField mosField = form.fields[1] as PdfTextBoxField;
+    PdfTextBoxField rank = form.fields[2] as PdfTextBoxField;
+    PdfTextBoxField age = form.fields[17] as PdfTextBoxField;
+    PdfTextBoxField puRaw = form.fields[70] as PdfTextBoxField;
+    PdfTextBoxField puScore = form.fields[67] as PdfTextBoxField;
+    PdfTextBoxField suRaw = form.fields[71] as PdfTextBoxField;
+    PdfTextBoxField suScore = form.fields[68] as PdfTextBoxField;
+    PdfTextBoxField runRaw = form.fields[72] as PdfTextBoxField;
+    PdfTextBoxField runScore = form.fields[69] as PdfTextBoxField;
+    PdfTextBoxField altRaw = form.fields[21] as PdfTextBoxField;
     bmiDateField.text = bmiDate;
     heightField.text = height;
     weightField.text = weight;
     bfField.text = bf;
-    date.text = apft.date;
+    date.text = apft.date!;
     mosField.text = mos;
-    rank.text = apft.rank;
+    rank.text = apft.rank!;
     age.text = apft.age;
     puScore.text = apft.puScore;
     puRaw.text = apft.puRaw;
@@ -92,36 +92,36 @@ class DownloadApft {
     if (apft.runEvent == 'Run') {
       runRaw.text = apft.runRaw;
     } else {
-      PdfCheckBoxField swim = form.fields[7];
-      PdfCheckBoxField walk = form.fields[8];
-      PdfCheckBoxField bike = form.fields[13];
+      PdfCheckBoxField swim = form.fields[7] as PdfCheckBoxField;
+      PdfCheckBoxField walk = form.fields[8] as PdfCheckBoxField;
+      PdfCheckBoxField bike = form.fields[13] as PdfCheckBoxField;
       swim.isChecked = apft.runEvent == 'Swim';
       walk.isChecked = apft.runEvent == 'Walk';
       bike.isChecked = apft.runEvent == 'Bike';
       altRaw.text = apft.runRaw;
-      PdfCheckBoxField altGo = form.fields[100];
-      PdfCheckBoxField altNoGo = form.fields[16];
-      altGo.isChecked = altPass;
+      PdfCheckBoxField altGo = form.fields[100] as PdfCheckBoxField;
+      PdfCheckBoxField altNoGo = form.fields[16] as PdfCheckBoxField;
+      altGo.isChecked = altPass!;
       altNoGo.isChecked = !altPass;
     }
 
-    PdfTextBoxField total = form.fields[105];
-    PdfCheckBoxField go = form.fields[109];
-    PdfCheckBoxField noGo = form.fields[108];
+    PdfTextBoxField total = form.fields[105] as PdfTextBoxField;
+    PdfCheckBoxField go = form.fields[109] as PdfCheckBoxField;
+    PdfCheckBoxField noGo = form.fields[108] as PdfCheckBoxField;
     total.text = apft.total;
     go.isChecked = apft.pass == 1;
     noGo.isChecked = apft.pass == 0;
 
-    PdfTextBoxField smSigDate = form.fields[94];
-    PdfTextBoxField oicField = form.fields[85];
-    PdfTextBoxField oicGradeField = form.fields[18];
-    PdfTextBoxField oicSigDate = form.fields[95];
-    PdfTextBoxField commentsField = form.fields[33];
-    smSigDate.text = apft.date;
+    PdfTextBoxField smSigDate = form.fields[94] as PdfTextBoxField;
+    PdfTextBoxField oicField = form.fields[85] as PdfTextBoxField;
+    PdfTextBoxField oicGradeField = form.fields[18] as PdfTextBoxField;
+    PdfTextBoxField oicSigDate = form.fields[95] as PdfTextBoxField;
+    PdfTextBoxField commentsField = form.fields[33] as PdfTextBoxField;
+    smSigDate.text = apft.date!;
     total.text = apft.total;
     oicField.text = oic;
     oicGradeField.text = oicGrade;
-    oicSigDate.text = apft.date;
+    oicSigDate.text = apft.date!;
     commentsField.text = comments;
 
     var status = await Permission.storage.status;
@@ -136,7 +136,7 @@ class DownloadApft {
         var file = File(fileName);
         file.writeAsBytesSync(document.saveSync());
 
-        ScaffoldMessenger.of(context).showSnackBar(
+        ScaffoldMessenger.of(context!).showSnackBar(
           SnackBar(
             content: Text(
                 'DA Form 705 has been downloaded to a temporary folder. Open and save to a permanent foldier.'),

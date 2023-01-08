@@ -62,29 +62,32 @@ class _PromotionPointPageState extends ConsumerState<PromotionPointPage> {
       awardsMax = 125,
       milEdMax = 200,
       civEdMax = 135;
-  String rank = 'SGT', weapons, airborneLvl = 'None', ncoes = 'None';
+  String rank = 'SGT',
+      weapons = 'DA 3595-R / 5790-R / 5789-R / 7801 (M16/M4)',
+      airborneLvl = 'None',
+      ncoes = 'None';
   bool isRanger = false,
       isSf = false,
       isSapper = false,
       degreeCompleted = false,
       hasFornLang = false,
-      isNewVersion = false;
-  bool isPtValid = true,
+      isNewVersion = false,
+      isPtValid = true,
       isWeaponValid = true,
       isCoaValid = true,
       isWbcValid = true,
       isResValid = true,
       isSemValid = true,
       isCertValid = true;
-  SharedPreferences prefs;
-  RegExp regExp;
-  DBHelper dbHelper;
+  late SharedPreferences prefs;
+  RegExp regExp = RegExp(r'^\d{4}(0[1-9]|1[012])(0[1-9]|[12][0-9]|3[01])$');
+  DBHelper dbHelper = DBHelper();
 
   List<AwardDecoration> decorations = [];
   List<dynamic> _badges = [];
-  List<String> versions = ['Before 1 Apr 23', 'After 1 Apr 23'];
-  List<String> proRanks = ['SGT', 'SSG'];
-  List<String> weaponCards = [
+  final List<String> versions = ['Before 1 Apr 23', 'After 1 Apr 23'];
+  final List<String> proRanks = ['SGT', 'SSG'];
+  final List<String> weaponCards = [
     'DA 3595-R / 5790-R / 5789-R / 7801 (M16/M4)',
     'DA 85 (M240B/M60/M249)',
     'DA 88-R (M9)',
@@ -92,15 +95,20 @@ class _PromotionPointPageState extends ConsumerState<PromotionPointPage> {
     'DA 5704 (Alt M9)',
     'DA 7304-R (M249 AR)',
     'CID (Practical Pistol)',
-    'DA 7820-1'
+    'DA 7820-1',
   ];
-  List<String> airborne = ['None', 'Basic', 'Senior', 'Master'];
+  final List<String> airborne = [
+    'None',
+    'Basic',
+    'Senior',
+    'Master',
+  ];
 
-  List<String> ncoesHonors = [
+  final List<String> ncoesHonors = [
     'None',
     'Commandant\'s List',
     'Distinguished Leader',
-    'Distinguished Honor Grad'
+    'Distinguished Honor Grad',
   ];
 
   final _apftController = TextEditingController();
@@ -120,6 +128,99 @@ class _PromotionPointPageState extends ConsumerState<PromotionPointPage> {
   final _mosCertsFocus = FocusNode();
   final _crossCertsFocus = FocusNode();
   final _personalCertsFocus = FocusNode();
+
+  @override
+  void dispose() {
+    super.dispose();
+    _apftController.dispose();
+    _weaponController.dispose();
+    _wbcController.dispose();
+    _resCourseController.dispose();
+    _semHrsController.dispose();
+    _mosCertsController.dispose();
+    _crossCertsController.dispose();
+    _personalCertsController.dispose();
+
+    _apftFocus.dispose();
+    _weaponFocus.dispose();
+    _wbcFocus.dispose();
+    _resFocus.dispose();
+    _semHrsFocus.dispose();
+    _mosCertsFocus.dispose();
+    _crossCertsFocus.dispose();
+    _personalCertsFocus.dispose();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+
+    _apftController.text = ptScore.toString();
+    _weaponController.text = weaponHits.toString();
+    _wbcController.text = wbcHrs.toString();
+    _resCourseController.text = resHrs.toString();
+    _semHrsController.text = semHrs.toString();
+    _mosCertsController.text = mosCerts.toString();
+    _crossCertsController.text = crossCerts.toString();
+    _personalCertsController.text = personalCerts.toString();
+
+    _apftFocus.addListener(() {
+      if (_apftFocus.hasFocus) {
+        _apftController.selection = TextSelection(
+            baseOffset: 0, extentOffset: _apftController.text.length);
+      }
+    });
+    _weaponFocus.addListener(() {
+      if (_weaponFocus.hasFocus) {
+        _weaponController.selection = TextSelection(
+            baseOffset: 0, extentOffset: _weaponController.text.length);
+      }
+    });
+    _wbcFocus.addListener(() {
+      if (_wbcFocus.hasFocus) {
+        _wbcController.selection = TextSelection(
+            baseOffset: 0, extentOffset: _wbcController.text.length);
+      }
+    });
+    _resFocus.addListener(() {
+      if (_resFocus.hasFocus) {
+        _resCourseController.selection = TextSelection(
+            baseOffset: 0, extentOffset: _resCourseController.text.length);
+      }
+    });
+    _semHrsFocus.addListener(() {
+      if (_semHrsFocus.hasFocus) {
+        _semHrsController.selection = TextSelection(
+            baseOffset: 0, extentOffset: _semHrsController.text.length);
+      }
+    });
+    _mosCertsFocus.addListener(() {
+      if (_mosCertsFocus.hasFocus) {
+        _mosCertsController.selection = TextSelection(
+            baseOffset: 0, extentOffset: _mosCertsController.text.length);
+      }
+    });
+    _crossCertsFocus.addListener(() {
+      if (_crossCertsFocus.hasFocus) {
+        _crossCertsController.selection = TextSelection(
+            baseOffset: 0, extentOffset: _crossCertsController.text.length);
+      }
+    });
+    _personalCertsFocus.addListener(() {
+      if (_personalCertsFocus.hasFocus) {
+        _personalCertsController.selection = TextSelection(
+            baseOffset: 0, extentOffset: _personalCertsController.text.length);
+      }
+    });
+
+    prefs = ref.read(sharedPreferencesProvider);
+
+    if (prefs.getString('rank') != null) {
+      setState(() {
+        rank = prefs.getString('rank')!;
+      });
+    }
+  }
 
   void _resetMaximums() {
     if (rank == 'SGT') {
@@ -327,7 +428,7 @@ class _PromotionPointPageState extends ConsumerState<PromotionPointPage> {
                   ),
                   autovalidateMode: AutovalidateMode.onUserInteraction,
                   validator: (value) =>
-                      regExp.hasMatch(value) ? null : 'Use yyyyMMdd Format',
+                      regExp.hasMatch(value!) ? null : 'Use yyyyMMdd Format',
                 ),
               ),
               Padding(
@@ -485,105 +586,6 @@ class _PromotionPointPageState extends ConsumerState<PromotionPointPage> {
   }
 
   @override
-  void dispose() {
-    super.dispose();
-    _apftController.dispose();
-    _weaponController.dispose();
-    _wbcController.dispose();
-    _resCourseController.dispose();
-    _semHrsController.dispose();
-    _mosCertsController.dispose();
-    _crossCertsController.dispose();
-    _personalCertsController.dispose();
-
-    _apftFocus.dispose();
-    _weaponFocus.dispose();
-    _wbcFocus.dispose();
-    _resFocus.dispose();
-    _semHrsFocus.dispose();
-    _mosCertsFocus.dispose();
-    _crossCertsFocus.dispose();
-    _personalCertsFocus.dispose();
-  }
-
-  @override
-  void initState() {
-    dbHelper = new DBHelper();
-
-    weapons = 'DA 3595-R / 5790-R / 5789-R / 7801 (M16/M4)';
-
-    _apftController.text = ptScore.toString();
-    _weaponController.text = weaponHits.toString();
-    _wbcController.text = wbcHrs.toString();
-    _resCourseController.text = resHrs.toString();
-    _semHrsController.text = semHrs.toString();
-    _mosCertsController.text = mosCerts.toString();
-    _crossCertsController.text = crossCerts.toString();
-    _personalCertsController.text = personalCerts.toString();
-
-    _apftFocus.addListener(() {
-      if (_apftFocus.hasFocus) {
-        _apftController.selection = TextSelection(
-            baseOffset: 0, extentOffset: _apftController.text.length);
-      }
-    });
-    _weaponFocus.addListener(() {
-      if (_weaponFocus.hasFocus) {
-        _weaponController.selection = TextSelection(
-            baseOffset: 0, extentOffset: _weaponController.text.length);
-      }
-    });
-    _wbcFocus.addListener(() {
-      if (_wbcFocus.hasFocus) {
-        _wbcController.selection = TextSelection(
-            baseOffset: 0, extentOffset: _wbcController.text.length);
-      }
-    });
-    _resFocus.addListener(() {
-      if (_resFocus.hasFocus) {
-        _resCourseController.selection = TextSelection(
-            baseOffset: 0, extentOffset: _resCourseController.text.length);
-      }
-    });
-    _semHrsFocus.addListener(() {
-      if (_semHrsFocus.hasFocus) {
-        _semHrsController.selection = TextSelection(
-            baseOffset: 0, extentOffset: _semHrsController.text.length);
-      }
-    });
-    _mosCertsFocus.addListener(() {
-      if (_mosCertsFocus.hasFocus) {
-        _mosCertsController.selection = TextSelection(
-            baseOffset: 0, extentOffset: _mosCertsController.text.length);
-      }
-    });
-    _crossCertsFocus.addListener(() {
-      if (_crossCertsFocus.hasFocus) {
-        _crossCertsController.selection = TextSelection(
-            baseOffset: 0, extentOffset: _crossCertsController.text.length);
-      }
-    });
-    _personalCertsFocus.addListener(() {
-      if (_personalCertsFocus.hasFocus) {
-        _personalCertsController.selection = TextSelection(
-            baseOffset: 0, extentOffset: _personalCertsController.text.length);
-      }
-    });
-
-    regExp = new RegExp(r'^\d{4}(0[1-9]|1[012])(0[1-9]|[12][0-9]|3[01])$');
-
-    prefs = ref.read(sharedPreferencesProvider);
-
-    if (prefs.getString('rank') != null) {
-      setState(() {
-        rank = prefs.getString('rank');
-      });
-    }
-
-    super.initState();
-  }
-
-  @override
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
     return Container(
@@ -605,7 +607,7 @@ class _PromotionPointPageState extends ConsumerState<PromotionPointPage> {
                       groupValue: rank,
                       onChanged: (value) {
                         setState(() {
-                          rank = value;
+                          rank = value!;
                           _resetMaximums();
                           _calcPtPts();
                           _calcWeaponPts();
@@ -726,7 +728,7 @@ class _PromotionPointPageState extends ConsumerState<PromotionPointPage> {
                         value: card,
                       );
                     }).toList(),
-                    onChanged: (value) {
+                    onChanged: (dynamic value) {
                       FocusScope.of(context).unfocus();
                       setState(() {
                         weapons = value;
@@ -828,7 +830,7 @@ class _PromotionPointPageState extends ConsumerState<PromotionPointPage> {
                         value: ab,
                       );
                     }).toList(),
-                    onChanged: (value) {
+                    onChanged: (dynamic value) {
                       FocusScope.of(context).unfocus();
                       setState(() {
                         airborneLvl = value;
@@ -861,7 +863,7 @@ class _PromotionPointPageState extends ConsumerState<PromotionPointPage> {
                         value: honors,
                       );
                     }).toList(),
-                    onChanged: (value) {
+                    onChanged: (dynamic value) {
                       setState(() {
                         ncoes = value;
                         _calcNcoesPts();
@@ -943,7 +945,7 @@ class _PromotionPointPageState extends ConsumerState<PromotionPointPage> {
                             value: isRanger,
                             onChanged: (value) {
                               setState(() {
-                                isRanger = value;
+                                isRanger = value!;
                                 _calcTabPts();
                                 _calcTotalPts();
                               });
@@ -955,7 +957,7 @@ class _PromotionPointPageState extends ConsumerState<PromotionPointPage> {
                             value: isSf,
                             onChanged: (value) {
                               setState(() {
-                                isSf = value;
+                                isSf = value!;
                                 _calcTabPts();
                                 _calcTotalPts();
                               });
@@ -967,7 +969,7 @@ class _PromotionPointPageState extends ConsumerState<PromotionPointPage> {
                             value: isSapper,
                             onChanged: (value) {
                               setState(() {
-                                isSapper = value;
+                                isSapper = value!;
                                 _calcTabPts();
                                 _calcTotalPts();
                               });
@@ -1027,7 +1029,7 @@ class _PromotionPointPageState extends ConsumerState<PromotionPointPage> {
                                 : 'in current grade')),
                         onChanged: (value) {
                           setState(() {
-                            degreeCompleted = value;
+                            degreeCompleted = value!;
                             _calcDegreePts();
                             _calcTotalPts();
                           });
@@ -1113,7 +1115,7 @@ class _PromotionPointPageState extends ConsumerState<PromotionPointPage> {
                         subtitle: const Text('Valid for one year'),
                         onChanged: (value) {
                           setState(() {
-                            hasFornLang = value;
+                            hasFornLang = value!;
                             _calcLangPts();
                             _calcTotalPts();
                           });
@@ -1156,31 +1158,31 @@ class _PromotionPointPageState extends ConsumerState<PromotionPointPage> {
                 child: const Text('Save Promotion Point Score'),
                 onPressed: () {
                   if (widget.isPremium) {
-                    PPW ppw = new PPW(
-                      null,
-                      null,
-                      null,
-                      rank,
-                      isNewVersion ? 1 : 0,
-                      ptPts,
-                      weaponPts,
-                      awardPts,
-                      badgePts,
-                      airbornePts,
-                      ncoesPts,
-                      wbcPts,
-                      resPts,
-                      tabPts,
-                      ar350Pts,
-                      semHrPts,
-                      degreePts,
-                      certPts,
-                      langPts,
-                      milTrainMax,
-                      awardsMax,
-                      milEdMax,
-                      civEdMax,
-                      totalPts,
+                    PPW ppw = PPW(
+                      id: null,
+                      date: null,
+                      name: null,
+                      rank: rank,
+                      version: isNewVersion ? 1 : 0,
+                      ptTest: ptPts,
+                      weapons: weaponPts,
+                      awards: awardPts,
+                      badges: badgePts,
+                      airborne: airbornePts,
+                      ncoes: ncoesPts,
+                      wbc: wbcPts,
+                      resident: resPts,
+                      tabs: tabPts,
+                      ar350: ar350Pts,
+                      semesterHours: semHrPts,
+                      degree: degreePts,
+                      certs: certPts,
+                      language: langPts,
+                      milTrainMax: milTrainMax,
+                      awardsMax: awardsMax,
+                      milEdMax: milEdMax,
+                      civEdMax: civEdMax,
+                      total: totalPts,
                     );
                     _savePpw(context, ppw);
                   } else {

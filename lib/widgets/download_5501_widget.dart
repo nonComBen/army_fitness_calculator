@@ -5,8 +5,8 @@ import '../methods/download_5501.dart';
 import '../sqlite/bodyfat.dart';
 
 class Download5501Widget extends StatelessWidget {
-  final Bodyfat bf;
-  Download5501Widget(this.bf, {Key key}) : super(key: key);
+  final Bodyfat? bf;
+  Download5501Widget(this.bf, {Key? key}) : super(key: key);
 
   final _preparedByController = TextEditingController();
   final _preparedByRankController = TextEditingController();
@@ -263,37 +263,37 @@ class Download5501Widget extends StatelessWidget {
                 Navigator.of(context).pop();
                 Download5501.downloadPdf(
                   context: context,
-                  bf: bf,
+                  bf: bf!,
                   preparedBy: _preparedByController.text,
                   preparedByGrade: _preparedByRankController.text,
                   approvedBy: _approvedByController.text,
                   approvedByGrade: _approvedByRankController.text,
                   firstNeck: _neck1Controller.text == ''
-                      ? bf.neck
+                      ? bf!.neck
                       : _neck1Controller.text,
                   secondNeck: _neck2Controller.text == ''
-                      ? bf.neck
+                      ? bf!.neck
                       : _neck2Controller.text,
                   thirdNeck: _neck3Controller.text == ''
-                      ? bf.neck
+                      ? bf!.neck
                       : _neck3Controller.text,
                   firstWaist: _waist1Controller.text == ''
-                      ? bf.waist
+                      ? bf!.waist
                       : _waist1Controller.text,
                   secondWaist: _waist2Controller.text == ''
-                      ? bf.waist
+                      ? bf!.waist
                       : _waist2Controller.text,
                   thirdWaist: _waist3Controller.text == ''
-                      ? bf.waist
+                      ? bf!.waist
                       : _waist3Controller.text,
                   firstHip: _hip1Controller.text == ''
-                      ? bf.hip
+                      ? bf!.hip
                       : _hip1Controller.text,
                   secondHip: _hip2Controller.text == ''
-                      ? bf.hip
+                      ? bf!.hip
                       : _hip2Controller.text,
                   thirdHip: _hip3Controller.text == ''
-                      ? bf.hip
+                      ? bf!.hip
                       : _hip3Controller.text,
                 );
               },

@@ -5,17 +5,17 @@ import '../../sqlite/apft.dart';
 
 class ApftChartPage extends StatefulWidget {
   ApftChartPage({this.apfts, this.soldier});
-  final List<Apft> apfts;
-  final String soldier;
+  final List<Apft>? apfts;
+  final String? soldier;
 
   @override
   _ApftChartPageState createState() => _ApftChartPageState();
 }
 
 class _ApftChartPageState extends State<ApftChartPage> {
-  bool pu, su, run;
+  bool? pu, su, run;
   List<charts.Series<Apft, DateTime>> _seriesBarData = [];
-  List<Apft> myData;
+  List<Apft>? myData;
 
   static GlobalKey previewContainer = new GlobalKey();
   GlobalKey<ScaffoldState> _scaffoldState = new GlobalKey<ScaffoldState>();
@@ -23,32 +23,32 @@ class _ApftChartPageState extends State<ApftChartPage> {
   _generateData(List<Apft> myData) {
     _seriesBarData.clear();
     _seriesBarData.add(charts.Series(
-        domainFn: (apft, _) => DateTime.parse(apft.date),
+        domainFn: (apft, _) => DateTime.parse(apft.date!),
         measureFn: (apft, _) => int.tryParse(apft.total),
         data: myData,
         id: 'Total',
         colorFn: (apft, _) => Theme.of(context).brightness == Brightness.light
             ? charts.Color.black
             : charts.Color.white));
-    if (pu) {
+    if (pu!) {
       _seriesBarData.add(charts.Series(
-          domainFn: (apft, _) => DateTime.parse(apft.date),
+          domainFn: (apft, _) => DateTime.parse(apft.date!),
           measureFn: (apft, _) => int.tryParse(apft.puScore),
           data: myData,
           id: 'PU',
           colorFn: (apft, _) => charts.MaterialPalette.blue.shadeDefault));
     }
-    if (su) {
+    if (su!) {
       _seriesBarData.add(charts.Series(
-          domainFn: (apft, _) => DateTime.parse(apft.date),
+          domainFn: (apft, _) => DateTime.parse(apft.date!),
           measureFn: (apft, _) => int.tryParse(apft.suScore),
           data: myData,
           id: 'SU',
           colorFn: (apft, _) => charts.MaterialPalette.green.shadeDefault));
     }
-    if (run) {
+    if (run!) {
       _seriesBarData.add(charts.Series(
-          domainFn: (apft, _) => DateTime.parse(apft.date),
+          domainFn: (apft, _) => DateTime.parse(apft.date!),
           measureFn: (apft, _) => int.tryParse(apft.runScore),
           data: myData,
           id: 'Run',
@@ -58,7 +58,7 @@ class _ApftChartPageState extends State<ApftChartPage> {
 
   Widget _buildChart() {
     double width = MediaQuery.of(context).size.width;
-    _generateData(myData);
+    _generateData(myData!);
     return SizedBox(
       width: width - 32,
       height: MediaQuery.of(context).size.height / 2,

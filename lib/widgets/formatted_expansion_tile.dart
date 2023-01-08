@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 
 class FormattedExpansionTile extends StatelessWidget {
   const FormattedExpansionTile({
-    Key key,
-    @required this.title,
-    @required this.trailing,
-    @required this.initiallyExpanded,
-    @required this.children,
+    Key? key,
+    required this.title,
+    required this.trailing,
+    required this.initiallyExpanded,
+    required this.children,
   }) : super(key: key);
   final String title;
   final String trailing;

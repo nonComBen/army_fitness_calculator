@@ -5,12 +5,12 @@ import 'package:flutter/material.dart';
 
 class AdaptiveDialog extends StatelessWidget {
   const AdaptiveDialog(
-      {Key key, this.title, this.content, this.affirmTitle, this.onAffirm})
+      {Key? key, this.title, this.content, this.affirmTitle, this.onAffirm})
       : super(key: key);
-  final Widget title;
-  final Widget content;
-  final String affirmTitle;
-  final Function onAffirm;
+  final Widget? title;
+  final Widget? content;
+  final String? affirmTitle;
+  final Function? onAffirm;
 
   @override
   Widget build(BuildContext context) {
@@ -26,9 +26,9 @@ class AdaptiveDialog extends StatelessWidget {
           CupertinoDialogAction(
             onPressed: () {
               Navigator.pop(context);
-              onAffirm();
+              onAffirm!();
             },
-            child: Text(affirmTitle),
+            child: Text(affirmTitle!),
           )
         ],
       );
@@ -44,9 +44,9 @@ class AdaptiveDialog extends StatelessWidget {
           TextButton(
             onPressed: () {
               Navigator.pop(context);
-              onAffirm();
+              onAffirm!();
             },
-            child: Text(affirmTitle),
+            child: Text(affirmTitle!),
           )
         ],
       );

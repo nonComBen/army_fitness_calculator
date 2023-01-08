@@ -4,7 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class DeleteRecord {
-  static void deleteRecord({BuildContext context, Function onConfirm}) {
+  static void deleteRecord({BuildContext? context, Function? onConfirm}) {
     final title = const Text('Delete Record');
     final content = Container(
       padding: EdgeInsets.all(8.0),
@@ -15,7 +15,7 @@ class DeleteRecord {
     );
     if (Platform.isIOS) {
       showCupertinoDialog(
-          context: context,
+          context: context!,
           builder: (context2) => CupertinoAlertDialog(
                 title: title,
                 content: content,
@@ -28,13 +28,13 @@ class DeleteRecord {
                   ),
                   CupertinoDialogAction(
                     child: Text('Yes'),
-                    onPressed: onConfirm,
+                    onPressed: onConfirm as void Function()?,
                   )
                 ],
               ));
     } else {
       showDialog(
-          context: context,
+          context: context!,
           barrierDismissible: true,
           builder: (BuildContext context2) {
             return AlertDialog(
@@ -49,7 +49,7 @@ class DeleteRecord {
                 ),
                 TextButton(
                   child: Text('Yes'),
-                  onPressed: onConfirm,
+                  onPressed: onConfirm as void Function()?,
                 )
               ],
             );

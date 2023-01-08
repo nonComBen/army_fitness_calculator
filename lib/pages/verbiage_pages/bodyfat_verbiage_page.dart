@@ -4,8 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 
 class BodyfatVerbiagePage extends StatefulWidget {
-  final bool isPremium;
-  final bool nonPersonalizedAds;
+  final bool? isPremium;
+  final bool? nonPersonalizedAds;
   BodyfatVerbiagePage({this.isPremium, this.nonPersonalizedAds});
   @override
   _BodyfatVerbiagePageState createState() => _BodyfatVerbiagePageState();
@@ -125,7 +125,7 @@ class _BodyfatVerbiagePageState extends State<BodyfatVerbiagePage> {
         )),
   ];
 
-  BannerAd myBanner;
+  BannerAd? myBanner;
 
   @override
   void dispose() {
@@ -145,8 +145,8 @@ class _BodyfatVerbiagePageState extends State<BodyfatVerbiagePage> {
         listener: BannerAdListener(),
         request: AdRequest(nonPersonalizedAds: widget.nonPersonalizedAds));
 
-    if (!widget.isPremium) {
-      myBanner.load();
+    if (!widget.isPremium!) {
+      myBanner!.load();
     }
   }
 
@@ -197,15 +197,15 @@ class _BodyfatVerbiagePageState extends State<BodyfatVerbiagePage> {
                 ],
               ),
             ),
-            if (!widget.isPremium)
+            if (!widget.isPremium!)
               Container(
                 constraints: BoxConstraints(maxHeight: 90),
                 alignment: Alignment.center,
                 child: AdWidget(
-                  ad: myBanner,
+                  ad: myBanner!,
                 ),
-                width: myBanner.size.width.toDouble(),
-                height: myBanner.size.height.toDouble(),
+                width: myBanner!.size.width.toDouble(),
+                height: myBanner!.size.height.toDouble(),
               )
           ],
         ),

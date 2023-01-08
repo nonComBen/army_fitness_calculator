@@ -5,8 +5,8 @@ import '../methods/download_5500.dart';
 import '../sqlite/bodyfat.dart';
 
 class Download5500Widget extends StatelessWidget {
-  final Bodyfat bf;
-  Download5500Widget(this.bf, {Key key}) : super(key: key);
+  final Bodyfat? bf;
+  Download5500Widget(this.bf, {Key? key}) : super(key: key);
 
   final _preparedByController = TextEditingController();
   final _preparedByRankController = TextEditingController();
@@ -206,28 +206,28 @@ class Download5500Widget extends StatelessWidget {
                 Navigator.of(context).pop();
                 Download5500.downloadPdf(
                   context: context,
-                  bf: bf,
+                  bf: bf!,
                   preparedName: _preparedByController.text,
                   preparedGrade: _preparedByRankController.text,
                   superName: _approvedByController.text,
                   superGrade: _approvedByRankController.text,
                   firstNeck: _neck1Controller.text == ''
-                      ? bf.neck
+                      ? bf!.neck
                       : _neck1Controller.text,
                   secondNeck: _neck2Controller.text == ''
-                      ? bf.neck
+                      ? bf!.neck
                       : _neck2Controller.text,
                   thirdNeck: _neck3Controller.text == ''
-                      ? bf.neck
+                      ? bf!.neck
                       : _neck3Controller.text,
                   firstWaist: _waist1Controller.text == ''
-                      ? bf.waist
+                      ? bf!.waist
                       : _waist1Controller.text,
                   secondWaist: _waist2Controller.text == ''
-                      ? bf.waist
+                      ? bf!.waist
                       : _waist2Controller.text,
                   thirdWaist: _waist3Controller.text == ''
-                      ? bf.waist
+                      ? bf!.waist
                       : _waist3Controller.text,
                 );
               },

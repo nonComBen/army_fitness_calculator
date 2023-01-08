@@ -1,8 +1,8 @@
 class Bodyfat {
-  int id;
-  String date;
-  String rank;
-  String name;
+  int? id;
+  String? date;
+  String? rank;
+  String? name;
   String gender;
   String age;
   String height;
@@ -23,20 +23,20 @@ class Bodyfat {
     this.date,
     this.rank,
     this.name,
-    this.gender,
-    this.age,
-    this.height,
-    this.weight,
-    this.maxWeight,
-    this.bmiPass,
-    this.heightDouble,
-    this.neck,
-    this.waist,
-    this.hip,
-    this.bfPercent,
-    this.maxPercent,
-    this.overUnder,
-    this.bfPass,
+    required this.gender,
+    required this.age,
+    required this.height,
+    required this.weight,
+    required this.maxWeight,
+    required this.bmiPass,
+    required this.heightDouble,
+    required this.neck,
+    required this.waist,
+    required this.hip,
+    required this.bfPercent,
+    required this.maxPercent,
+    required this.overUnder,
+    required this.bfPass,
   });
 
   Map<String, dynamic> toMap() {
@@ -63,8 +63,8 @@ class Bodyfat {
     return map;
   }
 
-  Bodyfat.fromMap(Map<String, dynamic> map) {
-    String newRank = '', newAge = '22', newHeightDouble = map['height'];
+  factory Bodyfat.fromMap(Map<String, dynamic> map) {
+    String? newRank = '', newAge = '22', newHeightDouble = map['height'];
     try {
       newRank = map['rank'] ?? '';
       newAge = map['age'] ?? '22';
@@ -72,23 +72,25 @@ class Bodyfat {
     } catch (e) {
       print('Error: $e');
     }
-    id = map['id'];
-    date = map['date'];
-    rank = newRank;
-    name = map['name'];
-    gender = map['gender'];
-    age = newAge;
-    height = map['height'];
-    weight = map['weight'];
-    maxWeight = map['maxWeight'];
-    bmiPass = map['bmiPass'];
-    heightDouble = newHeightDouble;
-    neck = map['neck'];
-    waist = map['waist'];
-    hip = map['hip'];
-    bfPercent = map['bfPercent'];
-    maxPercent = map['maxPercent'];
-    overUnder = map['overUnder'];
-    bfPass = map['bfPass'];
+    return Bodyfat(
+      id: map['id'],
+      date: map['date'],
+      rank: newRank,
+      name: map['name'],
+      gender: map['gender'],
+      age: newAge!,
+      height: map['height'],
+      weight: map['weight'],
+      maxWeight: map['maxWeight'],
+      bmiPass: map['bmiPass'],
+      heightDouble: newHeightDouble!,
+      neck: map['neck'],
+      waist: map['waist'],
+      hip: map['hip'],
+      bfPercent: map['bfPercent'],
+      maxPercent: map['maxPercent'],
+      overUnder: map['overUnder'],
+      bfPass: map['bfPass'],
+    );
   }
 }

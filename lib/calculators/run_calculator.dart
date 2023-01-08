@@ -1,9 +1,9 @@
-const List<String> events = ['Swim', 'Bike', 'Walk'];
+const List<String?> events = ['Swim', 'Bike', 'Walk'];
 
-int getRunScore(bool male, int ageGroupIndex, int runRaw) {
-  int score;
+int? getRunScore(bool male, int ageGroupIndex, int? runRaw) {
+  int? score;
   if (male) {
-    if (runRaw > 2630) return 0;
+    if (runRaw! > 2630) return 0;
     if (runRaw <= 1300) return 100;
     for (int i = 0; i < maleTable.length; i++) {
       if (runRaw <= maleTable[i][0]) {
@@ -12,7 +12,7 @@ int getRunScore(bool male, int ageGroupIndex, int runRaw) {
       }
     }
   } else {
-    if (runRaw > 2630) return 0;
+    if (runRaw! > 2630) return 0;
     if (runRaw <= 1536) return 100;
     for (int i = 0; i < femaleTable.length; i++) {
       if (runRaw <= femaleTable[i][0]) {
@@ -24,19 +24,19 @@ int getRunScore(bool male, int ageGroupIndex, int runRaw) {
   return score;
 }
 
-bool passAltEvent(bool male, int ageGroupIndex, int runRaw, String event) {
+bool passAltEvent(bool male, int ageGroupIndex, int? runRaw, String? event) {
   if (male) {
     String min = altMins[ageGroupIndex][events.indexOf(event)];
-    int minInt = int.tryParse(min.substring(0, 2) + min.substring(3));
-    return runRaw <= minInt;
+    int minInt = int.tryParse(min.substring(0, 2) + min.substring(3))!;
+    return runRaw! <= minInt;
   } else {
     String min = altMins[ageGroupIndex + 10][events.indexOf(event)];
-    int minInt = int.tryParse(min.substring(0, 2) + min.substring(3));
-    return runRaw <= minInt;
+    int minInt = int.tryParse(min.substring(0, 2) + min.substring(3))!;
+    return runRaw! <= minInt;
   }
 }
 
-List<String> getRunBenchmarks(bool male, int ageGroupIndex, String event) {
+List<String> getRunBenchmarks(bool male, int ageGroupIndex, String? event) {
   if (event != 'Run') {
     return [
       altMins[male ? ageGroupIndex : ageGroupIndex + 10][events.indexOf(event)],

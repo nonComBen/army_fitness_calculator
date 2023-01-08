@@ -4,16 +4,16 @@ import '../../constants/pt_age_group_table.dart';
 import '../../widgets/acft_table.dart';
 
 class AcftTablePage extends StatefulWidget {
-  const AcftTablePage({Key key, this.ageGroup, this.gender}) : super(key: key);
-  final String ageGroup;
-  final String gender;
+  const AcftTablePage({Key? key, this.ageGroup, this.gender}) : super(key: key);
+  final String? ageGroup;
+  final String? gender;
 
   @override
   State<AcftTablePage> createState() => _AcftTablePageState();
 }
 
 class _AcftTablePageState extends State<AcftTablePage> {
-  String _ageGroup, _gender;
+  String? _ageGroup, _gender;
 
   @override
   void initState() {
@@ -51,14 +51,14 @@ class _AcftTablePageState extends State<AcftTablePage> {
                       value: _ageGroup,
                       items: ptAgeGroups
                           .map((e) => DropdownMenuItem(
-                                child: Text(e),
+                                child: Text(e!),
                                 value: e,
                               ))
                           .toList(),
                       decoration: InputDecoration(
                         label: Text('Age Group'),
                       ),
-                      onChanged: (value) {
+                      onChanged: (dynamic value) {
                         setState(() {
                           _ageGroup = value;
                         });
@@ -78,7 +78,7 @@ class _AcftTablePageState extends State<AcftTablePage> {
                       decoration: InputDecoration(
                         label: Text('Gender'),
                       ),
-                      onChanged: (value) {
+                      onChanged: (dynamic value) {
                         setState(() {
                           _gender = value;
                         });

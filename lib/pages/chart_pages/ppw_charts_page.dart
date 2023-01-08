@@ -5,18 +5,18 @@ import '../../sqlite/ppw.dart';
 
 class PpwChartPage extends StatefulWidget {
   PpwChartPage({this.ppws, this.soldier});
-  final List<PPW> ppws;
-  final String soldier;
+  final List<PPW>? ppws;
+  final String? soldier;
 
   @override
   _PpwChartPageState createState() => _PpwChartPageState();
 }
 
 class _PpwChartPageState extends State<PpwChartPage> {
-  bool milTrain, awards, milEd, civEd;
+  bool? milTrain, awards, milEd, civEd;
   static const secondaryMeasureAxisId = 'secondaryMeasureAxisId';
   List<charts.Series<PPW, DateTime>> _seriesBarData = [];
-  List<PPW> myData;
+  List<PPW>? myData;
 
   static GlobalKey previewContainer = new GlobalKey();
   GlobalKey<ScaffoldState> _scaffoldState = new GlobalKey<ScaffoldState>();
@@ -25,7 +25,7 @@ class _PpwChartPageState extends State<PpwChartPage> {
     _seriesBarData.clear();
     _seriesBarData = [
       charts.Series(
-          domainFn: (ppw, _) => DateTime.parse(ppw.date),
+          domainFn: (ppw, _) => DateTime.parse(ppw.date!),
           measureFn: (ppw, _) => ppw.total,
           data: myData,
           id: 'Total',
@@ -33,9 +33,9 @@ class _PpwChartPageState extends State<PpwChartPage> {
               ? charts.Color.black
               : charts.Color.white),
     ];
-    if (milTrain) {
+    if (milTrain!) {
       _seriesBarData.add(charts.Series(
-        domainFn: (ppw, _) => DateTime.parse(ppw.date),
+        domainFn: (ppw, _) => DateTime.parse(ppw.date!),
         measureFn: (ppw, _) {
           int milTrainPts = ppw.ptTest + ppw.weapons;
           if (milTrainPts > ppw.milTrainMax) {
@@ -48,9 +48,9 @@ class _PpwChartPageState extends State<PpwChartPage> {
         colorFn: (bf, _) => charts.MaterialPalette.blue.shadeDefault,
       )..setAttribute(charts.measureAxisIdKey, secondaryMeasureAxisId));
     }
-    if (awards) {
+    if (awards!) {
       _seriesBarData.add(charts.Series(
-        domainFn: (ppw, _) => DateTime.parse(ppw.date),
+        domainFn: (ppw, _) => DateTime.parse(ppw.date!),
         measureFn: (ppw, _) {
           int awardsPts = ppw.awards + ppw.badges;
           if (awardsPts > ppw.awardsMax) {
@@ -63,9 +63,9 @@ class _PpwChartPageState extends State<PpwChartPage> {
         colorFn: (bf, _) => charts.MaterialPalette.green.shadeDefault,
       )..setAttribute(charts.measureAxisIdKey, secondaryMeasureAxisId));
     }
-    if (milEd) {
+    if (milEd!) {
       _seriesBarData.add(charts.Series(
-        domainFn: (ppw, _) => DateTime.parse(ppw.date),
+        domainFn: (ppw, _) => DateTime.parse(ppw.date!),
         measureFn: (ppw, _) {
           int milEdpts = ppw.ncoes + ppw.resident + ppw.wbc + ppw.tabs;
           if (milEdpts > ppw.milEdMax) {
@@ -78,9 +78,9 @@ class _PpwChartPageState extends State<PpwChartPage> {
         colorFn: (bf, _) => charts.MaterialPalette.red.shadeDefault,
       )..setAttribute(charts.measureAxisIdKey, secondaryMeasureAxisId));
     }
-    if (civEd) {
+    if (civEd!) {
       _seriesBarData.add(charts.Series(
-        domainFn: (ppw, _) => DateTime.parse(ppw.date),
+        domainFn: (ppw, _) => DateTime.parse(ppw.date!),
         measureFn: (ppw, _) {
           int civEdPts =
               ppw.semesterHours + ppw.degree + ppw.certs + ppw.language;
@@ -98,7 +98,7 @@ class _PpwChartPageState extends State<PpwChartPage> {
 
   Widget _buildChart() {
     final width = MediaQuery.of(context).size.width;
-    _generateData(myData);
+    _generateData(myData!);
     return SizedBox(
       width: width - 32,
       height: MediaQuery.of(context).size.height / 2,
@@ -113,13 +113,11 @@ class _PpwChartPageState extends State<PpwChartPage> {
           )
         ],
         primaryMeasureAxis: new charts.NumericAxisSpec(
-            tickProviderSpec: new charts.BasicNumericTickProviderSpec(
-                zeroBound: false, desiredTickCount: 3)),
-        // secondaryMeasureAxis: milTrain
-        //     ? new charts.NumericAxisSpec(
-        //         tickProviderSpec: new charts.BasicNumericTickProviderSpec(
-        //             zeroBound: false, desiredTickCount: 3))
-        //     : null,
+          tickProviderSpec: new charts.BasicNumericTickProviderSpec(
+            zeroBound: false,
+            desiredTickCount: 3,
+          ),
+        ),
       ),
     );
   }

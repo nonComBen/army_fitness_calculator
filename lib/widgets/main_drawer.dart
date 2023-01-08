@@ -15,11 +15,11 @@ import '../pages/mdl_setup_page.dart';
 
 class MainDrawer extends StatelessWidget {
   const MainDrawer({
-    Key key,
-    @required this.context,
-    @required this.isPremium,
-    @required this.upgradeNeeded,
-    @required this.upgrade,
+    Key? key,
+    required this.context,
+    required this.isPremium,
+    required this.upgradeNeeded,
+    required this.upgrade,
   }) : super(key: key);
   final BuildContext context;
   final bool isPremium;

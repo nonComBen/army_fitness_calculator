@@ -8,7 +8,7 @@ import '../../sqlite/db_helper.dart';
 import '../../sqlite/apft.dart';
 
 class ApftDetailsPage extends StatefulWidget {
-  ApftDetailsPage({this.apft});
+  ApftDetailsPage({required this.apft});
   final Apft apft;
 
   @override
@@ -16,11 +16,11 @@ class ApftDetailsPage extends StatefulWidget {
 }
 
 class _ApftDetailsPageState extends State<ApftDetailsPage> {
-  RegExp regExp;
-  DBHelper dbHelper;
+  late RegExp regExp;
+  late DBHelper dbHelper;
 
-  TextEditingController _mainNameController;
-  TextEditingController _mainDateController;
+  TextEditingController? _mainNameController;
+  TextEditingController? _mainDateController;
 
   static GlobalKey previewContainer = new GlobalKey();
   GlobalKey<ScaffoldState> _scaffoldState = new GlobalKey<ScaffoldState>();
@@ -60,7 +60,7 @@ class _ApftDetailsPageState extends State<ApftDetailsPage> {
                     ),
                     autovalidateMode: AutovalidateMode.onUserInteraction,
                     validator: (value) =>
-                        regExp.hasMatch(value) ? null : 'Use yyyyMMdd Format',
+                        regExp.hasMatch(value!) ? null : 'Use yyyyMMdd Format',
                     autocorrect: false,
                     autofocus: true,
                     textInputAction: TextInputAction.next,
@@ -97,8 +97,8 @@ class _ApftDetailsPageState extends State<ApftDetailsPage> {
                     child: Text('Update APFT'),
                     onPressed: () {
                       setState(() {
-                        _mainDateController.text = _dateController.text;
-                        _mainNameController.text =
+                        _mainDateController!.text = _dateController.text;
+                        _mainNameController!.text =
                             '${_rankController.text} ${_nameController.text}';
                       });
                       apft.date = _dateController.text;
@@ -126,8 +126,8 @@ class _ApftDetailsPageState extends State<ApftDetailsPage> {
 
   @override
   void dispose() {
-    _mainNameController.dispose();
-    _mainDateController.dispose();
+    _mainNameController!.dispose();
+    _mainDateController!.dispose();
     super.dispose();
   }
 
