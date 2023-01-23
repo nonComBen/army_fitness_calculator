@@ -1,3 +1,5 @@
+import 'package:acft_calculator/providers/purchases_provider.dart';
+import 'package:acft_calculator/services/purchases_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -15,9 +17,9 @@ import 'saved_pages/saved_bodyfats_page.dart';
 import '../widgets/value_input_field.dart';
 
 class BodyfatPage extends ConsumerStatefulWidget {
-  BodyfatPage(this.isPremium, this.upgradeNeeded);
-  final bool isPremium;
-  final VoidCallback upgradeNeeded;
+  BodyfatPage();
+
+  static const String title = 'Body Composition';
 
   @override
   _BodyfatPageState createState() => _BodyfatPageState();
@@ -41,6 +43,7 @@ class _BodyfatPageState extends ConsumerState<BodyfatPage> {
   late SharedPreferences prefs;
   RegExp regExp = RegExp(r'^\d{4}(0[1-9]|1[012])(0[1-9]|[12][0-9]|3[01])$');
   DBHelper dbHelper = DBHelper();
+  late PurchasesService purchasesService;
 
   final List<String> ageGroups = ['17-20', '21-27', '28-39', '40+'];
 
@@ -62,6 +65,8 @@ class _BodyfatPageState extends ConsumerState<BodyfatPage> {
   @override
   void initState() {
     super.initState();
+
+    purchasesService = ref.read(purchasesProvider);
 
     _weightController.text = weight.toString();
     _neckController.text = neck.toString();
@@ -1055,7 +1060,7 @@ class _BodyfatPageState extends ConsumerState<BodyfatPage> {
                     backgroundColor: MaterialStateProperty.all(primaryColor)),
                 child: const Text('Save Body Comp Score'),
                 onPressed: () {
-                  if (widget.isPremium) {
+                  if (purchasesService.isPremium) {
                     Bodyfat bf = new Bodyfat(
                         id: null,
                         date: null,
@@ -1077,7 +1082,7 @@ class _BodyfatPageState extends ConsumerState<BodyfatPage> {
                         bfPass: bfPass ? 1 : 0);
                     _saveBf(context, bf);
                   } else {
-                    widget.upgradeNeeded();
+                    purchasesService.upgradeNeeded(context);
                   }
                 },
               ),

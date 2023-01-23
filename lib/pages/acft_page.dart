@@ -1,3 +1,5 @@
+import 'package:acft_calculator/providers/purchases_provider.dart';
+import 'package:acft_calculator/services/purchases_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -24,9 +26,9 @@ import '../constants/acft_aerobic_event_table.dart';
 import '../widgets/value_input_field.dart';
 
 class AcftPage extends ConsumerStatefulWidget {
-  AcftPage(this.isPremium, this.upgradeNeeded);
-  final bool isPremium;
-  final VoidCallback upgradeNeeded;
+  AcftPage();
+
+  static const String title = 'ACFT';
 
   @override
   AcftPageState createState() => AcftPageState();
@@ -119,9 +121,13 @@ class AcftPageState extends ConsumerState<AcftPage> {
   final _runMinsFocus = FocusNode();
   final _runSecsFocus = FocusNode();
 
+  late PurchasesService purchasesService;
+
   @override
   void initState() {
     super.initState();
+
+    purchasesService = ref.read(purchasesProvider);
 
     _mdlController.text = mdlRaw.toString();
     _sptController.text = sptRaw.toString();
@@ -1833,7 +1839,7 @@ class AcftPageState extends ConsumerState<AcftPage> {
                   String runSeconds = runSecs.toString().length == 1
                       ? '0$runSecs'
                       : runSecs.toString();
-                  if (widget.isPremium) {
+                  if (purchasesService.isPremium) {
                     Acft acft = new Acft(
                         id: null,
                         date: null,
@@ -1859,7 +1865,7 @@ class AcftPageState extends ConsumerState<AcftPage> {
                         pass: totalPass ? 1 : 0);
                     _saveAcft(context, acft);
                   } else {
-                    widget.upgradeNeeded();
+                    purchasesService.upgradeNeeded(context);
                   }
                 },
               ),

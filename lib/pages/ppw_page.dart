@@ -1,5 +1,7 @@
 import 'dart:io';
 
+import 'package:acft_calculator/providers/purchases_provider.dart';
+import 'package:acft_calculator/services/purchases_service.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -22,9 +24,9 @@ import '../classes/award_decoration.dart';
 import '../widgets/formatted_text_field.dart';
 
 class PromotionPointPage extends ConsumerStatefulWidget {
-  PromotionPointPage(this.isPremium, this.upgradeNeeded);
-  final bool isPremium;
-  final VoidCallback upgradeNeeded;
+  PromotionPointPage();
+
+  static const String title = 'Promotion Points';
 
   @override
   _PromotionPointPageState createState() => _PromotionPointPageState();
@@ -82,6 +84,7 @@ class _PromotionPointPageState extends ConsumerState<PromotionPointPage> {
   late SharedPreferences prefs;
   RegExp regExp = RegExp(r'^\d{4}(0[1-9]|1[012])(0[1-9]|[12][0-9]|3[01])$');
   DBHelper dbHelper = DBHelper();
+  late PurchasesService purchasesService;
 
   List<AwardDecoration> decorations = [];
   List<dynamic> _badges = [];
@@ -154,6 +157,8 @@ class _PromotionPointPageState extends ConsumerState<PromotionPointPage> {
   @override
   void initState() {
     super.initState();
+
+    purchasesService = ref.read(purchasesProvider);
 
     _apftController.text = ptScore.toString();
     _weaponController.text = weaponHits.toString();
@@ -1157,7 +1162,7 @@ class _PromotionPointPageState extends ConsumerState<PromotionPointPage> {
                         Theme.of(context).colorScheme.primary)),
                 child: const Text('Save Promotion Point Score'),
                 onPressed: () {
-                  if (widget.isPremium) {
+                  if (purchasesService.isPremium) {
                     PPW ppw = PPW(
                       id: null,
                       date: null,
@@ -1186,7 +1191,7 @@ class _PromotionPointPageState extends ConsumerState<PromotionPointPage> {
                     );
                     _savePpw(context, ppw);
                   } else {
-                    widget.upgradeNeeded();
+                    purchasesService.upgradeNeeded(context);
                   }
                 },
               ),

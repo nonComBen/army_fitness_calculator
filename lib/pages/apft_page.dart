@@ -1,3 +1,5 @@
+import 'package:acft_calculator/providers/purchases_provider.dart';
+import 'package:acft_calculator/services/purchases_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -18,9 +20,7 @@ import 'saved_pages/saved_apfts_page.dart';
 import '../widgets/value_input_field.dart';
 
 class ApftPage extends ConsumerStatefulWidget {
-  ApftPage(this.isPremium, this.upgradeNeeded);
-  final bool isPremium;
-  final VoidCallback upgradeNeeded;
+  ApftPage();
 
   @override
   _ApftPageState createState() => _ApftPageState();
@@ -61,6 +61,7 @@ class _ApftPageState extends ConsumerState<ApftPage> {
   late SharedPreferences prefs;
   RegExp regExp = RegExp(r'^\d{4}(0[1-9]|1[012])(0[1-9]|[12][0-9]|3[01])$');
   DBHelper dbHelper = DBHelper();
+  late PurchasesService purchasesService;
 
   final _ageController = new TextEditingController();
   final _ageFocus = new FocusNode();
@@ -97,6 +98,7 @@ class _ApftPageState extends ConsumerState<ApftPage> {
   void initState() {
     super.initState();
     dbHelper = new DBHelper();
+    purchasesService = ref.read(purchasesProvider);
 
     _puController.text = pu.toString();
     _suController.text = su.toString();
@@ -1024,7 +1026,7 @@ class _ApftPageState extends ConsumerState<ApftPage> {
                   String runSeconds = runSecs.toString().length == 1
                       ? '0$runSecs'
                       : runSecs.toString();
-                  if (widget.isPremium) {
+                  if (purchasesService.isPremium) {
                     Apft apft = new Apft(
                         id: null,
                         date: null,
@@ -1044,7 +1046,7 @@ class _ApftPageState extends ConsumerState<ApftPage> {
                         pass: totalPass ? 1 : 0);
                     _saveApft(context, apft);
                   } else {
-                    widget.upgradeNeeded();
+                    purchasesService.upgradeNeeded(context);
                   }
                 },
               ),
