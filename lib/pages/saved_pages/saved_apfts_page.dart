@@ -7,6 +7,7 @@ import '../../sqlite/apft.dart';
 import '../../sqlite/db_helper.dart';
 
 class SavedApftsPage extends StatefulWidget {
+  static const String routeName = 'savedApftsRoute';
   @override
   _SavedApftsPageState createState() => _SavedApftsPageState();
 }

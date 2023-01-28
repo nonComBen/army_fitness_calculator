@@ -7,6 +7,7 @@ import '../../sqlite/bodyfat.dart';
 import '../../sqlite/db_helper.dart';
 
 class SavedBodyfatsPage extends StatefulWidget {
+  static const String routeName = 'savedBodyfatsRoute';
   @override
   _SavedBodyfatsPageState createState() => _SavedBodyfatsPageState();
 }
@@ -141,11 +142,13 @@ class _SavedBodyfatsPageState extends State<SavedBodyfatsPage> {
             ),
             onTap: () {
               Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => BodyfatDetailsPage(
-                            bf: bfList[i],
-                          )));
+                context,
+                MaterialPageRoute(
+                  builder: (context) => BodyfatDetailsPage(
+                    bf: bfList[i],
+                  ),
+                ),
+              );
             },
           ),
         ),

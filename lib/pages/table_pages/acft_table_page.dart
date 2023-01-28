@@ -31,7 +31,7 @@ class _AcftTablePageState extends State<AcftTablePage> {
       ),
       body: Container(
         padding: EdgeInsets.only(
-          bottom: MediaQuery.of(context).viewPadding.bottom,
+          bottom: MediaQuery.of(context).viewPadding.bottom + 8,
           left: 8,
           right: 8,
           top: 8,

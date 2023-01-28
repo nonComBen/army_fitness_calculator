@@ -1,5 +1,7 @@
 import 'dart:io';
 
+import 'package:acft_calculator/providers/purchases_provider.dart';
+import 'package:acft_calculator/services/purchases_service.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -11,8 +13,9 @@ import '../widgets/formatted_radio.dart';
 import 'package:flutter/material.dart';
 
 class SettingsPage extends ConsumerStatefulWidget {
-  SettingsPage({this.isPremium});
-  final bool? isPremium;
+  SettingsPage();
+
+  static const String routeName = 'settingsRoute';
   @override
   _SettingsPageState createState() => _SettingsPageState();
 }
@@ -25,6 +28,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
       rank = 'SGT';
   bool jrSoldier = true;
   late SharedPreferences prefs;
+  late PurchasesService purchasesService;
 
   final _ageController = TextEditingController();
   final _heightController = TextEditingController();
@@ -55,8 +59,9 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
   @override
   void initState() {
     super.initState();
+    purchasesService = ref.read(purchasesProvider);
 
-    if (!widget.isPremium!) {
+    if (!purchasesService.isPremium) {
       myBanner.load();
     }
 
@@ -138,7 +143,12 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
         title: const Text('Settings'),
       ),
       body: Container(
-        padding: EdgeInsets.all(16.0),
+        padding: EdgeInsets.only(
+          top: 16.0,
+          left: 16.0,
+          right: 16.0,
+          bottom: MediaQuery.of(context).viewPadding.bottom + 16.0,
+        ),
         child: Column(
           children: [
             Flexible(
@@ -269,7 +279,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                 ],
               ),
             ),
-            if (!widget.isPremium!)
+            if (!purchasesService.isPremium)
               Container(
                 constraints: const BoxConstraints(maxHeight: 90),
                 alignment: Alignment.center,

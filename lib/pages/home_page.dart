@@ -6,9 +6,9 @@ import 'package:in_app_purchase/in_app_purchase.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:rate_my_app/rate_my_app.dart';
 
-import 'acft_page.dart';
-import 'bodyfat_page.dart';
-import 'ppw_page.dart';
+import 'tabs/acft_page.dart';
+import 'tabs/bodyfat_page.dart';
+import 'tabs/ppw_page.dart';
 import 'table_pages/acft_table_page.dart';
 
 class MyHomePage extends StatefulWidget {

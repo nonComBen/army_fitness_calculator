@@ -6,6 +6,8 @@ import '../widgets/mdl_setup_card.dart';
 class MdlSetupPage extends StatelessWidget {
   const MdlSetupPage({Key? key}) : super(key: key);
 
+  static const String routeName = 'mdlSetupRoute';
+
   @override
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;

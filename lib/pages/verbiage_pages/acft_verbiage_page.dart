@@ -1,12 +1,13 @@
 import 'dart:io';
 
+import 'package:acft_calculator/providers/purchases_provider.dart';
+import 'package:acft_calculator/services/purchases_service.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 
-class AcftVerbiagePage extends StatefulWidget {
-  final bool? isPremium;
-  final bool? nonPersonalizedAds;
-  AcftVerbiagePage({this.isPremium, this.nonPersonalizedAds});
+class AcftVerbiagePage extends ConsumerStatefulWidget {
+  static const String routeName = 'acftVerbiageRoute';
   @override
   _AcftVerbiagePageState createState() => _AcftVerbiagePageState();
 }
@@ -18,7 +19,8 @@ class Verbiage {
   final Widget body;
 }
 
-class _AcftVerbiagePageState extends State<AcftVerbiagePage> {
+class _AcftVerbiagePageState extends ConsumerState<AcftVerbiagePage> {
+  late PurchasesService purchasesService;
   List<Verbiage> _verbiages = <Verbiage>[
     Verbiage(
         false,
@@ -206,16 +208,17 @@ class _AcftVerbiagePageState extends State<AcftVerbiagePage> {
   @override
   void initState() {
     super.initState();
-
+    purchasesService = ref.read(purchasesProvider);
     myBanner = BannerAd(
-        adUnitId: Platform.isAndroid
-            ? 'ca-app-pub-2431077176117105/7254941744'
-            : 'ca-app-pub-2431077176117105/4532397876',
-        size: AdSize.banner,
-        listener: BannerAdListener(),
-        request: AdRequest(nonPersonalizedAds: widget.nonPersonalizedAds));
+      adUnitId: Platform.isAndroid
+          ? 'ca-app-pub-2431077176117105/7254941744'
+          : 'ca-app-pub-2431077176117105/4532397876',
+      size: AdSize.banner,
+      listener: BannerAdListener(),
+      request: AdRequest(nonPersonalizedAds: true),
+    );
 
-    if (!widget.isPremium!) {
+    if (!purchasesService.isPremium) {
       myBanner!.load();
     }
   }
@@ -227,7 +230,12 @@ class _AcftVerbiagePageState extends State<AcftVerbiagePage> {
         title: const Text('ACFT Instructions'),
       ),
       body: Container(
-        padding: EdgeInsets.all(16.0),
+        padding: EdgeInsets.only(
+          top: 16.0,
+          left: 16.0,
+          right: 16.0,
+          bottom: MediaQuery.of(context).viewPadding.bottom + 16.0,
+        ),
         child: Column(
           children: [
             Flexible(
@@ -267,7 +275,7 @@ class _AcftVerbiagePageState extends State<AcftVerbiagePage> {
                 ],
               ),
             ),
-            if (!widget.isPremium!)
+            if (!purchasesService.isPremium)
               Container(
                 constraints: BoxConstraints(maxHeight: 90),
                 alignment: Alignment.center,

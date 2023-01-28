@@ -1,16 +1,17 @@
 import 'dart:async';
 
 import 'package:acft_calculator/widgets/platform_widgets/platform_button.dart';
-import 'package:acft_calculator/widgets/toast.dart';
 import 'package:flutter/material.dart';
 import 'package:in_app_purchase/in_app_purchase.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
+import '../widgets/platform_widgets/platform_text_button.dart';
+import '../widgets/toast.dart';
 import '../methods/verify_purchase.dart';
 import '../widgets/bullet_item.dart';
 
 class PurchasesService {
-  bool _isPremium = false;
+  bool _isPremium = true;
   List<ProductDetails>? _products;
 
   bool get isPremium {
@@ -27,7 +28,7 @@ class PurchasesService {
       });
       final Stream purchaseUpdates = InAppPurchase.instance.purchaseStream;
       purchaseUpdates.listen((purchases) async {
-        _isPremium = await listenToPurchaseUpdated(purchases);
+        // _isPremium = await listenToPurchaseUpdated(purchases);
       }) as StreamSubscription<List<PurchaseDetails>>;
     }
   }
@@ -36,8 +37,8 @@ class PurchasesService {
     showModalBottomSheet(
       context: context,
       builder: (ctx) => Container(
-        padding:
-            EdgeInsets.only(bottom: MediaQuery.of(context).viewPadding.bottom),
+        padding: EdgeInsets.only(
+            bottom: MediaQuery.of(context).viewPadding.bottom + 50),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -68,10 +69,9 @@ class PurchasesService {
               children: [
                 Padding(
                   padding: const EdgeInsets.all(8.0),
-                  child: ElevatedButton(
+                  child: PlatformButton(
                     child: const Text(
                       'Cancel',
-                      style: TextStyle(color: Colors.white),
                     ),
                     onPressed: () {
                       Navigator.pop(ctx);
@@ -80,9 +80,10 @@ class PurchasesService {
                 ),
                 Padding(
                   padding: const EdgeInsets.all(8.0),
-                  child: ElevatedButton(
-                    child: const Text('Upgrade',
-                        style: TextStyle(color: Colors.white)),
+                  child: PlatformButton(
+                    child: const Text(
+                      'Upgrade',
+                    ),
                     onPressed: () {
                       if (_products!.isEmpty) {
                         Navigator.pop(ctx);
@@ -113,13 +114,29 @@ class PurchasesService {
 
   upgradeNeeded(BuildContext context) {
     FToast fToast = FToast();
+    fToast.context = context;
     fToast.showToast(
+      gravity: ToastGravity.BOTTOM,
       child: MyToast(
         contents: [
-          Text('Saving scores is only available on the Premium version'),
-          PlatformButton(
-            child: Text('Upgrade'),
-            onPressed: upgrade(context),
+          Flexible(
+            flex: 3,
+            child: Text(
+              'Saving scores is only available on the Premium version',
+              style: TextStyle(color: Theme.of(context).colorScheme.onPrimary),
+            ),
+          ),
+          Flexible(
+            flex: 1,
+            child: PlatformTextButton(
+              child: Text(
+                'Upgrade',
+                style: TextStyle(
+                  color: Theme.of(context).colorScheme.onPrimary,
+                ),
+              ),
+              onPressed: () => upgrade(context),
+            ),
           ),
         ],
       ),

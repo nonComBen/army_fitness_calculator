@@ -1,6 +1,4 @@
-import 'dart:io';
-
-import 'package:flutter/cupertino.dart';
+import 'package:acft_calculator/methods/delete_record.dart';
 import 'package:flutter/material.dart';
 
 import '../chart_pages/ppw_charts_page.dart';
@@ -9,6 +7,7 @@ import '../../sqlite/ppw.dart';
 import '../../sqlite/db_helper.dart';
 
 class SavedPpwsPage extends StatefulWidget {
+  static const String routeName = 'savedPpwsRoute';
   @override
   _SavedPpwsPageState createState() => _SavedPpwsPageState();
 }
@@ -22,64 +21,6 @@ class _SavedPpwsPageState extends State<SavedPpwsPage> {
     setState(() {
       ppws = dbHelper.getPPWs();
     });
-  }
-
-  deleteRecord(PPW ppw) {
-    final title = const Text('Delete Record');
-    final content = Container(
-      padding: const EdgeInsets.all(8.0),
-      child: const Text('Are you sure you want to delete this record?'),
-    );
-    if (Platform.isIOS) {
-      showCupertinoDialog(
-          context: context,
-          builder: (context2) => CupertinoAlertDialog(
-                title: title,
-                content: content,
-                actions: <Widget>[
-                  CupertinoDialogAction(
-                    child: const Text('Cancel'),
-                    onPressed: () {
-                      Navigator.pop(context2);
-                    },
-                  ),
-                  CupertinoDialogAction(
-                    child: const Text('Yes'),
-                    onPressed: () {
-                      Navigator.pop(context2);
-                      dbHelper.deletePPW(ppw.id);
-                      refreshList();
-                    },
-                  )
-                ],
-              ));
-    } else {
-      showDialog(
-          context: context,
-          barrierDismissible: true,
-          builder: (BuildContext context2) {
-            return AlertDialog(
-              title: title,
-              content: content,
-              actions: <Widget>[
-                TextButton(
-                  child: const Text('Cancel'),
-                  onPressed: () {
-                    Navigator.pop(context2);
-                  },
-                ),
-                TextButton(
-                  child: const Text('Yes'),
-                  onPressed: () {
-                    Navigator.pop(context2);
-                    dbHelper.deletePPW(ppw.id);
-                    refreshList();
-                  },
-                )
-              ],
-            );
-          });
-    }
   }
 
   Widget nameHeader(List<PPW> ppwList, String name) {
@@ -149,90 +90,101 @@ class _SavedPpwsPageState extends State<SavedPpwsPage> {
         name = ppwList[i].name;
         widgets.add(nameHeader(ppwList, ppwList[i].name!));
       }
-      widgets.add(Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Card(
-          color: Theme.of(context).colorScheme.primary,
-          child: ListTile(
-            title: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Text(
-                    'Date: ${ppwList[i].date}',
+      widgets.add(
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Card(
+            color: Theme.of(context).colorScheme.primary,
+            child: ListTile(
+              title: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text(
+                      'Date: ${ppwList[i].date}',
+                      style: TextStyle(
+                          color: Theme.of(context).colorScheme.onPrimary),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text('${ppwList[i].total.toString()} / 800',
+                        style: TextStyle(
+                          color: Theme.of(context).colorScheme.onPrimary,
+                        )),
+                  )
+                ],
+              ),
+              subtitle: GridView.count(
+                crossAxisCount: width > 1000
+                    ? 4
+                    : width > 650
+                        ? 3
+                        : 2,
+                primary: false,
+                shrinkWrap: true,
+                crossAxisSpacing: 1.0,
+                mainAxisSpacing: 1.0,
+                childAspectRatio: width > 1000
+                    ? 120
+                    : width > 650
+                        ? width / 90
+                        : width / 60,
+                children: <Widget>[
+                  Text(
+                    'MilTrain: $milTrain / ${ppwList[i].milTrainMax}',
                     style: TextStyle(
                         color: Theme.of(context).colorScheme.onPrimary),
                   ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Text('${ppwList[i].total.toString()} / 800',
-                      style: TextStyle(
-                        color: Theme.of(context).colorScheme.onPrimary,
-                      )),
-                )
-              ],
-            ),
-            subtitle: GridView.count(
-              crossAxisCount: width > 1000
-                  ? 4
-                  : width > 650
-                      ? 3
-                      : 2,
-              primary: false,
-              shrinkWrap: true,
-              crossAxisSpacing: 1.0,
-              mainAxisSpacing: 1.0,
-              childAspectRatio: width > 1000
-                  ? 120
-                  : width > 650
-                      ? width / 90
-                      : width / 60,
-              children: <Widget>[
-                Text(
-                  'MilTrain: $milTrain / ${ppwList[i].milTrainMax}',
-                  style:
-                      TextStyle(color: Theme.of(context).colorScheme.onPrimary),
-                ),
-                Text(
-                  'Awards: $awards / ${ppwList[i].awardsMax}',
-                  style:
-                      TextStyle(color: Theme.of(context).colorScheme.onPrimary),
-                ),
-                Text(
-                  'MilEd: $milEd / ${ppwList[i].milEdMax}',
-                  style:
-                      TextStyle(color: Theme.of(context).colorScheme.onPrimary),
-                ),
-                Text(
-                  'CivEd: $civEd / ${ppwList[i].civEdMax}',
-                  style:
-                      TextStyle(color: Theme.of(context).colorScheme.onPrimary),
-                ),
-              ],
-            ),
-            trailing: SizedBox(
-              width: 30,
-              child: IconButton(
-                icon: const Icon(Icons.delete),
-                color: Theme.of(context).colorScheme.onPrimary,
-                onPressed: () {
-                  deleteRecord(ppwList[i]);
-                },
+                  Text(
+                    'Awards: $awards / ${ppwList[i].awardsMax}',
+                    style: TextStyle(
+                        color: Theme.of(context).colorScheme.onPrimary),
+                  ),
+                  Text(
+                    'MilEd: $milEd / ${ppwList[i].milEdMax}',
+                    style: TextStyle(
+                        color: Theme.of(context).colorScheme.onPrimary),
+                  ),
+                  Text(
+                    'CivEd: $civEd / ${ppwList[i].civEdMax}',
+                    style: TextStyle(
+                        color: Theme.of(context).colorScheme.onPrimary),
+                  ),
+                ],
               ),
-            ),
-            onTap: () {
-              Navigator.push(
+              trailing: SizedBox(
+                width: 30,
+                child: IconButton(
+                  icon: const Icon(Icons.delete),
+                  color: Theme.of(context).colorScheme.onPrimary,
+                  onPressed: () {
+                    DeleteRecord.deleteRecord(
+                      context: context,
+                      onConfirm: () {
+                        Navigator.pop(context);
+                        dbHelper.deletePPW(ppwList[i].id);
+                        refreshList();
+                      },
+                    );
+                  },
+                ),
+              ),
+              onTap: () {
+                Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => PpwDetailsPage(
-                            ppw: ppwList[i],
-                          )));
-            },
+                    builder: (context) => PpwDetailsPage(
+                      ppw: ppwList[i],
+                    ),
+                  ),
+                );
+              },
+            ),
           ),
         ),
-      ));
+      );
     }
 
     return ListView(
@@ -266,8 +218,8 @@ class _SavedPpwsPageState extends State<SavedPpwsPage> {
                   child: Text(
                 'No PPWs Found',
                 style: TextStyle(
-                    fontSize: 18.0,
-                    color: Theme.of(context).colorScheme.onPrimary),
+                  fontSize: 18.0,
+                ),
               ));
             }
 

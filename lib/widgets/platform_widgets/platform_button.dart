@@ -26,9 +26,9 @@ class AndroidButton extends StatelessWidget implements PlatformButton {
   Widget build(BuildContext context) {
     return ElevatedButton(
         style: ButtonStyle(
-          fixedSize: MaterialStateProperty.all<Size>(
-            const Size(100, 40),
-          ),
+          // fixedSize: MaterialStateProperty.all<Size>(
+          //   const Size(100, 40),
+          // ),
           shape: MaterialStateProperty.all<OutlinedBorder>(
             RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(40),

@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
 class PrivacyPolicyPage extends StatelessWidget {
+  static const String routeName = 'privacyPolicyRoute';
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -9,7 +11,12 @@ class PrivacyPolicyPage extends StatelessWidget {
         title: const Text('Privacy Policy'),
       ),
       body: Container(
-        padding: const EdgeInsets.all(16.0),
+        padding: EdgeInsets.only(
+          top: 16.0,
+          left: 16.0,
+          right: 16.0,
+          bottom: MediaQuery.of(context).viewPadding.bottom + 16.0,
+        ),
         child: SingleChildScrollView(
           child: Card(
             child: Column(

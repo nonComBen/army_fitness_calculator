@@ -1,8 +1,8 @@
 import 'dart:io';
 
-import 'package:acft_calculator/pages/acft_page.dart';
-import 'package:acft_calculator/pages/bodyfat_page.dart';
-import 'package:acft_calculator/pages/ppw_page.dart';
+import 'package:acft_calculator/pages/tabs/acft_page.dart';
+import 'package:acft_calculator/pages/tabs/bodyfat_page.dart';
+import 'package:acft_calculator/pages/tabs/ppw_page.dart';
 import 'package:acft_calculator/providers/ad_provider.dart';
 import 'package:acft_calculator/providers/purchases_provider.dart';
 import 'package:flutter/cupertino.dart';
@@ -12,6 +12,7 @@ import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:rate_my_app/rate_my_app.dart';
 
 import '../../pages/table_pages/acft_table_page.dart';
+import '../../pages/tabs/overflow_tab.dart';
 
 abstract class PlatformHomePage extends StatefulWidget {
   factory PlatformHomePage() {
@@ -33,11 +34,17 @@ class AndroidHomePage extends ConsumerStatefulWidget
 
 class _AndroidHomePageState extends ConsumerState<AndroidHomePage> {
   int index = 0;
-  List<Widget> pages = [AcftPage(), BodyfatPage(), PromotionPointPage()];
+  List<Widget> pages = [
+    AcftPage(),
+    BodyfatPage(),
+    PromotionPointPage(),
+    OverflowTab(),
+  ];
   List<String> titles = const [
     AcftPage.title,
     BodyfatPage.title,
-    PromotionPointPage.title
+    PromotionPointPage.title,
+    OverflowTab.title,
   ];
   final RateMyApp _rateMyApp = RateMyApp(
     minDays: 7,
@@ -88,7 +95,6 @@ class _AndroidHomePageState extends ConsumerState<AndroidHomePage> {
       height: MediaQuery.of(context).size.height,
     );
     final purchasesService = ref.watch(purchasesProvider);
-    final primaryColor = Theme.of(context).colorScheme.primary;
     return Scaffold(
       appBar: AppBar(
         title: Text(titles[index]),
@@ -101,28 +107,30 @@ class _AndroidHomePageState extends ConsumerState<AndroidHomePage> {
         ],
       ),
       bottomNavigationBar: NavigationBar(
+        selectedIndex: index,
         destinations: [
           NavigationDestination(
             icon: Icon(
               Icons.fitness_center,
-              color: index == 0 ? primaryColor : null,
             ),
-            label: AcftPage.title,
+            label: 'ACFT',
           ),
           NavigationDestination(
             icon: Icon(
               Icons.accessibility,
-              color: index == 1 ? primaryColor : null,
             ),
-            label: BodyfatPage.title,
+            label: 'Body Comp',
           ),
           NavigationDestination(
             icon: Icon(
               Icons.attach_money,
-              color: index == 2 ? primaryColor : null,
             ),
-            label: PromotionPointPage.title,
-          )
+            label: 'PPW',
+          ),
+          NavigationDestination(
+            icon: Icon(Icons.more_horiz),
+            label: 'More',
+          ),
         ],
         onDestinationSelected: (value) {
           setState(() {
@@ -203,26 +211,32 @@ class _IOSHomePageState extends ConsumerState<IOSHomePage> {
       AcftPage(),
       BodyfatPage(),
       PromotionPointPage(),
+      OverflowTab(),
     ];
     final titles = [
       AcftPage.title,
       BodyfatPage.title,
       PromotionPointPage.title,
+      OverflowTab.title,
     ];
     return CupertinoTabScaffold(
       tabBar: CupertinoTabBar(
         items: const [
           BottomNavigationBarItem(
-            label: AcftPage.title,
+            label: 'ACFT',
             icon: Icon(CupertinoIcons.stopwatch_fill),
           ),
           BottomNavigationBarItem(
-            label: BodyfatPage.title,
-            icon: Icon(CupertinoIcons.add),
+            label: 'Body Comp',
+            icon: Icon(CupertinoIcons.lab_flask),
           ),
           BottomNavigationBarItem(
-            label: PromotionPointPage.title,
+            label: 'PPW',
             icon: Icon(CupertinoIcons.money_dollar),
+          ),
+          BottomNavigationBarItem(
+            label: 'More',
+            icon: Icon(CupertinoIcons.ellipsis),
           ),
         ],
         activeColor: Theme.of(context).primaryColor,

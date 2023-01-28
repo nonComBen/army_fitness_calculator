@@ -6,29 +6,29 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:intl/intl.dart';
 
-import '../sqlite/db_helper.dart';
-import '../sqlite/acft.dart';
-import '../calculators/2mr_calculator.dart';
-import '../calculators/acft_calculator.dart';
-import '../calculators/spt_calculator.dart';
-import '../calculators/hrp_calculator.dart';
-import '../calculators/mdl_calculator.dart';
-import '../calculators/plk_calculator.dart';
-import '../calculators/sdc_calculator.dart';
-import '../providers/shared_preferences_provider.dart';
-import 'saved_pages/saved_acfts_page.dart';
-import '../widgets/formatted_drop_down.dart';
-import '../widgets/formatted_radio.dart';
-import '../widgets/grid_box.dart';
-import '../widgets/increment_decrement_button.dart';
-import '../constants/pt_age_group_table.dart';
-import '../constants/acft_aerobic_event_table.dart';
-import '../widgets/value_input_field.dart';
+import '../../sqlite/db_helper.dart';
+import '../../sqlite/acft.dart';
+import '../../calculators/2mr_calculator.dart';
+import '../../calculators/acft_calculator.dart';
+import '../../calculators/spt_calculator.dart';
+import '../../calculators/hrp_calculator.dart';
+import '../../calculators/mdl_calculator.dart';
+import '../../calculators/plk_calculator.dart';
+import '../../calculators/sdc_calculator.dart';
+import '../../providers/shared_preferences_provider.dart';
+import '../saved_pages/saved_acfts_page.dart';
+import '../../widgets/formatted_drop_down.dart';
+import '../../widgets/formatted_radio.dart';
+import '../../widgets/grid_box.dart';
+import '../../widgets/increment_decrement_button.dart';
+import '../../constants/pt_age_group_table.dart';
+import '../../constants/acft_aerobic_event_table.dart';
+import '../../widgets/value_input_field.dart';
 
 class AcftPage extends ConsumerStatefulWidget {
   AcftPage();
 
-  static const String title = 'ACFT';
+  static const String title = 'ACFT Calculator';
 
   @override
   AcftPageState createState() => AcftPageState();
@@ -416,77 +416,75 @@ class AcftPageState extends ConsumerState<AcftPage> {
     final _nameController = TextEditingController();
     showModalBottomSheet(
       context: context,
-      builder: ((ctx) => Container(
-            padding: EdgeInsets.only(
-                left: 8,
-                right: 8,
-                bottom: MediaQuery.of(ctx).viewInsets.bottom == 0
-                    ? MediaQuery.of(ctx).padding.bottom
-                    : MediaQuery.of(ctx).viewInsets.bottom),
-            child: SingleChildScrollView(
-              child: Column(
-                children: <Widget>[
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: TextFormField(
-                      controller: _dateController,
-                      decoration: const InputDecoration(
-                        labelText: 'Date',
-                      ),
-                      autovalidateMode: AutovalidateMode.onUserInteraction,
-                      validator: (value) => regExp.hasMatch(value!)
-                          ? null
-                          : 'Use yyyyMMdd Format',
-                      keyboardType:
-                          TextInputType.numberWithOptions(signed: true),
-                      inputFormatters: [
-                        FilteringTextInputFormatter.digitsOnly,
-                      ],
-                      textInputAction: TextInputAction.next,
-                      onEditingComplete: () => FocusScope.of(ctx).nextFocus(),
-                    ),
+      builder: (ctx) => Container(
+        padding: EdgeInsets.only(
+            left: 8,
+            right: 8,
+            bottom: MediaQuery.of(ctx).viewInsets.bottom == 0
+                ? MediaQuery.of(ctx).padding.bottom
+                : MediaQuery.of(ctx).viewInsets.bottom),
+        child: SingleChildScrollView(
+          child: Column(
+            children: <Widget>[
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: TextFormField(
+                  controller: _dateController,
+                  decoration: const InputDecoration(
+                    labelText: 'Date',
                   ),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: TextFormField(
-                      controller: _rankController,
-                      decoration: const InputDecoration(labelText: 'Rank'),
-                      keyboardType: TextInputType.text,
-                      textCapitalization: TextCapitalization.characters,
-                      textInputAction: TextInputAction.next,
-                      onEditingComplete: () => FocusScope.of(ctx).nextFocus(),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: TextFormField(
-                      controller: _nameController,
-                      decoration: const InputDecoration(labelText: 'Name'),
-                      keyboardType: TextInputType.text,
-                      textCapitalization: TextCapitalization.words,
-                      textInputAction: TextInputAction.done,
-                      onEditingComplete: () => FocusScope.of(ctx).unfocus(),
-                    ),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.all(8),
-                    child: ElevatedButton(
-                      child: Text('Save'),
-                      onPressed: (() {
-                        acft.date = _dateController.text;
-                        acft.rank = _rankController.text;
-                        acft.name = _nameController.text;
-                        dbHelper.saveAcft(acft);
-                        Navigator.of(ctx).pop();
-                        Navigator.of(context).push(MaterialPageRoute(
-                            builder: (context) => SavedAcftsPage()));
-                      }),
-                    ),
-                  )
-                ],
+                  autovalidateMode: AutovalidateMode.onUserInteraction,
+                  validator: (value) =>
+                      regExp.hasMatch(value!) ? null : 'Use yyyyMMdd Format',
+                  keyboardType: TextInputType.numberWithOptions(signed: true),
+                  inputFormatters: [
+                    FilteringTextInputFormatter.digitsOnly,
+                  ],
+                  textInputAction: TextInputAction.next,
+                  onEditingComplete: () => FocusScope.of(ctx).nextFocus(),
+                ),
               ),
-            ),
-          )),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: TextFormField(
+                  controller: _rankController,
+                  decoration: const InputDecoration(labelText: 'Rank'),
+                  keyboardType: TextInputType.text,
+                  textCapitalization: TextCapitalization.characters,
+                  textInputAction: TextInputAction.next,
+                  onEditingComplete: () => FocusScope.of(ctx).nextFocus(),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: TextFormField(
+                  controller: _nameController,
+                  decoration: const InputDecoration(labelText: 'Name'),
+                  keyboardType: TextInputType.text,
+                  textCapitalization: TextCapitalization.words,
+                  textInputAction: TextInputAction.done,
+                  onEditingComplete: () => FocusScope.of(ctx).unfocus(),
+                ),
+              ),
+              Padding(
+                padding: EdgeInsets.all(8),
+                child: ElevatedButton(
+                  child: Text('Save'),
+                  onPressed: (() {
+                    acft.date = _dateController.text;
+                    acft.rank = _rankController.text;
+                    acft.name = _nameController.text;
+                    dbHelper.saveAcft(acft);
+                    Navigator.of(ctx).pop();
+                    Navigator.of(context).push(MaterialPageRoute(
+                        builder: (context) => SavedAcftsPage()));
+                  }),
+                ),
+              )
+            ],
+          ),
+        ),
+      ),
     );
   }
 

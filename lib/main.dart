@@ -1,3 +1,14 @@
+import 'package:acft_calculator/pages/apft_page.dart';
+import 'package:acft_calculator/pages/mdl_setup_page.dart';
+import 'package:acft_calculator/pages/privacy_policy_page.dart';
+import 'package:acft_calculator/pages/saved_pages/saved_acfts_page.dart';
+import 'package:acft_calculator/pages/saved_pages/saved_apfts_page.dart';
+import 'package:acft_calculator/pages/saved_pages/saved_bodyfats_page.dart';
+import 'package:acft_calculator/pages/saved_pages/saved_ppw_page.dart';
+import 'package:acft_calculator/pages/settings_page.dart';
+import 'package:acft_calculator/pages/verbiage_pages/acft_verbiage_page.dart';
+import 'package:acft_calculator/pages/verbiage_pages/apft_verbiage_page.dart';
+import 'package:acft_calculator/pages/verbiage_pages/bodyfat_verbiage_page.dart';
 import 'package:acft_calculator/providers/purchases_provider.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
@@ -40,6 +51,19 @@ class MyApp extends ConsumerWidget {
       return PlatformApp(
         title: 'Army Fitness Calculator',
         themeData: themeState,
+        routes: {
+          ApftPage.routeName: (ctx) => ApftPage(),
+          MdlSetupPage.routeName: (ctx) => MdlSetupPage(),
+          PrivacyPolicyPage.routeName: (ctx) => PrivacyPolicyPage(),
+          SettingsPage.routeName: (ctx) => SettingsPage(),
+          SavedAcftsPage.routeName: (ctx) => SavedAcftsPage(),
+          SavedApftsPage.routeName: (ctx) => SavedApftsPage(),
+          SavedBodyfatsPage.routeName: (ctx) => SavedBodyfatsPage(),
+          SavedPpwsPage.routeName: (ctx) => SavedPpwsPage(),
+          AcftVerbiagePage.routeName: (ctx) => AcftVerbiagePage(),
+          ApftVerbiagePage.routeName: (ctx) => ApftVerbiagePage(),
+          BodyfatVerbiagePage.routeName: (ctx) => BodyfatVerbiagePage(),
+        },
         home: Builder(builder: (BuildContext context) {
           return Padding(
             padding: EdgeInsets.only(
