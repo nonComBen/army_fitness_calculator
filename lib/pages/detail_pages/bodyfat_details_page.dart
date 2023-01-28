@@ -1,3 +1,4 @@
+import 'package:acft_calculator/widgets/platform_widgets/platform_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -94,7 +95,7 @@ class _BodyfatDetailsPageState extends State<BodyfatDetailsPage> {
                 ),
                 Padding(
                   padding: EdgeInsets.all(8),
-                  child: ElevatedButton(
+                  child: PlatformButton(
                     child: Text('Update Body Comp'),
                     onPressed: () {
                       setState(() {
@@ -304,7 +305,12 @@ class _BodyfatDetailsPageState extends State<BodyfatDetailsPage> {
         },
       ),
       body: Container(
-        padding: EdgeInsets.all(16.0),
+        padding: EdgeInsets.only(
+          top: 16.0,
+          left: 16.0,
+          right: 16.0,
+          bottom: MediaQuery.of(context).viewPadding.bottom + 16.0,
+        ),
         child: SingleChildScrollView(
           child: RepaintBoundary(
             key: previewContainer,

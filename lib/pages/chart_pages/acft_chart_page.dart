@@ -128,7 +128,12 @@ class _AcftChartPageState extends State<AcftChartPage> {
         ),
       ),
       body: Container(
-        padding: new EdgeInsets.all(16.0),
+        padding: EdgeInsets.only(
+          top: 16.0,
+          left: 16.0,
+          right: 16.0,
+          bottom: MediaQuery.of(context).viewPadding.bottom + 16.0,
+        ),
         child: new Center(
           child: new ListView(
             children: <Widget>[

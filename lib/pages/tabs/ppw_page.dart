@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:acft_calculator/providers/purchases_provider.dart';
 import 'package:acft_calculator/services/purchases_service.dart';
+import 'package:acft_calculator/widgets/platform_widgets/platform_button.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -448,18 +449,14 @@ class _PromotionPointPageState extends ConsumerState<PromotionPointPage> {
               ),
               Padding(
                 padding: EdgeInsets.all(8),
-                child: ElevatedButton(
+                child: PlatformButton(
                   child: Text('Save'),
                   onPressed: () {
                     ppw.name = _nameController.text;
                     ppw.date = _dateController.text;
                     dbHelper.savePPW(ppw);
                     Navigator.of(ctx).pop();
-                    Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (context) => SavedPpwsPage(),
-                      ),
-                    );
+                    Navigator.of(context).pushNamed(SavedPpwsPage.routeName);
                   },
                 ),
               )
@@ -1156,10 +1153,7 @@ class _PromotionPointPageState extends ConsumerState<PromotionPointPage> {
                 )),
             Padding(
               padding: const EdgeInsets.all(8.0),
-              child: ElevatedButton(
-                style: ButtonStyle(
-                    backgroundColor: MaterialStateProperty.all(
-                        Theme.of(context).colorScheme.primary)),
+              child: PlatformButton(
                 child: const Text('Save Promotion Point Score'),
                 onPressed: () {
                   if (purchasesService.isPremium) {

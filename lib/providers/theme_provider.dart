@@ -4,6 +4,13 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import './shared_preferences_provider.dart';
 
+final themeStateNotifierProvider =
+    StateNotifierProvider<ThemeStateNotifier, ThemeData>(
+  (ref) => ThemeStateNotifier(
+    ref.watch(sharedPreferencesProvider),
+  ),
+);
+
 enum ThemeState { lightTheme, darkTheme }
 
 ThemeData darkTheme = ThemeData(
@@ -57,7 +64,3 @@ class ThemeStateNotifier extends StateNotifier<ThemeData> {
     }
   }
 }
-
-final themeStateNotifierProvider =
-    StateNotifierProvider<ThemeStateNotifier, ThemeData>(
-        (ref) => ThemeStateNotifier(ref.watch(sharedPreferencesProvider)));

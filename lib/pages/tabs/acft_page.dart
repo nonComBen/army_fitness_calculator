@@ -1,5 +1,6 @@
 import 'package:acft_calculator/providers/purchases_provider.dart';
 import 'package:acft_calculator/services/purchases_service.dart';
+import 'package:acft_calculator/widgets/platform_widgets/platform_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -468,7 +469,7 @@ class AcftPageState extends ConsumerState<AcftPage> {
               ),
               Padding(
                 padding: EdgeInsets.all(8),
-                child: ElevatedButton(
+                child: PlatformButton(
                   child: Text('Save'),
                   onPressed: (() {
                     acft.date = _dateController.text;
@@ -476,8 +477,7 @@ class AcftPageState extends ConsumerState<AcftPage> {
                     acft.name = _nameController.text;
                     dbHelper.saveAcft(acft);
                     Navigator.of(ctx).pop();
-                    Navigator.of(context).push(MaterialPageRoute(
-                        builder: (context) => SavedAcftsPage()));
+                    Navigator.of(context).pushNamed(SavedAcftsPage.routeName);
                   }),
                 ),
               )
@@ -496,7 +496,7 @@ class AcftPageState extends ConsumerState<AcftPage> {
     final failColor = Theme.of(context).colorScheme.error;
     final onPrimary = Theme.of(context).colorScheme.onPrimary;
     return Container(
-      padding: const EdgeInsets.all(16.0),
+      padding: EdgeInsets.all(16.0),
       child: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -1822,10 +1822,7 @@ class AcftPageState extends ConsumerState<AcftPage> {
             ),
             Padding(
               padding: EdgeInsets.all(8.0),
-              child: ElevatedButton(
-                style: ButtonStyle(
-                    backgroundColor: MaterialStateProperty.all(
-                        Theme.of(context).colorScheme.primary)),
+              child: PlatformButton(
                 child: const Text('Save ACFT Score'),
                 onPressed: () {
                   String sdcSeconds = sdcSecs.toString().length == 1

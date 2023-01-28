@@ -125,7 +125,12 @@ class _BodyfatChartPageState extends State<BodyfatChartPage> {
         ],
       ),
       body: Container(
-        padding: const EdgeInsets.all(16.0),
+        padding: EdgeInsets.only(
+          top: 16.0,
+          left: 16.0,
+          right: 16.0,
+          bottom: MediaQuery.of(context).viewPadding.bottom + 16.0,
+        ),
         child: Center(
           child: ListView(
             children: <Widget>[

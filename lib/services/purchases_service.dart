@@ -7,7 +7,6 @@ import 'package:fluttertoast/fluttertoast.dart';
 
 import '../widgets/platform_widgets/platform_text_button.dart';
 import '../widgets/toast.dart';
-import '../methods/verify_purchase.dart';
 import '../widgets/bullet_item.dart';
 
 class PurchasesService {
@@ -38,7 +37,11 @@ class PurchasesService {
       context: context,
       builder: (ctx) => Container(
         padding: EdgeInsets.only(
-            bottom: MediaQuery.of(context).viewPadding.bottom + 50),
+          top: 8.0,
+          left: 8.0,
+          right: 8.0,
+          bottom: MediaQuery.of(context).viewPadding.bottom + 50,
+        ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.stretch,

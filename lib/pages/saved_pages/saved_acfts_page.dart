@@ -149,7 +149,12 @@ class _SavedAcftsPageState extends State<SavedAcftsPage> {
         title: const Text('Saved ACFTs'),
       ),
       body: Container(
-        padding: const EdgeInsets.all(16.0),
+        padding: EdgeInsets.only(
+          top: 16.0,
+          left: 16.0,
+          right: 16.0,
+          bottom: MediaQuery.of(context).viewPadding.bottom + 16.0,
+        ),
         child: FutureBuilder<List<Acft>>(
           future: acfts,
           builder: (ctx, snapshot) {

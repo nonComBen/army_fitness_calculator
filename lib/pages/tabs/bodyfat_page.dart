@@ -1,5 +1,6 @@
 import 'package:acft_calculator/providers/purchases_provider.dart';
 import 'package:acft_calculator/services/purchases_service.dart';
+import 'package:acft_calculator/widgets/platform_widgets/platform_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -267,7 +268,7 @@ class _BodyfatPageState extends ConsumerState<BodyfatPage> {
               ),
               Padding(
                 padding: EdgeInsets.all(8),
-                child: ElevatedButton(
+                child: PlatformButton(
                   child: Text('Save Body Composition'),
                   onPressed: () {
                     bf.date = _dateController.text;
@@ -277,10 +278,8 @@ class _BodyfatPageState extends ConsumerState<BodyfatPage> {
                       bf.bfPercent = bf.gender == 'Male' ? '18' : '28';
                     dbHelper.saveBodyfat(bf);
                     Navigator.pop(ctx);
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => SavedBodyfatsPage()));
+                    Navigator.of(context)
+                        .pushNamed(SavedBodyfatsPage.routeName);
                   },
                 ),
               )
@@ -299,7 +298,7 @@ class _BodyfatPageState extends ConsumerState<BodyfatPage> {
     final errorColor = Theme.of(context).colorScheme.error;
     final backgroundColor = Theme.of(context).scaffoldBackgroundColor;
     return Container(
-      padding: EdgeInsets.all(16.0),
+      padding: const EdgeInsets.all(16.0),
       child: SingleChildScrollView(
         child: Column(
           children: <Widget>[
@@ -1055,9 +1054,7 @@ class _BodyfatPageState extends ConsumerState<BodyfatPage> {
               ),
             Padding(
               padding: EdgeInsets.all(8.0),
-              child: ElevatedButton(
-                style: ButtonStyle(
-                    backgroundColor: MaterialStateProperty.all(primaryColor)),
+              child: PlatformButton(
                 child: const Text('Save Body Comp Score'),
                 onPressed: () {
                   if (purchasesService.isPremium) {

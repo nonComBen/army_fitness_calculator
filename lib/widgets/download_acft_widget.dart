@@ -1,4 +1,5 @@
 import 'package:acft_calculator/sqlite/acft.dart';
+import 'package:acft_calculator/widgets/platform_widgets/platform_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -238,7 +239,7 @@ class _DownloadAcftWidgetState extends State<DownloadAcftWidget> {
             ),
           Padding(
             padding: EdgeInsets.all(8),
-            child: ElevatedButton(
+            child: PlatformButton(
               child: Text('Download PDF'),
               onPressed: () {
                 Navigator.of(context).pop();

@@ -1,5 +1,6 @@
 import 'package:acft_calculator/providers/purchases_provider.dart';
 import 'package:acft_calculator/services/purchases_service.dart';
+import 'package:acft_calculator/widgets/platform_widgets/platform_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -346,7 +347,7 @@ class _ApftPageState extends ConsumerState<ApftPage> {
               ),
               Padding(
                 padding: EdgeInsets.all(8),
-                child: ElevatedButton(
+                child: PlatformButton(
                   child: Text('Save APFT'),
                   onPressed: () {
                     apft.date = _dateController.text;
@@ -354,10 +355,7 @@ class _ApftPageState extends ConsumerState<ApftPage> {
                     apft.name = _nameController.text;
                     dbHelper.saveAPft(apft);
                     Navigator.pop(ctx);
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => SavedApftsPage()));
+                    Navigator.of(context).pushNamed(SavedApftsPage.routeName);
                   },
                 ),
               )
@@ -1032,9 +1030,7 @@ class _ApftPageState extends ConsumerState<ApftPage> {
               ),
               Padding(
                 padding: EdgeInsets.all(8.0),
-                child: ElevatedButton(
-                  style: ButtonStyle(
-                      backgroundColor: MaterialStateProperty.all(primaryColor)),
+                child: PlatformButton(
                   child: const Text('Save APFT Score'),
                   onPressed: () {
                     String runSeconds = runSecs.toString().length == 1

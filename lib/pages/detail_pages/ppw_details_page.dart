@@ -1,6 +1,5 @@
-import 'dart:io';
-
-import 'package:flutter/cupertino.dart';
+import 'package:acft_calculator/methods/delete_record.dart';
+import 'package:acft_calculator/widgets/platform_widgets/platform_button.dart';
 import 'package:flutter/material.dart';
 
 import '../saved_pages/saved_ppw_page.dart';
@@ -114,7 +113,7 @@ class _PpwDetailsPageState extends State<PpwDetailsPage> {
                 ),
                 Padding(
                   padding: EdgeInsets.all(8),
-                  child: ElevatedButton(
+                  child: PlatformButton(
                     child: Text('Save', style: textStyle),
                     onPressed: () {
                       setState(() {
@@ -136,74 +135,6 @@ class _PpwDetailsPageState extends State<PpwDetailsPage> {
     );
   }
 
-  deleteRecord(PPW ppw) {
-    final title = const Text('Delete Record');
-    final textStyle = TextStyle(
-        color: Theme.of(context).brightness == Brightness.dark
-            ? Colors.yellow
-            : Colors.amber);
-    final content = Container(
-      padding: const EdgeInsets.all(8.0),
-      child: const Text('Are you sure you want to delete this record?'),
-    );
-    if (Platform.isIOS) {
-      showCupertinoDialog(
-          context: context,
-          builder: (context2) => CupertinoAlertDialog(
-                title: title,
-                content: content,
-                actions: <Widget>[
-                  CupertinoDialogAction(
-                    child: Text('Cancel', style: textStyle),
-                    onPressed: () {
-                      Navigator.pop(context2);
-                    },
-                  ),
-                  CupertinoDialogAction(
-                    child: Text('Yes', style: textStyle),
-                    onPressed: () {
-                      Navigator.pop(context2);
-                      dbHelper.deletePPW(ppw.id!);
-                      Navigator.pushReplacement(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => SavedPpwsPage()));
-                    },
-                  )
-                ],
-              ));
-    } else {
-      showDialog(
-          context: context,
-          barrierDismissible: true,
-          builder: (BuildContext context2) {
-            return AlertDialog(
-              title: title,
-              content: content,
-              actions: <Widget>[
-                TextButton(
-                  child: Text('Cancel', style: textStyle),
-                  onPressed: () {
-                    Navigator.pop(context2);
-                  },
-                ),
-                TextButton(
-                  child: Text('Yes', style: textStyle),
-                  onPressed: () {
-                    Navigator.pop(context2);
-                    dbHelper.deletePPW(ppw.id);
-                    Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => SavedPpwsPage()));
-                  },
-                )
-              ],
-            );
-          });
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
@@ -215,7 +146,18 @@ class _PpwDetailsPageState extends State<PpwDetailsPage> {
           IconButton(
             icon: const Icon(Icons.delete),
             onPressed: () {
-              deleteRecord(widget.ppw);
+              DeleteRecord.deleteRecord(
+                context: context,
+                onConfirm: () {
+                  dbHelper.deletePPW(widget.ppw.id);
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => SavedPpwsPage(),
+                    ),
+                  );
+                },
+              );
             },
           )
         ],
@@ -228,7 +170,12 @@ class _PpwDetailsPageState extends State<PpwDetailsPage> {
         },
       ),
       body: Container(
-        padding: const EdgeInsets.all(16.0),
+        padding: EdgeInsets.only(
+          top: 16.0,
+          left: 16.0,
+          right: 16.0,
+          bottom: MediaQuery.of(context).viewPadding.bottom + 16.0,
+        ),
         child: SingleChildScrollView(
           child: Column(
             children: <Widget>[

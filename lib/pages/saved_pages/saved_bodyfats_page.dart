@@ -177,7 +177,12 @@ class _SavedBodyfatsPageState extends State<SavedBodyfatsPage> {
         title: const Text('Saved Body Comps'),
       ),
       body: Container(
-        padding: const EdgeInsets.all(16.0),
+        padding: EdgeInsets.only(
+          top: 16.0,
+          left: 16.0,
+          right: 16.0,
+          bottom: MediaQuery.of(context).viewPadding.bottom + 16.0,
+        ),
         child: FutureBuilder<List<Bodyfat>>(
           future: bodyfats,
           builder: (context, snapshot) {

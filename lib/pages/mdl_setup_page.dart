@@ -16,7 +16,12 @@ class MdlSetupPage extends StatelessWidget {
         title: Text('MDL Setup'),
       ),
       body: Container(
-        padding: EdgeInsets.all(8),
+        padding: EdgeInsets.only(
+          top: 16.0,
+          left: 16.0,
+          right: 16.0,
+          bottom: MediaQuery.of(context).viewPadding.bottom + 16.0,
+        ),
         child: GridView.count(
           crossAxisCount: width > 700 ? 2 : 1,
           childAspectRatio: width > 700 ? width / 430 : width / 215,

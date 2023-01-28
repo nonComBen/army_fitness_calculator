@@ -209,7 +209,12 @@ class _SavedPpwsPageState extends State<SavedPpwsPage> {
         title: const Text('Saved PPWs'),
       ),
       body: Container(
-        padding: const EdgeInsets.all(16.0),
+        padding: EdgeInsets.only(
+          top: 16.0,
+          left: 16.0,
+          right: 16.0,
+          bottom: MediaQuery.of(context).viewPadding.bottom + 16.0,
+        ),
         child: FutureBuilder<List<PPW>>(
           future: ppws,
           builder: (context, snapshot) {
