@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 
+import '../../widgets/platform_widgets/platform_icon_button.dart';
 import '../saved_pages/saved_ppw_page.dart';
 import '../../sqlite/ppw.dart';
 import '../../sqlite/db_helper.dart';
@@ -143,13 +144,13 @@ class _PpwDetailsPageState extends State<PpwDetailsPage> {
       title: 'PPW Details',
       actions: <Widget>[
         if (Platform.isIOS)
-          IconButton(
+          PlatformIconButton(
             onPressed: () {
               _updatePpw(context, widget.ppw);
             },
             icon: const Icon(Icons.edit),
           ),
-        IconButton(
+        PlatformIconButton(
           icon: const Icon(Icons.delete),
           onPressed: () {
             DeleteRecord.deleteRecord(

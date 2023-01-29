@@ -13,6 +13,7 @@ import '../../providers/ad_provider.dart';
 import '../../providers/purchases_provider.dart';
 import '../../pages/table_pages/acft_table_page.dart';
 import '../../pages/tabs/overflow_tab.dart';
+import 'platform_icon_button.dart';
 
 abstract class PlatformHomePage extends StatefulWidget {
   factory PlatformHomePage() {
@@ -100,7 +101,7 @@ class _AndroidHomePageState extends ConsumerState<AndroidHomePage> {
         title: Text(titles[index]),
         actions: [
           if (index == 0)
-            IconButton(
+            PlatformIconButton(
               onPressed: () => _openTablePage(),
               icon: Icon(Icons.table_chart),
             ),
@@ -248,7 +249,7 @@ class _IOSHomePageState extends ConsumerState<IOSHomePage> {
             navigationBar: CupertinoNavigationBar(
               backgroundColor: Theme.of(context).colorScheme.primary,
               trailing: index == 0
-                  ? IconButton(
+                  ? PlatformIconButton(
                       onPressed: () {
                         Navigator.of(context).push(
                           MaterialPageRoute(

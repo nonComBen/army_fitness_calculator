@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../methods/delete_record.dart';
+import '../../widgets/platform_widgets/platform_icon_button.dart';
 import '../chart_pages/apft_chart_page.dart';
 import '../detail_pages/apft_details_page.dart';
 import '../../sqlite/apft.dart';
@@ -34,7 +35,7 @@ class _SavedApftsPageState extends State<SavedApftsPage> {
             rank == '' ? name! : '$rank $name',
             style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
           ),
-          IconButton(
+          PlatformIconButton(
             icon: const Icon(Icons.show_chart),
             onPressed: () {
               Navigator.push(
@@ -95,7 +96,7 @@ class _SavedApftsPageState extends State<SavedApftsPage> {
                     style: TextStyle(color: pass ? onPrimary : onError)),
               ],
             ),
-            trailing: IconButton(
+            trailing: PlatformIconButton(
               icon: Icon(
                 Icons.delete,
                 color: pass ? onPrimary : onError,

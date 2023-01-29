@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../widgets/platform_widgets/platform_icon_button.dart';
 import '../chart_pages/ppw_charts_page.dart';
 import '../detail_pages/ppw_details_page.dart';
 import '../../sqlite/ppw.dart';
@@ -37,7 +38,7 @@ class _SavedPpwsPageState extends State<SavedPpwsPage> {
                 fontWeight: FontWeight.bold,
                 color: Theme.of(context).colorScheme.onPrimary),
           ),
-          IconButton(
+          PlatformIconButton(
             icon: const Icon(Icons.show_chart),
             color: Theme.of(context).colorScheme.onPrimary,
             onPressed: () {
@@ -157,9 +158,8 @@ class _SavedPpwsPageState extends State<SavedPpwsPage> {
               ),
               trailing: SizedBox(
                 width: 30,
-                child: IconButton(
+                child: PlatformIconButton(
                   icon: const Icon(Icons.delete),
-                  color: Theme.of(context).colorScheme.onPrimary,
                   onPressed: () {
                     DeleteRecord.deleteRecord(
                       context: context,

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../methods/delete_record.dart';
+import '../../widgets/platform_widgets/platform_icon_button.dart';
 import '../chart_pages/bodyfat_chart_page.dart';
 import '../detail_pages/bodyfat_details_page.dart';
 import '../../sqlite/bodyfat.dart';
@@ -56,7 +57,7 @@ class _SavedBodyfatsPageState extends State<SavedBodyfatsPage> {
             rank == '' ? name! : '$rank $name',
             style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
           ),
-          IconButton(
+          PlatformIconButton(
             icon: const Icon(Icons.show_chart),
             onPressed: () {
               Navigator.push(
@@ -128,7 +129,7 @@ class _SavedBodyfatsPageState extends State<SavedBodyfatsPage> {
                         children: _tapes(bfList[i], pass))
               ],
             ),
-            trailing: IconButton(
+            trailing: PlatformIconButton(
               icon: Icon(Icons.delete, color: (pass ? onPrimary : onError)),
               onPressed: () {
                 DeleteRecord.deleteRecord(

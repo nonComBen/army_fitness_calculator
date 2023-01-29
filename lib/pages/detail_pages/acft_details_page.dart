@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import '../../methods/delete_record.dart';
+import '../../widgets/platform_widgets/platform_icon_button.dart';
 import '../saved_pages/saved_acfts_page.dart';
 import '../../sqlite/db_helper.dart';
 import '../../sqlite/acft.dart';
@@ -154,17 +155,17 @@ class _AcftDetailsPageState extends State<AcftDetailsPage> {
       title: 'ACFT Details',
       actions: <Widget>[
         if (Platform.isIOS)
-          IconButton(
+          PlatformIconButton(
             onPressed: () {
               _updateAcft(context, widget.acft);
             },
             icon: const Icon(Icons.edit),
           ),
-        IconButton(
+        PlatformIconButton(
           onPressed: _downloadPdf,
           icon: Icon(Icons.picture_as_pdf),
         ),
-        IconButton(
+        PlatformIconButton(
           icon: const Icon(Icons.delete),
           onPressed: () {
             DeleteRecord.deleteRecord(

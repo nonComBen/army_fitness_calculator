@@ -14,6 +14,7 @@ import '../../calculators/award_pts_calculator.dart';
 import '../../calculators/pt_pts_calculator.dart';
 import '../../calculators/weapons_pts_calculator.dart';
 import '../../providers/shared_preferences_provider.dart';
+import '../../widgets/platform_widgets/platform_icon_button.dart';
 import '../saved_pages/saved_ppw_page.dart';
 import '../../sqlite/db_helper.dart';
 import '../../sqlite/ppw.dart';
@@ -763,8 +764,7 @@ class _PromotionPointPageState extends ConsumerState<PromotionPointPage> {
                           'Decorations',
                           style: TextStyle(fontSize: 18),
                         ),
-                        IconButton(
-                            iconSize: 35,
+                        PlatformIconButton(
                             onPressed: () {
                               FocusScope.of(context).unfocus();
                               setState(() {
@@ -772,7 +772,10 @@ class _PromotionPointPageState extends ConsumerState<PromotionPointPage> {
                                     AwardDecoration(name: 'None', number: 0));
                               });
                             },
-                            icon: Icon(Icons.add))
+                            icon: Icon(
+                              Icons.add,
+                              size: 35,
+                            ))
                       ],
                     ),
                   ),
@@ -797,15 +800,17 @@ class _PromotionPointPageState extends ConsumerState<PromotionPointPage> {
                           'Badges',
                           style: TextStyle(fontSize: 18),
                         ),
-                        IconButton(
-                            iconSize: 35,
+                        PlatformIconButton(
                             onPressed: () {
                               FocusScope.of(context).unfocus();
                               setState(() {
                                 _badges.add({'name': 'None'});
                               });
                             },
-                            icon: Icon(Icons.add))
+                            icon: Icon(
+                              Icons.add,
+                              size: 35,
+                            ))
                       ],
                     ),
                   ),

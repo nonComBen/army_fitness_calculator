@@ -6,6 +6,7 @@ import 'package:in_app_purchase/in_app_purchase.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:rate_my_app/rate_my_app.dart';
 
+import '../widgets/platform_widgets/platform_icon_button.dart';
 import 'tabs/acft_page.dart';
 import 'tabs/bodyfat_page.dart';
 import 'tabs/ppw_page.dart';
@@ -155,7 +156,7 @@ class _MyHomePageState extends State<MyHomePage> {
           title: Text(title),
           actions: [
             if (_selectedIndex == 0)
-              IconButton(
+              PlatformIconButton(
                   onPressed: () => _openTablePage(),
                   icon: Icon(Icons.table_chart))
           ],

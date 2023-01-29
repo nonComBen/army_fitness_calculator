@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 
 import '../../methods/delete_record.dart';
 import '../../widgets/download_apft_widget.dart';
+import '../../widgets/platform_widgets/platform_icon_button.dart';
 import '../saved_pages/saved_apfts_page.dart';
 import '../../sqlite/db_helper.dart';
 import '../../sqlite/apft.dart';
@@ -156,19 +157,19 @@ class _ApftDetailsPageState extends State<ApftDetailsPage> {
       title: 'APFT Details',
       actions: <Widget>[
         if (Platform.isIOS)
-          IconButton(
+          PlatformIconButton(
             onPressed: () {
               _updateApft(context, widget.apft);
             },
             icon: const Icon(Icons.edit),
           ),
-        IconButton(
+        PlatformIconButton(
           icon: Icon(Icons.picture_as_pdf),
           onPressed: () {
             _downloadPdf();
           },
         ),
-        IconButton(
+        PlatformIconButton(
           icon: const Icon(Icons.delete),
           onPressed: () {
             DeleteRecord.deleteRecord(

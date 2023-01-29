@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 
 import '../../methods/delete_record.dart';
 import '../../widgets/download_5501_widget.dart';
+import '../../widgets/platform_widgets/platform_icon_button.dart';
 import '../saved_pages/saved_bodyfats_page.dart';
 import '../../sqlite/db_helper.dart';
 import '../../sqlite/bodyfat.dart';
@@ -275,19 +276,19 @@ class _BodyfatDetailsPageState extends State<BodyfatDetailsPage> {
       title: 'Body Comp Details',
       actions: <Widget>[
         if (Platform.isIOS)
-          IconButton(
+          PlatformIconButton(
             onPressed: () {
               _updateBf(context, widget.bf);
             },
             icon: const Icon(Icons.edit),
           ),
-        IconButton(
+        PlatformIconButton(
           icon: Icon(Icons.picture_as_pdf),
           onPressed: () {
             _downloadPdf();
           },
         ),
-        IconButton(
+        PlatformIconButton(
           icon: const Icon(Icons.delete),
           onPressed: () {
             DeleteRecord.deleteRecord(
