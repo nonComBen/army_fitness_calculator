@@ -1,10 +1,11 @@
-import 'package:acft_calculator/methods/delete_record.dart';
 import 'package:flutter/material.dart';
 
 import '../chart_pages/ppw_charts_page.dart';
 import '../detail_pages/ppw_details_page.dart';
 import '../../sqlite/ppw.dart';
 import '../../sqlite/db_helper.dart';
+import '../../methods/delete_record.dart';
+import '../../widgets/platform_widgets/platform_scaffold.dart';
 
 class SavedPpwsPage extends StatefulWidget {
   static const String routeName = 'savedPpwsRoute';
@@ -204,10 +205,8 @@ class _SavedPpwsPageState extends State<SavedPpwsPage> {
     final width = MediaQuery.of(context).size.width;
     // onPrimary = Theme.of(context).colorScheme.onPrimary;
     // onError = Theme.of(context).colorScheme.onError;
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Saved PPWs'),
-      ),
+    return PlatformScaffold(
+      title: 'Saved PPWs',
       body: Container(
         padding: EdgeInsets.only(
           top: 16.0,

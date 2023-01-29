@@ -1,9 +1,9 @@
-import 'package:acft_calculator/sqlite/acft.dart';
-import 'package:acft_calculator/widgets/platform_widgets/platform_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import '../methods/download_acft.dart';
+import '../../sqlite/acft.dart';
+import '../../widgets/platform_widgets/platform_button.dart';
 
 class DownloadAcftWidget extends StatefulWidget {
   final Acft acft;

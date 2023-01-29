@@ -5,6 +5,7 @@ import '../chart_pages/bodyfat_chart_page.dart';
 import '../detail_pages/bodyfat_details_page.dart';
 import '../../sqlite/bodyfat.dart';
 import '../../sqlite/db_helper.dart';
+import '../../widgets/platform_widgets/platform_scaffold.dart';
 
 class SavedBodyfatsPage extends StatefulWidget {
   static const String routeName = 'savedBodyfatsRoute';
@@ -172,10 +173,8 @@ class _SavedBodyfatsPageState extends State<SavedBodyfatsPage> {
     final width = MediaQuery.of(context).size.width;
     onPrimary = Theme.of(context).colorScheme.onPrimary;
     onError = Theme.of(context).colorScheme.onError;
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Saved Body Comps'),
-      ),
+    return PlatformScaffold(
+      title: 'Saved Body Comps',
       body: Container(
         padding: EdgeInsets.only(
           top: 16.0,

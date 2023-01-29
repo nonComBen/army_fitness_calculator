@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:charts_flutter/flutter.dart' as charts;
 
 import '../../sqlite/ppw.dart';
+import '../../widgets/platform_widgets/platform_scaffold.dart';
 
 class PpwChartPage extends StatefulWidget {
   PpwChartPage({this.ppws, this.soldier});
@@ -19,7 +20,6 @@ class _PpwChartPageState extends State<PpwChartPage> {
   List<PPW>? myData;
 
   static GlobalKey previewContainer = new GlobalKey();
-  GlobalKey<ScaffoldState> _scaffoldState = new GlobalKey<ScaffoldState>();
 
   _generateData(List<PPW> myData) {
     _seriesBarData.clear();
@@ -171,18 +171,8 @@ class _PpwChartPageState extends State<PpwChartPage> {
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
-    return Scaffold(
-      key: _scaffoldState,
-      appBar: AppBar(
-        title: Text('${widget.soldier} Progress'),
-        actions: <Widget>[
-          // new IconButton(
-          //     icon: new Icon(Icons.image),
-          //     onPressed: () {
-          //       takeScreenshot();
-          //     })
-        ],
-      ),
+    return PlatformScaffold(
+      title: '${widget.soldier} Progress',
       body: Container(
         padding: EdgeInsets.only(
           top: 16.0,

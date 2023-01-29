@@ -1,16 +1,16 @@
 import 'dart:io';
 
-import 'package:acft_calculator/pages/tabs/acft_page.dart';
-import 'package:acft_calculator/pages/tabs/bodyfat_page.dart';
-import 'package:acft_calculator/pages/tabs/ppw_page.dart';
-import 'package:acft_calculator/providers/ad_provider.dart';
-import 'package:acft_calculator/providers/purchases_provider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:rate_my_app/rate_my_app.dart';
 
+import '../../pages/tabs/acft_page.dart';
+import '../../pages/tabs/bodyfat_page.dart';
+import '../../pages/tabs/ppw_page.dart';
+import '../../providers/ad_provider.dart';
+import '../../providers/purchases_provider.dart';
 import '../../pages/table_pages/acft_table_page.dart';
 import '../../pages/tabs/overflow_tab.dart';
 

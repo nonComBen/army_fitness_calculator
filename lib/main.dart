@@ -1,15 +1,3 @@
-import 'package:acft_calculator/pages/apft_page.dart';
-import 'package:acft_calculator/pages/mdl_setup_page.dart';
-import 'package:acft_calculator/pages/privacy_policy_page.dart';
-import 'package:acft_calculator/pages/saved_pages/saved_acfts_page.dart';
-import 'package:acft_calculator/pages/saved_pages/saved_apfts_page.dart';
-import 'package:acft_calculator/pages/saved_pages/saved_bodyfats_page.dart';
-import 'package:acft_calculator/pages/saved_pages/saved_ppw_page.dart';
-import 'package:acft_calculator/pages/settings_page.dart';
-import 'package:acft_calculator/pages/verbiage_pages/acft_verbiage_page.dart';
-import 'package:acft_calculator/pages/verbiage_pages/apft_verbiage_page.dart';
-import 'package:acft_calculator/pages/verbiage_pages/bodyfat_verbiage_page.dart';
-import 'package:acft_calculator/providers/purchases_provider.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
@@ -22,6 +10,18 @@ import '../providers/shared_preferences_provider.dart';
 import '../widgets/platform_widgets/platform_app.dart';
 import '../widgets/platform_widgets/platform_home_page.dart';
 import '../providers/theme_provider.dart';
+import '../../pages/apft_page.dart';
+import '../../pages/mdl_setup_page.dart';
+import '../../pages/privacy_policy_page.dart';
+import '../../pages/saved_pages/saved_acfts_page.dart';
+import '../../pages/saved_pages/saved_apfts_page.dart';
+import '../../pages/saved_pages/saved_bodyfats_page.dart';
+import '../../pages/saved_pages/saved_ppw_page.dart';
+import '../../pages/settings_page.dart';
+import '../../pages/verbiage_pages/acft_verbiage_page.dart';
+import '../../pages/verbiage_pages/apft_verbiage_page.dart';
+import '../../pages/verbiage_pages/bodyfat_verbiage_page.dart';
+import '../../providers/purchases_provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

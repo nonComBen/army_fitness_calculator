@@ -7,12 +7,16 @@ abstract class PlatformScaffold extends StatelessWidget {
   factory PlatformScaffold({
     String? title,
     List<Widget> actions = const [],
+    FloatingActionButton? floatingActionButton,
+    FloatingActionButtonLocation? floatingActionButtonLocation,
     required Widget body,
   }) {
     if (Platform.isAndroid) {
       return AndroidScaffold(
         title: title,
         actions: actions,
+        floatingActionButton: floatingActionButton,
+        floatingActionButtonLocation: floatingActionButtonLocation,
         body: body,
       );
     } else {
@@ -29,10 +33,14 @@ class AndroidScaffold extends StatelessWidget implements PlatformScaffold {
   const AndroidScaffold({
     this.title,
     this.actions = const [],
+    this.floatingActionButton,
+    this.floatingActionButtonLocation,
     required this.body,
   });
   final String? title;
   final List<Widget> actions;
+  final FloatingActionButton? floatingActionButton;
+  final FloatingActionButtonLocation? floatingActionButtonLocation;
   final Widget body;
 
   @override
@@ -44,6 +52,7 @@ class AndroidScaffold extends StatelessWidget implements PlatformScaffold {
               actions: actions,
             )
           : null,
+      floatingActionButton: floatingActionButton,
       body: body,
     );
   }

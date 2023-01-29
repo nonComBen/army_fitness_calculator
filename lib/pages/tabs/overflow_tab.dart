@@ -1,10 +1,10 @@
-import 'package:acft_calculator/pages/apft_page.dart';
-import 'package:acft_calculator/widgets/header_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:rate_my_app/rate_my_app.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
+import '../../pages/apft_page.dart';
+import '../../widgets/header_text.dart';
 import '../verbiage_pages/apft_verbiage_page.dart';
 import '../verbiage_pages/acft_verbiage_page.dart';
 import '../verbiage_pages/bodyfat_verbiage_page.dart';

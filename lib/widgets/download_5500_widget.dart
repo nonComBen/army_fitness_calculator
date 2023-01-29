@@ -1,7 +1,7 @@
-import 'package:acft_calculator/widgets/platform_widgets/platform_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import '../../widgets/platform_widgets/platform_button.dart';
 import '../methods/download_5500.dart';
 import '../sqlite/bodyfat.dart';
 

@@ -1,4 +1,5 @@
-import 'package:acft_calculator/widgets/platform_widgets/platform_button.dart';
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -7,6 +8,8 @@ import '../../widgets/download_apft_widget.dart';
 import '../saved_pages/saved_apfts_page.dart';
 import '../../sqlite/db_helper.dart';
 import '../../sqlite/apft.dart';
+import '../../widgets/platform_widgets/platform_button.dart';
+import '../../widgets/platform_widgets/platform_scaffold.dart';
 
 class ApftDetailsPage extends StatefulWidget {
   ApftDetailsPage({required this.apft});
@@ -24,7 +27,6 @@ class _ApftDetailsPageState extends State<ApftDetailsPage> {
   TextEditingController? _mainDateController;
 
   static GlobalKey previewContainer = new GlobalKey();
-  GlobalKey<ScaffoldState> _scaffoldState = new GlobalKey<ScaffoldState>();
 
   _updateApft(BuildContext context, Apft apft) {
     final _dateController = TextEditingController(text: apft.date);
@@ -150,35 +152,37 @@ class _ApftDetailsPageState extends State<ApftDetailsPage> {
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
-    return Scaffold(
-      key: _scaffoldState,
-      appBar: AppBar(
-        title: Text('APFT Details'),
-        actions: <Widget>[
+    return PlatformScaffold(
+      title: 'APFT Details',
+      actions: <Widget>[
+        if (Platform.isIOS)
           IconButton(
-            icon: Icon(Icons.picture_as_pdf),
             onPressed: () {
-              _downloadPdf();
+              _updateApft(context, widget.apft);
             },
+            icon: const Icon(Icons.edit),
           ),
-          IconButton(
-            icon: const Icon(Icons.delete),
-            onPressed: () {
-              DeleteRecord.deleteRecord(
-                context: context,
-                onConfirm: () {
-                  Navigator.pop(context);
-                  dbHelper.deleteApft(widget.apft.id);
-                  Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => SavedApftsPage()));
-                },
-              );
-            },
-          )
-        ],
-      ),
+        IconButton(
+          icon: Icon(Icons.picture_as_pdf),
+          onPressed: () {
+            _downloadPdf();
+          },
+        ),
+        IconButton(
+          icon: const Icon(Icons.delete),
+          onPressed: () {
+            DeleteRecord.deleteRecord(
+              context: context,
+              onConfirm: () {
+                Navigator.pop(context);
+                dbHelper.deleteApft(widget.apft.id);
+                Navigator.pushReplacement(context,
+                    MaterialPageRoute(builder: (context) => SavedApftsPage()));
+              },
+            );
+          },
+        )
+      ],
       floatingActionButton: FloatingActionButton(
         child: const Icon(Icons.edit),
         onPressed: () {

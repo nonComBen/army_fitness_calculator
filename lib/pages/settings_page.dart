@@ -1,7 +1,5 @@
 import 'dart:io';
 
-import 'package:acft_calculator/providers/purchases_provider.dart';
-import 'package:acft_calculator/services/purchases_service.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -11,6 +9,9 @@ import '../providers/theme_provider.dart';
 import '../widgets/formatted_drop_down.dart';
 import '../widgets/formatted_radio.dart';
 import 'package:flutter/material.dart';
+import '../../providers/purchases_provider.dart';
+import '../../services/purchases_service.dart';
+import '../../widgets/platform_widgets/platform_scaffold.dart';
 
 class SettingsPage extends ConsumerStatefulWidget {
   SettingsPage();
@@ -138,10 +139,8 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Settings'),
-      ),
+    return PlatformScaffold(
+      title: 'Settings',
       body: Container(
         padding: EdgeInsets.only(
           top: 16.0,

@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
+import '../../widgets/platform_widgets/platform_scaffold.dart';
+
 class PrivacyPolicyPage extends StatelessWidget {
   static const String routeName = 'privacyPolicyRoute';
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Privacy Policy'),
-      ),
+    return PlatformScaffold(
+      title: 'Privacy Policy',
       body: Container(
         padding: EdgeInsets.only(
           top: 16.0,

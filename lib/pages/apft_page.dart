@@ -1,6 +1,3 @@
-import 'package:acft_calculator/providers/purchases_provider.dart';
-import 'package:acft_calculator/services/purchases_service.dart';
-import 'package:acft_calculator/widgets/platform_widgets/platform_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -19,6 +16,10 @@ import '../calculators/run_calculator.dart';
 import '../sqlite/apft.dart';
 import 'saved_pages/saved_apfts_page.dart';
 import '../widgets/value_input_field.dart';
+import '../../providers/purchases_provider.dart';
+import '../../services/purchases_service.dart';
+import '../../widgets/platform_widgets/platform_button.dart';
+import '../../widgets/platform_widgets/platform_scaffold.dart';
 
 class ApftPage extends ConsumerStatefulWidget {
   ApftPage();
@@ -374,10 +375,8 @@ class _ApftPageState extends ConsumerState<ApftPage> {
     final errorColor = Theme.of(context).colorScheme.error;
     final backgroundColor = Theme.of(context).scaffoldBackgroundColor;
     final onSecondary = Theme.of(context).colorScheme.onSecondary;
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('APFT Calculator'),
-      ),
+    return PlatformScaffold(
+      title: 'APFT Calculator',
       body: Container(
         padding: EdgeInsets.only(
           top: 16.0,

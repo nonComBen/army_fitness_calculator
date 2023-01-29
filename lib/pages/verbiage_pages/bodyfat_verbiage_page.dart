@@ -1,10 +1,12 @@
 import 'dart:io';
 
-import 'package:acft_calculator/providers/purchases_provider.dart';
-import 'package:acft_calculator/services/purchases_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
+
+import '../../providers/purchases_provider.dart';
+import '../../services/purchases_service.dart';
+import '../../widgets/platform_widgets/platform_scaffold.dart';
 
 class BodyfatVerbiagePage extends ConsumerStatefulWidget {
   static const String routeName = 'bodyfatVerbiageRoute';
@@ -157,10 +159,8 @@ class _BodyfatVerbiagePageState extends ConsumerState<BodyfatVerbiagePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Body Comp Instructions'),
-      ),
+    return PlatformScaffold(
+      title: 'Body Comp Instructions',
       body: Container(
         padding: EdgeInsets.only(
           top: 16.0,

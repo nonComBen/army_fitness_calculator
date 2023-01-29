@@ -5,6 +5,7 @@ import '../chart_pages/apft_chart_page.dart';
 import '../detail_pages/apft_details_page.dart';
 import '../../sqlite/apft.dart';
 import '../../sqlite/db_helper.dart';
+import '../../widgets/platform_widgets/platform_scaffold.dart';
 
 class SavedApftsPage extends StatefulWidget {
   static const String routeName = 'savedApftsRoute';
@@ -140,10 +141,8 @@ class _SavedApftsPageState extends State<SavedApftsPage> {
     final width = MediaQuery.of(context).size.width;
     onPrimary = Theme.of(context).colorScheme.onPrimary;
     onError = Theme.of(context).colorScheme.onError;
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Saved APFTs'),
-      ),
+    return PlatformScaffold(
+      title: 'Saved APFTs',
       body: Container(
         padding: EdgeInsets.only(
           top: 16.0,

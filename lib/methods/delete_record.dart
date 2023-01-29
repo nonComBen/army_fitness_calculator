@@ -1,5 +1,6 @@
-import 'package:acft_calculator/widgets/platform_widgets/platform_button.dart';
 import 'package:flutter/material.dart';
+
+import '../../widgets/platform_widgets/platform_button.dart';
 
 class DeleteRecord {
   static void deleteRecord({BuildContext? context, Function? onConfirm}) {

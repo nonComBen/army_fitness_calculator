@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../constants/mdl_setup_table.dart';
 import '../widgets/mdl_setup_card.dart';
+import '../../widgets/platform_widgets/platform_scaffold.dart';
 
 class MdlSetupPage extends StatelessWidget {
   const MdlSetupPage({Key? key}) : super(key: key);
@@ -11,10 +12,8 @@ class MdlSetupPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('MDL Setup'),
-      ),
+    return PlatformScaffold(
+      title: 'MDL Setup',
       body: Container(
         padding: EdgeInsets.only(
           top: 16.0,

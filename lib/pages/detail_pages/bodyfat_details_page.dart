@@ -1,4 +1,5 @@
-import 'package:acft_calculator/widgets/platform_widgets/platform_button.dart';
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -8,6 +9,8 @@ import '../saved_pages/saved_bodyfats_page.dart';
 import '../../sqlite/db_helper.dart';
 import '../../sqlite/bodyfat.dart';
 import '../../widgets/download_5500_widget.dart';
+import '../../widgets/platform_widgets/platform_button.dart';
+import '../../widgets/platform_widgets/platform_scaffold.dart';
 
 class BodyfatDetailsPage extends StatefulWidget {
   BodyfatDetailsPage({required this.bf});
@@ -25,7 +28,6 @@ class _BodyfatDetailsPageState extends State<BodyfatDetailsPage> {
   TextEditingController? _mainDateController;
 
   static GlobalKey previewContainer = new GlobalKey();
-  GlobalKey<ScaffoldState> _scaffoldState = new GlobalKey<ScaffoldState>();
 
   _updateBf(BuildContext context, Bodyfat bf) {
     final _dateController = new TextEditingController(text: bf.date);
@@ -269,35 +271,39 @@ class _BodyfatDetailsPageState extends State<BodyfatDetailsPage> {
   @override
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
-    return Scaffold(
-      key: _scaffoldState,
-      appBar: AppBar(
-        title: const Text('Body Comp Details'),
-        actions: <Widget>[
+    return PlatformScaffold(
+      title: 'Body Comp Details',
+      actions: <Widget>[
+        if (Platform.isIOS)
           IconButton(
-            icon: Icon(Icons.picture_as_pdf),
             onPressed: () {
-              _downloadPdf();
+              _updateBf(context, widget.bf);
             },
+            icon: const Icon(Icons.edit),
           ),
-          IconButton(
-            icon: const Icon(Icons.delete),
-            onPressed: () {
-              DeleteRecord.deleteRecord(
-                context: context,
-                onConfirm: () {
-                  Navigator.pop(context);
-                  dbHelper.deleteBodyfat(widget.bf.id);
-                  Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => SavedBodyfatsPage()));
-                },
-              );
-            },
-          )
-        ],
-      ),
+        IconButton(
+          icon: Icon(Icons.picture_as_pdf),
+          onPressed: () {
+            _downloadPdf();
+          },
+        ),
+        IconButton(
+          icon: const Icon(Icons.delete),
+          onPressed: () {
+            DeleteRecord.deleteRecord(
+              context: context,
+              onConfirm: () {
+                Navigator.pop(context);
+                dbHelper.deleteBodyfat(widget.bf.id);
+                Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => SavedBodyfatsPage()));
+              },
+            );
+          },
+        )
+      ],
       floatingActionButton: FloatingActionButton(
         child: const Icon(Icons.edit),
         onPressed: () {

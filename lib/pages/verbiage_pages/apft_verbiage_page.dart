@@ -1,10 +1,12 @@
 import 'dart:io';
 
-import 'package:acft_calculator/providers/purchases_provider.dart';
-import 'package:acft_calculator/services/purchases_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
+
+import '../../providers/purchases_provider.dart';
+import '../../services/purchases_service.dart';
+import '../../widgets/platform_widgets/platform_scaffold.dart';
 
 class ApftVerbiagePage extends ConsumerStatefulWidget {
   static const String routeName = 'apftVerbiageRoute';
@@ -212,10 +214,8 @@ class _ApftVerbiagePageState extends ConsumerState<ApftVerbiagePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('APFT Instruction'),
-      ),
+    return PlatformScaffold(
+      title: 'APFT Instruction',
       body: Container(
         padding: EdgeInsets.only(
           top: 16.0,

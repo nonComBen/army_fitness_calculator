@@ -1,6 +1,6 @@
-import 'package:acft_calculator/constants/pt_age_group_table.dart';
 import 'package:flutter/material.dart';
 
+import '../../constants/pt_age_group_table.dart';
 import '../constants/2mr_table.dart';
 import '../constants/hrp_table.dart';
 import '../constants/mdl_table.dart';

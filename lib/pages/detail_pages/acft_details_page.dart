@@ -1,5 +1,5 @@
-import 'package:acft_calculator/widgets/download_acft_widget.dart';
-import 'package:acft_calculator/widgets/platform_widgets/platform_button.dart';
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -7,6 +7,9 @@ import '../../methods/delete_record.dart';
 import '../saved_pages/saved_acfts_page.dart';
 import '../../sqlite/db_helper.dart';
 import '../../sqlite/acft.dart';
+import '../../widgets/download_acft_widget.dart';
+import '../../widgets/platform_widgets/platform_button.dart';
+import '../../widgets/platform_widgets/platform_scaffold.dart';
 
 class AcftDetailsPage extends StatefulWidget {
   AcftDetailsPage({required this.acft});
@@ -24,7 +27,6 @@ class _AcftDetailsPageState extends State<AcftDetailsPage> {
   TextEditingController? _mainDateController;
 
   static GlobalKey previewContainer = new GlobalKey();
-  GlobalKey<ScaffoldState> _scaffoldState = new GlobalKey<ScaffoldState>();
 
   _updateAcft(BuildContext context, Acft acft) {
     final _dateController = new TextEditingController(text: acft.date);
@@ -148,32 +150,36 @@ class _AcftDetailsPageState extends State<AcftDetailsPage> {
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
-    return Scaffold(
-      key: _scaffoldState,
-      appBar: AppBar(
-        title: const Text('ACFT Details'),
-        actions: <Widget>[
+    return PlatformScaffold(
+      title: 'ACFT Details',
+      actions: <Widget>[
+        if (Platform.isIOS)
           IconButton(
-            onPressed: _downloadPdf,
-            icon: Icon(Icons.picture_as_pdf),
-          ),
-          IconButton(
-            icon: const Icon(Icons.delete),
             onPressed: () {
-              DeleteRecord.deleteRecord(
-                  context: context,
-                  onConfirm: () {
-                    Navigator.pop(context);
-                    dbHelper.deleteAcft(widget.acft.id);
-                    Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(builder: (context) => SavedAcftsPage()),
-                    );
-                  });
+              _updateAcft(context, widget.acft);
             },
-          )
-        ],
-      ),
+            icon: const Icon(Icons.edit),
+          ),
+        IconButton(
+          onPressed: _downloadPdf,
+          icon: Icon(Icons.picture_as_pdf),
+        ),
+        IconButton(
+          icon: const Icon(Icons.delete),
+          onPressed: () {
+            DeleteRecord.deleteRecord(
+                context: context,
+                onConfirm: () {
+                  Navigator.pop(context);
+                  dbHelper.deleteAcft(widget.acft.id);
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(builder: (context) => SavedAcftsPage()),
+                  );
+                });
+          },
+        )
+      ],
       floatingActionButton: FloatingActionButton(
         child: const Icon(Icons.edit),
         onPressed: () {

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:charts_flutter/flutter.dart' as charts;
 
 import '../../sqlite/acft.dart';
+import '../../widgets/platform_widgets/platform_scaffold.dart';
 
 class AcftChartPage extends StatefulWidget {
   AcftChartPage({this.acfts, this.soldier});
@@ -18,7 +19,6 @@ class _AcftChartPageState extends State<AcftChartPage> {
   List<Acft>? myData;
 
   static GlobalKey previewContainer = new GlobalKey();
-  GlobalKey<ScaffoldState> _scaffoldState = new GlobalKey<ScaffoldState>();
 
   _generateData(List<Acft> myData) {
     _seriesBarData.clear();
@@ -120,13 +120,8 @@ class _AcftChartPageState extends State<AcftChartPage> {
   @override
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
-    return Scaffold(
-      key: _scaffoldState,
-      appBar: AppBar(
-        title: new Text(
-          '${widget.soldier} Progress',
-        ),
-      ),
+    return PlatformScaffold(
+      title: '${widget.soldier} Progress',
       body: Container(
         padding: EdgeInsets.only(
           top: 16.0,

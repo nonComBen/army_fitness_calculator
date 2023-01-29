@@ -1,10 +1,13 @@
-import 'package:acft_calculator/methods/delete_record.dart';
-import 'package:acft_calculator/widgets/platform_widgets/platform_button.dart';
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 
 import '../saved_pages/saved_ppw_page.dart';
 import '../../sqlite/ppw.dart';
 import '../../sqlite/db_helper.dart';
+import '../../methods/delete_record.dart';
+import '../../widgets/platform_widgets/platform_button.dart';
+import '../../widgets/platform_widgets/platform_scaffold.dart';
 
 class PpwDetailsPage extends StatefulWidget {
   PpwDetailsPage({required this.ppw});
@@ -22,8 +25,6 @@ class _PpwDetailsPageState extends State<PpwDetailsPage> {
 
   final _mainNameController = TextEditingController();
   final _mainDateController = TextEditingController();
-
-  GlobalKey<ScaffoldState> _scaffoldState = new GlobalKey<ScaffoldState>();
 
   @override
   void dispose() {
@@ -138,30 +139,34 @@ class _PpwDetailsPageState extends State<PpwDetailsPage> {
   @override
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
-    return Scaffold(
-      key: _scaffoldState,
-      appBar: AppBar(
-        title: const Text('PPW Details'),
-        actions: <Widget>[
+    return PlatformScaffold(
+      title: 'PPW Details',
+      actions: <Widget>[
+        if (Platform.isIOS)
           IconButton(
-            icon: const Icon(Icons.delete),
             onPressed: () {
-              DeleteRecord.deleteRecord(
-                context: context,
-                onConfirm: () {
-                  dbHelper.deletePPW(widget.ppw.id);
-                  Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => SavedPpwsPage(),
-                    ),
-                  );
-                },
-              );
+              _updatePpw(context, widget.ppw);
             },
-          )
-        ],
-      ),
+            icon: const Icon(Icons.edit),
+          ),
+        IconButton(
+          icon: const Icon(Icons.delete),
+          onPressed: () {
+            DeleteRecord.deleteRecord(
+              context: context,
+              onConfirm: () {
+                dbHelper.deletePPW(widget.ppw.id);
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => SavedPpwsPage(),
+                  ),
+                );
+              },
+            );
+          },
+        )
+      ],
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       floatingActionButton: FloatingActionButton(
         child: const Icon(Icons.edit),

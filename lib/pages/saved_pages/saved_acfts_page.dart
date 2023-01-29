@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../methods/delete_record.dart';
+import '../../widgets/platform_widgets/platform_scaffold.dart';
 import '../chart_pages/acft_chart_page.dart';
 import '../detail_pages/acft_details_page.dart';
 import '../../sqlite/acft.dart';
@@ -144,10 +145,8 @@ class _SavedAcftsPageState extends State<SavedAcftsPage> {
     final width = MediaQuery.of(context).size.width;
     onPrimary = Theme.of(context).colorScheme.onPrimary;
     onError = Theme.of(context).colorScheme.onError;
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Saved ACFTs'),
-      ),
+    return PlatformScaffold(
+      title: 'Saved ACFTs',
       body: Container(
         padding: EdgeInsets.only(
           top: 16.0,

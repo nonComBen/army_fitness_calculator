@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../widgets/platform_widgets/platform_scaffold.dart';
 import '../../constants/pt_age_group_table.dart';
 import '../../widgets/acft_table.dart';
 
@@ -25,10 +26,8 @@ class _AcftTablePageState extends State<AcftTablePage> {
   @override
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('ACFT Table'),
-      ),
+    return PlatformScaffold(
+      title: 'ACFT Table',
       body: Container(
         padding: EdgeInsets.only(
           bottom: MediaQuery.of(context).viewPadding.bottom + 8,
