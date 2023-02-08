@@ -18,6 +18,7 @@ import '../../calculators/plk_calculator.dart';
 import '../../calculators/sdc_calculator.dart';
 import '../../providers/shared_preferences_provider.dart';
 import '../../widgets/platform_widgets/platform_slider.dart';
+import '../../widgets/platform_widgets/platform_text_field.dart';
 import '../saved_pages/saved_acfts_page.dart';
 import '../../widgets/formatted_drop_down.dart';
 import '../../widgets/formatted_radio.dart';
@@ -430,7 +431,7 @@ class AcftPageState extends ConsumerState<AcftPage> {
             children: <Widget>[
               Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: TextFormField(
+                child: PlatformTextField(
                   controller: _dateController,
                   decoration: const InputDecoration(
                     labelText: 'Date',
@@ -448,7 +449,7 @@ class AcftPageState extends ConsumerState<AcftPage> {
               ),
               Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: TextFormField(
+                child: PlatformTextField(
                   controller: _rankController,
                   decoration: const InputDecoration(labelText: 'Rank'),
                   keyboardType: TextInputType.text,
@@ -459,7 +460,7 @@ class AcftPageState extends ConsumerState<AcftPage> {
               ),
               Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: TextFormField(
+                child: PlatformTextField(
                   controller: _nameController,
                   decoration: const InputDecoration(labelText: 'Name'),
                   keyboardType: TextInputType.text,

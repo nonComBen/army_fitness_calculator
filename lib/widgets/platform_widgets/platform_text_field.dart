@@ -1,16 +1,28 @@
 import 'dart:io';
+import 'dart:math';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
-abstract class PlatformTextField extends StatelessWidget {
+abstract class PlatformTextField extends Widget {
   factory PlatformTextField({
     required TextEditingController controller,
     FocusNode? focusNode,
     InputDecoration? decoration,
+    BoxDecoration? iosDecoration,
     String? Function(String?)? validator,
+    AutovalidateMode? autovalidateMode,
+    TextInputType? keyboardType,
+    List<TextInputFormatter>? inputFormatters,
+    bool enabled = true,
     bool obscureText = false,
+    bool autofocus = false,
+    bool autocorrect = false,
     TextInputAction textInputAction = TextInputAction.done,
+    TextCapitalization? textCapitalization,
+    TextAlign textAlign = TextAlign.start,
+    int maxLines = 1,
     void Function(String)? onChanged,
     void Function()? onEditingComplete,
   }) {
@@ -18,10 +30,18 @@ abstract class PlatformTextField extends StatelessWidget {
       return AndroidTextField(
         controller: controller,
         focusNode: focusNode,
+        enabled: enabled,
         decoration: decoration,
         validator: validator,
+        autovalidateMode: autovalidateMode,
+        keyboardType: keyboardType,
+        inputFormatters: inputFormatters,
         obscureText: obscureText,
         textInputAction: textInputAction,
+        autocorrect: autocorrect,
+        autofocus: autofocus,
+        textAlign: textAlign,
+        maxLines: maxLines,
         onChanged: onChanged,
         onEditingComplete: onEditingComplete,
       );
@@ -29,9 +49,16 @@ abstract class PlatformTextField extends StatelessWidget {
       return IOSTextField(
         controller: controller,
         focusNode: focusNode,
-        decoration: decoration,
+        enabled: enabled,
+        decoration: iosDecoration,
         obscureText: obscureText,
+        keyboardType: keyboardType,
+        inputFormatters: inputFormatters,
         textInputAction: textInputAction,
+        autocorrect: autocorrect,
+        autofocus: autofocus,
+        textAlign: textAlign,
+        maxLines: maxLines,
         onChanged: onChanged,
         onEditingComplete: onEditingComplete,
       );
@@ -39,82 +66,44 @@ abstract class PlatformTextField extends StatelessWidget {
   }
 }
 
-class AndroidTextField extends StatelessWidget implements PlatformTextField {
-  const AndroidTextField({
-    required this.controller,
-    this.focusNode,
-    this.decoration,
-    this.validator,
-    this.obscureText = false,
-    this.textInputAction = TextInputAction.done,
-    this.onChanged,
-    this.onEditingComplete,
+class AndroidTextField extends TextFormField implements PlatformTextField {
+  AndroidTextField({
+    required super.controller,
+    super.focusNode,
+    super.enabled = true,
+    super.decoration,
+    super.validator,
+    super.obscureText,
+    super.textInputAction,
+    super.autovalidateMode,
+    super.keyboardType,
+    super.inputFormatters,
+    super.textCapitalization,
+    super.autofocus,
+    super.autocorrect,
+    super.textAlign,
+    super.maxLines,
+    super.onChanged,
+    super.onEditingComplete,
   });
-  final TextEditingController controller;
-  final FocusNode? focusNode;
-  final InputDecoration? decoration;
-  final String? Function(String?)? validator;
-  final bool obscureText;
-  final TextInputAction textInputAction;
-  final void Function(String)? onChanged;
-  final void Function()? onEditingComplete;
-
-  @override
-  Widget build(BuildContext context) {
-    return TextFormField(
-      controller: controller,
-      focusNode: focusNode,
-      decoration: decoration,
-      validator: validator,
-      obscureText: obscureText,
-      textInputAction: textInputAction,
-      onChanged: onChanged,
-      onEditingComplete: onEditingComplete,
-    );
-  }
 }
 
-class IOSTextField extends StatelessWidget implements PlatformTextField {
-  const IOSTextField({
-    required this.controller,
-    this.focusNode,
-    this.decoration,
-    this.obscureText = false,
-    this.textInputAction = TextInputAction.done,
-    this.onChanged,
-    this.onEditingComplete,
+class IOSTextField extends CupertinoTextField implements PlatformTextField {
+  IOSTextField({
+    super.controller,
+    super.focusNode,
+    super.enabled = true,
+    super.decoration,
+    super.inputFormatters,
+    super.keyboardType,
+    super.obscureText,
+    super.textInputAction,
+    super.textCapitalization,
+    super.autofocus,
+    super.autocorrect,
+    super.textAlign,
+    super.maxLines,
+    super.onChanged,
+    super.onEditingComplete,
   });
-  final TextEditingController controller;
-  final FocusNode? focusNode;
-  final InputDecoration? decoration;
-  final bool obscureText;
-  final TextInputAction textInputAction;
-  final void Function(String)? onChanged;
-  final void Function()? onEditingComplete;
-
-  @override
-  Widget build(BuildContext context) {
-    Widget? prefix, suffix;
-    if (decoration != null) {
-      prefix = Text(
-        ' ${decoration!.labelText!}: ',
-      );
-      suffix = decoration!.icon;
-    }
-    return CupertinoTextField(
-      controller: controller,
-      focusNode: focusNode,
-      decoration: BoxDecoration(
-        border: Border.all(color: Colors.white),
-        borderRadius: BorderRadius.circular(8),
-      ),
-      prefix: prefix,
-      suffix: suffix,
-      obscureText: obscureText,
-      cursorColor: Colors.white,
-      textInputAction: textInputAction,
-      onChanged: onChanged,
-      onEditingComplete: onEditingComplete,
-    );
-  }
 }

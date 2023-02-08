@@ -1,3 +1,4 @@
+import 'package:acft_calculator/widgets/platform_widgets/platform_text_field.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -44,7 +45,7 @@ class Download5500Widget extends StatelessWidget {
           ),
           Padding(
             padding: EdgeInsets.symmetric(horizontal: 8.0),
-            child: TextFormField(
+            child: PlatformTextField(
               controller: _preparedByController,
               decoration: const InputDecoration(labelText: 'Prepared By Name'),
               keyboardType: TextInputType.text,
@@ -57,7 +58,7 @@ class Download5500Widget extends StatelessWidget {
           ),
           Padding(
             padding: EdgeInsets.symmetric(horizontal: 8.0),
-            child: TextFormField(
+            child: PlatformTextField(
               controller: _preparedByRankController,
               decoration: const InputDecoration(labelText: 'Prepared By Rank'),
               keyboardType: TextInputType.text,
@@ -69,7 +70,7 @@ class Download5500Widget extends StatelessWidget {
           ),
           Padding(
             padding: EdgeInsets.symmetric(horizontal: 8.0),
-            child: TextFormField(
+            child: PlatformTextField(
               controller: _approvedByController,
               decoration: const InputDecoration(labelText: 'Approved By Name'),
               keyboardType: TextInputType.text,
@@ -81,7 +82,7 @@ class Download5500Widget extends StatelessWidget {
           ),
           Padding(
             padding: EdgeInsets.symmetric(horizontal: 8.0),
-            child: TextFormField(
+            child: PlatformTextField(
               controller: _approvedByRankController,
               decoration: const InputDecoration(labelText: 'Approved By Rank'),
               keyboardType: TextInputType.text,
@@ -93,7 +94,7 @@ class Download5500Widget extends StatelessWidget {
           ),
           Padding(
             padding: EdgeInsets.symmetric(horizontal: 8.0),
-            child: TextFormField(
+            child: PlatformTextField(
               controller: _neck1Controller,
               decoration: const InputDecoration(
                 labelText: 'First Neck',
@@ -111,7 +112,7 @@ class Download5500Widget extends StatelessWidget {
           ),
           Padding(
             padding: EdgeInsets.symmetric(horizontal: 8.0),
-            child: TextFormField(
+            child: PlatformTextField(
               controller: _neck2Controller,
               decoration: const InputDecoration(
                 labelText: 'Second Neck',
@@ -129,7 +130,7 @@ class Download5500Widget extends StatelessWidget {
           ),
           Padding(
             padding: EdgeInsets.symmetric(horizontal: 8.0),
-            child: TextFormField(
+            child: PlatformTextField(
               controller: _neck3Controller,
               decoration: const InputDecoration(
                 labelText: 'Third Neck',
@@ -147,7 +148,7 @@ class Download5500Widget extends StatelessWidget {
           ),
           Padding(
             padding: EdgeInsets.symmetric(horizontal: 8.0),
-            child: TextFormField(
+            child: PlatformTextField(
               controller: _waist1Controller,
               decoration: const InputDecoration(
                 labelText: 'First Waist',
@@ -165,7 +166,7 @@ class Download5500Widget extends StatelessWidget {
           ),
           Padding(
             padding: EdgeInsets.symmetric(horizontal: 8.0),
-            child: TextFormField(
+            child: PlatformTextField(
               controller: _waist2Controller,
               decoration: const InputDecoration(
                 labelText: 'Second Waist',
@@ -183,7 +184,7 @@ class Download5500Widget extends StatelessWidget {
           ),
           Padding(
             padding: EdgeInsets.symmetric(horizontal: 8.0),
-            child: TextFormField(
+            child: PlatformTextField(
               controller: _waist3Controller,
               decoration: const InputDecoration(
                 labelText: 'Third Waist',

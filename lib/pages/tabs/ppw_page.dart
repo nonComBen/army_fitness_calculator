@@ -15,6 +15,7 @@ import '../../calculators/pt_pts_calculator.dart';
 import '../../calculators/weapons_pts_calculator.dart';
 import '../../providers/shared_preferences_provider.dart';
 import '../../widgets/platform_widgets/platform_icon_button.dart';
+import '../../widgets/platform_widgets/platform_text_field.dart';
 import '../saved_pages/saved_ppw_page.dart';
 import '../../sqlite/db_helper.dart';
 import '../../sqlite/ppw.dart';
@@ -423,7 +424,7 @@ class _PromotionPointPageState extends ConsumerState<PromotionPointPage> {
             children: <Widget>[
               Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: TextFormField(
+                child: PlatformTextField(
                   controller: _dateController,
                   keyboardType: TextInputType.numberWithOptions(signed: true),
                   inputFormatters: [
@@ -440,7 +441,7 @@ class _PromotionPointPageState extends ConsumerState<PromotionPointPage> {
               ),
               Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: TextFormField(
+                child: PlatformTextField(
                   controller: _nameController,
                   decoration: const InputDecoration(labelText: 'Name'),
                   keyboardType: TextInputType.text,

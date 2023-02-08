@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import '../methods/download_acft.dart';
 import '../../sqlite/acft.dart';
 import '../../widgets/platform_widgets/platform_button.dart';
+import 'platform_widgets/platform_text_field.dart';
 
 class DownloadAcftWidget extends StatefulWidget {
   final Acft acft;
@@ -76,7 +77,7 @@ class _DownloadAcftWidgetState extends State<DownloadAcftWidget> {
           ),
           Padding(
             padding: EdgeInsets.symmetric(horizontal: 8.0),
-            child: TextFormField(
+            child: PlatformTextField(
               controller: _unitController,
               decoration: const InputDecoration(labelText: 'Unit / Location'),
               keyboardType: TextInputType.text,
@@ -89,7 +90,7 @@ class _DownloadAcftWidgetState extends State<DownloadAcftWidget> {
           ),
           Padding(
             padding: EdgeInsets.symmetric(horizontal: 8.0),
-            child: TextFormField(
+            child: PlatformTextField(
               controller: _mosController,
               decoration: const InputDecoration(labelText: 'MOS'),
               keyboardType: TextInputType.text,
@@ -101,7 +102,7 @@ class _DownloadAcftWidgetState extends State<DownloadAcftWidget> {
           ),
           Padding(
             padding: EdgeInsets.symmetric(horizontal: 8.0),
-            child: TextFormField(
+            child: PlatformTextField(
               controller: _oicController,
               decoration: const InputDecoration(labelText: 'OIC / NCOIC'),
               keyboardType: TextInputType.text,
@@ -113,7 +114,7 @@ class _DownloadAcftWidgetState extends State<DownloadAcftWidget> {
           ),
           Padding(
             padding: EdgeInsets.symmetric(horizontal: 8.0),
-            child: TextFormField(
+            child: PlatformTextField(
               controller: _oicGradeController,
               decoration: const InputDecoration(labelText: 'OIC / NCOIC Grade'),
               keyboardType: TextInputType.text,
@@ -152,7 +153,7 @@ class _DownloadAcftWidgetState extends State<DownloadAcftWidget> {
               children: [
                 // Padding(
                 //   padding: EdgeInsets.symmetric(horizontal: 8.0),
-                //   child: TextFormField(
+                //   child: PlatformTextField(
                 //     controller: _bmiDateController,
                 //     focusNode: _bmiDateFocus,
                 //     decoration:
@@ -168,7 +169,7 @@ class _DownloadAcftWidgetState extends State<DownloadAcftWidget> {
                 // ),
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: 8.0),
-                  child: TextFormField(
+                  child: PlatformTextField(
                     controller: _heightController,
                     decoration: const InputDecoration(labelText: 'Height'),
                     keyboardType: TextInputType.numberWithOptions(signed: true),
@@ -182,7 +183,7 @@ class _DownloadAcftWidgetState extends State<DownloadAcftWidget> {
                 ),
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: 8.0),
-                  child: TextFormField(
+                  child: PlatformTextField(
                     controller: _weightController,
                     decoration: const InputDecoration(labelText: 'Weight'),
                     keyboardType: TextInputType.numberWithOptions(signed: true),
@@ -211,7 +212,7 @@ class _DownloadAcftWidgetState extends State<DownloadAcftWidget> {
                 if (!bmiPass!)
                   Padding(
                     padding: EdgeInsets.symmetric(horizontal: 8.0),
-                    child: TextFormField(
+                    child: PlatformTextField(
                       controller: _bfController,
                       focusNode: _bfFocus,
                       decoration: const InputDecoration(labelText: 'BodyFat %'),

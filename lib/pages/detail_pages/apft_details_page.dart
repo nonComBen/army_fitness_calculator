@@ -6,6 +6,7 @@ import 'package:flutter/services.dart';
 import '../../methods/delete_record.dart';
 import '../../widgets/download_apft_widget.dart';
 import '../../widgets/platform_widgets/platform_icon_button.dart';
+import '../../widgets/platform_widgets/platform_text_field.dart';
 import '../saved_pages/saved_apfts_page.dart';
 import '../../sqlite/db_helper.dart';
 import '../../sqlite/apft.dart';
@@ -24,8 +25,8 @@ class _ApftDetailsPageState extends State<ApftDetailsPage> {
   late RegExp regExp;
   late DBHelper dbHelper;
 
-  TextEditingController? _mainNameController;
-  TextEditingController? _mainDateController;
+  TextEditingController _mainNameController = TextEditingController();
+  TextEditingController _mainDateController = TextEditingController();
 
   static GlobalKey previewContainer = new GlobalKey();
 
@@ -53,7 +54,7 @@ class _ApftDetailsPageState extends State<ApftDetailsPage> {
                 ),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                  child: TextFormField(
+                  child: PlatformTextField(
                     controller: _dateController,
                     keyboardType: TextInputType.numberWithOptions(signed: true),
                     inputFormatters: [
@@ -73,7 +74,7 @@ class _ApftDetailsPageState extends State<ApftDetailsPage> {
                 ),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                  child: TextFormField(
+                  child: PlatformTextField(
                     controller: _rankController,
                     decoration: const InputDecoration(labelText: 'Rank'),
                     keyboardType: TextInputType.text,
@@ -85,7 +86,7 @@ class _ApftDetailsPageState extends State<ApftDetailsPage> {
                 ),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                  child: TextFormField(
+                  child: PlatformTextField(
                     controller: _nameController,
                     decoration: const InputDecoration(labelText: 'Name'),
                     keyboardType: TextInputType.text,
@@ -101,8 +102,8 @@ class _ApftDetailsPageState extends State<ApftDetailsPage> {
                     child: Text('Update APFT'),
                     onPressed: () {
                       setState(() {
-                        _mainDateController!.text = _dateController.text;
-                        _mainNameController!.text =
+                        _mainDateController.text = _dateController.text;
+                        _mainNameController.text =
                             '${_rankController.text} ${_nameController.text}';
                       });
                       apft.date = _dateController.text;
@@ -130,8 +131,8 @@ class _ApftDetailsPageState extends State<ApftDetailsPage> {
 
   @override
   void dispose() {
-    _mainNameController!.dispose();
-    _mainDateController!.dispose();
+    _mainNameController.dispose();
+    _mainDateController.dispose();
     super.dispose();
   }
 
@@ -139,11 +140,10 @@ class _ApftDetailsPageState extends State<ApftDetailsPage> {
   void initState() {
     dbHelper = new DBHelper();
 
-    _mainDateController = new TextEditingController(text: widget.apft.date);
-    _mainNameController = new TextEditingController(
-        text: widget.apft.rank == ''
-            ? widget.apft.name
-            : '${widget.apft.rank} ${widget.apft.name}');
+    _mainDateController.text = widget.apft.date!;
+    _mainNameController.text = widget.apft.rank! == ''
+        ? widget.apft.name!
+        : '${widget.apft.rank} ${widget.apft.name}';
 
     regExp = new RegExp(r'^\d{4}(0[1-9]|1[012])(0[1-9]|[12][0-9]|3[01])$');
 
@@ -213,7 +213,7 @@ class _ApftDetailsPageState extends State<ApftDetailsPage> {
                     children: <Widget>[
                       Padding(
                         padding: EdgeInsets.symmetric(horizontal: 8.0),
-                        child: TextFormField(
+                        child: PlatformTextField(
                           enabled: false,
                           controller: _mainNameController,
                           decoration: const InputDecoration(labelText: 'Name'),
@@ -221,7 +221,7 @@ class _ApftDetailsPageState extends State<ApftDetailsPage> {
                       ),
                       Padding(
                         padding: EdgeInsets.symmetric(horizontal: 8.0),
-                        child: TextFormField(
+                        child: PlatformTextField(
                           enabled: false,
                           controller: _mainDateController,
                           decoration: const InputDecoration(labelText: 'Date'),
@@ -237,18 +237,20 @@ class _ApftDetailsPageState extends State<ApftDetailsPage> {
                     children: <Widget>[
                       Padding(
                         padding: EdgeInsets.symmetric(horizontal: 8.0),
-                        child: TextFormField(
+                        child: PlatformTextField(
                           enabled: false,
-                          initialValue: widget.apft.gender,
+                          controller:
+                              TextEditingController(text: widget.apft.gender),
                           decoration:
                               const InputDecoration(labelText: 'Gender'),
                         ),
                       ),
                       Padding(
                         padding: EdgeInsets.symmetric(horizontal: 8.0),
-                        child: TextFormField(
+                        child: PlatformTextField(
                           enabled: false,
-                          initialValue: widget.apft.age,
+                          controller:
+                              TextEditingController(text: widget.apft.age),
                           decoration: const InputDecoration(labelText: 'Age'),
                         ),
                       ),
@@ -269,17 +271,19 @@ class _ApftDetailsPageState extends State<ApftDetailsPage> {
                       ),
                       Padding(
                         padding: EdgeInsets.symmetric(horizontal: 8.0),
-                        child: TextFormField(
+                        child: PlatformTextField(
                           enabled: false,
-                          initialValue: widget.apft.puRaw,
+                          controller:
+                              TextEditingController(text: widget.apft.puRaw),
                           decoration: const InputDecoration(labelText: 'Raw'),
                         ),
                       ),
                       Padding(
                         padding: EdgeInsets.symmetric(horizontal: 8.0),
-                        child: TextFormField(
+                        child: PlatformTextField(
                           enabled: false,
-                          initialValue: widget.apft.puScore,
+                          controller:
+                              TextEditingController(text: widget.apft.puScore),
                           decoration: const InputDecoration(labelText: 'Score'),
                         ),
                       ),
@@ -292,17 +296,19 @@ class _ApftDetailsPageState extends State<ApftDetailsPage> {
                       ),
                       Padding(
                         padding: EdgeInsets.symmetric(horizontal: 8.0),
-                        child: TextFormField(
+                        child: PlatformTextField(
                           enabled: false,
-                          initialValue: widget.apft.suRaw,
+                          controller:
+                              TextEditingController(text: widget.apft.suRaw),
                           decoration: const InputDecoration(labelText: 'Raw'),
                         ),
                       ),
                       Padding(
                         padding: EdgeInsets.symmetric(horizontal: 8.0),
-                        child: TextFormField(
+                        child: PlatformTextField(
                           enabled: false,
-                          initialValue: widget.apft.suScore,
+                          controller:
+                              TextEditingController(text: widget.apft.suScore),
                           decoration: const InputDecoration(labelText: 'Score'),
                         ),
                       ),
@@ -315,17 +321,19 @@ class _ApftDetailsPageState extends State<ApftDetailsPage> {
                       ),
                       Padding(
                         padding: EdgeInsets.symmetric(horizontal: 8.0),
-                        child: TextFormField(
+                        child: PlatformTextField(
                           enabled: false,
-                          initialValue: widget.apft.runRaw,
+                          controller:
+                              TextEditingController(text: widget.apft.runRaw),
                           decoration: const InputDecoration(labelText: 'Raw'),
                         ),
                       ),
                       Padding(
                         padding: EdgeInsets.symmetric(horizontal: 8.0),
-                        child: TextFormField(
+                        child: PlatformTextField(
                           enabled: false,
-                          initialValue: widget.apft.runScore,
+                          controller:
+                              TextEditingController(text: widget.apft.runScore),
                           decoration: const InputDecoration(labelText: 'Score'),
                         ),
                       ),
@@ -345,9 +353,10 @@ class _ApftDetailsPageState extends State<ApftDetailsPage> {
                       ),
                       Padding(
                         padding: EdgeInsets.symmetric(horizontal: 8.0),
-                        child: TextFormField(
+                        child: PlatformTextField(
                           enabled: false,
-                          initialValue: widget.apft.total,
+                          controller:
+                              TextEditingController(text: widget.apft.total),
                           decoration: const InputDecoration(labelText: 'Score'),
                         ),
                       ),

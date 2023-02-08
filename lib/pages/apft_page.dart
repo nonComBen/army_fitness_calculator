@@ -15,6 +15,7 @@ import '../calculators/su_calculator.dart';
 import '../calculators/run_calculator.dart';
 import '../sqlite/apft.dart';
 import '../widgets/platform_widgets/platform_slider.dart';
+import '../widgets/platform_widgets/platform_text_field.dart';
 import 'saved_pages/saved_apfts_page.dart';
 import '../widgets/value_input_field.dart';
 import '../../providers/purchases_provider.dart';
@@ -309,7 +310,7 @@ class _ApftPageState extends ConsumerState<ApftPage> {
             children: <Widget>[
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                child: TextFormField(
+                child: PlatformTextField(
                   controller: _dateController,
                   decoration: const InputDecoration(
                     labelText: 'Date',
@@ -327,7 +328,7 @@ class _ApftPageState extends ConsumerState<ApftPage> {
               ),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                child: TextFormField(
+                child: PlatformTextField(
                   controller: _rankController,
                   decoration: const InputDecoration(labelText: 'Rank'),
                   keyboardType: TextInputType.text,
@@ -338,7 +339,7 @@ class _ApftPageState extends ConsumerState<ApftPage> {
               ),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                child: TextFormField(
+                child: PlatformTextField(
                   controller: _nameController,
                   decoration: const InputDecoration(labelText: 'Name'),
                   keyboardType: TextInputType.text,

@@ -15,6 +15,7 @@ import '../../widgets/increment_decrement_button.dart';
 import '../../calculators/bf_calculator.dart';
 import '../../sqlite/bodyfat.dart';
 import '../../widgets/platform_widgets/platform_slider.dart';
+import '../../widgets/platform_widgets/platform_text_field.dart';
 import '../saved_pages/saved_bodyfats_page.dart';
 import '../../widgets/value_input_field.dart';
 
@@ -229,7 +230,7 @@ class _BodyfatPageState extends ConsumerState<BodyfatPage> {
             children: <Widget>[
               Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: TextFormField(
+                child: PlatformTextField(
                   controller: _dateController,
                   decoration: const InputDecoration(
                     labelText: 'Date',
@@ -247,7 +248,7 @@ class _BodyfatPageState extends ConsumerState<BodyfatPage> {
               ),
               Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: TextFormField(
+                child: PlatformTextField(
                   controller: _rankController,
                   decoration: const InputDecoration(labelText: 'Rank'),
                   keyboardType: TextInputType.text,
@@ -258,7 +259,7 @@ class _BodyfatPageState extends ConsumerState<BodyfatPage> {
               ),
               Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: TextFormField(
+                child: PlatformTextField(
                   controller: _nameController,
                   decoration: const InputDecoration(labelText: 'Name'),
                   keyboardType: TextInputType.text,

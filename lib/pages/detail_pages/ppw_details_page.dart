@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 
 import '../../widgets/platform_widgets/platform_icon_button.dart';
 import '../../widgets/platform_widgets/platform_list_tile.dart';
+import '../../widgets/platform_widgets/platform_text_field.dart';
 import '../saved_pages/saved_ppw_page.dart';
 import '../../sqlite/ppw.dart';
 import '../../sqlite/db_helper.dart';
@@ -94,7 +95,7 @@ class _PpwDetailsPageState extends State<PpwDetailsPage> {
                 ),
                 Padding(
                   padding: const EdgeInsets.all(8.0),
-                  child: TextFormField(
+                  child: PlatformTextField(
                     controller: _dateController,
                     keyboardType: TextInputType.datetime,
                     decoration: const InputDecoration(
@@ -108,7 +109,7 @@ class _PpwDetailsPageState extends State<PpwDetailsPage> {
                 ),
                 Padding(
                   padding: const EdgeInsets.all(8.0),
-                  child: TextFormField(
+                  child: PlatformTextField(
                     controller: _nameController,
                     decoration: const InputDecoration(labelText: 'Name'),
                     keyboardType: TextInputType.text,
@@ -196,7 +197,7 @@ class _PpwDetailsPageState extends State<PpwDetailsPage> {
                 children: <Widget>[
                   Padding(
                     padding: const EdgeInsets.all(8.0),
-                    child: TextFormField(
+                    child: PlatformTextField(
                       enabled: false,
                       controller: _mainNameController,
                       decoration: const InputDecoration(labelText: 'Name'),
@@ -204,7 +205,7 @@ class _PpwDetailsPageState extends State<PpwDetailsPage> {
                   ),
                   Padding(
                     padding: const EdgeInsets.all(8.0),
-                    child: TextFormField(
+                    child: PlatformTextField(
                       enabled: false,
                       controller: _mainDateController,
                       decoration: const InputDecoration(labelText: 'Date'),
@@ -212,9 +213,10 @@ class _PpwDetailsPageState extends State<PpwDetailsPage> {
                   ),
                   Padding(
                     padding: const EdgeInsets.all(8.0),
-                    child: TextFormField(
+                    child: PlatformTextField(
                       enabled: false,
-                      initialValue: widget.ppw.rank.toString(),
+                      controller: TextEditingController(
+                          text: widget.ppw.rank.toString()),
                       decoration:
                           const InputDecoration(labelText: 'Promotion To'),
                     ),
@@ -248,23 +250,25 @@ class _PpwDetailsPageState extends State<PpwDetailsPage> {
                   children: <Widget>[
                     Padding(
                       padding: const EdgeInsets.all(8.0),
-                      child: TextFormField(
+                      child: PlatformTextField(
                         decoration: InputDecoration(
                             label: Text(widget.ppw.version == 1
                                 ? 'ACFT Points'
                                 : 'APFT Points')),
                         enabled: false,
-                        initialValue: widget.ppw.ptTest.toString(),
+                        controller: TextEditingController(
+                            text: widget.ppw.ptTest.toString()),
                         textAlign: TextAlign.right,
                       ),
                     ),
                     Padding(
                       padding: const EdgeInsets.all(8.0),
-                      child: TextFormField(
+                      child: PlatformTextField(
                         decoration:
                             const InputDecoration(label: Text('Weapon Points')),
                         enabled: false,
-                        initialValue: widget.ppw.weapons.toString(),
+                        controller: TextEditingController(
+                            text: widget.ppw.weapons.toString()),
                         textAlign: TextAlign.right,
                       ),
                     ),
@@ -303,31 +307,34 @@ class _PpwDetailsPageState extends State<PpwDetailsPage> {
                   children: <Widget>[
                     Padding(
                       padding: const EdgeInsets.all(8.0),
-                      child: TextFormField(
+                      child: PlatformTextField(
                         decoration: const InputDecoration(
                             label: Text('Decoration Points')),
                         enabled: false,
-                        initialValue: widget.ppw.awards.toString(),
+                        controller: TextEditingController(
+                            text: widget.ppw.awards.toString()),
                         textAlign: TextAlign.right,
                       ),
                     ),
                     Padding(
                       padding: const EdgeInsets.all(8.0),
-                      child: TextFormField(
+                      child: PlatformTextField(
                         decoration:
                             const InputDecoration(label: Text('Badge Points')),
                         enabled: false,
-                        initialValue: widget.ppw.badges.toString(),
+                        controller: TextEditingController(
+                            text: widget.ppw.badges.toString()),
                         textAlign: TextAlign.right,
                       ),
                     ),
                     Padding(
                       padding: const EdgeInsets.all(8.0),
-                      child: TextFormField(
+                      child: PlatformTextField(
                         decoration: const InputDecoration(
                             label: Text('Airborne Advantage Points')),
                         enabled: false,
-                        initialValue: widget.ppw.airborne.toString(),
+                        controller: TextEditingController(
+                            text: widget.ppw.airborne.toString()),
                         textAlign: TextAlign.right,
                       ),
                     ),
@@ -366,31 +373,34 @@ class _PpwDetailsPageState extends State<PpwDetailsPage> {
                   children: <Widget>[
                     Padding(
                       padding: const EdgeInsets.all(8.0),
-                      child: TextFormField(
+                      child: PlatformTextField(
                         decoration:
                             const InputDecoration(label: Text('NCOES Points')),
                         enabled: false,
-                        initialValue: widget.ppw.ncoes.toString(),
+                        controller: TextEditingController(
+                            text: widget.ppw.ncoes.toString()),
                         textAlign: TextAlign.right,
                       ),
                     ),
                     Padding(
                       padding: const EdgeInsets.all(8.0),
-                      child: TextFormField(
+                      child: PlatformTextField(
                         decoration: const InputDecoration(
                             label: Text('Resident Courses Points')),
                         enabled: false,
-                        initialValue: widget.ppw.resident.toString(),
+                        controller: TextEditingController(
+                            text: widget.ppw.resident.toString()),
                         textAlign: TextAlign.right,
                       ),
                     ),
                     Padding(
                       padding: const EdgeInsets.all(8.0),
-                      child: TextFormField(
+                      child: PlatformTextField(
                         decoration: const InputDecoration(
                             label: Text('Web-Based Courses Points')),
                         enabled: false,
-                        initialValue: widget.ppw.wbc.toString(),
+                        controller: TextEditingController(
+                            text: widget.ppw.wbc.toString()),
                         textAlign: TextAlign.right,
                       ),
                     ),
@@ -429,41 +439,45 @@ class _PpwDetailsPageState extends State<PpwDetailsPage> {
                   children: <Widget>[
                     Padding(
                       padding: const EdgeInsets.all(8.0),
-                      child: TextFormField(
+                      child: PlatformTextField(
                         decoration: const InputDecoration(
                             label: Text('Semester Hour Points')),
                         enabled: false,
-                        initialValue: widget.ppw.semesterHours.toString(),
+                        controller: TextEditingController(
+                            text: widget.ppw.semesterHours.toString()),
                         textAlign: TextAlign.right,
                       ),
                     ),
                     Padding(
                       padding: const EdgeInsets.all(8.0),
-                      child: TextFormField(
+                      child: PlatformTextField(
                         decoration: const InputDecoration(
                             label: Text('Degree Completion Points')),
                         enabled: false,
-                        initialValue: widget.ppw.degree.toString(),
+                        controller: TextEditingController(
+                            text: widget.ppw.degree.toString()),
                         textAlign: TextAlign.right,
                       ),
                     ),
                     Padding(
                       padding: const EdgeInsets.all(8.0),
-                      child: TextFormField(
+                      child: PlatformTextField(
                         decoration: const InputDecoration(
                             label: Text('Certification Points')),
                         enabled: false,
-                        initialValue: widget.ppw.certs.toString(),
+                        controller: TextEditingController(
+                            text: widget.ppw.certs.toString()),
                         textAlign: TextAlign.right,
                       ),
                     ),
                     Padding(
                       padding: const EdgeInsets.all(8.0),
-                      child: TextFormField(
+                      child: PlatformTextField(
                         decoration: const InputDecoration(
                             label: Text('Foreign Language Points')),
                         enabled: false,
-                        initialValue: widget.ppw.language.toString(),
+                        controller: TextEditingController(
+                            text: widget.ppw.language.toString()),
                         textAlign: TextAlign.right,
                       ),
                     ),

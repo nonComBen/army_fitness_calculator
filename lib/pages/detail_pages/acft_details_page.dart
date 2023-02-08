@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 
 import '../../methods/delete_record.dart';
 import '../../widgets/platform_widgets/platform_icon_button.dart';
+import '../../widgets/platform_widgets/platform_text_field.dart';
 import '../saved_pages/saved_acfts_page.dart';
 import '../../sqlite/db_helper.dart';
 import '../../sqlite/acft.dart';
@@ -24,8 +25,8 @@ class _AcftDetailsPageState extends State<AcftDetailsPage> {
   late RegExp regExp;
   late DBHelper dbHelper;
 
-  TextEditingController? _mainNameController;
-  TextEditingController? _mainDateController;
+  TextEditingController _mainNameController = TextEditingController();
+  TextEditingController _mainDateController = TextEditingController();
 
   static GlobalKey previewContainer = new GlobalKey();
 
@@ -58,7 +59,7 @@ class _AcftDetailsPageState extends State<AcftDetailsPage> {
               ),
               Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: TextFormField(
+                child: PlatformTextField(
                   controller: _dateController,
                   keyboardType: TextInputType.numberWithOptions(signed: true),
                   inputFormatters: [
@@ -78,7 +79,7 @@ class _AcftDetailsPageState extends State<AcftDetailsPage> {
               ),
               Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: TextFormField(
+                child: PlatformTextField(
                   controller: _rankController,
                   decoration: const InputDecoration(labelText: 'Rank'),
                   keyboardType: TextInputType.text,
@@ -90,7 +91,7 @@ class _AcftDetailsPageState extends State<AcftDetailsPage> {
               ),
               Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: TextFormField(
+                child: PlatformTextField(
                   controller: _nameController,
                   decoration: const InputDecoration(labelText: 'Name'),
                   keyboardType: TextInputType.text,
@@ -129,8 +130,8 @@ class _AcftDetailsPageState extends State<AcftDetailsPage> {
 
   @override
   void dispose() {
-    _mainNameController!.dispose();
-    _mainDateController!.dispose();
+    _mainNameController.dispose();
+    _mainDateController.dispose();
     super.dispose();
   }
 
@@ -139,11 +140,10 @@ class _AcftDetailsPageState extends State<AcftDetailsPage> {
     super.initState();
     dbHelper = new DBHelper();
 
-    _mainDateController = new TextEditingController(text: widget.acft.date);
-    _mainNameController = new TextEditingController(
-        text: widget.acft.rank == ''
-            ? widget.acft.name
-            : '${widget.acft.rank} ${widget.acft.name}');
+    _mainDateController.text = widget.acft.date!;
+    _mainNameController.text = widget.acft.rank! == ''
+        ? widget.acft.name!
+        : '${widget.acft.rank} ${widget.acft.name}';
 
     regExp = new RegExp(r'^\d{4}(0[1-9]|1[012])(0[1-9]|[12][0-9]|3[01])$');
   }
@@ -210,7 +210,7 @@ class _AcftDetailsPageState extends State<AcftDetailsPage> {
                     children: <Widget>[
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                        child: TextFormField(
+                        child: PlatformTextField(
                           enabled: false,
                           controller: _mainNameController,
                           decoration: const InputDecoration(labelText: 'Name'),
@@ -218,7 +218,7 @@ class _AcftDetailsPageState extends State<AcftDetailsPage> {
                       ),
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                        child: TextFormField(
+                        child: PlatformTextField(
                           enabled: false,
                           controller: _mainDateController,
                           decoration: const InputDecoration(labelText: 'Date'),
@@ -241,17 +241,19 @@ class _AcftDetailsPageState extends State<AcftDetailsPage> {
                       ),
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                        child: TextFormField(
+                        child: PlatformTextField(
                           enabled: false,
-                          initialValue: widget.acft.mdlRaw,
+                          controller:
+                              TextEditingController(text: widget.acft.mdlRaw),
                           decoration: const InputDecoration(labelText: 'Raw'),
                         ),
                       ),
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                        child: TextFormField(
+                        child: PlatformTextField(
                           enabled: false,
-                          initialValue: widget.acft.mdlScore,
+                          controller:
+                              TextEditingController(text: widget.acft.mdlScore),
                           decoration: const InputDecoration(labelText: 'Score'),
                         ),
                       ),
@@ -264,17 +266,19 @@ class _AcftDetailsPageState extends State<AcftDetailsPage> {
                       ),
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                        child: TextFormField(
+                        child: PlatformTextField(
                           enabled: false,
-                          initialValue: widget.acft.sptRaw,
+                          controller:
+                              TextEditingController(text: widget.acft.sptRaw),
                           decoration: const InputDecoration(labelText: 'Raw'),
                         ),
                       ),
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                        child: TextFormField(
+                        child: PlatformTextField(
                           enabled: false,
-                          initialValue: widget.acft.sptScore,
+                          controller:
+                              TextEditingController(text: widget.acft.sptScore),
                           decoration: const InputDecoration(labelText: 'Score'),
                         ),
                       ),
@@ -287,17 +291,19 @@ class _AcftDetailsPageState extends State<AcftDetailsPage> {
                       ),
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                        child: TextFormField(
+                        child: PlatformTextField(
                           enabled: false,
-                          initialValue: widget.acft.hrpRaw,
+                          controller:
+                              TextEditingController(text: widget.acft.hrpRaw),
                           decoration: const InputDecoration(labelText: 'Raw'),
                         ),
                       ),
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                        child: TextFormField(
+                        child: PlatformTextField(
                           enabled: false,
-                          initialValue: widget.acft.hrpScore,
+                          controller:
+                              TextEditingController(text: widget.acft.hrpScore),
                           decoration: const InputDecoration(labelText: 'Score'),
                         ),
                       ),
@@ -310,17 +316,19 @@ class _AcftDetailsPageState extends State<AcftDetailsPage> {
                       ),
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                        child: TextFormField(
+                        child: PlatformTextField(
                           enabled: false,
-                          initialValue: widget.acft.sdcRaw,
+                          controller:
+                              TextEditingController(text: widget.acft.sdcRaw),
                           decoration: const InputDecoration(labelText: 'Raw'),
                         ),
                       ),
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                        child: TextFormField(
+                        child: PlatformTextField(
                           enabled: false,
-                          initialValue: widget.acft.sdcScore,
+                          controller:
+                              TextEditingController(text: widget.acft.sdcScore),
                           decoration: const InputDecoration(labelText: 'Score'),
                         ),
                       ),
@@ -333,17 +341,19 @@ class _AcftDetailsPageState extends State<AcftDetailsPage> {
                       ),
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                        child: TextFormField(
+                        child: PlatformTextField(
                           enabled: false,
-                          initialValue: widget.acft.plkRaw,
+                          controller:
+                              TextEditingController(text: widget.acft.plkRaw),
                           decoration: const InputDecoration(labelText: 'Raw'),
                         ),
                       ),
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                        child: TextFormField(
+                        child: PlatformTextField(
                           enabled: false,
-                          initialValue: widget.acft.plkScore,
+                          controller:
+                              TextEditingController(text: widget.acft.plkScore),
                           decoration: const InputDecoration(labelText: 'Score'),
                         ),
                       ),
@@ -356,17 +366,19 @@ class _AcftDetailsPageState extends State<AcftDetailsPage> {
                       ),
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                        child: TextFormField(
+                        child: PlatformTextField(
                           enabled: false,
-                          initialValue: widget.acft.runRaw,
+                          controller:
+                              TextEditingController(text: widget.acft.runRaw),
                           decoration: const InputDecoration(labelText: 'Raw'),
                         ),
                       ),
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                        child: TextFormField(
+                        child: PlatformTextField(
                           enabled: false,
-                          initialValue: widget.acft.runScore,
+                          controller:
+                              TextEditingController(text: widget.acft.runScore),
                           decoration: const InputDecoration(labelText: 'Score'),
                         ),
                       ),
@@ -386,9 +398,10 @@ class _AcftDetailsPageState extends State<AcftDetailsPage> {
                       ),
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                        child: TextFormField(
+                        child: PlatformTextField(
                           enabled: false,
-                          initialValue: widget.acft.total,
+                          controller:
+                              TextEditingController(text: widget.acft.total),
                           decoration: const InputDecoration(labelText: 'Score'),
                         ),
                       ),
