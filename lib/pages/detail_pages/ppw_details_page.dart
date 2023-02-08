@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 
 import '../../widgets/platform_widgets/platform_icon_button.dart';
+import '../../widgets/platform_widgets/platform_list_tile.dart';
 import '../saved_pages/saved_ppw_page.dart';
 import '../../sqlite/ppw.dart';
 import '../../sqlite/db_helper.dart';
@@ -222,7 +223,7 @@ class _PpwDetailsPageState extends State<PpwDetailsPage> {
               ),
               Card(
                 color: Theme.of(context).colorScheme.primary,
-                child: ListTile(
+                child: PlatformListTile(
                   title: Text(
                     'Military Training',
                     style: TextStyle(
@@ -277,7 +278,7 @@ class _PpwDetailsPageState extends State<PpwDetailsPage> {
               ),
               Card(
                 color: Theme.of(context).colorScheme.primary,
-                child: ListTile(
+                child: PlatformListTile(
                   title: Text(
                     'Awards',
                     style: TextStyle(
@@ -340,7 +341,7 @@ class _PpwDetailsPageState extends State<PpwDetailsPage> {
               ),
               Card(
                 color: Theme.of(context).colorScheme.primary,
-                child: ListTile(
+                child: PlatformListTile(
                   title: Text(
                     'Military Education',
                     style: TextStyle(
@@ -403,7 +404,7 @@ class _PpwDetailsPageState extends State<PpwDetailsPage> {
               ),
               Card(
                 color: Theme.of(context).colorScheme.primary,
-                child: ListTile(
+                child: PlatformListTile(
                   title: Text(
                     'Civilian Education',
                     style: TextStyle(
@@ -476,7 +477,7 @@ class _PpwDetailsPageState extends State<PpwDetailsPage> {
               ),
               Card(
                 color: Theme.of(context).colorScheme.primary,
-                child: ListTile(
+                child: PlatformListTile(
                   title: Text(
                     'Total Points',
                     style: TextStyle(

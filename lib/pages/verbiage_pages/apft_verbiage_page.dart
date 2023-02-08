@@ -6,6 +6,7 @@ import 'package:google_mobile_ads/google_mobile_ads.dart';
 
 import '../../providers/purchases_provider.dart';
 import '../../services/purchases_service.dart';
+import '../../widgets/platform_widgets/platform_list_tile.dart';
 import '../../widgets/platform_widgets/platform_scaffold.dart';
 
 class ApftVerbiagePage extends ConsumerStatefulWidget {
@@ -243,7 +244,7 @@ class _ApftVerbiagePageState extends ConsumerState<ApftVerbiagePage> {
                     children: _verbiages.map((Verbiage verbiage) {
                       return new ExpansionPanel(
                         headerBuilder: (BuildContext context, bool isExpanded) {
-                          return new ListTile(
+                          return new PlatformListTile(
                             title: new Text(
                               verbiage.header,
                               textAlign: TextAlign.start,

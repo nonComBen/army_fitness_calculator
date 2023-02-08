@@ -17,6 +17,7 @@ import '../../calculators/mdl_calculator.dart';
 import '../../calculators/plk_calculator.dart';
 import '../../calculators/sdc_calculator.dart';
 import '../../providers/shared_preferences_provider.dart';
+import '../../widgets/platform_widgets/platform_slider.dart';
 import '../saved_pages/saved_acfts_page.dart';
 import '../../widgets/formatted_drop_down.dart';
 import '../../widgets/formatted_radio.dart';
@@ -562,7 +563,7 @@ class AcftPageState extends ConsumerState<AcftPage> {
                     },
                   ),
                   Expanded(
-                    child: Slider(
+                    child: PlatformSlider(
                       activeColor: primaryColor,
                       value: age.toDouble(),
                       min: 17,
@@ -670,7 +671,7 @@ class AcftPageState extends ConsumerState<AcftPage> {
                   ),
                   Expanded(
                     flex: 1,
-                    child: Slider(
+                    child: PlatformSlider(
                       activeColor: primaryColor,
                       value: mdlRaw.toDouble(),
                       min: 0,
@@ -798,7 +799,7 @@ class AcftPageState extends ConsumerState<AcftPage> {
                   ),
                   Expanded(
                     flex: 1,
-                    child: Slider(
+                    child: PlatformSlider(
                       activeColor: Theme.of(context).colorScheme.primary,
                       value: sptRaw,
                       min: 0,
@@ -925,7 +926,7 @@ class AcftPageState extends ConsumerState<AcftPage> {
                   ),
                   Expanded(
                     flex: 1,
-                    child: Slider(
+                    child: PlatformSlider(
                       activeColor: Theme.of(context).colorScheme.primary,
                       value: hrpRaw.toDouble(),
                       min: 0,
@@ -1091,7 +1092,7 @@ class AcftPageState extends ConsumerState<AcftPage> {
                   ),
                   Expanded(
                     flex: 1,
-                    child: Slider(
+                    child: PlatformSlider(
                       activeColor: Theme.of(context).colorScheme.primary,
                       value: sdcMins.toDouble(),
                       min: 0,
@@ -1159,7 +1160,7 @@ class AcftPageState extends ConsumerState<AcftPage> {
                   ),
                   Expanded(
                     flex: 1,
-                    child: Slider(
+                    child: PlatformSlider(
                       activeColor: Theme.of(context).colorScheme.primary,
                       value: sdcSecs.toDouble(),
                       min: 0,
@@ -1330,7 +1331,7 @@ class AcftPageState extends ConsumerState<AcftPage> {
                   ),
                   Expanded(
                     flex: 1,
-                    child: Slider(
+                    child: PlatformSlider(
                       activeColor: Theme.of(context).colorScheme.primary,
                       value: plankMins.toDouble(),
                       min: 0,
@@ -1402,7 +1403,7 @@ class AcftPageState extends ConsumerState<AcftPage> {
                   ),
                   Expanded(
                     flex: 1,
-                    child: Slider(
+                    child: PlatformSlider(
                       activeColor: Theme.of(context).colorScheme.primary,
                       value: plankSecs.toDouble(),
                       min: 0,
@@ -1563,7 +1564,7 @@ class AcftPageState extends ConsumerState<AcftPage> {
                   ),
                   Expanded(
                     flex: 1,
-                    child: Slider(
+                    child: PlatformSlider(
                       activeColor: Theme.of(context).colorScheme.primary,
                       value: runMins.toDouble(),
                       min: 10,
@@ -1618,7 +1619,7 @@ class AcftPageState extends ConsumerState<AcftPage> {
                   ),
                   Expanded(
                     flex: 1,
-                    child: Slider(
+                    child: PlatformSlider(
                       activeColor: Theme.of(context).colorScheme.primary,
                       value: runSecs.toDouble(),
                       min: 0,

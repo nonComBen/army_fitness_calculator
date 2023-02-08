@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../widgets/platform_widgets/platform_icon_button.dart';
+import '../../widgets/platform_widgets/platform_list_tile.dart';
 import '../chart_pages/ppw_charts_page.dart';
 import '../detail_pages/ppw_details_page.dart';
 import '../../sqlite/ppw.dart';
@@ -40,7 +41,6 @@ class _SavedPpwsPageState extends State<SavedPpwsPage> {
           ),
           PlatformIconButton(
             icon: const Icon(Icons.show_chart),
-            color: Theme.of(context).colorScheme.onPrimary,
             onPressed: () {
               Navigator.push(
                   context,
@@ -97,7 +97,7 @@ class _SavedPpwsPageState extends State<SavedPpwsPage> {
           padding: const EdgeInsets.all(8.0),
           child: Card(
             color: Theme.of(context).colorScheme.primary,
-            child: ListTile(
+            child: PlatformListTile(
               title: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [

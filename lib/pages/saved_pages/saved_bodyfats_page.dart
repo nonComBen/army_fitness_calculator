@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../methods/delete_record.dart';
 import '../../widgets/platform_widgets/platform_icon_button.dart';
+import '../../widgets/platform_widgets/platform_list_tile.dart';
 import '../chart_pages/bodyfat_chart_page.dart';
 import '../detail_pages/bodyfat_details_page.dart';
 import '../../sqlite/bodyfat.dart';
@@ -93,7 +94,7 @@ class _SavedBodyfatsPageState extends State<SavedBodyfatsPage> {
           color: pass
               ? Theme.of(context).colorScheme.primary
               : Theme.of(context).colorScheme.error,
-          child: ListTile(
+          child: PlatformListTile(
             title: Padding(
               padding: const EdgeInsets.all(8.0),
               child: Text('Date: ${bfList[i].date}',

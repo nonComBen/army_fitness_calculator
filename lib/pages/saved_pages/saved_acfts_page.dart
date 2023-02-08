@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../methods/delete_record.dart';
 import '../../widgets/platform_widgets/platform_icon_button.dart';
+import '../../widgets/platform_widgets/platform_list_tile.dart';
 import '../../widgets/platform_widgets/platform_scaffold.dart';
 import '../chart_pages/acft_chart_page.dart';
 import '../detail_pages/acft_details_page.dart';
@@ -74,7 +75,7 @@ class _SavedAcftsPageState extends State<SavedAcftsPage> {
           color: pass
               ? Theme.of(context).colorScheme.primary
               : Theme.of(context).colorScheme.error,
-          child: ListTile(
+          child: PlatformListTile(
             title: Padding(
               padding: const EdgeInsets.all(8.0),
               child: Text('Date: ${acftList[i].date}',

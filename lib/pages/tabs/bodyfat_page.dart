@@ -14,6 +14,7 @@ import '../../widgets/grid_box.dart';
 import '../../widgets/increment_decrement_button.dart';
 import '../../calculators/bf_calculator.dart';
 import '../../sqlite/bodyfat.dart';
+import '../../widgets/platform_widgets/platform_slider.dart';
 import '../saved_pages/saved_bodyfats_page.dart';
 import '../../widgets/value_input_field.dart';
 
@@ -372,7 +373,7 @@ class _BodyfatPageState extends ConsumerState<BodyfatPage> {
                     },
                   ),
                   Expanded(
-                    child: Slider(
+                    child: PlatformSlider(
                       activeColor: primaryColor,
                       value: age.toDouble(),
                       min: 17,
@@ -467,7 +468,7 @@ class _BodyfatPageState extends ConsumerState<BodyfatPage> {
                   ),
                   Expanded(
                     flex: 1,
-                    child: Slider(
+                    child: PlatformSlider(
                       activeColor: primaryColor,
                       value: height.toDouble(),
                       min: 58,
@@ -564,7 +565,7 @@ class _BodyfatPageState extends ConsumerState<BodyfatPage> {
                   ),
                   Expanded(
                     flex: 1,
-                    child: Slider(
+                    child: PlatformSlider(
                       activeColor: primaryColor,
                       value: weight.toDouble(),
                       min: 50,
@@ -781,7 +782,7 @@ class _BodyfatPageState extends ConsumerState<BodyfatPage> {
                         ),
                         Expanded(
                           flex: 1,
-                          child: Slider(
+                          child: PlatformSlider(
                             activeColor: primaryColor,
                             value: neck,
                             min: 10,
@@ -871,7 +872,7 @@ class _BodyfatPageState extends ConsumerState<BodyfatPage> {
                         ),
                         Expanded(
                           flex: 1,
-                          child: Slider(
+                          child: PlatformSlider(
                             activeColor: primaryColor,
                             value: waist,
                             min: 20,
@@ -960,7 +961,7 @@ class _BodyfatPageState extends ConsumerState<BodyfatPage> {
                           ),
                           Expanded(
                             flex: 1,
-                            child: Slider(
+                            child: PlatformSlider(
                               activeColor: primaryColor,
                               value: hip,
                               min: 20,

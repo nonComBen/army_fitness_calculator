@@ -5,6 +5,7 @@ import 'package:url_launcher/url_launcher_string.dart';
 
 import '../../pages/apft_page.dart';
 import '../../widgets/header_text.dart';
+import '../../widgets/platform_widgets/platform_list_tile.dart';
 import '../verbiage_pages/apft_verbiage_page.dart';
 import '../verbiage_pages/acft_verbiage_page.dart';
 import '../verbiage_pages/bodyfat_verbiage_page.dart';
@@ -36,7 +37,7 @@ class OverflowTab extends ConsumerWidget {
               text: 'Premium',
             ),
           ),
-          ListTile(
+          PlatformListTile(
             title: const Text('Saved ACFT Scores'),
             leading: const Icon(Icons.fitness_center),
             onTap: () {
@@ -47,7 +48,7 @@ class OverflowTab extends ConsumerWidget {
               }
             },
           ),
-          ListTile(
+          PlatformListTile(
             title: const Text('Saved APFT Scores'),
             leading: const Icon(Icons.directions_run),
             onTap: () {
@@ -58,7 +59,7 @@ class OverflowTab extends ConsumerWidget {
               }
             },
           ),
-          ListTile(
+          PlatformListTile(
             title: const Text('Saved Body Comp Scores'),
             leading: const Icon(Icons.accessibility),
             onTap: () {
@@ -69,7 +70,7 @@ class OverflowTab extends ConsumerWidget {
               }
             },
           ),
-          ListTile(
+          PlatformListTile(
             title: const Text('Saved Promotion Point Scores'),
             leading: const Icon(Icons.attach_money),
             onTap: () {
@@ -84,28 +85,28 @@ class OverflowTab extends ConsumerWidget {
           Center(
             child: HeaderText(text: 'Instructions'),
           ),
-          ListTile(
+          PlatformListTile(
             title: const Text('ACFT Instructions'),
             leading: const Icon(Icons.fitness_center),
             onTap: () {
               Navigator.of(context).pushNamed(AcftVerbiagePage.routeName);
             },
           ),
-          ListTile(
+          PlatformListTile(
             title: const Text('MDL Setup'),
             leading: const Icon(Icons.fitness_center),
             onTap: () {
               Navigator.of(context).pushNamed(MdlSetupPage.routeName);
             },
           ),
-          ListTile(
+          PlatformListTile(
             title: const Text('APFT Instructions'),
             leading: const Icon(Icons.directions_run),
             onTap: () {
               Navigator.of(context).pushNamed(ApftVerbiagePage.routeName);
             },
           ),
-          ListTile(
+          PlatformListTile(
             title: const Text('Body Comp Instructions'),
             leading: const Icon(Icons.accessibility),
             onTap: () {
@@ -118,19 +119,19 @@ class OverflowTab extends ConsumerWidget {
               text: 'Other',
             ),
           ),
-          ListTile(
+          PlatformListTile(
             title: const Text('AFPT Calculator'),
             leading: const Icon(Icons.directions_run),
             onTap: () => Navigator.of(context).pushNamed(ApftPage.routeName),
           ),
-          ListTile(
+          PlatformListTile(
             title: const Text('www.army.mil/acft'),
             leading: const Icon(Icons.web),
             onTap: () {
               launchUrlString('https://www.army.mil/acft');
             },
           ),
-          ListTile(
+          PlatformListTile(
             title: const Text('Upgrade'),
             leading: const Icon(Icons.monetization_on),
             onTap: () {
@@ -143,7 +144,7 @@ class OverflowTab extends ConsumerWidget {
               }
             },
           ),
-          ListTile(
+          PlatformListTile(
             title: const Text('Rate App'),
             leading: const Icon(Icons.rate_review),
             onTap: () {
@@ -151,21 +152,21 @@ class OverflowTab extends ConsumerWidget {
               rateMyApp.launchStore();
             },
           ),
-          ListTile(
+          PlatformListTile(
             title: const Text('Privacy Policy'),
             leading: const Icon(Icons.info),
             onTap: () {
               Navigator.of(context).pushNamed(PrivacyPolicyPage.routeName);
             },
           ),
-          ListTile(
+          PlatformListTile(
             title: const Text('Contact Us'),
             leading: const Icon(Icons.email),
             onTap: () {
               launchUrlString('mailto:armynoncomtools@gmail.com');
             },
           ),
-          ListTile(
+          PlatformListTile(
             title: const Text('Settings'),
             leading: const Icon(Icons.settings),
             onTap: () {

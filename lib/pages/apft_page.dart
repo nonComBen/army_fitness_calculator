@@ -14,6 +14,7 @@ import '../calculators/pu_calculator.dart';
 import '../calculators/su_calculator.dart';
 import '../calculators/run_calculator.dart';
 import '../sqlite/apft.dart';
+import '../widgets/platform_widgets/platform_slider.dart';
 import 'saved_pages/saved_apfts_page.dart';
 import '../widgets/value_input_field.dart';
 import '../../providers/purchases_provider.dart';
@@ -451,7 +452,7 @@ class _ApftPageState extends ConsumerState<ApftPage> {
                       },
                     ),
                     Expanded(
-                      child: Slider(
+                      child: PlatformSlider(
                         activeColor: primaryColor,
                         value: age.toDouble(),
                         min: 17,
@@ -542,7 +543,7 @@ class _ApftPageState extends ConsumerState<ApftPage> {
                     ),
                     Expanded(
                       flex: 1,
-                      child: Slider(
+                      child: PlatformSlider(
                         activeColor: primaryColor,
                         value: pu.toDouble(),
                         min: 0,
@@ -651,7 +652,7 @@ class _ApftPageState extends ConsumerState<ApftPage> {
                     ),
                     Expanded(
                       flex: 1,
-                      child: Slider(
+                      child: PlatformSlider(
                         activeColor: primaryColor,
                         value: su.toDouble(),
                         min: 0,
@@ -802,7 +803,7 @@ class _ApftPageState extends ConsumerState<ApftPage> {
                     ),
                     Expanded(
                       flex: 1,
-                      child: Slider(
+                      child: PlatformSlider(
                         activeColor: primaryColor,
                         value: runMins.toDouble(),
                         min: 0,
@@ -854,7 +855,7 @@ class _ApftPageState extends ConsumerState<ApftPage> {
                     ),
                     Expanded(
                       flex: 1,
-                      child: Slider(
+                      child: PlatformSlider(
                         activeColor: primaryColor,
                         value: runSecs.toDouble(),
                         min: 0,
