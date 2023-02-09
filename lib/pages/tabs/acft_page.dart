@@ -17,6 +17,7 @@ import '../../calculators/mdl_calculator.dart';
 import '../../calculators/plk_calculator.dart';
 import '../../calculators/sdc_calculator.dart';
 import '../../providers/shared_preferences_provider.dart';
+import '../../widgets/platform_widgets/platform_checkbox_list_tile.dart';
 import '../../widgets/platform_widgets/platform_slider.dart';
 import '../../widgets/platform_widgets/platform_text_field.dart';
 import '../saved_pages/saved_acfts_page.dart';
@@ -720,7 +721,7 @@ class AcftPageState extends ConsumerState<AcftPage> {
             ),
             Padding(
               padding: const EdgeInsets.all(8.0),
-              child: CheckboxListTile(
+              child: PlatformCheckboxListTile(
                   title: const Text('Profile'),
                   value: hasMdlProfile,
                   controlAffinity: ListTileControlAffinity.leading,
@@ -850,7 +851,7 @@ class AcftPageState extends ConsumerState<AcftPage> {
             ),
             Padding(
               padding: const EdgeInsets.all(8.0),
-              child: CheckboxListTile(
+              child: PlatformCheckboxListTile(
                   title: const Text('Profile'),
                   value: hasSptProfile,
                   controlAffinity: ListTileControlAffinity.leading,
@@ -975,7 +976,7 @@ class AcftPageState extends ConsumerState<AcftPage> {
             ),
             Padding(
               padding: const EdgeInsets.all(8.0),
-              child: CheckboxListTile(
+              child: PlatformCheckboxListTile(
                   title: const Text('Profile'),
                   value: hasHrpProfile,
                   controlAffinity: ListTileControlAffinity.leading,
@@ -1209,7 +1210,7 @@ class AcftPageState extends ConsumerState<AcftPage> {
             ),
             Padding(
               padding: const EdgeInsets.all(8.0),
-              child: CheckboxListTile(
+              child: PlatformCheckboxListTile(
                   title: const Text('Profile'),
                   value: hasSdcProfile,
                   controlAffinity: ListTileControlAffinity.leading,
@@ -1454,7 +1455,7 @@ class AcftPageState extends ConsumerState<AcftPage> {
             ),
             Padding(
               padding: const EdgeInsets.all(8.0),
-              child: CheckboxListTile(
+              child: PlatformCheckboxListTile(
                   title: const Text('Profile'),
                   value: hasPlkProfile,
                   controlAffinity: ListTileControlAffinity.leading,

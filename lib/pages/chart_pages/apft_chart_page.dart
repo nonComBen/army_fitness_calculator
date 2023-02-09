@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:charts_flutter/flutter.dart' as charts;
 
 import '../../sqlite/apft.dart';
+import '../../widgets/platform_widgets/platform_checkbox_list_tile.dart';
 import '../../widgets/platform_widgets/platform_scaffold.dart';
 
 class ApftChartPage extends StatefulWidget {
@@ -14,7 +15,7 @@ class ApftChartPage extends StatefulWidget {
 }
 
 class _ApftChartPageState extends State<ApftChartPage> {
-  bool? pu, su, run;
+  bool pu = false, su = false, run = false;
   List<charts.Series<Apft, DateTime>> _seriesBarData = [];
   List<Apft>? myData;
 
@@ -30,7 +31,7 @@ class _ApftChartPageState extends State<ApftChartPage> {
         colorFn: (apft, _) => Theme.of(context).brightness == Brightness.light
             ? charts.Color.black
             : charts.Color.white));
-    if (pu!) {
+    if (pu) {
       _seriesBarData.add(charts.Series(
           domainFn: (apft, _) => DateTime.parse(apft.date!),
           measureFn: (apft, _) => int.tryParse(apft.puScore),
@@ -38,7 +39,7 @@ class _ApftChartPageState extends State<ApftChartPage> {
           id: 'PU',
           colorFn: (apft, _) => charts.MaterialPalette.blue.shadeDefault));
     }
-    if (su!) {
+    if (su) {
       _seriesBarData.add(charts.Series(
           domainFn: (apft, _) => DateTime.parse(apft.date!),
           measureFn: (apft, _) => int.tryParse(apft.suScore),
@@ -46,7 +47,7 @@ class _ApftChartPageState extends State<ApftChartPage> {
           id: 'SU',
           colorFn: (apft, _) => charts.MaterialPalette.green.shadeDefault));
     }
-    if (run!) {
+    if (run) {
       _seriesBarData.add(charts.Series(
           domainFn: (apft, _) => DateTime.parse(apft.date!),
           measureFn: (apft, _) => int.tryParse(apft.runScore),
@@ -115,10 +116,6 @@ class _ApftChartPageState extends State<ApftChartPage> {
 
   @override
   void initState() {
-    pu = false;
-    su = false;
-    run = false;
-
     myData = widget.apfts;
     super.initState();
   }
@@ -180,33 +177,33 @@ class _ApftChartPageState extends State<ApftChartPage> {
                 mainAxisSpacing: 1.0,
                 crossAxisSpacing: 1.0,
                 children: <Widget>[
-                  CheckboxListTile(
+                  PlatformCheckboxListTile(
                     title: const Text('PU'),
                     value: pu,
                     activeColor: Theme.of(context).colorScheme.onSecondary,
                     onChanged: (value) {
                       setState(() {
-                        pu = value;
+                        pu = value!;
                       });
                     },
                   ),
-                  CheckboxListTile(
+                  PlatformCheckboxListTile(
                     title: const Text('SU'),
                     value: su,
                     activeColor: Theme.of(context).colorScheme.onSecondary,
                     onChanged: (value) {
                       setState(() {
-                        su = value;
+                        su = value!;
                       });
                     },
                   ),
-                  CheckboxListTile(
+                  PlatformCheckboxListTile(
                     title: const Text('Run'),
                     value: run,
                     activeColor: Theme.of(context).colorScheme.onSecondary,
                     onChanged: (value) {
                       setState(() {
-                        run = value;
+                        run = value!;
                       });
                     },
                   ),

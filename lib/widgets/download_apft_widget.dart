@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import '../methods/download_apft.dart';
 import '../sqlite/apft.dart';
 import '../../widgets/platform_widgets/platform_button.dart';
+import 'platform_widgets/platform_checkbox_list_tile.dart';
 import 'platform_widgets/platform_text_field.dart';
 
 class DownloadApftWidget extends StatefulWidget {
@@ -29,7 +30,7 @@ class _DownloadApftWidgetState extends State<DownloadApftWidget> {
   final _bfFocus = FocusNode();
   final _commentFocus = FocusNode();
 
-  bool? bodyComp = false,
+  bool bodyComp = false,
       bmiPass = true,
       bfPass = true,
       altPass = true,
@@ -133,21 +134,21 @@ class _DownloadApftWidgetState extends State<DownloadApftWidget> {
             ),
           ),
           if (widget.apft.runEvent != 'Run' && widget.apft.pass == 0)
-            CheckboxListTile(
+            PlatformCheckboxListTile(
               value: altPass,
               onChanged: (value) {
                 setState(() {
-                  altPass = value;
+                  altPass = value!;
                 });
               },
               title: Text('Aerobic Event Go'),
             ),
-          CheckboxListTile(
+          PlatformCheckboxListTile(
             value: bodyComp,
             onChanged: (value) {
               setState(() {
-                bodyComp = value;
-                if (value!) {
+                bodyComp = value!;
+                if (value) {
                   _bmiDateFocus.requestFocus();
                 } else {
                   FocusScope.of(context).unfocus();
@@ -156,7 +157,7 @@ class _DownloadApftWidgetState extends State<DownloadApftWidget> {
             },
             title: Text('Add Height/Weight Data'),
           ),
-          if (bodyComp!)
+          if (bodyComp)
             Column(
               children: [
                 Padding(
@@ -203,12 +204,12 @@ class _DownloadApftWidgetState extends State<DownloadApftWidget> {
                     onEditingComplete: () => FocusScope.of(context).nextFocus(),
                   ),
                 ),
-                CheckboxListTile(
+                PlatformCheckboxListTile(
                   value: bmiPass,
                   onChanged: (value) {
                     setState(() {
-                      bmiPass = value;
-                      if (value!) {
+                      bmiPass = value!;
+                      if (value) {
                         FocusScope.of(context).unfocus();
                       } else {
                         _bfFocus.requestFocus();
@@ -217,7 +218,7 @@ class _DownloadApftWidgetState extends State<DownloadApftWidget> {
                   },
                   title: Text('Height/Weight Pass'),
                 ),
-                if (!bmiPass!)
+                if (!bmiPass)
                   Padding(
                     padding: EdgeInsets.symmetric(horizontal: 8.0),
                     child: PlatformTextField(
@@ -234,12 +235,12 @@ class _DownloadApftWidgetState extends State<DownloadApftWidget> {
                       onEditingComplete: () => FocusScope.of(context).unfocus(),
                     ),
                   ),
-                if (!bmiPass!)
-                  CheckboxListTile(
+                if (!bmiPass)
+                  PlatformCheckboxListTile(
                     value: bfPass,
                     onChanged: (value) {
                       setState(() {
-                        bfPass = value;
+                        bfPass = value!;
                       });
                     },
                     title: Text('Bodyfat % Pass'),
@@ -256,7 +257,7 @@ class _DownloadApftWidgetState extends State<DownloadApftWidget> {
               maxLines: 4,
               autocorrect: false,
               textInputAction:
-                  maxlines! ? TextInputAction.done : TextInputAction.newline,
+                  maxlines ? TextInputAction.done : TextInputAction.newline,
               onChanged: (value) {
                 final span = _commentController.buildTextSpan(
                     context: context, style: TextStyle(), withComposing: false);
@@ -290,12 +291,12 @@ class _DownloadApftWidgetState extends State<DownloadApftWidget> {
                   altPass: altPass,
                   oic: _oicController.text,
                   oicGrade: _oicGradeController.text,
-                  bmiDate: bodyComp! ? _bmiDateController.text : '',
-                  height: bodyComp! ? _heightController.text : '',
-                  weight: bodyComp! ? _weightController.text : '',
-                  bf: bodyComp! ? _bfController.text : '',
-                  bmiPass: bodyComp! ? bmiPass : null,
-                  bfPass: bodyComp! && !bmiPass! ? bfPass : null,
+                  bmiDate: bodyComp ? _bmiDateController.text : '',
+                  height: bodyComp ? _heightController.text : '',
+                  weight: bodyComp ? _weightController.text : '',
+                  bf: bodyComp ? _bfController.text : '',
+                  bmiPass: bodyComp ? bmiPass : null,
+                  bfPass: bodyComp && !bmiPass ? bfPass : null,
                   comments: _commentController.text,
                 );
               },

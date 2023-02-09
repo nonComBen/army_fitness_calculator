@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:charts_flutter/flutter.dart' as charts;
 
 import '../../sqlite/bodyfat.dart';
+import '../../widgets/platform_widgets/platform_checkbox_list_tile.dart';
 import '../../widgets/platform_widgets/platform_scaffold.dart';
 
 class BodyfatChartPage extends StatefulWidget {
@@ -14,7 +15,7 @@ class BodyfatChartPage extends StatefulWidget {
 }
 
 class _BodyfatChartPageState extends State<BodyfatChartPage> {
-  bool? bf;
+  bool bf = false;
   static const secondaryMeasureAxisId = 'secondaryMeasureAxisId';
   List<charts.Series<Bodyfat, DateTime>> _seriesBarData = [];
   List<Bodyfat>? myData;
@@ -33,7 +34,7 @@ class _BodyfatChartPageState extends State<BodyfatChartPage> {
               ? charts.Color.black
               : charts.Color.white),
     ];
-    if (bf!) {
+    if (bf) {
       _seriesBarData.add(charts.Series(
         domainFn: (bf, _) => DateTime.parse(bf.date!),
         measureFn: (bf, _) => int.tryParse(bf.bfPercent),
@@ -58,7 +59,7 @@ class _BodyfatChartPageState extends State<BodyfatChartPage> {
         primaryMeasureAxis: new charts.NumericAxisSpec(
             tickProviderSpec: new charts.BasicNumericTickProviderSpec(
                 zeroBound: false, desiredTickCount: 3)),
-        secondaryMeasureAxis: bf!
+        secondaryMeasureAxis: bf
             ? new charts.NumericAxisSpec(
                 tickProviderSpec: new charts.BasicNumericTickProviderSpec(
                     zeroBound: false, desiredTickCount: 3))
@@ -104,8 +105,6 @@ class _BodyfatChartPageState extends State<BodyfatChartPage> {
 
   @override
   void initState() {
-    bf = false;
-
     myData = widget.bodyfats;
     super.initState();
   }
@@ -150,13 +149,13 @@ class _BodyfatChartPageState extends State<BodyfatChartPage> {
               const SizedBox(
                 height: 15.0,
               ),
-              CheckboxListTile(
+              PlatformCheckboxListTile(
                 title: const Text('Bodyfat'),
                 value: bf,
                 activeColor: Theme.of(context).colorScheme.onSecondary,
                 onChanged: (value) {
                   setState(() {
-                    bf = value;
+                    bf = value!;
                   });
                 },
               ),

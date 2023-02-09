@@ -14,6 +14,7 @@ import '../calculators/pu_calculator.dart';
 import '../calculators/su_calculator.dart';
 import '../calculators/run_calculator.dart';
 import '../sqlite/apft.dart';
+import '../widgets/platform_widgets/platform_checkbox_list_tile.dart';
 import '../widgets/platform_widgets/platform_slider.dart';
 import '../widgets/platform_widgets/platform_text_field.dart';
 import 'saved_pages/saved_apfts_page.dart';
@@ -586,7 +587,7 @@ class _ApftPageState extends ConsumerState<ApftPage> {
               ),
               Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: CheckboxListTile(
+                child: PlatformCheckboxListTile(
                     title: const Text('Profile'),
                     value: hasPuProfile,
                     controlAffinity: ListTileControlAffinity.leading,
@@ -695,7 +696,7 @@ class _ApftPageState extends ConsumerState<ApftPage> {
               ),
               Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: CheckboxListTile(
+                child: PlatformCheckboxListTile(
                     title: const Text('Profile'),
                     value: hasSuProfile,
                     controlAffinity: ListTileControlAffinity.leading,
@@ -895,7 +896,7 @@ class _ApftPageState extends ConsumerState<ApftPage> {
               ),
               Padding(
                   padding: const EdgeInsets.all(8.0),
-                  child: CheckboxListTile(
+                  child: PlatformCheckboxListTile(
                     title: Text('For Promotion Points'),
                     value: isJrSoldier,
                     controlAffinity: ListTileControlAffinity.leading,

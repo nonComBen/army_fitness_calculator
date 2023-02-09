@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:charts_flutter/flutter.dart' as charts;
 
 import '../../sqlite/ppw.dart';
+import '../../widgets/platform_widgets/platform_checkbox_list_tile.dart';
 import '../../widgets/platform_widgets/platform_scaffold.dart';
 
 class PpwChartPage extends StatefulWidget {
@@ -14,7 +15,7 @@ class PpwChartPage extends StatefulWidget {
 }
 
 class _PpwChartPageState extends State<PpwChartPage> {
-  bool? milTrain, awards, milEd, civEd;
+  bool milTrain = false, awards = false, milEd = false, civEd = false;
   static const secondaryMeasureAxisId = 'secondaryMeasureAxisId';
   List<charts.Series<PPW, DateTime>> _seriesBarData = [];
   List<PPW>? myData;
@@ -33,7 +34,7 @@ class _PpwChartPageState extends State<PpwChartPage> {
               ? charts.Color.black
               : charts.Color.white),
     ];
-    if (milTrain!) {
+    if (milTrain) {
       _seriesBarData.add(charts.Series(
         domainFn: (ppw, _) => DateTime.parse(ppw.date!),
         measureFn: (ppw, _) {
@@ -48,7 +49,7 @@ class _PpwChartPageState extends State<PpwChartPage> {
         colorFn: (bf, _) => charts.MaterialPalette.blue.shadeDefault,
       )..setAttribute(charts.measureAxisIdKey, secondaryMeasureAxisId));
     }
-    if (awards!) {
+    if (awards) {
       _seriesBarData.add(charts.Series(
         domainFn: (ppw, _) => DateTime.parse(ppw.date!),
         measureFn: (ppw, _) {
@@ -63,7 +64,7 @@ class _PpwChartPageState extends State<PpwChartPage> {
         colorFn: (bf, _) => charts.MaterialPalette.green.shadeDefault,
       )..setAttribute(charts.measureAxisIdKey, secondaryMeasureAxisId));
     }
-    if (milEd!) {
+    if (milEd) {
       _seriesBarData.add(charts.Series(
         domainFn: (ppw, _) => DateTime.parse(ppw.date!),
         measureFn: (ppw, _) {
@@ -78,7 +79,7 @@ class _PpwChartPageState extends State<PpwChartPage> {
         colorFn: (bf, _) => charts.MaterialPalette.red.shadeDefault,
       )..setAttribute(charts.measureAxisIdKey, secondaryMeasureAxisId));
     }
-    if (civEd!) {
+    if (civEd) {
       _seriesBarData.add(charts.Series(
         domainFn: (ppw, _) => DateTime.parse(ppw.date!),
         measureFn: (ppw, _) {
@@ -159,11 +160,6 @@ class _PpwChartPageState extends State<PpwChartPage> {
 
   @override
   void initState() {
-    milTrain = false;
-    awards = false;
-    milEd = false;
-    civEd = false;
-
     myData = widget.ppws;
     super.initState();
   }
@@ -226,43 +222,43 @@ class _PpwChartPageState extends State<PpwChartPage> {
                   mainAxisSpacing: 1.0,
                   crossAxisSpacing: 1.0,
                   children: <Widget>[
-                    CheckboxListTile(
+                    PlatformCheckboxListTile(
                       title: const Text('Military Training'),
                       value: milTrain,
                       activeColor: Theme.of(context).colorScheme.onSecondary,
                       onChanged: (value) {
                         setState(() {
-                          milTrain = value;
+                          milTrain = value!;
                         });
                       },
                     ),
-                    CheckboxListTile(
+                    PlatformCheckboxListTile(
                       title: const Text('Awards'),
                       value: awards,
                       activeColor: Theme.of(context).colorScheme.onSecondary,
                       onChanged: (value) {
                         setState(() {
-                          awards = value;
+                          awards = value!;
                         });
                       },
                     ),
-                    CheckboxListTile(
+                    PlatformCheckboxListTile(
                       title: const Text('Military Education'),
                       value: milEd,
                       activeColor: Theme.of(context).colorScheme.onSecondary,
                       onChanged: (value) {
                         setState(() {
-                          milEd = value;
+                          milEd = value!;
                         });
                       },
                     ),
-                    CheckboxListTile(
+                    PlatformCheckboxListTile(
                       title: const Text('Civilian Education'),
                       value: civEd,
                       activeColor: Theme.of(context).colorScheme.onSecondary,
                       onChanged: (value) {
                         setState(() {
-                          civEd = value;
+                          civEd = value!;
                         });
                       },
                     ),

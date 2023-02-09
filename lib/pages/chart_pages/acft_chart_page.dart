@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:charts_flutter/flutter.dart' as charts;
 
 import '../../sqlite/acft.dart';
+import '../../widgets/platform_widgets/platform_checkbox_list_tile.dart';
 import '../../widgets/platform_widgets/platform_scaffold.dart';
 
 class AcftChartPage extends StatefulWidget {
@@ -14,7 +15,12 @@ class AcftChartPage extends StatefulWidget {
 }
 
 class _AcftChartPageState extends State<AcftChartPage> {
-  bool? mdl, spt, hrp, sdc, plk, run;
+  bool mdl = false,
+      spt = false,
+      hrp = false,
+      sdc = false,
+      plk = false,
+      run = false;
   List<charts.Series<Acft, DateTime>> _seriesBarData = [];
   List<Acft>? myData;
 
@@ -30,7 +36,7 @@ class _AcftChartPageState extends State<AcftChartPage> {
         colorFn: (acft, _) => Theme.of(context).brightness == Brightness.light
             ? charts.Color.black
             : charts.Color.white));
-    if (mdl!) {
+    if (mdl) {
       _seriesBarData.add(charts.Series(
           domainFn: (acft, _) => DateTime.parse(acft.date!),
           measureFn: (acft, _) => int.tryParse(acft.mdlScore),
@@ -38,7 +44,7 @@ class _AcftChartPageState extends State<AcftChartPage> {
           id: 'MDL',
           colorFn: (acft, _) => charts.MaterialPalette.blue.shadeDefault));
     }
-    if (spt!) {
+    if (spt) {
       _seriesBarData.add(charts.Series(
           domainFn: (acft, _) => DateTime.parse(acft.date!),
           measureFn: (acft, _) => int.tryParse(acft.sptScore),
@@ -46,7 +52,7 @@ class _AcftChartPageState extends State<AcftChartPage> {
           id: 'SPT',
           colorFn: (acft, _) => charts.MaterialPalette.green.shadeDefault));
     }
-    if (hrp!) {
+    if (hrp) {
       _seriesBarData.add(charts.Series(
           domainFn: (acft, _) => DateTime.parse(acft.date!),
           measureFn: (acft, _) => int.tryParse(acft.hrpScore),
@@ -54,7 +60,7 @@ class _AcftChartPageState extends State<AcftChartPage> {
           id: 'HRP',
           colorFn: (acft, _) => charts.MaterialPalette.yellow.shadeDefault));
     }
-    if (sdc!) {
+    if (sdc) {
       _seriesBarData.add(charts.Series(
           domainFn: (acft, _) => DateTime.parse(acft.date!),
           measureFn: (acft, _) => int.tryParse(acft.sdcScore),
@@ -63,7 +69,7 @@ class _AcftChartPageState extends State<AcftChartPage> {
           colorFn: (acft, _) =>
               charts.MaterialPalette.deepOrange.shadeDefault));
     }
-    if (plk!) {
+    if (plk) {
       _seriesBarData.add(charts.Series(
           domainFn: (acft, _) => DateTime.parse(acft.date!),
           measureFn: (acft, _) => int.tryParse(acft.plkScore),
@@ -71,7 +77,7 @@ class _AcftChartPageState extends State<AcftChartPage> {
           id: 'PLK',
           colorFn: (acft, _) => charts.MaterialPalette.red.shadeDefault));
     }
-    if (run!) {
+    if (run) {
       _seriesBarData.add(charts.Series(
           domainFn: (acft, _) => DateTime.parse(acft.date!),
           measureFn: (acft, _) => int.tryParse(acft.runScore),
@@ -106,13 +112,6 @@ class _AcftChartPageState extends State<AcftChartPage> {
 
   @override
   void initState() {
-    mdl = false;
-    spt = false;
-    hrp = false;
-    sdc = false;
-    plk = false;
-    run = false;
-
     myData = widget.acfts;
     super.initState();
   }
@@ -174,63 +173,63 @@ class _AcftChartPageState extends State<AcftChartPage> {
                 mainAxisSpacing: 1.0,
                 crossAxisSpacing: 1.0,
                 children: <Widget>[
-                  CheckboxListTile(
+                  PlatformCheckboxListTile(
                     title: Text('MDL'),
                     value: mdl,
                     activeColor: Theme.of(context).colorScheme.onSecondary,
                     onChanged: (value) {
                       setState(() {
-                        mdl = value;
+                        mdl = value!;
                       });
                     },
                   ),
-                  CheckboxListTile(
+                  PlatformCheckboxListTile(
                     title: const Text('SPT'),
                     value: spt,
                     activeColor: Theme.of(context).colorScheme.onSecondary,
                     onChanged: (value) {
                       setState(() {
-                        spt = value;
+                        spt = value!;
                       });
                     },
                   ),
-                  CheckboxListTile(
+                  PlatformCheckboxListTile(
                     title: const Text('HRP'),
                     value: hrp,
                     activeColor: Theme.of(context).colorScheme.onSecondary,
                     onChanged: (value) {
                       setState(() {
-                        hrp = value;
+                        hrp = value!;
                       });
                     },
                   ),
-                  CheckboxListTile(
+                  PlatformCheckboxListTile(
                     title: const Text('SDC'),
                     value: sdc,
                     activeColor: Theme.of(context).colorScheme.onSecondary,
                     onChanged: (value) {
                       setState(() {
-                        sdc = value;
+                        sdc = value!;
                       });
                     },
                   ),
-                  CheckboxListTile(
+                  PlatformCheckboxListTile(
                     title: const Text('PLK'),
                     value: plk,
                     activeColor: Theme.of(context).colorScheme.onSecondary,
                     onChanged: (value) {
                       setState(() {
-                        plk = value;
+                        plk = value!;
                       });
                     },
                   ),
-                  CheckboxListTile(
+                  PlatformCheckboxListTile(
                     title: const Text('Run'),
                     value: run,
                     activeColor: Theme.of(context).colorScheme.onSecondary,
                     onChanged: (value) {
                       setState(() {
-                        run = value;
+                        run = value!;
                       });
                     },
                   ),

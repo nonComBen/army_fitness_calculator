@@ -14,6 +14,7 @@ import '../../calculators/award_pts_calculator.dart';
 import '../../calculators/pt_pts_calculator.dart';
 import '../../calculators/weapons_pts_calculator.dart';
 import '../../providers/shared_preferences_provider.dart';
+import '../../widgets/platform_widgets/platform_checkbox_list_tile.dart';
 import '../../widgets/platform_widgets/platform_icon_button.dart';
 import '../../widgets/platform_widgets/platform_text_field.dart';
 import '../saved_pages/saved_ppw_page.dart';
@@ -946,7 +947,7 @@ class _PromotionPointPageState extends ConsumerState<PromotionPointPage> {
                       shrinkWrap: true,
                       primary: false,
                       children: [
-                        CheckboxListTile(
+                        PlatformCheckboxListTile(
                             title: const Text('Ranger'),
                             activeColor:
                                 Theme.of(context).colorScheme.onSecondary,
@@ -958,7 +959,7 @@ class _PromotionPointPageState extends ConsumerState<PromotionPointPage> {
                                 _calcTotalPts();
                               });
                             }),
-                        CheckboxListTile(
+                        PlatformCheckboxListTile(
                             title: const Text('Special Forces'),
                             activeColor:
                                 Theme.of(context).colorScheme.onSecondary,
@@ -970,7 +971,7 @@ class _PromotionPointPageState extends ConsumerState<PromotionPointPage> {
                                 _calcTotalPts();
                               });
                             }),
-                        CheckboxListTile(
+                        PlatformCheckboxListTile(
                             title: const Text('Sapper'),
                             activeColor:
                                 Theme.of(context).colorScheme.onSecondary,
@@ -1024,7 +1025,7 @@ class _PromotionPointPageState extends ConsumerState<PromotionPointPage> {
                     ),
                     Padding(
                       padding: const EdgeInsets.all(8.0),
-                      child: CheckboxListTile(
+                      child: PlatformCheckboxListTile(
                         activeColor: Theme.of(context).colorScheme.onSecondary,
                         value: degreeCompleted,
                         title: const Text(
@@ -1113,7 +1114,7 @@ class _PromotionPointPageState extends ConsumerState<PromotionPointPage> {
                       ),
                     Padding(
                       padding: const EdgeInsets.all(8.0),
-                      child: CheckboxListTile(
+                      child: PlatformCheckboxListTile(
                         activeColor: Theme.of(context).colorScheme.onSecondary,
                         value: hasFornLang,
                         title: const Text(
