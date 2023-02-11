@@ -82,7 +82,7 @@ class _AndroidHomePageState extends ConsumerState<AndroidHomePage> {
       MaterialPageRoute(
         builder: (ctx) => AcftTablePage(
           ageGroup: AcftPageState.ageGroup,
-          gender: AcftPageState.gender,
+          gender: AcftPageState.gender.toString(),
         ),
       ),
     );
@@ -255,7 +255,7 @@ class _IOSHomePageState extends ConsumerState<IOSHomePage> {
                           MaterialPageRoute(
                             builder: (ctx) => AcftTablePage(
                               ageGroup: AcftPageState.ageGroup,
-                              gender: AcftPageState.gender,
+                              gender: AcftPageState.gender.toString(),
                             ),
                           ),
                         );

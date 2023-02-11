@@ -1,3 +1,4 @@
+import 'package:acft_calculator/widgets/platform_widgets/platform_text_field.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -24,8 +25,8 @@ class FormattedTextField extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(8.0),
-      child: TextField(
-        controller: contoller,
+      child: PlatformTextField(
+        controller: contoller!,
         focusNode: focusNode,
         keyboardType: TextInputType.numberWithOptions(signed: true),
         inputFormatters: [
@@ -33,7 +34,6 @@ class FormattedTextField extends StatelessWidget {
         ],
         textInputAction: TextInputAction.next,
         textAlign: TextAlign.start,
-        style: const TextStyle(fontSize: 18, fontWeight: FontWeight.normal),
         decoration: InputDecoration(
           label: Text(label!),
           border: OutlineInputBorder(),

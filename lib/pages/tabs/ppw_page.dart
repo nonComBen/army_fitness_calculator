@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:acft_calculator/widgets/platform_widgets/platform_item_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -21,7 +22,7 @@ import '../saved_pages/saved_ppw_page.dart';
 import '../../sqlite/db_helper.dart';
 import '../../sqlite/ppw.dart';
 import '../../widgets/formatted_expansion_tile.dart';
-import '../../widgets/formatted_radio.dart';
+import '../../widgets/platform_widgets/platform_selection_widget.dart';
 import '../../widgets/badge_card.dart';
 import '../../widgets/decoration_card.dart';
 import '../../classes/award_decoration.dart';
@@ -68,10 +69,10 @@ class _PromotionPointPageState extends ConsumerState<PromotionPointPage> {
       awardsMax = 125,
       milEdMax = 200,
       civEdMax = 135;
-  String rank = 'SGT',
-      weapons = 'DA 3595-R / 5790-R / 5789-R / 7801 (M16/M4)',
+  String weapons = 'DA 3595-R / 5790-R / 5789-R / 7801 (M16/M4)',
       airborneLvl = 'None',
       ncoes = 'None';
+  Object rank = 'SGT';
   bool isRanger = false,
       isSf = false,
       isSapper = false,
@@ -263,13 +264,13 @@ class _PromotionPointPageState extends ConsumerState<PromotionPointPage> {
     if (isNewVersion) {
       ptPts = acftPts(ptScore);
     } else {
-      ptPts = apftPts(ptScore, rank);
+      ptPts = apftPts(ptScore, rank.toString());
     }
   }
 
   void _calcWeaponPts() {
-    weaponPts = newWeaponsPts(
-        weaponCards.indexOf(weapons), rank, weaponHits, isNewVersion);
+    weaponPts = newWeaponsPts(weaponCards.indexOf(weapons), rank.toString(),
+        weaponHits, isNewVersion);
   }
 
   void _calcAwardPts() {
@@ -554,6 +555,13 @@ class _PromotionPointPageState extends ConsumerState<PromotionPointPage> {
                 _calcTotalPts();
               });
             },
+            onSelectedItemChanged: (index) {
+              setState(() {
+                decorations[i].name = DecorationCard.awards[index];
+                _calcAwardPts();
+                _calcTotalPts();
+              });
+            },
             onAwardNumberChanged: (value) {
               int raw = int.tryParse(value) ?? 0;
               setState(() {
@@ -584,6 +592,13 @@ class _PromotionPointPageState extends ConsumerState<PromotionPointPage> {
               _calcTotalPts();
             });
           },
+          onSelectedItemChanged: (index) {
+            setState(() {
+              _badges[i]['name'] = BadgeCard.badges[index];
+              _calcBadgePts();
+              _calcTotalPts();
+            });
+          },
         ),
       ));
     }
@@ -606,8 +621,8 @@ class _PromotionPointPageState extends ConsumerState<PromotionPointPage> {
                 shrinkWrap: true,
                 primary: false,
                 children: <Widget>[
-                  FormattedRadio(
-                      titles: ['SGT', 'SSG'],
+                  PlatformSelectionWidget(
+                      titles: [Text('SGT'), Text('SSG')],
                       values: ['SGT', 'SSG'],
                       groupValue: rank,
                       onChanged: (value) {
@@ -722,21 +737,22 @@ class _PromotionPointPageState extends ConsumerState<PromotionPointPage> {
                     ]),
                 Padding(
                   padding: const EdgeInsets.fromLTRB(8.0, 0.0, 8.0, 0.0),
-                  child: DropdownButtonFormField(
-                    isExpanded: true,
+                  child: PlatformItemPicker(
                     value: weapons,
-                    decoration:
-                        const InputDecoration(labelText: 'Weapons Card'),
-                    items: weaponCards.map((card) {
-                      return DropdownMenuItem(
-                        child: Text(card, overflow: TextOverflow.ellipsis),
-                        value: card,
-                      );
-                    }).toList(),
+                    label: 'Weapons Card',
+                    items: weaponCards,
                     onChanged: (dynamic value) {
                       FocusScope.of(context).unfocus();
                       setState(() {
                         weapons = value;
+                        _calcWeaponPts();
+                        _calcTotalPts();
+                      });
+                    },
+                    onSelectedItemChanged: (index) {
+                      FocusScope.of(context).unfocus();
+                      setState(() {
+                        weapons = weaponCards[index];
                         _calcWeaponPts();
                         _calcTotalPts();
                       });
@@ -829,20 +845,22 @@ class _PromotionPointPageState extends ConsumerState<PromotionPointPage> {
                   ),
                 Padding(
                   padding: const EdgeInsets.fromLTRB(8.0, 0.0, 8.0, 0.0),
-                  child: DropdownButtonFormField(
+                  child: PlatformItemPicker(
                     value: airborneLvl,
-                    decoration:
-                        const InputDecoration(labelText: 'Airborne Advantage'),
-                    items: airborne.map((ab) {
-                      return DropdownMenuItem(
-                        child: Text(ab),
-                        value: ab,
-                      );
-                    }).toList(),
-                    onChanged: (dynamic value) {
+                    label: 'Airborne Advantage',
+                    items: airborne,
+                    onChanged: (value) {
                       FocusScope.of(context).unfocus();
                       setState(() {
                         airborneLvl = value;
+                        _calcAirbornePts();
+                        _calcTotalPts();
+                      });
+                    },
+                    onSelectedItemChanged: (index) {
+                      FocusScope.of(context).unfocus();
+                      setState(() {
+                        airborneLvl = airborne[index];
                         _calcAirbornePts();
                         _calcTotalPts();
                       });
@@ -862,19 +880,20 @@ class _PromotionPointPageState extends ConsumerState<PromotionPointPage> {
               children: [
                 Padding(
                   padding: const EdgeInsets.fromLTRB(8.0, 0.0, 8.0, 0.0),
-                  child: DropdownButtonFormField(
+                  child: PlatformItemPicker(
                     value: ncoes,
-                    decoration:
-                        const InputDecoration(labelText: 'NCOES Honors'),
-                    items: ncoesHonors.map((honors) {
-                      return DropdownMenuItem(
-                        child: Text(honors),
-                        value: honors,
-                      );
-                    }).toList(),
-                    onChanged: (dynamic value) {
+                    label: 'NCOES Honors',
+                    items: ncoesHonors,
+                    onChanged: (value) {
                       setState(() {
                         ncoes = value;
+                        _calcNcoesPts();
+                        _calcTotalPts();
+                      });
+                    },
+                    onSelectedItemChanged: (index) {
+                      setState(() {
+                        ncoes = ncoesHonors[index];
                         _calcNcoesPts();
                         _calcTotalPts();
                       });
@@ -1168,7 +1187,7 @@ class _PromotionPointPageState extends ConsumerState<PromotionPointPage> {
                       id: null,
                       date: null,
                       name: null,
-                      rank: rank,
+                      rank: rank.toString(),
                       version: isNewVersion ? 1 : 0,
                       ptTest: ptPts,
                       weapons: weaponPts,

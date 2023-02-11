@@ -1,12 +1,19 @@
 import 'package:flutter/material.dart';
 
+import 'platform_widgets/platform_item_picker.dart';
+
 class BadgeCard extends StatelessWidget {
-  const BadgeCard(
-      {Key? key, this.onLongPressed, this.badgeName, this.onBadgeChosen})
-      : super(key: key);
+  const BadgeCard({
+    Key? key,
+    this.onLongPressed,
+    this.badgeName,
+    this.onBadgeChosen,
+    this.onSelectedItemChanged,
+  }) : super(key: key);
   final Function? onLongPressed;
   final String? badgeName;
-  final ValueChanged<String?>? onBadgeChosen;
+  final void Function(dynamic)? onBadgeChosen;
+  final void Function(int)? onSelectedItemChanged;
 
   static const List<String> badges = [
     'None',
@@ -57,17 +64,12 @@ class BadgeCard extends StatelessWidget {
       child: Card(
         child: Padding(
           padding: const EdgeInsets.all(8.0),
-          child: DropdownButtonFormField(
-            isExpanded: true,
-            value: badgeName,
-            decoration: const InputDecoration(labelText: 'Badge'),
-            items: badges.map((badge) {
-              return DropdownMenuItem(
-                child: Text(badge, overflow: TextOverflow.ellipsis),
-                value: badge,
-              );
-            }).toList(),
+          child: PlatformItemPicker(
+            value: badgeName!,
+            label: 'Badge',
+            items: badges,
             onChanged: onBadgeChosen,
+            onSelectedItemChanged: onSelectedItemChanged,
           ),
         ),
       ),

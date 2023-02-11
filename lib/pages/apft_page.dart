@@ -6,8 +6,8 @@ import 'package:intl/intl.dart';
 
 import '../providers/shared_preferences_provider.dart';
 import '../sqlite/db_helper.dart';
-import '../widgets/formatted_drop_down.dart';
-import '../widgets/formatted_radio.dart';
+import '../widgets/platform_widgets/platform_item_picker.dart';
+import '../widgets/platform_widgets/platform_selection_widget.dart';
 import '../widgets/grid_box.dart';
 import '../widgets/increment_decrement_button.dart';
 import '../calculators/pu_calculator.dart';
@@ -34,8 +34,7 @@ class ApftPage extends ConsumerStatefulWidget {
 }
 
 class _ApftPageState extends ConsumerState<ApftPage> {
-  String gender = 'Male',
-      ageGroup = '17-21',
+  String ageGroup = '17-21',
       event = 'Run',
       puMin = '',
       pu90 = '',
@@ -46,6 +45,7 @@ class _ApftPageState extends ConsumerState<ApftPage> {
       runMin = '',
       run90 = '',
       runMax = '';
+  Object gender = 'Male';
   int age = 22,
       pu = 50,
       su = 50,
@@ -390,8 +390,8 @@ class _ApftPageState extends ConsumerState<ApftPage> {
         child: SingleChildScrollView(
           child: Column(
             children: <Widget>[
-              FormattedRadio(
-                  titles: ['M', 'F'],
+              PlatformSelectionWidget(
+                  titles: [Text('M'), Text('F')],
                   values: ['Male', 'Female'],
                   groupValue: gender,
                   onChanged: (value) {
@@ -488,7 +488,7 @@ class _ApftPageState extends ConsumerState<ApftPage> {
                   ],
                 ),
               ),
-              FormattedDropDown(
+              PlatformItemPicker(
                 label: 'Aerobic Event',
                 value: event,
                 items: events,
@@ -499,6 +499,10 @@ class _ApftPageState extends ConsumerState<ApftPage> {
                   });
                   calcAll();
                 },
+                onSelectedItemChanged: (index) => setState(() {
+                  event = events[index];
+                  calcAll();
+                }),
               ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -1044,7 +1048,7 @@ class _ApftPageState extends ConsumerState<ApftPage> {
                           date: null,
                           rank: null,
                           name: null,
-                          gender: gender,
+                          gender: gender.toString(),
                           age: age.toString(),
                           puRaw: pu.toString(),
                           puScore: puScore.toString(),

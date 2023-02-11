@@ -9,7 +9,7 @@ import '../../services/purchases_service.dart';
 import '../../widgets/platform_widgets/platform_button.dart';
 import '../../providers/shared_preferences_provider.dart';
 import '../../sqlite/db_helper.dart';
-import '../../widgets/formatted_radio.dart';
+import '../../widgets/platform_widgets/platform_selection_widget.dart';
 import '../../widgets/grid_box.dart';
 import '../../widgets/increment_decrement_button.dart';
 import '../../calculators/bf_calculator.dart';
@@ -33,7 +33,8 @@ class _BodyfatPageState extends ConsumerState<BodyfatPage> {
   int? bfPercent, weightMin, weightMax, percentMax, overUnder;
   double? heightDouble;
   double neck = 16.0, waist = 34.0, hip = 34.0;
-  String ageGroup = '17-20', gender = 'Male';
+  String ageGroup = '17-20';
+  Object gender = 'Male';
   bool bmiPass = true,
       bfPass = true,
       isUnderWeight = false,
@@ -304,8 +305,8 @@ class _BodyfatPageState extends ConsumerState<BodyfatPage> {
       child: SingleChildScrollView(
         child: Column(
           children: <Widget>[
-            FormattedRadio(
-              titles: ['M', 'F'],
+            PlatformSelectionWidget(
+              titles: [Text('M'), Text('F')],
               values: ['Male', 'Female'],
               groupValue: gender,
               onChanged: (value) {
@@ -697,12 +698,10 @@ class _BodyfatPageState extends ConsumerState<BodyfatPage> {
                         ),
                         SizedBox(
                           width: 64,
-                          child: TextField(
+                          child: PlatformTextField(
                             controller: _heightDoubleController,
                             textAlign: TextAlign.center,
                             enabled: false,
-                            style: const TextStyle(
-                                fontSize: 18, fontWeight: FontWeight.normal),
                             decoration: const InputDecoration(
                                 border: OutlineInputBorder()),
                           ),
@@ -1065,7 +1064,7 @@ class _BodyfatPageState extends ConsumerState<BodyfatPage> {
                         date: null,
                         rank: null,
                         name: null,
-                        gender: gender,
+                        gender: gender.toString(),
                         age: age.toString(),
                         height: height.toString(),
                         weight: weight.toString(),

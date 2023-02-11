@@ -2,19 +2,22 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import '../classes/award_decoration.dart';
+import 'platform_widgets/platform_item_picker.dart';
 
 class DecorationCard extends StatefulWidget {
-  DecorationCard(
-      {Key? key,
-      this.onLongPressed,
-      this.decoration,
-      this.onAwardChosen,
-      this.onAwardNumberChanged})
-      : super(key: key);
+  DecorationCard({
+    Key? key,
+    this.onLongPressed,
+    this.decoration,
+    this.onAwardChosen,
+    this.onAwardNumberChanged,
+    this.onSelectedItemChanged,
+  }) : super(key: key);
   final Function? onLongPressed;
   final AwardDecoration? decoration;
-  final Function(String?)? onAwardChosen;
-  final Function(String)? onAwardNumberChanged;
+  final void Function(dynamic)? onAwardChosen;
+  final void Function(int)? onSelectedItemChanged;
+  final void Function(String)? onAwardNumberChanged;
 
   static const List<String> awards = [
     'None',
@@ -62,20 +65,12 @@ class _DecorationCardState extends State<DecorationCard> {
             children: [
               Expanded(
                 flex: 3,
-                child: DropdownButtonFormField(
-                  isExpanded: true,
-                  value: widget.decoration!.name,
-                  decoration: const InputDecoration(labelText: 'Decoration'),
-                  items: DecorationCard.awards.map((award) {
-                    return DropdownMenuItem(
-                      child: Text(
-                        award,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                      value: award,
-                    );
-                  }).toList(),
+                child: PlatformItemPicker(
+                  value: widget.decoration!.name!,
+                  label: 'Decoration',
+                  items: DecorationCard.awards,
                   onChanged: widget.onAwardChosen,
+                  onSelectedItemChanged: widget.onSelectedItemChanged,
                 ),
               ),
               Expanded(

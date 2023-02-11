@@ -1,3 +1,5 @@
+import 'package:acft_calculator/widgets/platform_widgets/platform_item_picker.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import '../../widgets/platform_widgets/platform_scaffold.dart';
@@ -14,13 +16,14 @@ class AcftTablePage extends StatefulWidget {
 }
 
 class _AcftTablePageState extends State<AcftTablePage> {
-  String? _ageGroup, _gender;
+  late String _ageGroup, _gender;
+  List<String> _genders = ['Male', 'Female'];
 
   @override
   void initState() {
     super.initState();
-    _ageGroup = widget.ageGroup;
-    _gender = widget.gender;
+    _ageGroup = widget.ageGroup!;
+    _gender = widget.gender!;
   }
 
   @override
@@ -46,17 +49,13 @@ class _AcftTablePageState extends State<AcftTablePage> {
                 children: [
                   Padding(
                     padding: const EdgeInsets.all(8.0),
-                    child: DropdownButtonFormField(
+                    child: PlatformItemPicker(
+                      label: 'Age Group',
                       value: _ageGroup,
-                      items: ptAgeGroups
-                          .map((e) => DropdownMenuItem(
-                                child: Text(e!),
-                                value: e,
-                              ))
-                          .toList(),
-                      decoration: InputDecoration(
-                        label: Text('Age Group'),
-                      ),
+                      items: ptAgeGroups,
+                      onSelectedItemChanged: (index) => setState(() {
+                        _ageGroup = ptAgeGroups[index];
+                      }),
                       onChanged: (dynamic value) {
                         setState(() {
                           _ageGroup = value;
@@ -66,17 +65,13 @@ class _AcftTablePageState extends State<AcftTablePage> {
                   ),
                   Padding(
                     padding: const EdgeInsets.all(8.0),
-                    child: DropdownButtonFormField(
+                    child: PlatformItemPicker(
+                      label: 'Gender',
                       value: _gender,
-                      items: ['Male', 'Female']
-                          .map((e) => DropdownMenuItem(
-                                child: Text(e),
-                                value: e,
-                              ))
-                          .toList(),
-                      decoration: InputDecoration(
-                        label: Text('Gender'),
-                      ),
+                      items: _genders,
+                      onSelectedItemChanged: (index) => setState(() {
+                        _gender = _genders[index];
+                      }),
                       onChanged: (dynamic value) {
                         setState(() {
                           _gender = value;

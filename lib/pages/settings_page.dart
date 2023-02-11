@@ -6,8 +6,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../providers/shared_preferences_provider.dart';
 import '../providers/theme_provider.dart';
-import '../widgets/formatted_drop_down.dart';
-import '../widgets/formatted_radio.dart';
+import '../widgets/platform_widgets/platform_item_picker.dart';
+import '../widgets/platform_widgets/platform_selection_widget.dart';
 import 'package:flutter/material.dart';
 import '../../providers/purchases_provider.dart';
 import '../../services/purchases_service.dart';
@@ -22,11 +22,8 @@ class SettingsPage extends ConsumerStatefulWidget {
 }
 
 class _SettingsPageState extends ConsumerState<SettingsPage> {
-  String apftEvent = 'Run',
-      acftEvent = 'Run',
-      gender = 'Male',
-      brightness = 'Light',
-      rank = 'SGT';
+  String apftEvent = 'Run', acftEvent = 'Run', brightness = 'Light';
+  Object gender = 'Male', rank = 'SGT';
   bool jrSoldier = true;
   late SharedPreferences prefs;
   late PurchasesService purchasesService;
@@ -194,24 +191,29 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                     shrinkWrap: true,
                     primary: false,
                     children: <Widget>[
-                      FormattedDropDown(
-                          label: 'Default ACFT Aerobic Event',
-                          value: acftEvent,
-                          items: acftEvents,
-                          onChanged: (value) {
-                            setState(() {
-                              acftEvent = value!;
-                              prefs.setString('acft_event', value);
-                            });
-                          }),
-                      FormattedRadio(
-                          titles: ['M', 'F'],
+                      PlatformItemPicker(
+                        label: 'Default ACFT Aerobic Event',
+                        value: acftEvent,
+                        items: acftEvents,
+                        onChanged: (value) {
+                          setState(() {
+                            acftEvent = value!;
+                            prefs.setString('acft_event', value);
+                          });
+                        },
+                        onSelectedItemChanged: (index) => setState(() {
+                          acftEvent = events[index];
+                          prefs.setString('acft_event', acftEvent);
+                        }),
+                      ),
+                      PlatformSelectionWidget(
+                          titles: [Text('M'), Text('F')],
                           values: ['Male', 'Female'],
                           groupValue: gender,
                           onChanged: (value) {
                             setState(() {
                               gender = value!;
-                              prefs.setString('gender', value);
+                              prefs.setString('gender', value.toString());
                             });
                           }),
                       Padding(
@@ -227,16 +229,21 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                           },
                         ),
                       ),
-                      FormattedDropDown(
-                          label: 'Default APFT Aerobic Event',
-                          value: apftEvent,
-                          items: events,
-                          onChanged: (value) {
-                            setState(() {
-                              apftEvent = value!;
-                              prefs.setString('apft_event', value);
-                            });
-                          }),
+                      PlatformItemPicker(
+                        label: 'Default APFT Aerobic Event',
+                        value: apftEvent,
+                        items: events,
+                        onChanged: (value) {
+                          setState(() {
+                            apftEvent = value!;
+                            prefs.setString('apft_event', value);
+                          });
+                        },
+                        onSelectedItemChanged: (index) => setState(() {
+                          apftEvent = events[index];
+                          prefs.setString('apft_event', apftEvent);
+                        }),
+                      ),
                       SwitchListTile(
                         value: jrSoldier,
                         title: const Text('For Promotion Points'),
@@ -263,14 +270,14 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                           },
                         ),
                       ),
-                      FormattedRadio(
-                          titles: ['SGT', 'SSG'],
+                      PlatformSelectionWidget(
+                          titles: [Text('SGT'), Text('SSG')],
                           values: ['SGT', 'SSG'],
                           groupValue: rank,
                           onChanged: (value) {
                             setState(() {
                               rank = value!;
-                              prefs.setString('rank', value);
+                              prefs.setString('rank', value.toString());
                             });
                           }),
                     ],

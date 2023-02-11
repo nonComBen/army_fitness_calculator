@@ -1,4 +1,4 @@
-List<String?> ptAgeGroups = [
+List<String> ptAgeGroups = [
   '17-21',
   '22-26',
   '27-31',

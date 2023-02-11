@@ -21,8 +21,8 @@ import '../../widgets/platform_widgets/platform_checkbox_list_tile.dart';
 import '../../widgets/platform_widgets/platform_slider.dart';
 import '../../widgets/platform_widgets/platform_text_field.dart';
 import '../saved_pages/saved_acfts_page.dart';
-import '../../widgets/formatted_drop_down.dart';
-import '../../widgets/formatted_radio.dart';
+import '../../widgets/platform_widgets/platform_item_picker.dart';
+import '../../widgets/platform_widgets/platform_selection_widget.dart';
 import '../../widgets/grid_box.dart';
 import '../../widgets/increment_decrement_button.dart';
 import '../../constants/pt_age_group_table.dart';
@@ -72,7 +72,8 @@ class AcftPageState extends ConsumerState<AcftPage> {
       runPass = true,
       totalPass = true;
   double sptRaw = 11.0;
-  static String ageGroup = '17-21', gender = 'Male';
+  static String ageGroup = '17-21';
+  static Object gender = 'Male';
   String? mdlMinimum,
       mdl90,
       mdlMax,
@@ -504,8 +505,8 @@ class AcftPageState extends ConsumerState<AcftPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
-            FormattedRadio(
-                titles: ['M', 'F'],
+            PlatformSelectionWidget(
+                titles: [Text('M'), Text('F')],
                 values: ['Male', 'Female'],
                 groupValue: gender,
                 onChanged: (value) {
@@ -599,9 +600,9 @@ class AcftPageState extends ConsumerState<AcftPage> {
                 ],
               ),
             ),
-            FormattedDropDown(
+            PlatformItemPicker(
               label: 'Aerobic Event',
-              value: aerobicEvent,
+              value: aerobicEvent!,
               items: acftAerobicEvents,
               onChanged: (value) {
                 setState(() {
@@ -612,6 +613,13 @@ class AcftPageState extends ConsumerState<AcftPage> {
                 calcRunScore();
                 calcTotal();
               },
+              onSelectedItemChanged: (index) => setState(() {
+                FocusScope.of(context).unfocus();
+                aerobicEvent = acftAerobicEvents[index];
+                setBenchmarks();
+                calcRunScore();
+                calcTotal();
+              }),
             ),
             Divider(
               color: Colors.yellow,
@@ -1843,7 +1851,7 @@ class AcftPageState extends ConsumerState<AcftPage> {
                         date: null,
                         rank: null,
                         name: null,
-                        gender: gender,
+                        gender: gender.toString(),
                         age: age.toString(),
                         mdlRaw: mdlRaw.toString(),
                         mdlScore: mdlScore.toString(),

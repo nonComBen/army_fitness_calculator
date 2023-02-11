@@ -18,9 +18,9 @@ class AcftTable extends StatelessWidget {
   Widget build(BuildContext context) {
     var tableIndex;
     if (gender == 'Male') {
-      tableIndex = (ptAgeGroups.indexOf(ageGroup) + 1) * 2 - 1;
+      tableIndex = (ptAgeGroups.indexOf(ageGroup!) + 1) * 2 - 1;
     } else {
-      tableIndex = (ptAgeGroups.indexOf(ageGroup) + 1) * 2;
+      tableIndex = (ptAgeGroups.indexOf(ageGroup!) + 1) * 2;
     }
     return Container(
       child: Row(
