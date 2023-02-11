@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../methods/theme_methods.dart';
+
 class IncrementDecrementButton extends StatelessWidget {
   const IncrementDecrementButton(
       {Key? key,
@@ -27,8 +29,7 @@ class IncrementDecrementButton extends StatelessWidget {
             child: Text(
               child!,
               style: TextStyle(
-                  fontSize: fontSize,
-                  color: Theme.of(context).colorScheme.onPrimary),
+                  fontSize: fontSize, color: getOnPrimaryColor(context)),
             ),
           ),
         ),

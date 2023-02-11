@@ -42,7 +42,8 @@ class OverflowTab extends ConsumerWidget {
             leading: const Icon(Icons.fitness_center),
             onTap: () {
               if (purchasesService.isPremium) {
-                Navigator.of(context).pushNamed(SavedAcftsPage.routeName);
+                Navigator.of(context, rootNavigator: true)
+                    .pushNamed(SavedAcftsPage.routeName);
               } else {
                 purchasesService.upgradeNeeded(context);
               }
@@ -53,7 +54,8 @@ class OverflowTab extends ConsumerWidget {
             leading: const Icon(Icons.directions_run),
             onTap: () {
               if (purchasesService.isPremium) {
-                Navigator.of(context).pushNamed(SavedApftsPage.routeName);
+                Navigator.of(context, rootNavigator: true)
+                    .pushNamed(SavedApftsPage.routeName);
               } else {
                 purchasesService.upgradeNeeded(context);
               }
@@ -64,7 +66,8 @@ class OverflowTab extends ConsumerWidget {
             leading: const Icon(Icons.accessibility),
             onTap: () {
               if (purchasesService.isPremium) {
-                Navigator.of(context).pushNamed(SavedBodyfatsPage.routeName);
+                Navigator.of(context, rootNavigator: true)
+                    .pushNamed(SavedBodyfatsPage.routeName);
               } else {
                 purchasesService.upgradeNeeded(context);
               }
@@ -75,7 +78,8 @@ class OverflowTab extends ConsumerWidget {
             leading: const Icon(Icons.attach_money),
             onTap: () {
               if (purchasesService.isPremium) {
-                Navigator.of(context).pushNamed(SavedPpwsPage.routeName);
+                Navigator.of(context, rootNavigator: true)
+                    .pushNamed(SavedPpwsPage.routeName);
               } else {
                 purchasesService.upgradeNeeded(context);
               }
@@ -89,28 +93,32 @@ class OverflowTab extends ConsumerWidget {
             title: const Text('ACFT Instructions'),
             leading: const Icon(Icons.fitness_center),
             onTap: () {
-              Navigator.of(context).pushNamed(AcftVerbiagePage.routeName);
+              Navigator.of(context, rootNavigator: true)
+                  .pushNamed(AcftVerbiagePage.routeName);
             },
           ),
           PlatformListTile(
             title: const Text('MDL Setup'),
             leading: const Icon(Icons.fitness_center),
             onTap: () {
-              Navigator.of(context).pushNamed(MdlSetupPage.routeName);
+              Navigator.of(context, rootNavigator: true)
+                  .pushNamed(MdlSetupPage.routeName);
             },
           ),
           PlatformListTile(
             title: const Text('APFT Instructions'),
             leading: const Icon(Icons.directions_run),
             onTap: () {
-              Navigator.of(context).pushNamed(ApftVerbiagePage.routeName);
+              Navigator.of(context, rootNavigator: true)
+                  .pushNamed(ApftVerbiagePage.routeName);
             },
           ),
           PlatformListTile(
             title: const Text('Body Comp Instructions'),
             leading: const Icon(Icons.accessibility),
             onTap: () {
-              Navigator.of(context).pushNamed(BodyfatVerbiagePage.routeName);
+              Navigator.of(context, rootNavigator: true)
+                  .pushNamed(BodyfatVerbiagePage.routeName);
             },
           ),
           const Divider(),
@@ -122,7 +130,8 @@ class OverflowTab extends ConsumerWidget {
           PlatformListTile(
             title: const Text('AFPT Calculator'),
             leading: const Icon(Icons.directions_run),
-            onTap: () => Navigator.of(context).pushNamed(ApftPage.routeName),
+            onTap: () => Navigator.of(context, rootNavigator: true)
+                .pushNamed(ApftPage.routeName),
           ),
           PlatformListTile(
             title: const Text('www.army.mil/acft'),
@@ -156,7 +165,8 @@ class OverflowTab extends ConsumerWidget {
             title: const Text('Privacy Policy'),
             leading: const Icon(Icons.info),
             onTap: () {
-              Navigator.of(context).pushNamed(PrivacyPolicyPage.routeName);
+              Navigator.of(context, rootNavigator: true)
+                  .pushNamed(PrivacyPolicyPage.routeName);
             },
           ),
           PlatformListTile(
@@ -170,7 +180,8 @@ class OverflowTab extends ConsumerWidget {
             title: const Text('Settings'),
             leading: const Icon(Icons.settings),
             onTap: () {
-              Navigator.of(context).pushNamed(SettingsPage.routeName);
+              Navigator.of(context, rootNavigator: true)
+                  .pushNamed(SettingsPage.routeName);
             },
           ),
         ],

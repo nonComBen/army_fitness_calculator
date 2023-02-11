@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:acft_calculator/methods/theme_methods.dart';
 import 'package:acft_calculator/widgets/platform_widgets/platform_item_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -16,12 +17,12 @@ import '../../calculators/pt_pts_calculator.dart';
 import '../../calculators/weapons_pts_calculator.dart';
 import '../../providers/shared_preferences_provider.dart';
 import '../../widgets/platform_widgets/platform_checkbox_list_tile.dart';
+import '../../widgets/platform_widgets/platform_expansion_list_tile.dart';
 import '../../widgets/platform_widgets/platform_icon_button.dart';
 import '../../widgets/platform_widgets/platform_text_field.dart';
 import '../saved_pages/saved_ppw_page.dart';
 import '../../sqlite/db_helper.dart';
 import '../../sqlite/ppw.dart';
-import '../../widgets/formatted_expansion_tile.dart';
 import '../../widgets/platform_widgets/platform_selection_widget.dart';
 import '../../widgets/badge_card.dart';
 import '../../widgets/decoration_card.dart';
@@ -72,7 +73,7 @@ class _PromotionPointPageState extends ConsumerState<PromotionPointPage> {
   String weapons = 'DA 3595-R / 5790-R / 5789-R / 7801 (M16/M4)',
       airborneLvl = 'None',
       ncoes = 'None';
-  Object rank = 'SGT';
+  Object rank = 'SGT', version = 'oldVersion';
   bool isRanger = false,
       isSf = false,
       isSapper = false,
@@ -90,6 +91,9 @@ class _PromotionPointPageState extends ConsumerState<PromotionPointPage> {
   RegExp regExp = RegExp(r'^\d{4}(0[1-9]|1[012])(0[1-9]|[12][0-9]|3[01])$');
   DBHelper dbHelper = DBHelper();
   late PurchasesService purchasesService;
+  late TextStyle expansionTextStyle;
+  late Color primaryColor;
+  late Color onPrimaryColor;
 
   List<AwardDecoration> decorations = [];
   List<dynamic> _badges = [];
@@ -460,7 +464,8 @@ class _PromotionPointPageState extends ConsumerState<PromotionPointPage> {
                     ppw.date = _dateController.text;
                     dbHelper.savePPW(ppw);
                     Navigator.of(ctx).pop();
-                    Navigator.of(context).pushNamed(SavedPpwsPage.routeName);
+                    Navigator.of(context, rootNavigator: true)
+                        .pushNamed(SavedPpwsPage.routeName);
                   },
                 ),
               )
@@ -474,7 +479,7 @@ class _PromotionPointPageState extends ConsumerState<PromotionPointPage> {
   void _deleteAwardWarning(int index, String awardType) {
     final title = Text('Delete $awardType?');
     final content = Text('Are you sure you want to delete this $awardType?');
-    final textStyle = TextStyle(color: Theme.of(context).colorScheme.onPrimary);
+    final textStyle = TextStyle(color: onPrimaryColor);
 
     if (Platform.isIOS) {
       showCupertinoDialog(
@@ -607,7 +612,10 @@ class _PromotionPointPageState extends ConsumerState<PromotionPointPage> {
 
   @override
   Widget build(BuildContext context) {
+    primaryColor = getPrimaryColor(context);
+    onPrimaryColor = getOnPrimaryColor(context);
     final width = MediaQuery.of(context).size.width;
+    expansionTextStyle = TextStyle(color: onPrimaryColor, fontSize: 22);
     return Container(
       padding: const EdgeInsets.all(16.0),
       child: SingleChildScrollView(
@@ -642,14 +650,14 @@ class _PromotionPointPageState extends ConsumerState<PromotionPointPage> {
                       }),
                   Padding(
                     padding: const EdgeInsets.only(top: 24.0),
-                    child: SwitchListTile(
-                      activeColor: Theme.of(context).colorScheme.onSecondary,
-                      title: Text(
-                          isNewVersion ? 'After 1 Apr 23' : 'Before 1 Apr 23'),
-                      value: isNewVersion,
+                    child: PlatformSelectionWidget(
+                      titles: [Text('After 1 Apr 23'), Text('Before 1 Apr 23')],
+                      values: ['newVersion', 'oldVersion'],
+                      groupValue: version,
                       onChanged: (value) {
                         setState(() {
-                          isNewVersion = value;
+                          version = value!;
+                          isNewVersion = version == 'newVersion';
                           _resetMaximums();
                           _calcPtPts();
                           _calcWeaponPts();
@@ -665,10 +673,17 @@ class _PromotionPointPageState extends ConsumerState<PromotionPointPage> {
                     ),
                   ),
                 ]),
-            FormattedExpansionTile(
-              title: 'Military Training',
-              trailing: '$milTrainPts/$milTrainMax',
+            PlatformExpansionTile(
+              title: Text(
+                'Military Training',
+                style: expansionTextStyle,
+              ),
+              trailing: Text(
+                '$milTrainPts/$milTrainMax',
+                style: expansionTextStyle,
+              ),
               initiallyExpanded: true,
+              collapsedBackgroundColor: primaryColor,
               children: [
                 GridView.count(
                     crossAxisCount: width > 700 ? 2 : 1,
@@ -765,11 +780,17 @@ class _PromotionPointPageState extends ConsumerState<PromotionPointPage> {
               padding: const EdgeInsets.symmetric(
                 vertical: 8,
               ),
-              child: Divider(color: Theme.of(context).colorScheme.onSecondary),
+              child: Divider(color: onPrimaryColor),
             ),
-            FormattedExpansionTile(
-              title: 'Awards',
-              trailing: '$awardsTotal/$awardsMax',
+            PlatformExpansionTile(
+              title: Text(
+                'Awards',
+                style: expansionTextStyle,
+              ),
+              trailing: Text(
+                '$awardsTotal/$awardsMax',
+                style: expansionTextStyle,
+              ),
               initiallyExpanded: false,
               children: [
                 Card(
@@ -871,11 +892,17 @@ class _PromotionPointPageState extends ConsumerState<PromotionPointPage> {
             ),
             Padding(
               padding: const EdgeInsets.only(top: 8, bottom: 8),
-              child: Divider(color: Theme.of(context).colorScheme.onSecondary),
+              child: Divider(color: onPrimaryColor),
             ),
-            FormattedExpansionTile(
-              title: 'Military Education',
-              trailing: '$milEdPts/$milEdMax',
+            PlatformExpansionTile(
+              title: Text(
+                'Military Education',
+                style: expansionTextStyle,
+              ),
+              trailing: Text(
+                '$milEdPts/$milEdMax',
+                style: expansionTextStyle,
+              ),
               initiallyExpanded: false,
               children: [
                 Padding(
@@ -968,8 +995,7 @@ class _PromotionPointPageState extends ConsumerState<PromotionPointPage> {
                       children: [
                         PlatformCheckboxListTile(
                             title: const Text('Ranger'),
-                            activeColor:
-                                Theme.of(context).colorScheme.onSecondary,
+                            activeColor: onPrimaryColor,
                             value: isRanger,
                             onChanged: (value) {
                               setState(() {
@@ -980,8 +1006,7 @@ class _PromotionPointPageState extends ConsumerState<PromotionPointPage> {
                             }),
                         PlatformCheckboxListTile(
                             title: const Text('Special Forces'),
-                            activeColor:
-                                Theme.of(context).colorScheme.onSecondary,
+                            activeColor: onPrimaryColor,
                             value: isSf,
                             onChanged: (value) {
                               setState(() {
@@ -992,8 +1017,7 @@ class _PromotionPointPageState extends ConsumerState<PromotionPointPage> {
                             }),
                         PlatformCheckboxListTile(
                             title: const Text('Sapper'),
-                            activeColor:
-                                Theme.of(context).colorScheme.onSecondary,
+                            activeColor: onPrimaryColor,
                             value: isSapper,
                             onChanged: (value) {
                               setState(() {
@@ -1008,11 +1032,17 @@ class _PromotionPointPageState extends ConsumerState<PromotionPointPage> {
             ),
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 8),
-              child: Divider(color: Theme.of(context).colorScheme.onSecondary),
+              child: Divider(color: onPrimaryColor),
             ),
-            FormattedExpansionTile(
-              title: 'Civilian Education',
-              trailing: '$civEdPts/$civEdMax',
+            PlatformExpansionTile(
+              title: Text(
+                'Civilian Education',
+                style: expansionTextStyle,
+              ),
+              trailing: Text(
+                '$civEdPts/$civEdMax',
+                style: expansionTextStyle,
+              ),
               initiallyExpanded: false,
               children: [
                 GridView.count(
@@ -1045,7 +1075,7 @@ class _PromotionPointPageState extends ConsumerState<PromotionPointPage> {
                     Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: PlatformCheckboxListTile(
-                        activeColor: Theme.of(context).colorScheme.onSecondary,
+                        activeColor: onPrimaryColor,
                         value: degreeCompleted,
                         title: const Text(
                           'Degree',
@@ -1134,7 +1164,7 @@ class _PromotionPointPageState extends ConsumerState<PromotionPointPage> {
                     Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: PlatformCheckboxListTile(
-                        activeColor: Theme.of(context).colorScheme.onSecondary,
+                        activeColor: onPrimaryColor,
                         value: hasFornLang,
                         title: const Text(
                           'Foreign Language',
@@ -1156,7 +1186,7 @@ class _PromotionPointPageState extends ConsumerState<PromotionPointPage> {
             ),
             Padding(
               padding: const EdgeInsets.only(top: 8, bottom: 8),
-              child: Divider(color: Theme.of(context).colorScheme.onSecondary),
+              child: Divider(color: onPrimaryColor),
             ),
             Card(
                 color: Colors.black,
@@ -1166,14 +1196,10 @@ class _PromotionPointPageState extends ConsumerState<PromotionPointPage> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text('Total Points',
-                          style: TextStyle(
-                              fontSize: 22,
-                              color:
-                                  Theme.of(context).colorScheme.onSecondary)),
+                          style:
+                              TextStyle(fontSize: 22, color: onPrimaryColor)),
                       Text('$totalPts/800',
-                          style: TextStyle(
-                              fontSize: 22,
-                              color: Theme.of(context).colorScheme.onSecondary))
+                          style: TextStyle(fontSize: 22, color: onPrimaryColor))
                     ],
                   ),
                 )),

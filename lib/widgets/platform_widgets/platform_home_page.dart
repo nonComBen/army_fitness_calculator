@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:rate_my_app/rate_my_app.dart';
 
+import '../../methods/theme_methods.dart';
 import '../../pages/tabs/acft_page.dart';
 import '../../pages/tabs/bodyfat_page.dart';
 import '../../pages/tabs/ppw_page.dart';
@@ -240,14 +241,14 @@ class _IOSHomePageState extends ConsumerState<IOSHomePage> {
             icon: Icon(CupertinoIcons.ellipsis),
           ),
         ],
-        activeColor: Theme.of(context).primaryColor,
+        activeColor: getPrimaryColor(context),
       ),
       tabBuilder: (context, index) {
         return CupertinoTabView(
           defaultTitle: titles[index],
           builder: (context) => CupertinoPageScaffold(
             navigationBar: CupertinoNavigationBar(
-              backgroundColor: Theme.of(context).colorScheme.primary,
+              backgroundColor: getPrimaryColor(context),
               trailing: index == 0
                   ? PlatformIconButton(
                       onPressed: () {

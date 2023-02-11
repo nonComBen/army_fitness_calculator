@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:charts_flutter/flutter.dart' as charts;
 
+import '../../methods/theme_methods.dart';
 import '../../sqlite/apft.dart';
 import '../../widgets/platform_widgets/platform_checkbox_list_tile.dart';
 import '../../widgets/platform_widgets/platform_scaffold.dart';
@@ -180,7 +181,7 @@ class _ApftChartPageState extends State<ApftChartPage> {
                   PlatformCheckboxListTile(
                     title: const Text('PU'),
                     value: pu,
-                    activeColor: Theme.of(context).colorScheme.onSecondary,
+                    activeColor: getOnPrimaryColor(context),
                     onChanged: (value) {
                       setState(() {
                         pu = value!;
@@ -190,7 +191,7 @@ class _ApftChartPageState extends State<ApftChartPage> {
                   PlatformCheckboxListTile(
                     title: const Text('SU'),
                     value: su,
-                    activeColor: Theme.of(context).colorScheme.onSecondary,
+                    activeColor: getOnPrimaryColor(context),
                     onChanged: (value) {
                       setState(() {
                         su = value!;
@@ -200,7 +201,7 @@ class _ApftChartPageState extends State<ApftChartPage> {
                   PlatformCheckboxListTile(
                     title: const Text('Run'),
                     value: run,
-                    activeColor: Theme.of(context).colorScheme.onSecondary,
+                    activeColor: getOnPrimaryColor(context),
                     onChanged: (value) {
                       setState(() {
                         run = value!;

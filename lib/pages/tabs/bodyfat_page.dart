@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../methods/theme_methods.dart';
 import '../../providers/purchases_provider.dart';
 import '../../services/purchases_service.dart';
 import '../../widgets/platform_widgets/platform_button.dart';
@@ -281,7 +282,7 @@ class _BodyfatPageState extends ConsumerState<BodyfatPage> {
                       bf.bfPercent = bf.gender == 'Male' ? '18' : '28';
                     dbHelper.saveBodyfat(bf);
                     Navigator.pop(ctx);
-                    Navigator.of(context)
+                    Navigator.of(context, rootNavigator: true)
                         .pushNamed(SavedBodyfatsPage.routeName);
                   },
                 ),
@@ -296,10 +297,10 @@ class _BodyfatPageState extends ConsumerState<BodyfatPage> {
   @override
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
-    final primaryColor = Theme.of(context).colorScheme.primary;
-    final textColor = Theme.of(context).colorScheme.onPrimary;
+    final primaryColor = getPrimaryColor(context);
+    final textColor = getOnPrimaryColor(context);
     final errorColor = Theme.of(context).colorScheme.error;
-    final backgroundColor = Theme.of(context).scaffoldBackgroundColor;
+    final backgroundColor = getBackgroundColor(context);
     return Container(
       padding: const EdgeInsets.all(16.0),
       child: SingleChildScrollView(

@@ -1,3 +1,4 @@
+import 'package:acft_calculator/methods/theme_methods.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -359,7 +360,8 @@ class _ApftPageState extends ConsumerState<ApftPage> {
                     apft.name = _nameController.text;
                     dbHelper.saveAPft(apft);
                     Navigator.pop(ctx);
-                    Navigator.of(context).pushNamed(SavedApftsPage.routeName);
+                    Navigator.of(context, rootNavigator: true)
+                        .pushNamed(SavedApftsPage.routeName);
                   },
                 ),
               )
@@ -373,11 +375,11 @@ class _ApftPageState extends ConsumerState<ApftPage> {
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
-    final primaryColor = Theme.of(context).colorScheme.primary;
-    final textColor = Theme.of(context).colorScheme.onPrimary;
+    final primaryColor = getPrimaryColor(context);
+    final textColor = getOnPrimaryColor(context);
     final errorColor = Theme.of(context).colorScheme.error;
-    final backgroundColor = Theme.of(context).scaffoldBackgroundColor;
-    final onSecondary = Theme.of(context).colorScheme.onSecondary;
+    final backgroundColor = getBackgroundColor(context);
+    final onSecondary = getOnPrimaryColor(context);
     return PlatformScaffold(
       title: 'APFT Calculator',
       body: Container(

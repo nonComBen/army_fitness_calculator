@@ -7,6 +7,7 @@ import 'package:flutter/services.dart';
 abstract class PlatformTextField extends Widget {
   factory PlatformTextField({
     required TextEditingController controller,
+    TextStyle? style,
     FocusNode? focusNode,
     InputDecoration? decoration,
     BoxDecoration? iosDecoration,
@@ -28,6 +29,7 @@ abstract class PlatformTextField extends Widget {
     if (Platform.isAndroid) {
       return AndroidTextField(
         controller: controller,
+        style: style,
         focusNode: focusNode,
         enabled: enabled,
         decoration: decoration,
@@ -47,6 +49,7 @@ abstract class PlatformTextField extends Widget {
     } else {
       return IOSTextField(
         controller: controller,
+        style: style,
         focusNode: focusNode,
         enabled: enabled,
         decoration: iosDecoration,
@@ -84,6 +87,7 @@ class AndroidTextField extends TextFormField implements PlatformTextField {
     super.maxLines,
     super.onChanged,
     super.onEditingComplete,
+    super.style,
   });
 }
 
@@ -104,5 +108,6 @@ class IOSTextField extends CupertinoTextField implements PlatformTextField {
     super.maxLines,
     super.onChanged,
     super.onEditingComplete,
+    super.style,
   });
 }

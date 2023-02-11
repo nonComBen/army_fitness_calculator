@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:in_app_purchase/in_app_purchase.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
+import '../methods/theme_methods.dart';
 import '../widgets/platform_widgets/platform_text_button.dart';
 import '../../widgets/platform_widgets/platform_button.dart';
 import '../widgets/toast.dart';
@@ -126,7 +127,7 @@ class PurchasesService {
             flex: 3,
             child: Text(
               'Saving scores is only available on the Premium version',
-              style: TextStyle(color: Theme.of(context).colorScheme.onPrimary),
+              style: TextStyle(color: getOnPrimaryColor(context)),
             ),
           ),
           Flexible(
@@ -135,7 +136,7 @@ class PurchasesService {
               child: Text(
                 'Upgrade',
                 style: TextStyle(
-                  color: Theme.of(context).colorScheme.onPrimary,
+                  color: getOnPrimaryColor(context),
                 ),
               ),
               onPressed: () => upgrade(context),

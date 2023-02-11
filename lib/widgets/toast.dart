@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../methods/theme_methods.dart';
+
 class MyToast extends StatelessWidget {
   const MyToast({
     required this.contents,
@@ -12,7 +14,7 @@ class MyToast extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 12.0),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(25.0),
-        color: Theme.of(context).colorScheme.primary,
+        color: getPrimaryColor(context),
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,

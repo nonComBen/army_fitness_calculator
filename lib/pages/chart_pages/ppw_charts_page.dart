@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:charts_flutter/flutter.dart' as charts;
 
+import '../../methods/theme_methods.dart';
 import '../../sqlite/ppw.dart';
 import '../../widgets/platform_widgets/platform_checkbox_list_tile.dart';
 import '../../widgets/platform_widgets/platform_scaffold.dart';
@@ -183,7 +184,8 @@ class _PpwChartPageState extends State<PpwChartPage> {
                 key: previewContainer,
                 child: DecoratedBox(
                   decoration: BoxDecoration(
-                      color: Theme.of(context).scaffoldBackgroundColor),
+                    color: getBackgroundColor(context),
+                  ),
                   child: Column(
                     children: <Widget>[
                       Center(
@@ -225,7 +227,7 @@ class _PpwChartPageState extends State<PpwChartPage> {
                     PlatformCheckboxListTile(
                       title: const Text('Military Training'),
                       value: milTrain,
-                      activeColor: Theme.of(context).colorScheme.onSecondary,
+                      activeColor: getOnPrimaryColor(context),
                       onChanged: (value) {
                         setState(() {
                           milTrain = value!;
@@ -235,7 +237,7 @@ class _PpwChartPageState extends State<PpwChartPage> {
                     PlatformCheckboxListTile(
                       title: const Text('Awards'),
                       value: awards,
-                      activeColor: Theme.of(context).colorScheme.onSecondary,
+                      activeColor: getOnPrimaryColor(context),
                       onChanged: (value) {
                         setState(() {
                           awards = value!;
@@ -245,7 +247,7 @@ class _PpwChartPageState extends State<PpwChartPage> {
                     PlatformCheckboxListTile(
                       title: const Text('Military Education'),
                       value: milEd,
-                      activeColor: Theme.of(context).colorScheme.onSecondary,
+                      activeColor: getOnPrimaryColor(context),
                       onChanged: (value) {
                         setState(() {
                           milEd = value!;
@@ -255,7 +257,7 @@ class _PpwChartPageState extends State<PpwChartPage> {
                     PlatformCheckboxListTile(
                       title: const Text('Civilian Education'),
                       value: civEd,
-                      activeColor: Theme.of(context).colorScheme.onSecondary,
+                      activeColor: getOnPrimaryColor(context),
                       onChanged: (value) {
                         setState(() {
                           civEd = value!;

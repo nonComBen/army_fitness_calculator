@@ -1,3 +1,4 @@
+import 'package:acft_calculator/widgets/platform_widgets/platform_text_field.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -24,8 +25,8 @@ class ValueInputField extends StatelessWidget {
   Widget build(BuildContext context) {
     return SizedBox(
       width: width,
-      child: TextField(
-        controller: controller,
+      child: PlatformTextField(
+        controller: controller!,
         focusNode: focusNode,
         keyboardType:
             TextInputType.numberWithOptions(signed: true, decimal: true),

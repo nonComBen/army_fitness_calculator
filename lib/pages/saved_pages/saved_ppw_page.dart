@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../methods/theme_methods.dart';
 import '../../widgets/platform_widgets/platform_icon_button.dart';
 import '../../widgets/platform_widgets/platform_list_tile.dart';
 import '../chart_pages/ppw_charts_page.dart';
@@ -37,7 +38,7 @@ class _SavedPpwsPageState extends State<SavedPpwsPage> {
             style: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
-                color: Theme.of(context).colorScheme.onPrimary),
+                color: getOnPrimaryColor(context)),
           ),
           PlatformIconButton(
             icon: const Icon(Icons.show_chart),
@@ -96,7 +97,7 @@ class _SavedPpwsPageState extends State<SavedPpwsPage> {
         Padding(
           padding: const EdgeInsets.all(8.0),
           child: Card(
-            color: Theme.of(context).colorScheme.primary,
+            color: getPrimaryColor(context),
             child: PlatformListTile(
               title: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -105,15 +106,14 @@ class _SavedPpwsPageState extends State<SavedPpwsPage> {
                     padding: const EdgeInsets.all(8.0),
                     child: Text(
                       'Date: ${ppwList[i].date}',
-                      style: TextStyle(
-                          color: Theme.of(context).colorScheme.onPrimary),
+                      style: TextStyle(color: getOnPrimaryColor(context)),
                     ),
                   ),
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Text('${ppwList[i].total.toString()} / 800',
                         style: TextStyle(
-                          color: Theme.of(context).colorScheme.onPrimary,
+                          color: getOnPrimaryColor(context),
                         )),
                   )
                 ],
@@ -136,23 +136,19 @@ class _SavedPpwsPageState extends State<SavedPpwsPage> {
                 children: <Widget>[
                   Text(
                     'MilTrain: $milTrain / ${ppwList[i].milTrainMax}',
-                    style: TextStyle(
-                        color: Theme.of(context).colorScheme.onPrimary),
+                    style: TextStyle(color: getOnPrimaryColor(context)),
                   ),
                   Text(
                     'Awards: $awards / ${ppwList[i].awardsMax}',
-                    style: TextStyle(
-                        color: Theme.of(context).colorScheme.onPrimary),
+                    style: TextStyle(color: getOnPrimaryColor(context)),
                   ),
                   Text(
                     'MilEd: $milEd / ${ppwList[i].milEdMax}',
-                    style: TextStyle(
-                        color: Theme.of(context).colorScheme.onPrimary),
+                    style: TextStyle(color: getOnPrimaryColor(context)),
                   ),
                   Text(
                     'CivEd: $civEd / ${ppwList[i].civEdMax}',
-                    style: TextStyle(
-                        color: Theme.of(context).colorScheme.onPrimary),
+                    style: TextStyle(color: getOnPrimaryColor(context)),
                   ),
                 ],
               ),
@@ -203,7 +199,7 @@ class _SavedPpwsPageState extends State<SavedPpwsPage> {
   @override
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
-    // onPrimary = Theme.of(context).colorScheme.onPrimary;
+    // onPrimary = getOnPrimaryColor(context);
     // onError = Theme.of(context).colorScheme.onError;
     return PlatformScaffold(
       title: 'Saved PPWs',

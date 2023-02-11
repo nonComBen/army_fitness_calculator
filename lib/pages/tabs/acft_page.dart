@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:intl/intl.dart';
 
+import '../../methods/theme_methods.dart';
 import '../../providers/purchases_provider.dart';
 import '../../services/purchases_service.dart';
 import '../../widgets/platform_widgets/platform_button.dart';
@@ -481,7 +482,8 @@ class AcftPageState extends ConsumerState<AcftPage> {
                     acft.name = _nameController.text;
                     dbHelper.saveAcft(acft);
                     Navigator.of(ctx).pop();
-                    Navigator.of(context).pushNamed(SavedAcftsPage.routeName);
+                    Navigator.of(context, rootNavigator: true)
+                        .pushNamed(SavedAcftsPage.routeName);
                   }),
                 ),
               )
@@ -495,10 +497,10 @@ class AcftPageState extends ConsumerState<AcftPage> {
   @override
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
-    final backgroundColor = Theme.of(context).scaffoldBackgroundColor;
-    final primaryColor = Theme.of(context).colorScheme.primary;
+    final backgroundColor = getBackgroundColor(context);
+    final primaryColor = getPrimaryColor(context);
     final failColor = Theme.of(context).colorScheme.error;
-    final onPrimary = Theme.of(context).colorScheme.onPrimary;
+    final onPrimary = getOnPrimaryColor(context);
     return Container(
       padding: EdgeInsets.all(16.0),
       child: SingleChildScrollView(
@@ -810,7 +812,7 @@ class AcftPageState extends ConsumerState<AcftPage> {
                   Expanded(
                     flex: 1,
                     child: PlatformSlider(
-                      activeColor: Theme.of(context).colorScheme.primary,
+                      activeColor: getPrimaryColor(context),
                       value: sptRaw,
                       min: 0,
                       max: 14.0,
@@ -937,7 +939,7 @@ class AcftPageState extends ConsumerState<AcftPage> {
                   Expanded(
                     flex: 1,
                     child: PlatformSlider(
-                      activeColor: Theme.of(context).colorScheme.primary,
+                      activeColor: getPrimaryColor(context),
                       value: hrpRaw.toDouble(),
                       min: 0,
                       max: 80,
@@ -1103,7 +1105,7 @@ class AcftPageState extends ConsumerState<AcftPage> {
                   Expanded(
                     flex: 1,
                     child: PlatformSlider(
-                      activeColor: Theme.of(context).colorScheme.primary,
+                      activeColor: getPrimaryColor(context),
                       value: sdcMins.toDouble(),
                       min: 0,
                       max: 5,
@@ -1171,7 +1173,7 @@ class AcftPageState extends ConsumerState<AcftPage> {
                   Expanded(
                     flex: 1,
                     child: PlatformSlider(
-                      activeColor: Theme.of(context).colorScheme.primary,
+                      activeColor: getPrimaryColor(context),
                       value: sdcSecs.toDouble(),
                       min: 0,
                       max: 59,
@@ -1342,7 +1344,7 @@ class AcftPageState extends ConsumerState<AcftPage> {
                   Expanded(
                     flex: 1,
                     child: PlatformSlider(
-                      activeColor: Theme.of(context).colorScheme.primary,
+                      activeColor: getPrimaryColor(context),
                       value: plankMins.toDouble(),
                       min: 0,
                       max: 4,
@@ -1414,7 +1416,7 @@ class AcftPageState extends ConsumerState<AcftPage> {
                   Expanded(
                     flex: 1,
                     child: PlatformSlider(
-                      activeColor: Theme.of(context).colorScheme.primary,
+                      activeColor: getPrimaryColor(context),
                       value: plankSecs.toDouble(),
                       min: 0,
                       max: 59,
@@ -1575,7 +1577,7 @@ class AcftPageState extends ConsumerState<AcftPage> {
                   Expanded(
                     flex: 1,
                     child: PlatformSlider(
-                      activeColor: Theme.of(context).colorScheme.primary,
+                      activeColor: getPrimaryColor(context),
                       value: runMins.toDouble(),
                       min: 10,
                       max: 40,
@@ -1630,7 +1632,7 @@ class AcftPageState extends ConsumerState<AcftPage> {
                   Expanded(
                     flex: 1,
                     child: PlatformSlider(
-                      activeColor: Theme.of(context).colorScheme.primary,
+                      activeColor: getPrimaryColor(context),
                       value: runSecs.toDouble(),
                       min: 0,
                       max: 59,

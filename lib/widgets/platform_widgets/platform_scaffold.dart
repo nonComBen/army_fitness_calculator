@@ -3,6 +3,8 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+import '../../methods/theme_methods.dart';
+
 abstract class PlatformScaffold extends StatelessWidget {
   factory PlatformScaffold({
     String? title,
@@ -73,7 +75,7 @@ class IOSScaffold extends StatelessWidget implements PlatformScaffold {
     return CupertinoPageScaffold(
       navigationBar: title != null
           ? CupertinoNavigationBar(
-              backgroundColor: Theme.of(context).colorScheme.primary,
+              backgroundColor: getPrimaryColor(context),
               middle: Text(title!),
               trailing: SizedBox(
                 width: MediaQuery.of(context).size.width / 4,

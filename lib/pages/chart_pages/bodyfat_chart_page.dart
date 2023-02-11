@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:charts_flutter/flutter.dart' as charts;
 
+import '../../methods/theme_methods.dart';
 import '../../sqlite/bodyfat.dart';
 import '../../widgets/platform_widgets/platform_checkbox_list_tile.dart';
 import '../../widgets/platform_widgets/platform_scaffold.dart';
@@ -127,7 +128,8 @@ class _BodyfatChartPageState extends State<BodyfatChartPage> {
                 key: previewContainer,
                 child: DecoratedBox(
                   decoration: BoxDecoration(
-                      color: Theme.of(context).scaffoldBackgroundColor),
+                    color: getBackgroundColor(context),
+                  ),
                   child: Column(
                     children: <Widget>[
                       Text(
@@ -152,7 +154,7 @@ class _BodyfatChartPageState extends State<BodyfatChartPage> {
               PlatformCheckboxListTile(
                 title: const Text('Bodyfat'),
                 value: bf,
-                activeColor: Theme.of(context).colorScheme.onSecondary,
+                activeColor: getOnPrimaryColor(context),
                 onChanged: (value) {
                   setState(() {
                     bf = value!;

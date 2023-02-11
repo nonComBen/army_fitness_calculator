@@ -24,7 +24,7 @@ abstract class PlatformApp extends StatelessWidget {
     } else {
       final iosThemeData = CupertinoThemeData(
         brightness: themeData.brightness,
-        primaryColor: themeData.primaryColor,
+        primaryColor: themeData.colorScheme.primary,
         primaryContrastingColor: themeData.colorScheme.onPrimary,
         scaffoldBackgroundColor: themeData.scaffoldBackgroundColor,
       );

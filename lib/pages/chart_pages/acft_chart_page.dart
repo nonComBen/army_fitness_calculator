@@ -1,3 +1,4 @@
+import 'package:acft_calculator/methods/theme_methods.dart';
 import 'package:flutter/material.dart';
 import 'package:charts_flutter/flutter.dart' as charts;
 
@@ -176,7 +177,7 @@ class _AcftChartPageState extends State<AcftChartPage> {
                   PlatformCheckboxListTile(
                     title: Text('MDL'),
                     value: mdl,
-                    activeColor: Theme.of(context).colorScheme.onSecondary,
+                    activeColor: getOnPrimaryColor(context),
                     onChanged: (value) {
                       setState(() {
                         mdl = value!;
@@ -186,7 +187,7 @@ class _AcftChartPageState extends State<AcftChartPage> {
                   PlatformCheckboxListTile(
                     title: const Text('SPT'),
                     value: spt,
-                    activeColor: Theme.of(context).colorScheme.onSecondary,
+                    activeColor: getOnPrimaryColor(context),
                     onChanged: (value) {
                       setState(() {
                         spt = value!;
@@ -196,7 +197,7 @@ class _AcftChartPageState extends State<AcftChartPage> {
                   PlatformCheckboxListTile(
                     title: const Text('HRP'),
                     value: hrp,
-                    activeColor: Theme.of(context).colorScheme.onSecondary,
+                    activeColor: getOnPrimaryColor(context),
                     onChanged: (value) {
                       setState(() {
                         hrp = value!;
@@ -206,7 +207,7 @@ class _AcftChartPageState extends State<AcftChartPage> {
                   PlatformCheckboxListTile(
                     title: const Text('SDC'),
                     value: sdc,
-                    activeColor: Theme.of(context).colorScheme.onSecondary,
+                    activeColor: getOnPrimaryColor(context),
                     onChanged: (value) {
                       setState(() {
                         sdc = value!;
@@ -216,7 +217,7 @@ class _AcftChartPageState extends State<AcftChartPage> {
                   PlatformCheckboxListTile(
                     title: const Text('PLK'),
                     value: plk,
-                    activeColor: Theme.of(context).colorScheme.onSecondary,
+                    activeColor: getOnPrimaryColor(context),
                     onChanged: (value) {
                       setState(() {
                         plk = value!;
@@ -226,7 +227,7 @@ class _AcftChartPageState extends State<AcftChartPage> {
                   PlatformCheckboxListTile(
                     title: const Text('Run'),
                     value: run,
-                    activeColor: Theme.of(context).colorScheme.onSecondary,
+                    activeColor: getOnPrimaryColor(context),
                     onChanged: (value) {
                       setState(() {
                         run = value!;

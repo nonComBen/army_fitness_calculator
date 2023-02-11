@@ -3,6 +3,8 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+import '../../methods/theme_methods.dart';
+
 abstract class PlatformSelectionWidget extends Widget {
   factory PlatformSelectionWidget({
     required List<Widget> titles,
@@ -51,7 +53,7 @@ class AndroidSelectionWidget extends StatelessWidget
             title: titles[0],
             value: values[0],
             groupValue: groupValue,
-            activeColor: Theme.of(context).colorScheme.onSecondary,
+            activeColor: getOnPrimaryColor(context),
             onChanged: (dynamic value) {
               onChanged(value);
             },
@@ -62,7 +64,7 @@ class AndroidSelectionWidget extends StatelessWidget
             title: titles[1],
             value: values[1],
             groupValue: groupValue,
-            activeColor: Theme.of(context).colorScheme.onSecondary,
+            activeColor: getOnPrimaryColor(context),
             onChanged: (dynamic value) {
               onChanged(value);
             },

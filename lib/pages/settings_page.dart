@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:acft_calculator/methods/theme_methods.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -102,7 +103,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
         width: horizontal ? 250 : width - 32,
         child: RadioListTile(
           title: const Text('Light Theme'),
-          activeColor: Theme.of(context).colorScheme.onSecondary,
+          activeColor: getOnPrimaryColor(context),
           value: Brightness.light,
           groupValue: themeState.brightness,
           onChanged: (Brightness? value) {
@@ -114,7 +115,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
         width: horizontal ? 250 : width - 32,
         child: RadioListTile(
           title: const Text('Dark Theme'),
-          activeColor: Theme.of(context).colorScheme.onSecondary,
+          activeColor: getOnPrimaryColor(context),
           value: Brightness.dark,
           groupValue: themeState.brightness,
           onChanged: (Brightness? value) {
@@ -248,7 +249,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                         value: jrSoldier,
                         title: const Text('For Promotion Points'),
                         subtitle: Text(jrSoldier ? 'True' : 'False'),
-                        activeColor: Theme.of(context).colorScheme.onSecondary,
+                        activeColor: getOnPrimaryColor(context),
                         onChanged: (value) {
                           setState(() {
                             jrSoldier = value;

@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:acft_calculator/methods/theme_methods.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -199,7 +200,8 @@ class _AcftDetailsPageState extends State<AcftDetailsPage> {
             key: previewContainer,
             child: DecoratedBox(
               decoration: BoxDecoration(
-                  color: Theme.of(context).scaffoldBackgroundColor),
+                color: getBackgroundColor(context),
+              ),
               child: Column(
                 children: <Widget>[
                   GridView.count(

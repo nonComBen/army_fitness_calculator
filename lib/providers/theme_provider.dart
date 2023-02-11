@@ -16,16 +16,17 @@ enum ThemeState { lightTheme, darkTheme }
 ThemeData darkTheme = ThemeData(
   dialogBackgroundColor: Colors.black87,
   colorScheme: ColorScheme.highContrastDark(
-      brightness: Brightness.dark,
-      primary: Colors.black87,
-      primaryContainer: Colors.black,
-      secondary: Colors.grey,
-      secondaryContainer: Colors.grey[700],
-      background: Colors.black45,
-      onPrimary: Colors.yellow,
-      onSecondary: Colors.yellow,
-      onError: Colors.white,
-      error: Colors.red),
+    brightness: Brightness.dark,
+    primary: Colors.black87,
+    primaryContainer: Colors.black,
+    secondary: Colors.grey,
+    secondaryContainer: Colors.grey[700],
+    background: Colors.black45,
+    onPrimary: Colors.yellow,
+    onSecondary: Colors.yellow,
+    onError: Colors.white,
+    error: Colors.red,
+  ),
 );
 ThemeData lightTheme = ThemeData(
   scaffoldBackgroundColor: Colors.grey[300],
@@ -33,16 +34,17 @@ ThemeData lightTheme = ThemeData(
   bottomNavigationBarTheme:
       BottomNavigationBarThemeData(backgroundColor: Colors.grey),
   colorScheme: ColorScheme.highContrastLight(
-      brightness: Brightness.light,
-      primary: Colors.black87,
-      primaryContainer: Colors.black,
-      secondary: Colors.grey,
-      secondaryContainer: Colors.grey[700],
-      background: Colors.black45,
-      onPrimary: Colors.amber,
-      onSecondary: Colors.amber,
-      onError: Colors.white,
-      error: Colors.red),
+    brightness: Brightness.light,
+    primary: Colors.black87,
+    primaryContainer: Colors.black,
+    secondary: Colors.grey,
+    secondaryContainer: Colors.grey[700],
+    background: Colors.black45,
+    onPrimary: Colors.amber,
+    onSecondary: Colors.amber,
+    onError: Colors.white,
+    error: Colors.red,
+  ),
 );
 
 class ThemeStateNotifier extends StateNotifier<ThemeData> {

@@ -1,3 +1,4 @@
+import 'package:acft_calculator/widgets/platform_widgets/platform_text_field.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -77,7 +78,7 @@ class _DecorationCardState extends State<DecorationCard> {
                 flex: 1,
                 child: SizedBox(
                   width: 60,
-                  child: TextField(
+                  child: PlatformTextField(
                     controller: _awardNumberController,
                     keyboardType: TextInputType.numberWithOptions(signed: true),
                     inputFormatters: [

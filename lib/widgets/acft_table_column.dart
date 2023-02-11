@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../methods/theme_methods.dart';
 import 'grid_box.dart';
 
 class AcftTableColumn extends StatelessWidget {
@@ -24,8 +25,8 @@ class AcftTableColumn extends StatelessWidget {
         SizedBox.fromSize(
           size: Size((width - 24) / 7, 24),
           child: GridBox(
-            background: Theme.of(context).colorScheme.primary,
-            textColor: Theme.of(context).colorScheme.onPrimary,
+            background: getPrimaryColor(context),
+            textColor: getOnPrimaryColor(context),
             title: header,
           ),
         ),
@@ -40,13 +41,11 @@ class AcftTableColumn extends StatelessWidget {
             child: GridBox(
               title: title,
               background: tableIndex == 0
-                  ? Theme.of(context).colorScheme.primary
+                  ? getPrimaryColor(context)
                   : shaded
                       ? Colors.grey
                       : null,
-              textColor: tableIndex == 0
-                  ? Theme.of(context).colorScheme.onPrimary
-                  : null,
+              textColor: tableIndex == 0 ? getOnPrimaryColor(context) : null,
             ),
           );
         }).toList(),

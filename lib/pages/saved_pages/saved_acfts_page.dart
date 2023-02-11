@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../methods/delete_record.dart';
+import '../../methods/theme_methods.dart';
 import '../../widgets/platform_widgets/platform_icon_button.dart';
 import '../../widgets/platform_widgets/platform_list_tile.dart';
 import '../../widgets/platform_widgets/platform_scaffold.dart';
@@ -73,7 +74,7 @@ class _SavedAcftsPageState extends State<SavedAcftsPage> {
         padding: const EdgeInsets.all(8.0),
         child: Card(
           color: pass
-              ? Theme.of(context).colorScheme.primary
+              ? getPrimaryColor(context)
               : Theme.of(context).colorScheme.error,
           child: PlatformListTile(
             title: Padding(
@@ -145,7 +146,7 @@ class _SavedAcftsPageState extends State<SavedAcftsPage> {
   @override
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
-    onPrimary = Theme.of(context).colorScheme.onPrimary;
+    onPrimary = getOnPrimaryColor(context);
     onError = Theme.of(context).colorScheme.onError;
     return PlatformScaffold(
       title: 'Saved ACFTs',
