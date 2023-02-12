@@ -33,6 +33,7 @@ abstract class PlatformExpansionTile extends Widget {
         leading: leading,
         trailing: trailing,
         initiallyExpanded: initiallyExpanded,
+        collapsedBackgroundColor: collapsedBackgroundColor,
         children: children,
       );
     }
@@ -76,27 +77,42 @@ class IOSExpansionTile extends StatefulWidget implements PlatformExpansionTile {
 
 class _IOSExpansionTileState extends State<IOSExpansionTile> {
   bool isExpanded = false;
+  late bool isTrailingIcon;
+  late Widget rotatedIcon;
 
   @override
   void initState() {
     super.initState();
     isExpanded = widget.initiallyExpanded;
+    isTrailingIcon = widget.trailing is Icon;
+    rotatedIcon = RotatedBox(
+      quarterTurns: 2,
+      child: widget.trailing,
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
-        CupertinoListTile(
-          title: widget.title,
-          leading: widget.leading,
-          trailing: widget.trailing,
-          backgroundColor: !isExpanded ? widget.collapsedBackgroundColor : null,
-          onTap: () {
-            setState(() {
-              isExpanded = !isExpanded;
-            });
-          },
+        DecoratedBox(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(8),
+          ),
+          child: CupertinoListTile(
+            padding: EdgeInsets.all(12),
+            title: widget.title,
+            leading: widget.leading,
+            trailing:
+                isTrailingIcon && isExpanded ? rotatedIcon : widget.trailing,
+            backgroundColor:
+                !isExpanded ? widget.collapsedBackgroundColor : null,
+            onTap: () {
+              setState(() {
+                isExpanded = !isExpanded;
+              });
+            },
+          ),
         ),
         if (isExpanded)
           Container(

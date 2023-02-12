@@ -791,6 +791,7 @@ class _PromotionPointPageState extends ConsumerState<PromotionPointPage> {
                 '$awardsTotal/$awardsMax',
                 style: expansionTextStyle,
               ),
+              collapsedBackgroundColor: primaryColor,
               initiallyExpanded: false,
               children: [
                 Card(
@@ -904,6 +905,7 @@ class _PromotionPointPageState extends ConsumerState<PromotionPointPage> {
                 style: expansionTextStyle,
               ),
               initiallyExpanded: false,
+              collapsedBackgroundColor: primaryColor,
               children: [
                 Padding(
                   padding: const EdgeInsets.fromLTRB(8.0, 0.0, 8.0, 0.0),
@@ -1044,6 +1046,7 @@ class _PromotionPointPageState extends ConsumerState<PromotionPointPage> {
                 style: expansionTextStyle,
               ),
               initiallyExpanded: false,
+              collapsedBackgroundColor: primaryColor,
               children: [
                 GridView.count(
                   crossAxisCount: width > 700 ? 2 : 1,
@@ -1188,10 +1191,10 @@ class _PromotionPointPageState extends ConsumerState<PromotionPointPage> {
               padding: const EdgeInsets.only(top: 8, bottom: 8),
               child: Divider(color: onPrimaryColor),
             ),
-            Card(
-                color: Colors.black,
+            DecoratedBox(
+                decoration: BoxDecoration(color: primaryColor),
                 child: Padding(
-                  padding: const EdgeInsets.all(16.0),
+                  padding: const EdgeInsets.all(12.0),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [

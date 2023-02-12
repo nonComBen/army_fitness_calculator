@@ -1,12 +1,14 @@
 import 'dart:io';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 
+import '../../methods/theme_methods.dart';
 import '../../providers/purchases_provider.dart';
 import '../../services/purchases_service.dart';
-import '../../widgets/platform_widgets/platform_list_tile.dart';
+import '../../widgets/platform_widgets/platform_expansion_list_tile.dart';
 import '../../widgets/platform_widgets/platform_scaffold.dart';
 
 class ApftVerbiagePage extends ConsumerStatefulWidget {
@@ -215,6 +217,8 @@ class _ApftVerbiagePageState extends ConsumerState<ApftVerbiagePage> {
 
   @override
   Widget build(BuildContext context) {
+    final expansionTextStyle =
+        TextStyle(color: getOnPrimaryColor(context), fontSize: 22);
     return PlatformScaffold(
       title: 'APFT Instruction',
       body: Container(
@@ -229,37 +233,33 @@ class _ApftVerbiagePageState extends ConsumerState<ApftVerbiagePage> {
             Flexible(
               child: ListView(
                 children: <Widget>[
-                  ExpansionPanelList(
-                    expansionCallback: (int index, bool isExpanded) {
-                      setState(() {
-                        for (int i = 0; i < _verbiages.length; i++) {
-                          if (i == index) {
-                            _verbiages[index].isExpanded =
-                                !_verbiages[index].isExpanded;
-                          } else
-                            _verbiages[i].isExpanded = false;
-                        }
-                      });
-                    },
-                    children: _verbiages.map((Verbiage verbiage) {
-                      return new ExpansionPanel(
-                        headerBuilder: (BuildContext context, bool isExpanded) {
-                          return new PlatformListTile(
-                            title: new Text(
-                              verbiage.header,
-                              textAlign: TextAlign.start,
-                              style: new TextStyle(
-                                fontSize: 20.0,
-                                fontWeight: FontWeight.w400,
-                              ),
-                            ),
-                          );
-                        },
-                        isExpanded: verbiage.isExpanded,
-                        body: verbiage.body,
+                  ..._verbiages.map(
+                    (verbiage) {
+                      return Padding(
+                        padding: EdgeInsets.all(8),
+                        child: PlatformExpansionTile(
+                          title: Text(
+                            verbiage.header,
+                            style: expansionTextStyle,
+                          ),
+                          trailing: Platform.isAndroid
+                              ? Icon(
+                                  Icons.arrow_drop_down,
+                                  color: getOnPrimaryColor(context),
+                                )
+                              : Icon(
+                                  CupertinoIcons.chevron_down,
+                                  color: getOnPrimaryColor(context),
+                                ),
+                          collapsedBackgroundColor: getPrimaryColor(context),
+                          collapsedTextColor: getOnPrimaryColor(context),
+                          collapsedIconColor: getOnPrimaryColor(context),
+                          textColor: getOnPrimaryColor(context),
+                          children: [verbiage.body],
+                        ),
                       );
-                    }).toList(),
-                  ),
+                    },
+                  ).toList(),
                 ],
               ),
             ),
