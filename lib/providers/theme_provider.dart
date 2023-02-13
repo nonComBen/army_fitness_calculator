@@ -14,6 +14,7 @@ final themeStateNotifierProvider =
 enum ThemeState { lightTheme, darkTheme }
 
 ThemeData darkTheme = ThemeData(
+  scaffoldBackgroundColor: Colors.grey[900],
   dialogBackgroundColor: Colors.black87,
   colorScheme: ColorScheme.highContrastDark(
     brightness: Brightness.dark,

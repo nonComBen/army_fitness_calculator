@@ -618,437 +618,73 @@ class _PromotionPointPageState extends ConsumerState<PromotionPointPage> {
     expansionTextStyle = TextStyle(color: onPrimaryColor, fontSize: 22);
     return Container(
       padding: const EdgeInsets.all(16.0),
-      child: SingleChildScrollView(
-        child: Column(
-          children: <Widget>[
-            GridView.count(
-                crossAxisCount: width > 700 ? 2 : 1,
-                childAspectRatio: width > 700 ? width / 230 : width / 115,
-                crossAxisSpacing: 1.0,
-                mainAxisSpacing: 1.0,
-                shrinkWrap: true,
-                primary: false,
-                children: <Widget>[
-                  PlatformSelectionWidget(
-                      titles: [Text('SGT'), Text('SSG')],
-                      values: ['SGT', 'SSG'],
-                      groupValue: rank,
-                      onChanged: (value) {
-                        setState(() {
-                          rank = value!;
-                          _resetMaximums();
-                          _calcPtPts();
-                          _calcWeaponPts();
-                          _calcAwardPts();
-                          _calcBadgePts();
-                          _calcAirbornePts();
-                          _calcResPts();
-                          _calcWbcPts();
-                          _calcCertPts();
-                          _calcTotalPts();
-                        });
-                      }),
-                  Padding(
-                    padding: const EdgeInsets.only(top: 24.0),
-                    child: PlatformSelectionWidget(
-                      titles: [Text('After 1 Apr 23'), Text('Before 1 Apr 23')],
-                      values: ['newVersion', 'oldVersion'],
-                      groupValue: version,
-                      onChanged: (value) {
-                        setState(() {
-                          version = value!;
-                          isNewVersion = version == 'newVersion';
-                          _resetMaximums();
-                          _calcPtPts();
-                          _calcWeaponPts();
-                          _calcAwardPts();
-                          _calcBadgePts();
-                          _calcAirbornePts();
-                          _calcResPts();
-                          _calcWbcPts();
-                          _calcCertPts();
-                          _calcTotalPts();
-                        });
-                      },
-                    ),
-                  ),
-                ]),
-            PlatformExpansionTile(
-              title: Text(
-                'Military Training',
-                style: expansionTextStyle,
-              ),
-              trailing: Text(
-                '$milTrainPts/$milTrainMax',
-                style: expansionTextStyle,
-              ),
-              initiallyExpanded: true,
-              collapsedBackgroundColor: primaryColor,
-              children: [
-                GridView.count(
-                    crossAxisCount: width > 700 ? 2 : 1,
-                    childAspectRatio: width > 700 ? width / 230 : width / 115,
-                    crossAxisSpacing: 1.0,
-                    mainAxisSpacing: 1.0,
-                    shrinkWrap: true,
-                    primary: false,
-                    children: <Widget>[
-                      FormattedTextField(
-                        contoller: _apftController,
-                        focusNode: _apftFocus,
-                        textInputAction: TextInputAction.next,
-                        onEditingComplete: () => _weaponFocus.requestFocus(),
-                        label: (isNewVersion ? 'ACFT' : 'APFT') + ' Score',
-                        errorText: isPtValid
-                            ? null
-                            : isNewVersion
-                                ? '0-600'
-                                : '0-300',
-                        onChanged: (value) {
-                          int raw = int.tryParse(value) ?? 0;
-                          setState(() {
-                            if (raw < 0) {
-                              ptScore = 0;
-                              isPtValid = false;
-                            } else if ((isNewVersion && raw > 600) ||
-                                (!isNewVersion && raw > 300)) {
-                              ptScore = isNewVersion ? 600 : 300;
-                              isPtValid = false;
-                            } else {
-                              ptScore = raw;
-                              isPtValid = true;
-                            }
-                            _calcPtPts();
-                            _calcTotalPts();
-                          });
-                        },
-                      ),
-                      FormattedTextField(
-                        contoller: _weaponController,
-                        focusNode: _weaponFocus,
-                        textInputAction: TextInputAction.done,
-                        onEditingComplete: () =>
-                            FocusScope.of(context).unfocus(),
-                        label: 'Weapons Hits',
-                        errorText: isWeaponValid ? null : '0-300',
-                        onChanged: (value) {
-                          int raw = int.tryParse(value) ?? 0;
-                          setState(() {
-                            if (raw < 0) {
-                              weaponHits = 0;
-                              isWeaponValid = false;
-                            } else if (raw > 300) {
-                              weaponHits = 300;
-                              isWeaponValid = false;
-                            } else {
-                              weaponHits = raw;
-                              isWeaponValid = true;
-                            }
-                            _calcWeaponPts();
-                            _calcTotalPts();
-                          });
-                        },
-                      ),
-                    ]),
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(8.0, 0.0, 8.0, 0.0),
-                  child: PlatformItemPicker(
-                    value: weapons,
-                    label: 'Weapons Card',
-                    items: weaponCards,
-                    onChanged: (dynamic value) {
-                      FocusScope.of(context).unfocus();
-                      setState(() {
-                        weapons = value;
-                        _calcWeaponPts();
-                        _calcTotalPts();
-                      });
-                    },
-                    onSelectedItemChanged: (index) {
-                      FocusScope.of(context).unfocus();
-                      setState(() {
-                        weapons = weaponCards[index];
-                        _calcWeaponPts();
-                        _calcTotalPts();
-                      });
-                    },
-                  ),
-                ),
-              ],
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(
-                vertical: 8,
-              ),
-              child: Divider(color: onPrimaryColor),
-            ),
-            PlatformExpansionTile(
-              title: Text(
-                'Awards',
-                style: expansionTextStyle,
-              ),
-              trailing: Text(
-                '$awardsTotal/$awardsMax',
-                style: expansionTextStyle,
-              ),
-              collapsedBackgroundColor: primaryColor,
-              initiallyExpanded: false,
-              children: [
-                Card(
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          'Decorations',
-                          style: TextStyle(fontSize: 18),
-                        ),
-                        PlatformIconButton(
-                            onPressed: () {
-                              FocusScope.of(context).unfocus();
-                              setState(() {
-                                decorations.add(
-                                    AwardDecoration(name: 'None', number: 0));
-                              });
-                            },
-                            icon: Icon(
-                              Icons.add,
-                              size: 35,
-                            ))
-                      ],
-                    ),
-                  ),
-                ),
-                if (decorations.length > 0)
-                  GridView.count(
-                    crossAxisCount: width > 700 ? 2 : 1,
-                    childAspectRatio: width > 700 ? width / 230 : width / 115,
-                    crossAxisSpacing: 1.0,
-                    mainAxisSpacing: 1.0,
-                    shrinkWrap: true,
-                    primary: false,
-                    children: _decorationWidgets(),
-                  ),
-                Card(
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        const Text(
-                          'Badges',
-                          style: TextStyle(fontSize: 18),
-                        ),
-                        PlatformIconButton(
-                            onPressed: () {
-                              FocusScope.of(context).unfocus();
-                              setState(() {
-                                _badges.add({'name': 'None'});
-                              });
-                            },
-                            icon: Icon(
-                              Icons.add,
-                              size: 35,
-                            ))
-                      ],
-                    ),
-                  ),
-                ),
-                if (_badges.length > 0)
-                  GridView.count(
-                    crossAxisCount: width > 700 ? 2 : 1,
-                    childAspectRatio: width > 700 ? width / 230 : width / 115,
-                    crossAxisSpacing: 1.0,
-                    mainAxisSpacing: 1.0,
-                    shrinkWrap: true,
-                    primary: false,
-                    children: _badgeWidgets(),
-                  ),
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(8.0, 0.0, 8.0, 0.0),
-                  child: PlatformItemPicker(
-                    value: airborneLvl,
-                    label: 'Airborne Advantage',
-                    items: airborne,
-                    onChanged: (value) {
-                      FocusScope.of(context).unfocus();
-                      setState(() {
-                        airborneLvl = value;
-                        _calcAirbornePts();
-                        _calcTotalPts();
-                      });
-                    },
-                    onSelectedItemChanged: (index) {
-                      FocusScope.of(context).unfocus();
-                      setState(() {
-                        airborneLvl = airborne[index];
-                        _calcAirbornePts();
-                        _calcTotalPts();
-                      });
-                    },
-                  ),
-                ),
-              ],
-            ),
-            Padding(
-              padding: const EdgeInsets.only(top: 8, bottom: 8),
-              child: Divider(color: onPrimaryColor),
-            ),
-            PlatformExpansionTile(
-              title: Text(
-                'Military Education',
-                style: expansionTextStyle,
-              ),
-              trailing: Text(
-                '$milEdPts/$milEdMax',
-                style: expansionTextStyle,
-              ),
-              initiallyExpanded: false,
-              collapsedBackgroundColor: primaryColor,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(8.0, 0.0, 8.0, 0.0),
-                  child: PlatformItemPicker(
-                    value: ncoes,
-                    label: 'NCOES Honors',
-                    items: ncoesHonors,
+      child: ListView(
+        children: <Widget>[
+          GridView.count(
+              crossAxisCount: width > 700 ? 2 : 1,
+              childAspectRatio: width > 700 ? width / 230 : width / 115,
+              crossAxisSpacing: 1.0,
+              mainAxisSpacing: 1.0,
+              shrinkWrap: true,
+              primary: false,
+              children: <Widget>[
+                PlatformSelectionWidget(
+                    titles: [Text('SGT'), Text('SSG')],
+                    values: ['SGT', 'SSG'],
+                    groupValue: rank,
                     onChanged: (value) {
                       setState(() {
-                        ncoes = value;
-                        _calcNcoesPts();
+                        rank = value!;
+                        _resetMaximums();
+                        _calcPtPts();
+                        _calcWeaponPts();
+                        _calcAwardPts();
+                        _calcBadgePts();
+                        _calcAirbornePts();
+                        _calcResPts();
+                        _calcWbcPts();
+                        _calcCertPts();
                         _calcTotalPts();
                       });
-                    },
-                    onSelectedItemChanged: (index) {
+                    }),
+                Padding(
+                  padding: const EdgeInsets.only(top: 24.0),
+                  child: PlatformSelectionWidget(
+                    titles: [Text('After 1 Apr 23'), Text('Before 1 Apr 23')],
+                    values: ['newVersion', 'oldVersion'],
+                    groupValue: version,
+                    onChanged: (value) {
                       setState(() {
-                        ncoes = ncoesHonors[index];
-                        _calcNcoesPts();
+                        version = value!;
+                        isNewVersion = version == 'newVersion';
+                        _resetMaximums();
+                        _calcPtPts();
+                        _calcWeaponPts();
+                        _calcAwardPts();
+                        _calcBadgePts();
+                        _calcAirbornePts();
+                        _calcResPts();
+                        _calcWbcPts();
+                        _calcCertPts();
                         _calcTotalPts();
                       });
                     },
                   ),
                 ),
-                GridView.count(
-                  crossAxisCount: width > 700 ? 2 : 1,
-                  childAspectRatio: width > 700 ? width / 230 : width / 115,
-                  crossAxisSpacing: 1.0,
-                  mainAxisSpacing: 1.0,
-                  shrinkWrap: true,
-                  primary: false,
-                  children: [
-                    FormattedTextField(
-                      contoller: _resCourseController,
-                      focusNode: _resFocus,
-                      textInputAction: TextInputAction.next,
-                      onEditingComplete: () => _wbcFocus.requestFocus(),
-                      label: 'Resident Course Hours',
-                      onChanged: (value) {
-                        int raw = int.tryParse(value) ?? 0;
-                        setState(() {
-                          if (raw < 0) {
-                            resHrs = 0;
-                          } else {
-                            resHrs = raw;
-                          }
-                          _calcResPts();
-                          _calcTotalPts();
-                        });
-                      },
-                    ),
-                    FormattedTextField(
-                      contoller: _wbcController,
-                      focusNode: _wbcFocus,
-                      textInputAction: TextInputAction.done,
-                      onEditingComplete: () => FocusScope.of(context).unfocus(),
-                      label: 'Web-Based Course Hours',
-                      onChanged: (value) {
-                        int raw = int.tryParse(value) ?? 0;
-                        setState(() {
-                          if (raw < 0) {
-                            wbcHrs = 0;
-                          } else {
-                            wbcHrs = raw;
-                          }
-                          _calcWbcPts();
-                          _calcTotalPts();
-                        });
-                      },
-                    ),
-                  ],
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(8),
-                  child: GridView.count(
-                      crossAxisCount: width > 800
-                          ? 3
-                          : width > 400
-                              ? 2
-                              : 1,
-                      childAspectRatio: width > 800
-                          ? width / 300
-                          : width > 400
-                              ? width / 200
-                              : width / 100,
-                      crossAxisSpacing: 1.0,
-                      mainAxisSpacing: 1.0,
-                      shrinkWrap: true,
-                      primary: false,
-                      children: [
-                        PlatformCheckboxListTile(
-                            title: const Text('Ranger'),
-                            activeColor: onPrimaryColor,
-                            value: isRanger,
-                            onChanged: (value) {
-                              setState(() {
-                                isRanger = value!;
-                                _calcTabPts();
-                                _calcTotalPts();
-                              });
-                            }),
-                        PlatformCheckboxListTile(
-                            title: const Text('Special Forces'),
-                            activeColor: onPrimaryColor,
-                            value: isSf,
-                            onChanged: (value) {
-                              setState(() {
-                                isSf = value!;
-                                _calcTabPts();
-                                _calcTotalPts();
-                              });
-                            }),
-                        PlatformCheckboxListTile(
-                            title: const Text('Sapper'),
-                            activeColor: onPrimaryColor,
-                            value: isSapper,
-                            onChanged: (value) {
-                              setState(() {
-                                isSapper = value!;
-                                _calcTabPts();
-                                _calcTotalPts();
-                              });
-                            }),
-                      ]),
-                ),
-              ],
+              ]),
+          PlatformExpansionTile(
+            title: Text(
+              'Military Training',
+              style: expansionTextStyle,
             ),
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 8),
-              child: Divider(color: onPrimaryColor),
+            trailing: Text(
+              '$milTrainPts/$milTrainMax',
+              style: expansionTextStyle,
             ),
-            PlatformExpansionTile(
-              title: Text(
-                'Civilian Education',
-                style: expansionTextStyle,
-              ),
-              trailing: Text(
-                '$civEdPts/$civEdMax',
-                style: expansionTextStyle,
-              ),
-              initiallyExpanded: false,
-              collapsedBackgroundColor: primaryColor,
-              children: [
-                GridView.count(
+            initiallyExpanded: true,
+            collapsedBackgroundColor: primaryColor,
+            children: [
+              GridView.count(
                   crossAxisCount: width > 700 ? 2 : 1,
                   childAspectRatio: width > 700 ? width / 230 : width / 115,
                   crossAxisSpacing: 1.0,
@@ -1057,196 +693,555 @@ class _PromotionPointPageState extends ConsumerState<PromotionPointPage> {
                   primary: false,
                   children: <Widget>[
                     FormattedTextField(
-                      contoller: _semHrsController,
-                      focusNode: _semHrsFocus,
-                      textInputAction: TextInputAction.done,
-                      onEditingComplete: () => FocusScope.of(context).unfocus(),
-                      label: 'Semester Hours',
+                      contoller: _apftController,
+                      focusNode: _apftFocus,
+                      textInputAction: TextInputAction.next,
+                      onEditingComplete: () => _weaponFocus.requestFocus(),
+                      label: (isNewVersion ? 'ACFT' : 'APFT') + ' Score',
+                      errorText: isPtValid
+                          ? null
+                          : isNewVersion
+                              ? '0-600'
+                              : '0-300',
                       onChanged: (value) {
                         int raw = int.tryParse(value) ?? 0;
                         setState(() {
                           if (raw < 0) {
-                            semHrs = 0;
+                            ptScore = 0;
+                            isPtValid = false;
+                          } else if ((isNewVersion && raw > 600) ||
+                              (!isNewVersion && raw > 300)) {
+                            ptScore = isNewVersion ? 600 : 300;
+                            isPtValid = false;
                           } else {
-                            semHrs = raw;
+                            ptScore = raw;
+                            isPtValid = true;
                           }
-                          _calcSemPts();
+                          _calcPtPts();
                           _calcTotalPts();
                         });
                       },
                     ),
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: PlatformCheckboxListTile(
-                        activeColor: onPrimaryColor,
-                        value: degreeCompleted,
-                        title: const Text(
-                          'Degree',
-                          style: TextStyle(fontSize: 18),
-                        ),
-                        subtitle: Text('Must have been completed ' +
-                            (rank == 'SGT'
-                                ? 'since joining Active Duty'
-                                : 'in current grade')),
-                        onChanged: (value) {
-                          setState(() {
-                            degreeCompleted = value!;
-                            _calcDegreePts();
-                            _calcTotalPts();
-                          });
-                        },
-                      ),
-                    ),
                     FormattedTextField(
-                      contoller: _mosCertsController,
-                      focusNode: _mosCertsFocus,
-                      textInputAction: isNewVersion
-                          ? TextInputAction.next
-                          : TextInputAction.done,
-                      onEditingComplete: () => isNewVersion
-                          ? _crossCertsFocus.requestFocus()
-                          : FocusScope.of(context).unfocus(),
-                      label: isNewVersion
-                          ? 'MOS Enhancing Credentials'
-                          : 'Tech/Pro Certifications',
+                      contoller: _weaponController,
+                      focusNode: _weaponFocus,
+                      textInputAction: TextInputAction.done,
+                      onEditingComplete: () => FocusScope.of(context).unfocus(),
+                      label: 'Weapons Hits',
+                      errorText: isWeaponValid ? null : '0-300',
                       onChanged: (value) {
                         int raw = int.tryParse(value) ?? 0;
                         setState(() {
                           if (raw < 0) {
-                            mosCerts = 0;
+                            weaponHits = 0;
+                            isWeaponValid = false;
+                          } else if (raw > 300) {
+                            weaponHits = 300;
+                            isWeaponValid = false;
                           } else {
-                            mosCerts = raw;
+                            weaponHits = raw;
+                            isWeaponValid = true;
+                          }
+                          _calcWeaponPts();
+                          _calcTotalPts();
+                        });
+                      },
+                    ),
+                  ]),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(8.0, 0.0, 8.0, 0.0),
+                child: PlatformItemPicker(
+                  value: weapons,
+                  label: 'Weapons Card',
+                  items: weaponCards,
+                  onChanged: (dynamic value) {
+                    FocusScope.of(context).unfocus();
+                    setState(() {
+                      weapons = value;
+                      _calcWeaponPts();
+                      _calcTotalPts();
+                    });
+                  },
+                  onSelectedItemChanged: (index) {
+                    FocusScope.of(context).unfocus();
+                    setState(() {
+                      weapons = weaponCards[index];
+                      _calcWeaponPts();
+                      _calcTotalPts();
+                    });
+                  },
+                ),
+              ),
+            ],
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(
+              vertical: 8,
+            ),
+            child: Divider(color: onPrimaryColor),
+          ),
+          PlatformExpansionTile(
+            title: Text(
+              'Awards',
+              style: expansionTextStyle,
+            ),
+            trailing: Text(
+              '$awardsTotal/$awardsMax',
+              style: expansionTextStyle,
+            ),
+            collapsedBackgroundColor: primaryColor,
+            initiallyExpanded: false,
+            children: [
+              Card(
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        'Decorations',
+                        style: TextStyle(fontSize: 18),
+                      ),
+                      PlatformIconButton(
+                          onPressed: () {
+                            FocusScope.of(context).unfocus();
+                            setState(() {
+                              decorations.add(
+                                  AwardDecoration(name: 'None', number: 0));
+                            });
+                          },
+                          icon: Icon(
+                            Icons.add,
+                            size: 35,
+                          ))
+                    ],
+                  ),
+                ),
+              ),
+              if (decorations.length > 0)
+                GridView.count(
+                  crossAxisCount: width > 700 ? 2 : 1,
+                  childAspectRatio: width > 700 ? width / 230 : width / 115,
+                  crossAxisSpacing: 1.0,
+                  mainAxisSpacing: 1.0,
+                  shrinkWrap: true,
+                  primary: false,
+                  children: _decorationWidgets(),
+                ),
+              Card(
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const Text(
+                        'Badges',
+                        style: TextStyle(fontSize: 18),
+                      ),
+                      PlatformIconButton(
+                          onPressed: () {
+                            FocusScope.of(context).unfocus();
+                            setState(() {
+                              _badges.add({'name': 'None'});
+                            });
+                          },
+                          icon: Icon(
+                            Icons.add,
+                            size: 35,
+                          ))
+                    ],
+                  ),
+                ),
+              ),
+              if (_badges.length > 0)
+                GridView.count(
+                  crossAxisCount: width > 700 ? 2 : 1,
+                  childAspectRatio: width > 700 ? width / 230 : width / 115,
+                  crossAxisSpacing: 1.0,
+                  mainAxisSpacing: 1.0,
+                  shrinkWrap: true,
+                  primary: false,
+                  children: _badgeWidgets(),
+                ),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(8.0, 0.0, 8.0, 0.0),
+                child: PlatformItemPicker(
+                  value: airborneLvl,
+                  label: 'Airborne Advantage',
+                  items: airborne,
+                  onChanged: (value) {
+                    FocusScope.of(context).unfocus();
+                    setState(() {
+                      airborneLvl = value;
+                      _calcAirbornePts();
+                      _calcTotalPts();
+                    });
+                  },
+                  onSelectedItemChanged: (index) {
+                    FocusScope.of(context).unfocus();
+                    setState(() {
+                      airborneLvl = airborne[index];
+                      _calcAirbornePts();
+                      _calcTotalPts();
+                    });
+                  },
+                ),
+              ),
+            ],
+          ),
+          Padding(
+            padding: const EdgeInsets.only(top: 8, bottom: 8),
+            child: Divider(color: onPrimaryColor),
+          ),
+          PlatformExpansionTile(
+            title: Text(
+              'Military Education',
+              style: expansionTextStyle,
+            ),
+            trailing: Text(
+              '$milEdPts/$milEdMax',
+              style: expansionTextStyle,
+            ),
+            initiallyExpanded: false,
+            collapsedBackgroundColor: primaryColor,
+            children: [
+              Padding(
+                padding: const EdgeInsets.fromLTRB(8.0, 0.0, 8.0, 0.0),
+                child: PlatformItemPicker(
+                  value: ncoes,
+                  label: 'NCOES Honors',
+                  items: ncoesHonors,
+                  onChanged: (value) {
+                    setState(() {
+                      ncoes = value;
+                      _calcNcoesPts();
+                      _calcTotalPts();
+                    });
+                  },
+                  onSelectedItemChanged: (index) {
+                    setState(() {
+                      ncoes = ncoesHonors[index];
+                      _calcNcoesPts();
+                      _calcTotalPts();
+                    });
+                  },
+                ),
+              ),
+              GridView.count(
+                crossAxisCount: width > 700 ? 2 : 1,
+                childAspectRatio: width > 700 ? width / 230 : width / 115,
+                crossAxisSpacing: 1.0,
+                mainAxisSpacing: 1.0,
+                shrinkWrap: true,
+                primary: false,
+                children: [
+                  FormattedTextField(
+                    contoller: _resCourseController,
+                    focusNode: _resFocus,
+                    textInputAction: TextInputAction.next,
+                    onEditingComplete: () => _wbcFocus.requestFocus(),
+                    label: 'Resident Course Hours',
+                    onChanged: (value) {
+                      int raw = int.tryParse(value) ?? 0;
+                      setState(() {
+                        if (raw < 0) {
+                          resHrs = 0;
+                        } else {
+                          resHrs = raw;
+                        }
+                        _calcResPts();
+                        _calcTotalPts();
+                      });
+                    },
+                  ),
+                  FormattedTextField(
+                    contoller: _wbcController,
+                    focusNode: _wbcFocus,
+                    textInputAction: TextInputAction.done,
+                    onEditingComplete: () => FocusScope.of(context).unfocus(),
+                    label: 'Web-Based Course Hours',
+                    onChanged: (value) {
+                      int raw = int.tryParse(value) ?? 0;
+                      setState(() {
+                        if (raw < 0) {
+                          wbcHrs = 0;
+                        } else {
+                          wbcHrs = raw;
+                        }
+                        _calcWbcPts();
+                        _calcTotalPts();
+                      });
+                    },
+                  ),
+                ],
+              ),
+              Padding(
+                padding: const EdgeInsets.all(8),
+                child: GridView.count(
+                    crossAxisCount: width > 800
+                        ? 3
+                        : width > 400
+                            ? 2
+                            : 1,
+                    childAspectRatio: width > 800
+                        ? width / 300
+                        : width > 400
+                            ? width / 200
+                            : width / 100,
+                    crossAxisSpacing: 1.0,
+                    mainAxisSpacing: 1.0,
+                    shrinkWrap: true,
+                    primary: false,
+                    children: [
+                      PlatformCheckboxListTile(
+                          title: const Text('Ranger'),
+                          activeColor: onPrimaryColor,
+                          value: isRanger,
+                          onChanged: (value) {
+                            setState(() {
+                              isRanger = value!;
+                              _calcTabPts();
+                              _calcTotalPts();
+                            });
+                          }),
+                      PlatformCheckboxListTile(
+                          title: const Text('Special Forces'),
+                          activeColor: onPrimaryColor,
+                          value: isSf,
+                          onChanged: (value) {
+                            setState(() {
+                              isSf = value!;
+                              _calcTabPts();
+                              _calcTotalPts();
+                            });
+                          }),
+                      PlatformCheckboxListTile(
+                          title: const Text('Sapper'),
+                          activeColor: onPrimaryColor,
+                          value: isSapper,
+                          onChanged: (value) {
+                            setState(() {
+                              isSapper = value!;
+                              _calcTabPts();
+                              _calcTotalPts();
+                            });
+                          }),
+                    ]),
+              ),
+            ],
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 8),
+            child: Divider(color: onPrimaryColor),
+          ),
+          PlatformExpansionTile(
+            title: Text(
+              'Civilian Education',
+              style: expansionTextStyle,
+            ),
+            trailing: Text(
+              '$civEdPts/$civEdMax',
+              style: expansionTextStyle,
+            ),
+            initiallyExpanded: false,
+            collapsedBackgroundColor: primaryColor,
+            children: [
+              GridView.count(
+                crossAxisCount: width > 700 ? 2 : 1,
+                childAspectRatio: width > 700 ? width / 230 : width / 115,
+                crossAxisSpacing: 1.0,
+                mainAxisSpacing: 1.0,
+                shrinkWrap: true,
+                primary: false,
+                children: <Widget>[
+                  FormattedTextField(
+                    contoller: _semHrsController,
+                    focusNode: _semHrsFocus,
+                    textInputAction: TextInputAction.done,
+                    onEditingComplete: () => FocusScope.of(context).unfocus(),
+                    label: 'Semester Hours',
+                    onChanged: (value) {
+                      int raw = int.tryParse(value) ?? 0;
+                      setState(() {
+                        if (raw < 0) {
+                          semHrs = 0;
+                        } else {
+                          semHrs = raw;
+                        }
+                        _calcSemPts();
+                        _calcTotalPts();
+                      });
+                    },
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: PlatformCheckboxListTile(
+                      activeColor: onPrimaryColor,
+                      value: degreeCompleted,
+                      title: const Text(
+                        'Degree',
+                        style: TextStyle(fontSize: 18),
+                      ),
+                      subtitle: Text('Must have been completed ' +
+                          (rank == 'SGT'
+                              ? 'since joining Active Duty'
+                              : 'in current grade')),
+                      onChanged: (value) {
+                        setState(() {
+                          degreeCompleted = value!;
+                          _calcDegreePts();
+                          _calcTotalPts();
+                        });
+                      },
+                    ),
+                  ),
+                  FormattedTextField(
+                    contoller: _mosCertsController,
+                    focusNode: _mosCertsFocus,
+                    textInputAction: isNewVersion
+                        ? TextInputAction.next
+                        : TextInputAction.done,
+                    onEditingComplete: () => isNewVersion
+                        ? _crossCertsFocus.requestFocus()
+                        : FocusScope.of(context).unfocus(),
+                    label: isNewVersion
+                        ? 'MOS Enhancing Credentials'
+                        : 'Tech/Pro Certifications',
+                    onChanged: (value) {
+                      int raw = int.tryParse(value) ?? 0;
+                      setState(() {
+                        if (raw < 0) {
+                          mosCerts = 0;
+                        } else {
+                          mosCerts = raw;
+                        }
+                        _calcCertPts();
+                        _calcTotalPts();
+                      });
+                    },
+                  ),
+                  if (isNewVersion)
+                    FormattedTextField(
+                      contoller: _crossCertsController,
+                      focusNode: _crossCertsFocus,
+                      textInputAction: TextInputAction.next,
+                      onEditingComplete: () =>
+                          _personalCertsFocus.requestFocus(),
+                      label: 'Cross-Functional Credentials',
+                      onChanged: (value) {
+                        int raw = int.tryParse(value) ?? 0;
+                        setState(() {
+                          if (raw < 0) {
+                            crossCerts = 0;
+                          } else {
+                            crossCerts = raw;
                           }
                           _calcCertPts();
                           _calcTotalPts();
                         });
                       },
                     ),
-                    if (isNewVersion)
-                      FormattedTextField(
-                        contoller: _crossCertsController,
-                        focusNode: _crossCertsFocus,
-                        textInputAction: TextInputAction.next,
-                        onEditingComplete: () =>
-                            _personalCertsFocus.requestFocus(),
-                        label: 'Cross-Functional Credentials',
-                        onChanged: (value) {
-                          int raw = int.tryParse(value) ?? 0;
-                          setState(() {
-                            if (raw < 0) {
-                              crossCerts = 0;
-                            } else {
-                              crossCerts = raw;
-                            }
-                            _calcCertPts();
-                            _calcTotalPts();
-                          });
-                        },
-                      ),
-                    if (isNewVersion)
-                      FormattedTextField(
-                        contoller: _personalCertsController,
-                        focusNode: _personalCertsFocus,
-                        textInputAction: TextInputAction.done,
-                        onEditingComplete: () =>
-                            FocusScope.of(context).unfocus(),
-                        label: 'Personal Credentials',
-                        onChanged: (value) {
-                          int raw = int.tryParse(value) ?? 0;
-                          setState(() {
-                            if (raw < 0) {
-                              personalCerts = 0;
-                            } else {
-                              personalCerts = raw;
-                            }
-                            _calcCertPts();
-                            _calcTotalPts();
-                          });
-                        },
-                      ),
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: PlatformCheckboxListTile(
-                        activeColor: onPrimaryColor,
-                        value: hasFornLang,
-                        title: const Text(
-                          'Foreign Language',
-                          style: TextStyle(fontSize: 18),
-                        ),
-                        subtitle: const Text('Valid for one year'),
-                        onChanged: (value) {
-                          setState(() {
-                            hasFornLang = value!;
-                            _calcLangPts();
-                            _calcTotalPts();
-                          });
-                        },
-                      ),
+                  if (isNewVersion)
+                    FormattedTextField(
+                      contoller: _personalCertsController,
+                      focusNode: _personalCertsFocus,
+                      textInputAction: TextInputAction.done,
+                      onEditingComplete: () => FocusScope.of(context).unfocus(),
+                      label: 'Personal Credentials',
+                      onChanged: (value) {
+                        int raw = int.tryParse(value) ?? 0;
+                        setState(() {
+                          if (raw < 0) {
+                            personalCerts = 0;
+                          } else {
+                            personalCerts = raw;
+                          }
+                          _calcCertPts();
+                          _calcTotalPts();
+                        });
+                      },
                     ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: PlatformCheckboxListTile(
+                      activeColor: onPrimaryColor,
+                      value: hasFornLang,
+                      title: const Text(
+                        'Foreign Language',
+                        style: TextStyle(fontSize: 18),
+                      ),
+                      subtitle: const Text('Valid for one year'),
+                      onChanged: (value) {
+                        setState(() {
+                          hasFornLang = value!;
+                          _calcLangPts();
+                          _calcTotalPts();
+                        });
+                      },
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+          Padding(
+            padding: const EdgeInsets.only(top: 8, bottom: 8),
+            child: Divider(color: onPrimaryColor),
+          ),
+          DecoratedBox(
+              decoration: BoxDecoration(color: primaryColor),
+              child: Padding(
+                padding: const EdgeInsets.all(12.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text('Total Points',
+                        style: TextStyle(fontSize: 22, color: onPrimaryColor)),
+                    Text('$totalPts/800',
+                        style: TextStyle(fontSize: 22, color: onPrimaryColor))
                   ],
                 ),
-              ],
+              )),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: PlatformButton(
+              child: const Text('Save Promotion Point Score'),
+              onPressed: () {
+                if (purchasesService.isPremium) {
+                  PPW ppw = PPW(
+                    id: null,
+                    date: null,
+                    name: null,
+                    rank: rank.toString(),
+                    version: isNewVersion ? 1 : 0,
+                    ptTest: ptPts,
+                    weapons: weaponPts,
+                    awards: awardPts,
+                    badges: badgePts,
+                    airborne: airbornePts,
+                    ncoes: ncoesPts,
+                    wbc: wbcPts,
+                    resident: resPts,
+                    tabs: tabPts,
+                    ar350: ar350Pts,
+                    semesterHours: semHrPts,
+                    degree: degreePts,
+                    certs: certPts,
+                    language: langPts,
+                    milTrainMax: milTrainMax,
+                    awardsMax: awardsMax,
+                    milEdMax: milEdMax,
+                    civEdMax: civEdMax,
+                    total: totalPts,
+                  );
+                  _savePpw(context, ppw);
+                } else {
+                  purchasesService.upgradeNeeded(context);
+                }
+              },
             ),
-            Padding(
-              padding: const EdgeInsets.only(top: 8, bottom: 8),
-              child: Divider(color: onPrimaryColor),
-            ),
-            DecoratedBox(
-                decoration: BoxDecoration(color: primaryColor),
-                child: Padding(
-                  padding: const EdgeInsets.all(12.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text('Total Points',
-                          style:
-                              TextStyle(fontSize: 22, color: onPrimaryColor)),
-                      Text('$totalPts/800',
-                          style: TextStyle(fontSize: 22, color: onPrimaryColor))
-                    ],
-                  ),
-                )),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: PlatformButton(
-                child: const Text('Save Promotion Point Score'),
-                onPressed: () {
-                  if (purchasesService.isPremium) {
-                    PPW ppw = PPW(
-                      id: null,
-                      date: null,
-                      name: null,
-                      rank: rank.toString(),
-                      version: isNewVersion ? 1 : 0,
-                      ptTest: ptPts,
-                      weapons: weaponPts,
-                      awards: awardPts,
-                      badges: badgePts,
-                      airborne: airbornePts,
-                      ncoes: ncoesPts,
-                      wbc: wbcPts,
-                      resident: resPts,
-                      tabs: tabPts,
-                      ar350: ar350Pts,
-                      semesterHours: semHrPts,
-                      degree: degreePts,
-                      certs: certPts,
-                      language: langPts,
-                      milTrainMax: milTrainMax,
-                      awardsMax: awardsMax,
-                      milEdMax: milEdMax,
-                      civEdMax: civEdMax,
-                      total: totalPts,
-                    );
-                    _savePpw(context, ppw);
-                  } else {
-                    purchasesService.upgradeNeeded(context);
-                  }
-                },
-              ),
-            )
-          ],
-        ),
+          )
+        ],
       ),
     );
   }

@@ -223,7 +223,7 @@ class _IOSHomePageState extends ConsumerState<IOSHomePage> {
     ];
     return CupertinoTabScaffold(
       tabBar: CupertinoTabBar(
-        items: const [
+        items: [
           BottomNavigationBarItem(
             label: 'ACFT',
             icon: Icon(CupertinoIcons.stopwatch_fill),
@@ -241,7 +241,7 @@ class _IOSHomePageState extends ConsumerState<IOSHomePage> {
             icon: Icon(CupertinoIcons.ellipsis),
           ),
         ],
-        activeColor: getPrimaryColor(context),
+        activeColor: getOnPrimaryColor(context),
       ),
       tabBuilder: (context, index) {
         return CupertinoTabView(
@@ -261,7 +261,10 @@ class _IOSHomePageState extends ConsumerState<IOSHomePage> {
                           ),
                         );
                       },
-                      icon: Icon(Icons.table_chart),
+                      icon: Icon(
+                        Icons.table_chart,
+                        color: getOnPrimaryColor(context),
+                      ),
                     )
                   : null,
             ),

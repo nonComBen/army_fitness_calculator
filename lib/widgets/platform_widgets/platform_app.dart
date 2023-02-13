@@ -27,6 +27,14 @@ abstract class PlatformApp extends StatelessWidget {
         primaryColor: themeData.colorScheme.primary,
         primaryContrastingColor: themeData.colorScheme.onPrimary,
         scaffoldBackgroundColor: themeData.scaffoldBackgroundColor,
+        textTheme: CupertinoTextThemeData(
+          navTitleTextStyle: TextStyle(
+            color: themeData.colorScheme.onPrimary,
+            fontSize: 22,
+            fontWeight: FontWeight.bold,
+          ),
+          //tabLabelTextStyle:
+        ),
       );
       return IOSApp(
         title: title,
