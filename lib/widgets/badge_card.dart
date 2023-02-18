@@ -63,13 +63,12 @@ class BadgeCard extends StatelessWidget {
       onLongPress: onLongPressed as void Function()?,
       child: Card(
         child: Padding(
-          padding: const EdgeInsets.all(8.0),
+          padding: const EdgeInsets.symmetric(horizontal: 8.0),
           child: PlatformItemPicker(
             value: badgeName!,
-            label: 'Badge',
+            label: Text('Badge'),
             items: badges,
-            onChanged: onBadgeChosen,
-            onSelectedItemChanged: onSelectedItemChanged,
+            onChanged: onBadgeChosen!,
           ),
         ),
       ),

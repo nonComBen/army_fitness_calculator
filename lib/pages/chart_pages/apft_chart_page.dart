@@ -20,8 +20,6 @@ class _ApftChartPageState extends State<ApftChartPage> {
   List<charts.Series<Apft, DateTime>> _seriesBarData = [];
   List<Apft>? myData;
 
-  static GlobalKey previewContainer = new GlobalKey();
-
   _generateData(List<Apft> myData) {
     _seriesBarData.clear();
     _seriesBarData.add(charts.Series(
@@ -136,27 +134,24 @@ class _ApftChartPageState extends State<ApftChartPage> {
         child: Center(
           child: ListView(
             children: <Widget>[
-              RepaintBoundary(
-                key: previewContainer,
-                child: DecoratedBox(
-                  decoration: BoxDecoration(
-                      color: Theme.of(context).scaffoldBackgroundColor),
-                  child: Column(
-                    children: <Widget>[
-                      Text(
-                        'APFT Progress for ${widget.soldier}',
-                        style: const TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                        ),
-                        textAlign: TextAlign.center,
+              DecoratedBox(
+                decoration: BoxDecoration(
+                    color: Theme.of(context).scaffoldBackgroundColor),
+                child: Column(
+                  children: <Widget>[
+                    Text(
+                      'APFT Progress for ${widget.soldier}',
+                      style: const TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
                       ),
-                      const SizedBox(
-                        height: 15.0,
-                      ),
-                      _buildChart(),
-                    ],
-                  ),
+                      textAlign: TextAlign.center,
+                    ),
+                    const SizedBox(
+                      height: 15.0,
+                    ),
+                    _buildChart(),
+                  ],
                 ),
               ),
               const SizedBox(
@@ -178,35 +173,44 @@ class _ApftChartPageState extends State<ApftChartPage> {
                 mainAxisSpacing: 1.0,
                 crossAxisSpacing: 1.0,
                 children: <Widget>[
-                  PlatformCheckboxListTile(
-                    title: const Text('PU'),
-                    value: pu,
-                    activeColor: getOnPrimaryColor(context),
-                    onChanged: (value) {
-                      setState(() {
-                        pu = value!;
-                      });
-                    },
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 24.0),
+                    child: PlatformCheckboxListTile(
+                      title: const Text('PU'),
+                      value: pu,
+                      activeColor: getOnPrimaryColor(context),
+                      onChanged: (value) {
+                        setState(() {
+                          pu = value!;
+                        });
+                      },
+                    ),
                   ),
-                  PlatformCheckboxListTile(
-                    title: const Text('SU'),
-                    value: su,
-                    activeColor: getOnPrimaryColor(context),
-                    onChanged: (value) {
-                      setState(() {
-                        su = value!;
-                      });
-                    },
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 24.0),
+                    child: PlatformCheckboxListTile(
+                      title: const Text('SU'),
+                      value: su,
+                      activeColor: getOnPrimaryColor(context),
+                      onChanged: (value) {
+                        setState(() {
+                          su = value!;
+                        });
+                      },
+                    ),
                   ),
-                  PlatformCheckboxListTile(
-                    title: const Text('Run'),
-                    value: run,
-                    activeColor: getOnPrimaryColor(context),
-                    onChanged: (value) {
-                      setState(() {
-                        run = value!;
-                      });
-                    },
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 24.0),
+                    child: PlatformCheckboxListTile(
+                      title: const Text('Run'),
+                      value: run,
+                      activeColor: getOnPrimaryColor(context),
+                      onChanged: (value) {
+                        setState(() {
+                          run = value!;
+                        });
+                      },
+                    ),
                   ),
                 ],
               )

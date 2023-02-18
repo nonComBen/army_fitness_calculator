@@ -28,13 +28,18 @@ class Download5501Widget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       padding: EdgeInsets.only(
-          left: 8,
-          right: 8,
-          bottom: MediaQuery.of(context).viewInsets.bottom == 0
-              ? MediaQuery.of(context).padding.bottom
-              : MediaQuery.of(context).viewInsets.bottom),
-      child: SingleChildScrollView(
-        child: Column(children: [
+        left: 8,
+        right: 8,
+        bottom: MediaQuery.of(context).viewInsets.bottom == 0
+            ? MediaQuery.of(context).padding.bottom
+            : MediaQuery.of(context).viewInsets.bottom,
+      ),
+      color: Colors.white,
+      constraints: BoxConstraints(
+        maxHeight: MediaQuery.of(context).size.height / 2,
+      ),
+      child: ListView(
+        children: [
           Padding(
             padding: EdgeInsets.symmetric(horizontal: 8),
             child: Text(
@@ -47,9 +52,10 @@ class Download5501Widget extends StatelessWidget {
             ),
           ),
           Padding(
-            padding: EdgeInsets.symmetric(horizontal: 8.0),
+            padding: EdgeInsets.all(8.0),
             child: PlatformTextField(
               controller: _preparedByController,
+              label: 'Prepared By Name',
               decoration: const InputDecoration(labelText: 'Prepared By Name'),
               keyboardType: TextInputType.text,
               textCapitalization: TextCapitalization.words,
@@ -60,9 +66,10 @@ class Download5501Widget extends StatelessWidget {
             ),
           ),
           Padding(
-            padding: EdgeInsets.symmetric(horizontal: 8.0),
+            padding: EdgeInsets.all(8.0),
             child: PlatformTextField(
               controller: _preparedByRankController,
+              label: 'Prepared By Rank',
               decoration: const InputDecoration(labelText: 'Prepared By Rank'),
               keyboardType: TextInputType.text,
               textCapitalization: TextCapitalization.characters,
@@ -72,9 +79,10 @@ class Download5501Widget extends StatelessWidget {
             ),
           ),
           Padding(
-            padding: EdgeInsets.symmetric(horizontal: 8.0),
+            padding: EdgeInsets.all(8.0),
             child: PlatformTextField(
               controller: _approvedByController,
+              label: 'Approved By Name',
               decoration: const InputDecoration(labelText: 'Approved By Name'),
               keyboardType: TextInputType.text,
               textCapitalization: TextCapitalization.words,
@@ -84,9 +92,10 @@ class Download5501Widget extends StatelessWidget {
             ),
           ),
           Padding(
-            padding: EdgeInsets.symmetric(horizontal: 8.0),
+            padding: EdgeInsets.all(8.0),
             child: PlatformTextField(
               controller: _approvedByRankController,
+              label: 'Approved By Rank',
               decoration: const InputDecoration(labelText: 'Approved By Rank'),
               keyboardType: TextInputType.text,
               textCapitalization: TextCapitalization.characters,
@@ -96,9 +105,10 @@ class Download5501Widget extends StatelessWidget {
             ),
           ),
           Padding(
-            padding: EdgeInsets.symmetric(horizontal: 8.0),
+            padding: EdgeInsets.all(8.0),
             child: PlatformTextField(
               controller: _neck1Controller,
+              label: 'First Neck',
               decoration: const InputDecoration(
                 labelText: 'First Neck',
                 hintText: 'Leave blank to use calculator value',
@@ -114,9 +124,10 @@ class Download5501Widget extends StatelessWidget {
             ),
           ),
           Padding(
-            padding: EdgeInsets.symmetric(horizontal: 8.0),
+            padding: EdgeInsets.all(8.0),
             child: PlatformTextField(
               controller: _neck2Controller,
+              label: 'Second Neck',
               decoration: const InputDecoration(
                 labelText: 'Second Neck',
                 hintText: 'Leave blank to use calculator value',
@@ -132,9 +143,10 @@ class Download5501Widget extends StatelessWidget {
             ),
           ),
           Padding(
-            padding: EdgeInsets.symmetric(horizontal: 8.0),
+            padding: EdgeInsets.all(8.0),
             child: PlatformTextField(
               controller: _neck3Controller,
+              label: 'Third Neck',
               decoration: const InputDecoration(
                 labelText: 'Third Neck',
                 hintText: 'Leave blank to use calculator value',
@@ -150,9 +162,10 @@ class Download5501Widget extends StatelessWidget {
             ),
           ),
           Padding(
-            padding: EdgeInsets.symmetric(horizontal: 8.0),
+            padding: EdgeInsets.all(8.0),
             child: PlatformTextField(
               controller: _waist1Controller,
+              label: 'First Waist',
               decoration: const InputDecoration(
                 labelText: 'First Waist',
                 hintText: 'Leave blank to use calculator value',
@@ -168,9 +181,10 @@ class Download5501Widget extends StatelessWidget {
             ),
           ),
           Padding(
-            padding: EdgeInsets.symmetric(horizontal: 8.0),
+            padding: EdgeInsets.all(8.0),
             child: PlatformTextField(
               controller: _waist2Controller,
+              label: 'Second Waist',
               decoration: const InputDecoration(
                 labelText: 'Second Waist',
                 hintText: 'Leave blank to use calculator value',
@@ -186,9 +200,10 @@ class Download5501Widget extends StatelessWidget {
             ),
           ),
           Padding(
-            padding: EdgeInsets.symmetric(horizontal: 8.0),
+            padding: EdgeInsets.all(8.0),
             child: PlatformTextField(
               controller: _waist3Controller,
+              label: 'Third Waist',
               decoration: const InputDecoration(
                 labelText: 'Third Waist',
                 hintText: 'Leave blank to use calculator value',
@@ -204,9 +219,10 @@ class Download5501Widget extends StatelessWidget {
             ),
           ),
           Padding(
-            padding: EdgeInsets.symmetric(horizontal: 8.0),
+            padding: EdgeInsets.all(8.0),
             child: PlatformTextField(
               controller: _hip1Controller,
+              label: 'First Hip',
               decoration: const InputDecoration(
                 labelText: 'First Hip',
                 hintText: 'Leave blank to use calculator value',
@@ -222,9 +238,10 @@ class Download5501Widget extends StatelessWidget {
             ),
           ),
           Padding(
-            padding: EdgeInsets.symmetric(horizontal: 8.0),
+            padding: EdgeInsets.all(8.0),
             child: PlatformTextField(
               controller: _hip2Controller,
+              label: 'Second Hip',
               decoration: const InputDecoration(
                 labelText: 'Second Hip',
                 hintText: 'Leave blank to use calculator value',
@@ -240,9 +257,10 @@ class Download5501Widget extends StatelessWidget {
             ),
           ),
           Padding(
-            padding: EdgeInsets.symmetric(horizontal: 8.0),
+            padding: EdgeInsets.all(8.0),
             child: PlatformTextField(
               controller: _hip3Controller,
+              label: 'Third Hip',
               decoration: const InputDecoration(
                 labelText: 'Third Hip',
                 hintText: 'Leave blank to use calculator value',
@@ -300,8 +318,8 @@ class Download5501Widget extends StatelessWidget {
                 );
               },
             ),
-          )
-        ]),
+          ),
+        ],
       ),
     );
   }

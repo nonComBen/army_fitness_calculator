@@ -66,75 +66,85 @@ class _DownloadApftWidgetState extends State<DownloadApftWidget> {
   Widget build(BuildContext context) {
     return Container(
       padding: EdgeInsets.only(
-          left: 8,
-          right: 8,
-          bottom: MediaQuery.of(context).viewInsets.bottom == 0
-              ? MediaQuery.of(context).padding.bottom
-              : MediaQuery.of(context).viewInsets.bottom),
-      child: SingleChildScrollView(
-        child: Column(children: [
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: 8),
-            child: Text(
-              'Additional DA Form 705 Data',
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-              ),
-              textAlign: TextAlign.center,
+        left: 8,
+        right: 8,
+        bottom: MediaQuery.of(context).viewInsets.bottom == 0
+            ? MediaQuery.of(context).padding.bottom
+            : MediaQuery.of(context).viewInsets.bottom,
+      ),
+      color: Colors.white,
+      constraints: BoxConstraints(
+        maxHeight: MediaQuery.of(context).size.height / 2,
+      ),
+      child: ListView(children: [
+        Padding(
+          padding: EdgeInsets.all(8),
+          child: Text(
+            'Additional DA Form 705 Data',
+            style: TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
             ),
+            textAlign: TextAlign.center,
           ),
+        ),
+        Padding(
+          padding: EdgeInsets.all(8.0),
+          child: PlatformTextField(
+            controller: _unitController,
+            label: 'Unit / Location',
+            decoration: const InputDecoration(labelText: 'Unit / Location'),
+            keyboardType: TextInputType.text,
+            textCapitalization: TextCapitalization.words,
+            autocorrect: false,
+            autofocus: true,
+            textInputAction: TextInputAction.next,
+            onEditingComplete: () => FocusScope.of(context).nextFocus(),
+          ),
+        ),
+        Padding(
+          padding: EdgeInsets.all(8.0),
+          child: PlatformTextField(
+            controller: _mosController,
+            label: 'MOS',
+            decoration: const InputDecoration(labelText: 'MOS'),
+            keyboardType: TextInputType.text,
+            textCapitalization: TextCapitalization.characters,
+            autocorrect: false,
+            textInputAction: TextInputAction.next,
+            onEditingComplete: () => FocusScope.of(context).nextFocus(),
+          ),
+        ),
+        Padding(
+          padding: EdgeInsets.all(8.0),
+          child: PlatformTextField(
+            controller: _oicController,
+            label: 'OIC / NCOIC',
+            decoration: const InputDecoration(labelText: 'OIC / NCOIC'),
+            keyboardType: TextInputType.text,
+            textCapitalization: TextCapitalization.words,
+            autocorrect: false,
+            textInputAction: TextInputAction.next,
+            onEditingComplete: () => FocusScope.of(context).nextFocus(),
+          ),
+        ),
+        Padding(
+          padding: EdgeInsets.all(8.0),
+          child: PlatformTextField(
+            controller: _oicGradeController,
+            label: 'OIC / NCOIC Grade',
+            decoration: const InputDecoration(labelText: 'OIC / NCOIC Grade'),
+            keyboardType: TextInputType.text,
+            textCapitalization: TextCapitalization.words,
+            autocorrect: false,
+            textInputAction: TextInputAction.done,
+            onEditingComplete: () => FocusScope.of(context).unfocus(),
+          ),
+        ),
+        if (widget.apft.runEvent != 'Run' && widget.apft.pass == 0)
           Padding(
-            padding: EdgeInsets.symmetric(horizontal: 8.0),
-            child: PlatformTextField(
-              controller: _unitController,
-              decoration: const InputDecoration(labelText: 'Unit / Location'),
-              keyboardType: TextInputType.text,
-              textCapitalization: TextCapitalization.words,
-              autocorrect: false,
-              autofocus: true,
-              textInputAction: TextInputAction.next,
-              onEditingComplete: () => FocusScope.of(context).nextFocus(),
-            ),
-          ),
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: 8.0),
-            child: PlatformTextField(
-              controller: _mosController,
-              decoration: const InputDecoration(labelText: 'MOS'),
-              keyboardType: TextInputType.text,
-              textCapitalization: TextCapitalization.characters,
-              autocorrect: false,
-              textInputAction: TextInputAction.next,
-              onEditingComplete: () => FocusScope.of(context).nextFocus(),
-            ),
-          ),
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: 8.0),
-            child: PlatformTextField(
-              controller: _oicController,
-              decoration: const InputDecoration(labelText: 'OIC / NCOIC'),
-              keyboardType: TextInputType.text,
-              textCapitalization: TextCapitalization.words,
-              autocorrect: false,
-              textInputAction: TextInputAction.next,
-              onEditingComplete: () => FocusScope.of(context).nextFocus(),
-            ),
-          ),
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: 8.0),
-            child: PlatformTextField(
-              controller: _oicGradeController,
-              decoration: const InputDecoration(labelText: 'OIC / NCOIC Grade'),
-              keyboardType: TextInputType.text,
-              textCapitalization: TextCapitalization.words,
-              autocorrect: false,
-              textInputAction: TextInputAction.done,
-              onEditingComplete: () => FocusScope.of(context).unfocus(),
-            ),
-          ),
-          if (widget.apft.runEvent != 'Run' && widget.apft.pass == 0)
-            PlatformCheckboxListTile(
+            padding: EdgeInsets.all(8.0),
+            child: PlatformCheckboxListTile(
               value: altPass,
               onChanged: (value) {
                 setState(() {
@@ -143,7 +153,10 @@ class _DownloadApftWidgetState extends State<DownloadApftWidget> {
               },
               title: Text('Aerobic Event Go'),
             ),
-          PlatformCheckboxListTile(
+          ),
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: PlatformCheckboxListTile(
             value: bodyComp,
             onChanged: (value) {
               setState(() {
@@ -157,54 +170,60 @@ class _DownloadApftWidgetState extends State<DownloadApftWidget> {
             },
             title: Text('Add Height/Weight Data'),
           ),
-          if (bodyComp)
-            Column(
-              children: [
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 8.0),
-                  child: PlatformTextField(
-                    controller: _bmiDateController,
-                    focusNode: _bmiDateFocus,
-                    decoration:
-                        const InputDecoration(labelText: 'Body Comp Date'),
-                    keyboardType: TextInputType.numberWithOptions(signed: true),
-                    inputFormatters: [
-                      FilteringTextInputFormatter.digitsOnly,
-                    ],
-                    autocorrect: false,
-                    textInputAction: TextInputAction.next,
-                    onEditingComplete: () => FocusScope.of(context).nextFocus(),
-                  ),
+        ),
+        if (bodyComp)
+          Column(
+            children: [
+              Padding(
+                padding: EdgeInsets.all(8.0),
+                child: PlatformTextField(
+                  controller: _bmiDateController,
+                  focusNode: _bmiDateFocus,
+                  label: 'Body Comp Date',
+                  decoration:
+                      const InputDecoration(labelText: 'Body Comp Date'),
+                  keyboardType: TextInputType.numberWithOptions(signed: true),
+                  inputFormatters: [
+                    FilteringTextInputFormatter.digitsOnly,
+                  ],
+                  autocorrect: false,
+                  textInputAction: TextInputAction.next,
+                  onEditingComplete: () => FocusScope.of(context).nextFocus(),
                 ),
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 8.0),
-                  child: PlatformTextField(
-                    controller: _heightController,
-                    decoration: const InputDecoration(labelText: 'Height'),
-                    keyboardType: TextInputType.numberWithOptions(signed: true),
-                    inputFormatters: [
-                      FilteringTextInputFormatter.digitsOnly,
-                    ],
-                    autocorrect: false,
-                    textInputAction: TextInputAction.next,
-                    onEditingComplete: () => FocusScope.of(context).nextFocus(),
-                  ),
+              ),
+              Padding(
+                padding: EdgeInsets.all(8.0),
+                child: PlatformTextField(
+                  controller: _heightController,
+                  label: 'Height',
+                  decoration: const InputDecoration(labelText: 'Height'),
+                  keyboardType: TextInputType.numberWithOptions(signed: true),
+                  inputFormatters: [
+                    FilteringTextInputFormatter.digitsOnly,
+                  ],
+                  autocorrect: false,
+                  textInputAction: TextInputAction.next,
+                  onEditingComplete: () => FocusScope.of(context).nextFocus(),
                 ),
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 8.0),
-                  child: PlatformTextField(
-                    controller: _weightController,
-                    decoration: const InputDecoration(labelText: 'Weight'),
-                    keyboardType: TextInputType.numberWithOptions(signed: true),
-                    inputFormatters: [
-                      FilteringTextInputFormatter.digitsOnly,
-                    ],
-                    autocorrect: false,
-                    textInputAction: TextInputAction.next,
-                    onEditingComplete: () => FocusScope.of(context).nextFocus(),
-                  ),
+              ),
+              Padding(
+                padding: EdgeInsets.all(8.0),
+                child: PlatformTextField(
+                  controller: _weightController,
+                  label: 'Weight',
+                  decoration: const InputDecoration(labelText: 'Weight'),
+                  keyboardType: TextInputType.numberWithOptions(signed: true),
+                  inputFormatters: [
+                    FilteringTextInputFormatter.digitsOnly,
+                  ],
+                  autocorrect: false,
+                  textInputAction: TextInputAction.next,
+                  onEditingComplete: () => FocusScope.of(context).nextFocus(),
                 ),
-                PlatformCheckboxListTile(
+              ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: PlatformCheckboxListTile(
                   value: bmiPass,
                   onChanged: (value) {
                     setState(() {
@@ -218,25 +237,28 @@ class _DownloadApftWidgetState extends State<DownloadApftWidget> {
                   },
                   title: Text('Height/Weight Pass'),
                 ),
-                if (!bmiPass)
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 8.0),
-                    child: PlatformTextField(
-                      controller: _bfController,
-                      focusNode: _bfFocus,
-                      decoration: const InputDecoration(labelText: 'BodyFat %'),
-                      keyboardType:
-                          TextInputType.numberWithOptions(signed: true),
-                      inputFormatters: [
-                        FilteringTextInputFormatter.digitsOnly,
-                      ],
-                      autocorrect: false,
-                      textInputAction: TextInputAction.done,
-                      onEditingComplete: () => FocusScope.of(context).unfocus(),
-                    ),
+              ),
+              if (!bmiPass)
+                Padding(
+                  padding: EdgeInsets.all(8.0),
+                  child: PlatformTextField(
+                    controller: _bfController,
+                    focusNode: _bfFocus,
+                    label: 'BodyFat %',
+                    decoration: const InputDecoration(labelText: 'BodyFat %'),
+                    keyboardType: TextInputType.numberWithOptions(signed: true),
+                    inputFormatters: [
+                      FilteringTextInputFormatter.digitsOnly,
+                    ],
+                    autocorrect: false,
+                    textInputAction: TextInputAction.done,
+                    onEditingComplete: () => FocusScope.of(context).unfocus(),
                   ),
-                if (!bmiPass)
-                  PlatformCheckboxListTile(
+                ),
+              if (!bmiPass)
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: PlatformCheckboxListTile(
                     value: bfPass,
                     onChanged: (value) {
                       setState(() {
@@ -245,65 +267,66 @@ class _DownloadApftWidgetState extends State<DownloadApftWidget> {
                     },
                     title: Text('Bodyfat % Pass'),
                   ),
-              ],
-            ),
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: 8.0),
-            child: PlatformTextField(
-              controller: _commentController,
-              focusNode: _commentFocus,
-              decoration: const InputDecoration(labelText: 'Comments'),
-              keyboardType: TextInputType.multiline,
-              maxLines: 4,
-              autocorrect: false,
-              textInputAction:
-                  maxlines ? TextInputAction.done : TextInputAction.newline,
-              onChanged: (value) {
-                final span = _commentController.buildTextSpan(
-                    context: context, style: TextStyle(), withComposing: false);
-                final tp = TextPainter(text: span);
-                tp.textDirection = TextDirection.ltr;
-                tp.layout(maxWidth: MediaQuery.of(context).size.width);
-
-                int lines = tp.computeLineMetrics().length;
-                setState(() {
-                  if (lines >= 4) {
-                    maxlines = true;
-                  } else {
-                    maxlines = false;
-                  }
-                });
-              },
-              onEditingComplete: () => FocusScope.of(context).unfocus(),
-            ),
+                ),
+            ],
           ),
-          Padding(
-            padding: EdgeInsets.all(8),
-            child: PlatformButton(
-              child: Text('Download PDF'),
-              onPressed: () {
-                Navigator.of(context).pop();
-                DownloadApft.downloadPdf(
-                  context: context,
-                  apft: widget.apft,
-                  unitLoc: _unitController.text,
-                  mos: _mosController.text,
-                  altPass: altPass,
-                  oic: _oicController.text,
-                  oicGrade: _oicGradeController.text,
-                  bmiDate: bodyComp ? _bmiDateController.text : '',
-                  height: bodyComp ? _heightController.text : '',
-                  weight: bodyComp ? _weightController.text : '',
-                  bf: bodyComp ? _bfController.text : '',
-                  bmiPass: bodyComp ? bmiPass : null,
-                  bfPass: bodyComp && !bmiPass ? bfPass : null,
-                  comments: _commentController.text,
-                );
-              },
-            ),
-          )
-        ]),
-      ),
+        Padding(
+          padding: EdgeInsets.all(8.0),
+          child: PlatformTextField(
+            controller: _commentController,
+            focusNode: _commentFocus,
+            label: 'Comments',
+            decoration: const InputDecoration(labelText: 'Comments'),
+            keyboardType: TextInputType.multiline,
+            maxLines: 4,
+            autocorrect: false,
+            textInputAction:
+                maxlines ? TextInputAction.done : TextInputAction.newline,
+            onChanged: (value) {
+              final span = _commentController.buildTextSpan(
+                  context: context, style: TextStyle(), withComposing: false);
+              final tp = TextPainter(text: span);
+              tp.textDirection = TextDirection.ltr;
+              tp.layout(maxWidth: MediaQuery.of(context).size.width);
+
+              int lines = tp.computeLineMetrics().length;
+              setState(() {
+                if (lines >= 4) {
+                  maxlines = true;
+                } else {
+                  maxlines = false;
+                }
+              });
+            },
+            onEditingComplete: () => FocusScope.of(context).unfocus(),
+          ),
+        ),
+        Padding(
+          padding: EdgeInsets.all(8),
+          child: PlatformButton(
+            child: Text('Download PDF'),
+            onPressed: () {
+              Navigator.of(context).pop();
+              DownloadApft.downloadPdf(
+                context: context,
+                apft: widget.apft,
+                unitLoc: _unitController.text,
+                mos: _mosController.text,
+                altPass: altPass,
+                oic: _oicController.text,
+                oicGrade: _oicGradeController.text,
+                bmiDate: bodyComp ? _bmiDateController.text : '',
+                height: bodyComp ? _heightController.text : '',
+                weight: bodyComp ? _weightController.text : '',
+                bf: bodyComp ? _bfController.text : '',
+                bmiPass: bodyComp ? bmiPass : null,
+                bfPass: bodyComp && !bmiPass ? bfPass : null,
+                comments: _commentController.text,
+              );
+            },
+          ),
+        )
+      ]),
     );
   }
 }

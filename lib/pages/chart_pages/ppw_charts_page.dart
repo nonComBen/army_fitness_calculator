@@ -21,8 +21,6 @@ class _PpwChartPageState extends State<PpwChartPage> {
   List<charts.Series<PPW, DateTime>> _seriesBarData = [];
   List<PPW>? myData;
 
-  static GlobalKey previewContainer = new GlobalKey();
-
   _generateData(List<PPW> myData) {
     _seriesBarData.clear();
     _seriesBarData = [
@@ -180,29 +178,26 @@ class _PpwChartPageState extends State<PpwChartPage> {
         child: Center(
           child: ListView(
             children: <Widget>[
-              RepaintBoundary(
-                key: previewContainer,
-                child: DecoratedBox(
-                  decoration: BoxDecoration(
-                    color: getBackgroundColor(context),
-                  ),
-                  child: Column(
-                    children: <Widget>[
-                      Center(
-                          child: Text(
-                        'Promotion Point Progress for ${widget.soldier}',
-                        style: const TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                        ),
-                        textAlign: TextAlign.center,
-                      )),
-                      const SizedBox(
-                        height: 15.0,
+              DecoratedBox(
+                decoration: BoxDecoration(
+                  color: getBackgroundColor(context),
+                ),
+                child: Column(
+                  children: <Widget>[
+                    Center(
+                        child: Text(
+                      'Promotion Point Progress for ${widget.soldier}',
+                      style: const TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
                       ),
-                      _buildChart(),
-                    ],
-                  ),
+                      textAlign: TextAlign.center,
+                    )),
+                    const SizedBox(
+                      height: 15.0,
+                    ),
+                    _buildChart(),
+                  ],
                 ),
               ),
               const SizedBox(
@@ -224,45 +219,57 @@ class _PpwChartPageState extends State<PpwChartPage> {
                   mainAxisSpacing: 1.0,
                   crossAxisSpacing: 1.0,
                   children: <Widget>[
-                    PlatformCheckboxListTile(
-                      title: const Text('Military Training'),
-                      value: milTrain,
-                      activeColor: getOnPrimaryColor(context),
-                      onChanged: (value) {
-                        setState(() {
-                          milTrain = value!;
-                        });
-                      },
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 24.0),
+                      child: PlatformCheckboxListTile(
+                        title: const Text('Military Training'),
+                        value: milTrain,
+                        activeColor: getOnPrimaryColor(context),
+                        onChanged: (value) {
+                          setState(() {
+                            milTrain = value!;
+                          });
+                        },
+                      ),
                     ),
-                    PlatformCheckboxListTile(
-                      title: const Text('Awards'),
-                      value: awards,
-                      activeColor: getOnPrimaryColor(context),
-                      onChanged: (value) {
-                        setState(() {
-                          awards = value!;
-                        });
-                      },
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 24.0),
+                      child: PlatformCheckboxListTile(
+                        title: const Text('Awards'),
+                        value: awards,
+                        activeColor: getOnPrimaryColor(context),
+                        onChanged: (value) {
+                          setState(() {
+                            awards = value!;
+                          });
+                        },
+                      ),
                     ),
-                    PlatformCheckboxListTile(
-                      title: const Text('Military Education'),
-                      value: milEd,
-                      activeColor: getOnPrimaryColor(context),
-                      onChanged: (value) {
-                        setState(() {
-                          milEd = value!;
-                        });
-                      },
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 24.0),
+                      child: PlatformCheckboxListTile(
+                        title: const Text('Military Education'),
+                        value: milEd,
+                        activeColor: getOnPrimaryColor(context),
+                        onChanged: (value) {
+                          setState(() {
+                            milEd = value!;
+                          });
+                        },
+                      ),
                     ),
-                    PlatformCheckboxListTile(
-                      title: const Text('Civilian Education'),
-                      value: civEd,
-                      activeColor: getOnPrimaryColor(context),
-                      onChanged: (value) {
-                        setState(() {
-                          civEd = value!;
-                        });
-                      },
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 24.0),
+                      child: PlatformCheckboxListTile(
+                        title: const Text('Civilian Education'),
+                        value: civEd,
+                        activeColor: getOnPrimaryColor(context),
+                        onChanged: (value) {
+                          setState(() {
+                            civEd = value!;
+                          });
+                        },
+                      ),
                     ),
                   ])
             ],

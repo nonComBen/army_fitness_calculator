@@ -60,24 +60,22 @@ class _DecorationCardState extends State<DecorationCard> {
       onLongPress: widget.onLongPressed as void Function()?,
       child: Card(
         child: Padding(
-          padding: const EdgeInsets.all(8.0),
+          padding: const EdgeInsets.symmetric(horizontal: 8.0),
           child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Expanded(
                 flex: 3,
                 child: PlatformItemPicker(
                   value: widget.decoration!.name!,
-                  label: 'Decoration',
+                  label: Text('Decoration'),
                   items: DecorationCard.awards,
-                  onChanged: widget.onAwardChosen,
-                  onSelectedItemChanged: widget.onSelectedItemChanged,
+                  onChanged: widget.onAwardChosen!,
                 ),
               ),
               Expanded(
                 flex: 1,
-                child: SizedBox(
-                  width: 60,
+                child: Container(
+                  padding: EdgeInsets.only(top: 36.0, bottom: 8.0, left: 8.0),
                   child: PlatformTextField(
                     controller: _awardNumberController,
                     keyboardType: TextInputType.numberWithOptions(signed: true),

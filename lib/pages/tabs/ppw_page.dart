@@ -9,6 +9,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../methods/platform_show_modal_bottom_sheet.dart';
 import '../../providers/purchases_provider.dart';
 import '../../services/purchases_service.dart';
 import '../../widgets/platform_widgets/platform_button.dart';
@@ -416,9 +417,10 @@ class _PromotionPointPageState extends ConsumerState<PromotionPointPage> {
     final date = f.format(DateTime.now());
     final _dateController = TextEditingController(text: date);
     final _nameController = TextEditingController();
-    showModalBottomSheet(
+    showPlatformModalBottomSheet(
       context: context,
       builder: (ctx) => Container(
+        color: Colors.white,
         padding: EdgeInsets.only(
             left: 8,
             right: 8,
@@ -432,6 +434,7 @@ class _PromotionPointPageState extends ConsumerState<PromotionPointPage> {
                 padding: const EdgeInsets.all(8.0),
                 child: PlatformTextField(
                   controller: _dateController,
+                  label: 'Date',
                   keyboardType: TextInputType.numberWithOptions(signed: true),
                   inputFormatters: [
                     FilteringTextInputFormatter.digitsOnly,
@@ -449,6 +452,7 @@ class _PromotionPointPageState extends ConsumerState<PromotionPointPage> {
                 padding: const EdgeInsets.all(8.0),
                 child: PlatformTextField(
                   controller: _nameController,
+                  label: 'Name',
                   decoration: const InputDecoration(labelText: 'Name'),
                   keyboardType: TextInputType.text,
                   textCapitalization: TextCapitalization.words,
@@ -614,7 +618,9 @@ class _PromotionPointPageState extends ConsumerState<PromotionPointPage> {
   Widget build(BuildContext context) {
     primaryColor = getPrimaryColor(context);
     onPrimaryColor = getOnPrimaryColor(context);
-    final width = MediaQuery.of(context).size.width;
+    final width = MediaQuery.of(context).size.width -
+        MediaQuery.of(context).viewPadding.left -
+        MediaQuery.of(context).viewPadding.right;
     expansionTextStyle = TextStyle(color: onPrimaryColor, fontSize: 22);
     return Container(
       padding: const EdgeInsets.all(16.0),
@@ -622,36 +628,39 @@ class _PromotionPointPageState extends ConsumerState<PromotionPointPage> {
         children: <Widget>[
           GridView.count(
               crossAxisCount: width > 700 ? 2 : 1,
-              childAspectRatio: width > 700 ? width / 230 : width / 115,
+              childAspectRatio: width > 700 ? width / 180 : width / 90,
               crossAxisSpacing: 1.0,
               mainAxisSpacing: 1.0,
               shrinkWrap: true,
               primary: false,
               children: <Widget>[
-                PlatformSelectionWidget(
-                    titles: [Text('SGT'), Text('SSG')],
-                    values: ['SGT', 'SSG'],
-                    groupValue: rank,
-                    onChanged: (value) {
-                      setState(() {
-                        rank = value!;
-                        _resetMaximums();
-                        _calcPtPts();
-                        _calcWeaponPts();
-                        _calcAwardPts();
-                        _calcBadgePts();
-                        _calcAirbornePts();
-                        _calcResPts();
-                        _calcWbcPts();
-                        _calcCertPts();
-                        _calcTotalPts();
-                      });
-                    }),
                 Padding(
-                  padding: const EdgeInsets.only(top: 24.0),
+                  padding: const EdgeInsets.all(8.0),
                   child: PlatformSelectionWidget(
-                    titles: [Text('After 1 Apr 23'), Text('Before 1 Apr 23')],
-                    values: ['newVersion', 'oldVersion'],
+                      titles: [Text('SGT'), Text('SSG')],
+                      values: ['SGT', 'SSG'],
+                      groupValue: rank,
+                      onChanged: (value) {
+                        setState(() {
+                          rank = value!;
+                          _resetMaximums();
+                          _calcPtPts();
+                          _calcWeaponPts();
+                          _calcAwardPts();
+                          _calcBadgePts();
+                          _calcAirbornePts();
+                          _calcResPts();
+                          _calcWbcPts();
+                          _calcCertPts();
+                          _calcTotalPts();
+                        });
+                      }),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: PlatformSelectionWidget(
+                    titles: [Text('Before 1 Apr 23'), Text('After 1 Apr 23')],
+                    values: ['oldVersion', 'newVersion'],
                     groupValue: version,
                     onChanged: (value) {
                       setState(() {
@@ -752,20 +761,12 @@ class _PromotionPointPageState extends ConsumerState<PromotionPointPage> {
                 padding: const EdgeInsets.fromLTRB(8.0, 0.0, 8.0, 0.0),
                 child: PlatformItemPicker(
                   value: weapons,
-                  label: 'Weapons Card',
+                  label: Text('Weapons Card'),
                   items: weaponCards,
                   onChanged: (dynamic value) {
                     FocusScope.of(context).unfocus();
                     setState(() {
                       weapons = value;
-                      _calcWeaponPts();
-                      _calcTotalPts();
-                    });
-                  },
-                  onSelectedItemChanged: (index) {
-                    FocusScope.of(context).unfocus();
-                    setState(() {
-                      weapons = weaponCards[index];
                       _calcWeaponPts();
                       _calcTotalPts();
                     });
@@ -864,23 +865,15 @@ class _PromotionPointPageState extends ConsumerState<PromotionPointPage> {
                   children: _badgeWidgets(),
                 ),
               Padding(
-                padding: const EdgeInsets.fromLTRB(8.0, 0.0, 8.0, 0.0),
+                padding: const EdgeInsets.all(8.0),
                 child: PlatformItemPicker(
                   value: airborneLvl,
-                  label: 'Airborne Advantage',
+                  label: Text('Airborne Advantage'),
                   items: airborne,
                   onChanged: (value) {
                     FocusScope.of(context).unfocus();
                     setState(() {
                       airborneLvl = value;
-                      _calcAirbornePts();
-                      _calcTotalPts();
-                    });
-                  },
-                  onSelectedItemChanged: (index) {
-                    FocusScope.of(context).unfocus();
-                    setState(() {
-                      airborneLvl = airborne[index];
                       _calcAirbornePts();
                       _calcTotalPts();
                     });
@@ -909,18 +902,11 @@ class _PromotionPointPageState extends ConsumerState<PromotionPointPage> {
                 padding: const EdgeInsets.fromLTRB(8.0, 0.0, 8.0, 0.0),
                 child: PlatformItemPicker(
                   value: ncoes,
-                  label: 'NCOES Honors',
+                  label: Text('NCOES Honors'),
                   items: ncoesHonors,
                   onChanged: (value) {
                     setState(() {
                       ncoes = value;
-                      _calcNcoesPts();
-                      _calcTotalPts();
-                    });
-                  },
-                  onSelectedItemChanged: (index) {
-                    setState(() {
-                      ncoes = ncoesHonors[index];
                       _calcNcoesPts();
                       _calcTotalPts();
                     });
@@ -984,48 +970,57 @@ class _PromotionPointPageState extends ConsumerState<PromotionPointPage> {
                             ? 2
                             : 1,
                     childAspectRatio: width > 800
-                        ? width / 300
+                        ? width / 225
                         : width > 400
-                            ? width / 200
-                            : width / 100,
+                            ? width / 150
+                            : width / 75,
                     crossAxisSpacing: 1.0,
                     mainAxisSpacing: 1.0,
                     shrinkWrap: true,
                     primary: false,
                     children: [
-                      PlatformCheckboxListTile(
-                          title: const Text('Ranger'),
-                          activeColor: onPrimaryColor,
-                          value: isRanger,
-                          onChanged: (value) {
-                            setState(() {
-                              isRanger = value!;
-                              _calcTabPts();
-                              _calcTotalPts();
-                            });
-                          }),
-                      PlatformCheckboxListTile(
-                          title: const Text('Special Forces'),
-                          activeColor: onPrimaryColor,
-                          value: isSf,
-                          onChanged: (value) {
-                            setState(() {
-                              isSf = value!;
-                              _calcTabPts();
-                              _calcTotalPts();
-                            });
-                          }),
-                      PlatformCheckboxListTile(
-                          title: const Text('Sapper'),
-                          activeColor: onPrimaryColor,
-                          value: isSapper,
-                          onChanged: (value) {
-                            setState(() {
-                              isSapper = value!;
-                              _calcTabPts();
-                              _calcTotalPts();
-                            });
-                          }),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 20.0),
+                        child: PlatformCheckboxListTile(
+                            title: const Text('Ranger'),
+                            activeColor: onPrimaryColor,
+                            value: isRanger,
+                            onChanged: (value) {
+                              setState(() {
+                                isRanger = value!;
+                                _calcTabPts();
+                                _calcTotalPts();
+                              });
+                            }),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 20.0),
+                        child: PlatformCheckboxListTile(
+                            title: const Text('Special Forces'),
+                            activeColor: onPrimaryColor,
+                            value: isSf,
+                            onChanged: (value) {
+                              setState(() {
+                                isSf = value!;
+                                _calcTabPts();
+                                _calcTotalPts();
+                              });
+                            }),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 20.0),
+                        child: PlatformCheckboxListTile(
+                            title: const Text('Sapper'),
+                            activeColor: onPrimaryColor,
+                            value: isSapper,
+                            onChanged: (value) {
+                              setState(() {
+                                isSapper = value!;
+                                _calcTabPts();
+                                _calcTotalPts();
+                              });
+                            }),
+                      ),
                     ]),
               ),
             ],
@@ -1048,7 +1043,7 @@ class _PromotionPointPageState extends ConsumerState<PromotionPointPage> {
             children: [
               GridView.count(
                 crossAxisCount: width > 700 ? 2 : 1,
-                childAspectRatio: width > 700 ? width / 230 : width / 115,
+                childAspectRatio: width > 700 ? width / 200 : width / 100,
                 crossAxisSpacing: 1.0,
                 mainAxisSpacing: 1.0,
                 shrinkWrap: true,
@@ -1074,7 +1069,7 @@ class _PromotionPointPageState extends ConsumerState<PromotionPointPage> {
                     },
                   ),
                   Padding(
-                    padding: const EdgeInsets.all(8.0),
+                    padding: const EdgeInsets.symmetric(vertical: 24.0),
                     child: PlatformCheckboxListTile(
                       activeColor: onPrimaryColor,
                       value: degreeCompleted,
@@ -1162,7 +1157,7 @@ class _PromotionPointPageState extends ConsumerState<PromotionPointPage> {
                       },
                     ),
                   Padding(
-                    padding: const EdgeInsets.all(8.0),
+                    padding: const EdgeInsets.symmetric(vertical: 24.0),
                     child: PlatformCheckboxListTile(
                       activeColor: onPrimaryColor,
                       value: hasFornLang,
@@ -1203,7 +1198,7 @@ class _PromotionPointPageState extends ConsumerState<PromotionPointPage> {
                 ),
               )),
           Padding(
-            padding: const EdgeInsets.all(8.0),
+            padding: const EdgeInsets.symmetric(vertical: 16.0),
             child: PlatformButton(
               child: const Text('Save Promotion Point Score'),
               onPressed: () {

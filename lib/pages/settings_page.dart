@@ -1,6 +1,8 @@
 import 'dart:io';
 
 import 'package:acft_calculator/methods/theme_methods.dart';
+import 'package:acft_calculator/widgets/platform_widgets/platform_checkbox_list_tile.dart';
+import 'package:acft_calculator/widgets/platform_widgets/platform_text_field.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -159,23 +161,25 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                           fontSize: 18.0, fontWeight: FontWeight.bold),
                     ),
                   ),
-                  Consumer(builder: ((context, ref, child) {
-                    final themeState = ref.watch(themeStateNotifierProvider);
-                    final notifier =
-                        ref.read(themeStateNotifierProvider.notifier);
-                    if (width > 500) {
-                      return new Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children:
-                            brightnessRadios(true, width, themeState, notifier),
+                  Consumer(
+                    builder: ((context, ref, child) {
+                      final themeState = ref.watch(themeStateNotifierProvider);
+                      final notifier =
+                          ref.read(themeStateNotifierProvider.notifier);
+                      return PlatformSelectionWidget(
+                        titles: [Text('Light'), Text('Dark')],
+                        values: [Brightness.light, Brightness.dark],
+                        groupValue: themeState.brightness,
+                        onChanged: (value) {
+                          if (value == Brightness.dark) {
+                            notifier.switchTheme(ThemeState.darkTheme);
+                          } else {
+                            notifier.switchTheme(ThemeState.lightTheme);
+                          }
+                        },
                       );
-                    } else {
-                      return new Column(
-                        children: brightnessRadios(
-                            false, width, themeState, notifier),
-                      );
-                    }
-                  })),
+                    }),
+                  ),
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: const Text(
@@ -193,7 +197,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                     primary: false,
                     children: <Widget>[
                       PlatformItemPicker(
-                        label: 'Default ACFT Aerobic Event',
+                        label: Text('Default ACFT Aerobic Event'),
                         value: acftEvent,
                         items: acftEvents,
                         onChanged: (value) {
@@ -202,10 +206,6 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                             prefs.setString('acft_event', value);
                           });
                         },
-                        onSelectedItemChanged: (index) => setState(() {
-                          acftEvent = events[index];
-                          prefs.setString('acft_event', acftEvent);
-                        }),
                       ),
                       PlatformSelectionWidget(
                           titles: [Text('M'), Text('F')],
@@ -219,8 +219,9 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                           }),
                       Padding(
                         padding: const EdgeInsets.fromLTRB(8.0, 8.0, 8.0, 8.0),
-                        child: TextField(
+                        child: PlatformTextField(
                           controller: _ageController,
+                          label: 'Default Age',
                           keyboardType: TextInputType.numberWithOptions(),
                           textInputAction: TextInputAction.done,
                           decoration:
@@ -231,7 +232,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                         ),
                       ),
                       PlatformItemPicker(
-                        label: 'Default APFT Aerobic Event',
+                        label: Text('Default APFT Aerobic Event'),
                         value: apftEvent,
                         items: events,
                         onChanged: (value) {
@@ -240,28 +241,27 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                             prefs.setString('apft_event', value);
                           });
                         },
-                        onSelectedItemChanged: (index) => setState(() {
-                          apftEvent = events[index];
-                          prefs.setString('apft_event', apftEvent);
-                        }),
                       ),
-                      SwitchListTile(
-                        value: jrSoldier,
-                        title: const Text('For Promotion Points'),
-                        subtitle: Text(jrSoldier ? 'True' : 'False'),
-                        activeColor: getOnPrimaryColor(context),
-                        onChanged: (value) {
-                          setState(() {
-                            jrSoldier = value;
-
-                            prefs.setBool('jr_soldier', value);
-                          });
-                        },
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 24.0),
+                        child: PlatformCheckboxListTile(
+                          value: jrSoldier,
+                          title: const Text('For Promotion Points'),
+                          subtitle: Text(jrSoldier ? 'True' : 'False'),
+                          activeColor: getOnPrimaryColor(context),
+                          onChanged: (value) {
+                            setState(() {
+                              jrSoldier = value!;
+                              prefs.setBool('jr_soldier', value);
+                            });
+                          },
+                        ),
                       ),
                       Padding(
                         padding: EdgeInsets.all(8.0),
-                        child: TextField(
+                        child: PlatformTextField(
                           controller: _heightController,
+                          label: 'Default Height',
                           keyboardType: TextInputType.numberWithOptions(),
                           textInputAction: TextInputAction.done,
                           decoration: const InputDecoration(

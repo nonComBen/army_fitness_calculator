@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:acft_calculator/methods/platform_show_modal_bottom_sheet.dart';
 import 'package:flutter/material.dart';
 import 'package:in_app_purchase/in_app_purchase.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -7,7 +8,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import '../methods/theme_methods.dart';
 import '../widgets/platform_widgets/platform_text_button.dart';
 import '../../widgets/platform_widgets/platform_button.dart';
-import '../widgets/toast.dart';
+import '../widgets/my_toast.dart';
 import '../widgets/bullet_item.dart';
 
 class PurchasesService {
@@ -34,7 +35,7 @@ class PurchasesService {
   }
 
   upgrade(BuildContext context) {
-    showModalBottomSheet(
+    showPlatformModalBottomSheet(
       context: context,
       builder: (ctx) => Container(
         padding: EdgeInsets.only(
@@ -43,6 +44,7 @@ class PurchasesService {
           right: 8.0,
           bottom: MediaQuery.of(context).viewPadding.bottom + 50,
         ),
+        color: Colors.white,
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -91,10 +93,20 @@ class PurchasesService {
                     onPressed: () {
                       if (_products!.isEmpty) {
                         Navigator.pop(ctx);
-                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                          content: const Text(
-                              'Upgrading is not available at this time'),
-                        ));
+                        FToast toast = FToast();
+                        toast.context = context;
+                        toast.showToast(
+                          child: MyToast(
+                            contents: [
+                              Text(
+                                'Upgrading is not available at this time',
+                                style: TextStyle(
+                                  color: getOnPrimaryColor(context),
+                                ),
+                              ),
+                            ],
+                          ),
+                        );
                       } else {
                         Navigator.pop(ctx);
                         ProductDetails product = _products!.firstWhere(

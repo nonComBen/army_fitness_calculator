@@ -50,12 +50,9 @@ class _AcftTablePageState extends State<AcftTablePage> {
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: PlatformItemPicker(
-                      label: 'Age Group',
+                      label: Text('Age Group'),
                       value: _ageGroup,
                       items: ptAgeGroups,
-                      onSelectedItemChanged: (index) => setState(() {
-                        _ageGroup = ptAgeGroups[index];
-                      }),
                       onChanged: (dynamic value) {
                         setState(() {
                           _ageGroup = value;
@@ -66,12 +63,9 @@ class _AcftTablePageState extends State<AcftTablePage> {
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: PlatformItemPicker(
-                      label: 'Gender',
+                      label: Text('Gender'),
                       value: _gender,
                       items: _genders,
-                      onSelectedItemChanged: (index) => setState(() {
-                        _gender = _genders[index];
-                      }),
                       onChanged: (dynamic value) {
                         setState(() {
                           _gender = value;

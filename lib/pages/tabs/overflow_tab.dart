@@ -1,5 +1,8 @@
+import 'package:acft_calculator/methods/theme_methods.dart';
+import 'package:acft_calculator/widgets/my_toast.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:rate_my_app/rate_my_app.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
@@ -145,9 +148,20 @@ class OverflowTab extends ConsumerWidget {
             leading: const Icon(Icons.monetization_on),
             onTap: () {
               if (purchasesService.isPremium) {
-                ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                  content: Text('You are already upgraded to Premium'),
-                ));
+                FToast toast = FToast();
+                toast.context = context;
+                toast.showToast(
+                  child: MyToast(
+                    contents: [
+                      Text(
+                        'You are already upgraded to Premium',
+                        style: TextStyle(
+                          color: getOnPrimaryColor(context),
+                        ),
+                      ),
+                    ],
+                  ),
+                );
               } else {
                 purchasesService.upgrade(context);
               }

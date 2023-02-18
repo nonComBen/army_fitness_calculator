@@ -25,8 +25,6 @@ class _AcftChartPageState extends State<AcftChartPage> {
   List<charts.Series<Acft, DateTime>> _seriesBarData = [];
   List<Acft>? myData;
 
-  static GlobalKey previewContainer = new GlobalKey();
-
   _generateData(List<Acft> myData) {
     _seriesBarData.clear();
     _seriesBarData.add(charts.Series(
@@ -132,27 +130,24 @@ class _AcftChartPageState extends State<AcftChartPage> {
         child: new Center(
           child: new ListView(
             children: <Widget>[
-              RepaintBoundary(
-                key: previewContainer,
-                child: DecoratedBox(
-                  decoration: BoxDecoration(
-                      color: Theme.of(context).scaffoldBackgroundColor),
-                  child: Column(
-                    children: <Widget>[
-                      Text(
-                        'ACFT Progress for ${widget.soldier}',
-                        style: const TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                        ),
-                        textAlign: TextAlign.center,
+              DecoratedBox(
+                decoration: BoxDecoration(
+                    color: Theme.of(context).scaffoldBackgroundColor),
+                child: Column(
+                  children: <Widget>[
+                    Text(
+                      'ACFT Progress for ${widget.soldier}',
+                      style: const TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
                       ),
-                      const SizedBox(
-                        height: 15.0,
-                      ),
-                      _buildChart(),
-                    ],
-                  ),
+                      textAlign: TextAlign.center,
+                    ),
+                    const SizedBox(
+                      height: 15.0,
+                    ),
+                    _buildChart(),
+                  ],
                 ),
               ),
               const SizedBox(
@@ -174,65 +169,83 @@ class _AcftChartPageState extends State<AcftChartPage> {
                 mainAxisSpacing: 1.0,
                 crossAxisSpacing: 1.0,
                 children: <Widget>[
-                  PlatformCheckboxListTile(
-                    title: Text('MDL'),
-                    value: mdl,
-                    activeColor: getOnPrimaryColor(context),
-                    onChanged: (value) {
-                      setState(() {
-                        mdl = value!;
-                      });
-                    },
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 24.0),
+                    child: PlatformCheckboxListTile(
+                      title: Text('MDL'),
+                      value: mdl,
+                      activeColor: getOnPrimaryColor(context),
+                      onChanged: (value) {
+                        setState(() {
+                          mdl = value!;
+                        });
+                      },
+                    ),
                   ),
-                  PlatformCheckboxListTile(
-                    title: const Text('SPT'),
-                    value: spt,
-                    activeColor: getOnPrimaryColor(context),
-                    onChanged: (value) {
-                      setState(() {
-                        spt = value!;
-                      });
-                    },
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 24.0),
+                    child: PlatformCheckboxListTile(
+                      title: const Text('SPT'),
+                      value: spt,
+                      activeColor: getOnPrimaryColor(context),
+                      onChanged: (value) {
+                        setState(() {
+                          spt = value!;
+                        });
+                      },
+                    ),
                   ),
-                  PlatformCheckboxListTile(
-                    title: const Text('HRP'),
-                    value: hrp,
-                    activeColor: getOnPrimaryColor(context),
-                    onChanged: (value) {
-                      setState(() {
-                        hrp = value!;
-                      });
-                    },
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 24.0),
+                    child: PlatformCheckboxListTile(
+                      title: const Text('HRP'),
+                      value: hrp,
+                      activeColor: getOnPrimaryColor(context),
+                      onChanged: (value) {
+                        setState(() {
+                          hrp = value!;
+                        });
+                      },
+                    ),
                   ),
-                  PlatformCheckboxListTile(
-                    title: const Text('SDC'),
-                    value: sdc,
-                    activeColor: getOnPrimaryColor(context),
-                    onChanged: (value) {
-                      setState(() {
-                        sdc = value!;
-                      });
-                    },
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 24.0),
+                    child: PlatformCheckboxListTile(
+                      title: const Text('SDC'),
+                      value: sdc,
+                      activeColor: getOnPrimaryColor(context),
+                      onChanged: (value) {
+                        setState(() {
+                          sdc = value!;
+                        });
+                      },
+                    ),
                   ),
-                  PlatformCheckboxListTile(
-                    title: const Text('PLK'),
-                    value: plk,
-                    activeColor: getOnPrimaryColor(context),
-                    onChanged: (value) {
-                      setState(() {
-                        plk = value!;
-                      });
-                    },
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 24.0),
+                    child: PlatformCheckboxListTile(
+                      title: const Text('PLK'),
+                      value: plk,
+                      activeColor: getOnPrimaryColor(context),
+                      onChanged: (value) {
+                        setState(() {
+                          plk = value!;
+                        });
+                      },
+                    ),
                   ),
-                  PlatformCheckboxListTile(
-                    title: const Text('Run'),
-                    value: run,
-                    activeColor: getOnPrimaryColor(context),
-                    onChanged: (value) {
-                      setState(() {
-                        run = value!;
-                      });
-                    },
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 24.0),
+                    child: PlatformCheckboxListTile(
+                      title: const Text('Run'),
+                      value: run,
+                      activeColor: getOnPrimaryColor(context),
+                      onChanged: (value) {
+                        setState(() {
+                          run = value!;
+                        });
+                      },
+                    ),
                   ),
                 ],
               )

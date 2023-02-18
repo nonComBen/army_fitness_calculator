@@ -39,6 +39,7 @@ class FormattedTextField extends StatelessWidget {
           border: OutlineInputBorder(),
           errorText: errorText,
         ),
+        label: label,
         onChanged: onChanged,
       ),
     );

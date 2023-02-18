@@ -1,7 +1,11 @@
 import 'dart:io';
 
+import 'package:acft_calculator/methods/theme_methods.dart';
+import 'package:acft_calculator/widgets/platform_widgets/platform_text_button.dart';
+import 'package:acft_calculator/widgets/my_toast.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:open_file/open_file.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -136,15 +140,35 @@ class Download5501 {
         final fileName = '${dir.path}/${bf.rank}_${bf.name}_5501.pdf';
         var file = File(fileName);
         file.writeAsBytesSync(document.saveSync());
+        FToast toast = FToast();
+        toast.context = context;
 
-        ScaffoldMessenger.of(context!).showSnackBar(
-          SnackBar(
-            content: Text(
-                'DA Form 5501 has been downloaded to a temporary folder. Open and save to a permanent folder.'),
-            action: SnackBarAction(
-              label: 'Open',
-              onPressed: () => OpenFile.open(fileName),
-            ),
+        toast.showToast(
+          toastDuration: Duration(seconds: 5),
+          child: MyToast(
+            contents: [
+              Expanded(
+                flex: 3,
+                child: Text(
+                  'DA Form 5501 has been downloaded to a temporary folder. Open and save to a permanent folder.',
+                  style: TextStyle(
+                    color: getOnPrimaryColor(context!),
+                  ),
+                ),
+              ),
+              Expanded(
+                flex: 1,
+                child: PlatformTextButton(
+                  child: Text(
+                    'Open',
+                    style: TextStyle(
+                      color: getOnPrimaryColor(context),
+                    ),
+                  ),
+                  onPressed: () => OpenFile.open(fileName),
+                ),
+              ),
+            ],
           ),
         );
       } on Exception catch (e) {

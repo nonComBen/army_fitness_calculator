@@ -28,6 +28,7 @@ abstract class PlatformApp extends StatelessWidget {
         primaryContrastingColor: themeData.colorScheme.onPrimary,
         scaffoldBackgroundColor: themeData.scaffoldBackgroundColor,
         textTheme: CupertinoTextThemeData(
+          primaryColor: themeData.colorScheme.onPrimary,
           navTitleTextStyle: TextStyle(
             color: themeData.colorScheme.onPrimary,
             fontSize: 22,
@@ -107,10 +108,10 @@ class IOSApp extends StatelessWidget implements PlatformApp {
       navigatorObservers: [
         FirebaseAnalyticsObserver(analytics: FirebaseAnalytics.instance)
       ],
-      builder: ((context, child) => MediaQuery(
-            data: MediaQuery.of(context).copyWith(alwaysUse24HourFormat: true),
-            child: child!,
-          )),
+      // builder: ((context, child) => MediaQuery(
+      //       data: MediaQuery.of(context).copyWith(alwaysUse24HourFormat: true),
+      //       child: child!,
+      //     )),
     );
   }
 }

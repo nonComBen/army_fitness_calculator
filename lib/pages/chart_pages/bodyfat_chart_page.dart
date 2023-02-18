@@ -21,8 +21,6 @@ class _BodyfatChartPageState extends State<BodyfatChartPage> {
   List<charts.Series<Bodyfat, DateTime>> _seriesBarData = [];
   List<Bodyfat>? myData;
 
-  static GlobalKey previewContainer = new GlobalKey();
-
   _generateData(List<Bodyfat> myData) {
     _seriesBarData.clear();
     _seriesBarData = [
@@ -124,42 +122,42 @@ class _BodyfatChartPageState extends State<BodyfatChartPage> {
         child: Center(
           child: ListView(
             children: <Widget>[
-              RepaintBoundary(
-                key: previewContainer,
-                child: DecoratedBox(
-                  decoration: BoxDecoration(
-                    color: getBackgroundColor(context),
-                  ),
-                  child: Column(
-                    children: <Widget>[
-                      Text(
-                        'Body Comp Progress for ${widget.soldier}',
-                        style: const TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                        ),
-                        textAlign: TextAlign.center,
+              DecoratedBox(
+                decoration: BoxDecoration(
+                  color: getBackgroundColor(context),
+                ),
+                child: Column(
+                  children: <Widget>[
+                    Text(
+                      'Body Comp Progress for ${widget.soldier}',
+                      style: const TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
                       ),
-                      const SizedBox(
-                        height: 15.0,
-                      ),
-                      _buildChart(),
-                    ],
-                  ),
+                      textAlign: TextAlign.center,
+                    ),
+                    const SizedBox(
+                      height: 15.0,
+                    ),
+                    _buildChart(),
+                  ],
                 ),
               ),
               const SizedBox(
                 height: 15.0,
               ),
-              PlatformCheckboxListTile(
-                title: const Text('Bodyfat'),
-                value: bf,
-                activeColor: getOnPrimaryColor(context),
-                onChanged: (value) {
-                  setState(() {
-                    bf = value!;
-                  });
-                },
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 24.0),
+                child: PlatformCheckboxListTile(
+                  title: const Text('Bodyfat'),
+                  value: bf,
+                  activeColor: getOnPrimaryColor(context),
+                  onChanged: (value) {
+                    setState(() {
+                      bf = value!;
+                    });
+                  },
+                ),
               ),
             ],
           ),

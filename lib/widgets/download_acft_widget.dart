@@ -58,13 +58,18 @@ class _DownloadAcftWidgetState extends State<DownloadAcftWidget> {
   Widget build(BuildContext context) {
     return Container(
       padding: EdgeInsets.only(
-          left: 8,
-          right: 8,
-          bottom: MediaQuery.of(context).viewInsets.bottom == 0
-              ? MediaQuery.of(context).padding.bottom
-              : MediaQuery.of(context).viewInsets.bottom),
-      child: SingleChildScrollView(
-        child: Column(children: [
+        left: 8,
+        right: 8,
+        bottom: MediaQuery.of(context).viewInsets.bottom == 0
+            ? MediaQuery.of(context).padding.bottom
+            : MediaQuery.of(context).viewInsets.bottom,
+      ),
+      constraints: BoxConstraints(
+        maxHeight: MediaQuery.of(context).size.height / 2,
+      ),
+      color: Colors.white,
+      child: ListView(
+        children: [
           Padding(
             padding: EdgeInsets.symmetric(horizontal: 8),
             child: Text(
@@ -77,9 +82,10 @@ class _DownloadAcftWidgetState extends State<DownloadAcftWidget> {
             ),
           ),
           Padding(
-            padding: EdgeInsets.symmetric(horizontal: 8.0),
+            padding: EdgeInsets.all(8.0),
             child: PlatformTextField(
               controller: _unitController,
+              label: 'Unit / Location',
               decoration: const InputDecoration(labelText: 'Unit / Location'),
               keyboardType: TextInputType.text,
               textCapitalization: TextCapitalization.words,
@@ -90,9 +96,10 @@ class _DownloadAcftWidgetState extends State<DownloadAcftWidget> {
             ),
           ),
           Padding(
-            padding: EdgeInsets.symmetric(horizontal: 8.0),
+            padding: EdgeInsets.all(8.0),
             child: PlatformTextField(
               controller: _mosController,
+              label: 'MOS',
               decoration: const InputDecoration(labelText: 'MOS'),
               keyboardType: TextInputType.text,
               textCapitalization: TextCapitalization.characters,
@@ -102,9 +109,10 @@ class _DownloadAcftWidgetState extends State<DownloadAcftWidget> {
             ),
           ),
           Padding(
-            padding: EdgeInsets.symmetric(horizontal: 8.0),
+            padding: EdgeInsets.all(8.0),
             child: PlatformTextField(
               controller: _oicController,
+              label: 'OIC / NCOIC',
               decoration: const InputDecoration(labelText: 'OIC / NCOIC'),
               keyboardType: TextInputType.text,
               textCapitalization: TextCapitalization.words,
@@ -114,9 +122,10 @@ class _DownloadAcftWidgetState extends State<DownloadAcftWidget> {
             ),
           ),
           Padding(
-            padding: EdgeInsets.symmetric(horizontal: 8.0),
+            padding: EdgeInsets.all(8.0),
             child: PlatformTextField(
               controller: _oicGradeController,
+              label: 'OIC / NCOIC Grade',
               decoration: const InputDecoration(labelText: 'OIC / NCOIC Grade'),
               keyboardType: TextInputType.text,
               textCapitalization: TextCapitalization.words,
@@ -126,52 +135,43 @@ class _DownloadAcftWidgetState extends State<DownloadAcftWidget> {
             ),
           ),
           if (widget.acft.runEvent != 'Run' && widget.acft.pass == 0)
-            PlatformCheckboxListTile(
-              value: altPass,
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: PlatformCheckboxListTile(
+                value: altPass,
+                onChanged: (value) {
+                  setState(() {
+                    altPass = value!;
+                  });
+                },
+                title: Text('Aerobic Event Go'),
+              ),
+            ),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: PlatformCheckboxListTile(
+              value: bodyComp,
               onChanged: (value) {
                 setState(() {
-                  altPass = value!;
+                  bodyComp = value!;
+                  if (value) {
+                    _bmiDateFocus.requestFocus();
+                  } else {
+                    FocusScope.of(context).unfocus();
+                  }
                 });
               },
-              title: Text('Aerobic Event Go'),
+              title: Text('Add Height/Weight Data'),
             ),
-          PlatformCheckboxListTile(
-            value: bodyComp,
-            onChanged: (value) {
-              setState(() {
-                bodyComp = value!;
-                if (value) {
-                  _bmiDateFocus.requestFocus();
-                } else {
-                  FocusScope.of(context).unfocus();
-                }
-              });
-            },
-            title: Text('Add Height/Weight Data'),
           ),
           if (bodyComp)
             Column(
               children: [
-                // Padding(
-                //   padding: EdgeInsets.symmetric(horizontal: 8.0),
-                //   child: PlatformTextField(
-                //     controller: _bmiDateController,
-                //     focusNode: _bmiDateFocus,
-                //     decoration:
-                //         const InputDecoration(labelText: 'Body Comp Date'),
-                //     keyboardType: TextInputType.numberWithOptions(signed: true),
-                //     inputFormatters: [
-                //       FilteringTextInputFormatter.digitsOnly,
-                //     ],
-                //     autocorrect: false,
-                //     textInputAction: TextInputAction.next,
-                //     onEditingComplete: () => FocusScope.of(context).nextFocus(),
-                //   ),
-                // ),
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: 8.0),
                   child: PlatformTextField(
                     controller: _heightController,
+                    label: 'Height',
                     decoration: const InputDecoration(labelText: 'Height'),
                     keyboardType: TextInputType.numberWithOptions(signed: true),
                     inputFormatters: [
@@ -186,6 +186,7 @@ class _DownloadAcftWidgetState extends State<DownloadAcftWidget> {
                   padding: EdgeInsets.symmetric(horizontal: 8.0),
                   child: PlatformTextField(
                     controller: _weightController,
+                    label: 'Weight',
                     decoration: const InputDecoration(labelText: 'Weight'),
                     keyboardType: TextInputType.numberWithOptions(signed: true),
                     inputFormatters: [
@@ -216,6 +217,7 @@ class _DownloadAcftWidgetState extends State<DownloadAcftWidget> {
                     child: PlatformTextField(
                       controller: _bfController,
                       focusNode: _bfFocus,
+                      label: 'BodyFat %',
                       decoration: const InputDecoration(labelText: 'BodyFat %'),
                       keyboardType:
                           TextInputType.numberWithOptions(signed: true),
@@ -252,7 +254,6 @@ class _DownloadAcftWidgetState extends State<DownloadAcftWidget> {
                   mos: _mosController.text,
                   oic: _oicController.text,
                   oicGrade: _oicGradeController.text,
-                  // bmiDate: bodyComp ? _bmiDateController.text : '',
                   height: bodyComp ? _heightController.text : '',
                   weight: bodyComp ? _weightController.text : '',
                   bf: bodyComp ? _bfController.text : '',
@@ -262,8 +263,8 @@ class _DownloadAcftWidgetState extends State<DownloadAcftWidget> {
                 );
               },
             ),
-          )
-        ]),
+          ),
+        ],
       ),
     );
   }

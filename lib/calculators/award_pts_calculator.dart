@@ -14,7 +14,7 @@ int calcAwardpts(List<AwardDecoration> awards) {
 
 int newBadgePts(List<dynamic> badges, bool? newVersion) {
   int points = 0;
-  for (Map<String, dynamic> badge in badges as Iterable<Map<String, dynamic>>) {
+  for (Map<String, dynamic> badge in badges) {
     int pts = badgeTable.firstWhere(
         (element) => badgeTypes.indexOf(badge['name']) <= element[0])[1];
     if (!newVersion! && badgeTypes.indexOf(badge['name']) == 1) {

@@ -2,19 +2,19 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:pull_down_button/pull_down_button.dart';
 
 abstract class PlatformItemPicker extends Widget {
   factory PlatformItemPicker({
-    required String label,
+    required Widget label,
     required String value,
     required List<String> items,
-    required void Function(dynamic)? onChanged,
-    required void Function(int)? onSelectedItemChanged,
+    required void Function(dynamic) onChanged,
   }) {
     if (Platform.isAndroid) {
       return AndroidItemPicker(
           decoration: InputDecoration(
-            label: Text(label),
+            label: label,
           ),
           value: value,
           items: items
@@ -30,9 +30,38 @@ abstract class PlatformItemPicker extends Widget {
           onChanged: onChanged);
     } else {
       return IOSItemPicker(
-        onSelectedItemChanged: onSelectedItemChanged,
-        children: items.map((e) => Text(e)).toList(),
-        itemExtent: 32,
+        itemBuilder: (context) {
+          return items
+              .map((e) => PullDownMenuItem(onTap: () => onChanged(e), title: e))
+              .toList();
+        },
+        buttonBuilder: (context, showMenu) {
+          return Column(
+            children: [
+              SizedBox(
+                width: double.infinity,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 8.0),
+                  child: label,
+                ),
+              ),
+              Container(
+                width: double.infinity,
+                decoration: BoxDecoration(
+                    border: Border.all(color: Colors.black),
+                    borderRadius: BorderRadius.circular(8.0)),
+                child: CupertinoButton(
+                  padding: EdgeInsets.all(8.0),
+                  onPressed: showMenu,
+                  child: Text(
+                    value,
+                    style: const TextStyle(fontSize: 18),
+                  ),
+                ),
+              ),
+            ],
+          );
+        },
       );
     }
   }
@@ -48,10 +77,6 @@ class AndroidItemPicker extends DropdownButtonFormField
   });
 }
 
-class IOSItemPicker extends CupertinoPicker implements PlatformItemPicker {
-  IOSItemPicker({
-    required super.children,
-    required super.onSelectedItemChanged,
-    required super.itemExtent,
-  });
+class IOSItemPicker extends PullDownButton implements PlatformItemPicker {
+  IOSItemPicker({required super.itemBuilder, required super.buttonBuilder});
 }

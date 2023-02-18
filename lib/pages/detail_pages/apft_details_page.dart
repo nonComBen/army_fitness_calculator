@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:acft_calculator/methods/platform_show_modal_bottom_sheet.dart';
 import 'package:acft_calculator/methods/theme_methods.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -35,15 +36,20 @@ class _ApftDetailsPageState extends State<ApftDetailsPage> {
     final _dateController = TextEditingController(text: apft.date);
     final _rankController = TextEditingController(text: apft.rank ?? '');
     final _nameController = TextEditingController(text: apft.name);
-    showModalBottomSheet(
+    showPlatformModalBottomSheet(
       context: context,
       builder: (ctx) => Container(
         padding: EdgeInsets.only(
-            left: 8,
-            right: 8,
-            bottom: MediaQuery.of(ctx).viewInsets.bottom == 0
-                ? MediaQuery.of(ctx).padding.bottom
-                : MediaQuery.of(ctx).viewInsets.bottom + 24),
+          left: 8,
+          right: 8,
+          bottom: MediaQuery.of(ctx).viewInsets.bottom == 0
+              ? MediaQuery.of(ctx).padding.bottom
+              : MediaQuery.of(ctx).viewInsets.bottom + 24,
+        ),
+        constraints: BoxConstraints(
+          maxHeight: MediaQuery.of(context).size.height / 2,
+        ),
+        color: Colors.white,
         child: Material(
           child: SingleChildScrollView(
             child: Column(
@@ -54,9 +60,10 @@ class _ApftDetailsPageState extends State<ApftDetailsPage> {
                       const Text('Date and Name are the only editable fields.'),
                 ),
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                  padding: const EdgeInsets.all(8.0),
                   child: PlatformTextField(
                     controller: _dateController,
+                    label: 'Date',
                     keyboardType: TextInputType.numberWithOptions(signed: true),
                     inputFormatters: [
                       FilteringTextInputFormatter.digitsOnly,
@@ -74,9 +81,10 @@ class _ApftDetailsPageState extends State<ApftDetailsPage> {
                   ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                  padding: const EdgeInsets.all(8.0),
                   child: PlatformTextField(
                     controller: _rankController,
+                    label: 'Rank',
                     decoration: const InputDecoration(labelText: 'Rank'),
                     keyboardType: TextInputType.text,
                     textCapitalization: TextCapitalization.characters,
@@ -86,9 +94,10 @@ class _ApftDetailsPageState extends State<ApftDetailsPage> {
                   ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                  padding: const EdgeInsets.all(8.0),
                   child: PlatformTextField(
                     controller: _nameController,
+                    label: 'Name',
                     decoration: const InputDecoration(labelText: 'Name'),
                     keyboardType: TextInputType.text,
                     textCapitalization: TextCapitalization.words,
@@ -98,7 +107,7 @@ class _ApftDetailsPageState extends State<ApftDetailsPage> {
                   ),
                 ),
                 Padding(
-                  padding: EdgeInsets.all(8),
+                  padding: EdgeInsets.all(8.0),
                   child: PlatformButton(
                     child: Text('Update APFT'),
                     onPressed: () {
@@ -124,7 +133,7 @@ class _ApftDetailsPageState extends State<ApftDetailsPage> {
   }
 
   void _downloadPdf() {
-    showModalBottomSheet(
+    showPlatformModalBottomSheet(
       context: context,
       builder: (ctx) => DownloadApftWidget(widget.apft),
     );
@@ -162,16 +171,25 @@ class _ApftDetailsPageState extends State<ApftDetailsPage> {
             onPressed: () {
               _updateApft(context, widget.apft);
             },
-            icon: const Icon(Icons.edit),
+            icon: Icon(
+              Icons.edit,
+              color: getOnPrimaryColor(context),
+            ),
           ),
         PlatformIconButton(
-          icon: Icon(Icons.picture_as_pdf),
+          icon: Icon(
+            Icons.picture_as_pdf,
+            color: getOnPrimaryColor(context),
+          ),
           onPressed: () {
             _downloadPdf();
           },
         ),
         PlatformIconButton(
-          icon: const Icon(Icons.delete),
+          icon: Icon(
+            Icons.delete,
+            color: getOnPrimaryColor(context),
+          ),
           onPressed: () {
             DeleteRecord.deleteRecord(
               context: context,
@@ -198,174 +216,181 @@ class _ApftDetailsPageState extends State<ApftDetailsPage> {
           right: 16.0,
           bottom: MediaQuery.of(context).viewPadding.bottom + 16.0,
         ),
-        child: SingleChildScrollView(
-          child: RepaintBoundary(
-            key: previewContainer,
-            child: DecoratedBox(
-              decoration: BoxDecoration(
-                color: getBackgroundColor(context),
-              ),
-              child: Column(
-                children: <Widget>[
-                  GridView.count(
-                    crossAxisCount: width > 700 ? 2 : 1,
-                    childAspectRatio: width > 700 ? width / 200 : width / 100,
-                    primary: false,
-                    shrinkWrap: true,
-                    children: <Widget>[
-                      Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 8.0),
-                        child: PlatformTextField(
-                          enabled: false,
-                          controller: _mainNameController,
-                          decoration: const InputDecoration(labelText: 'Name'),
-                        ),
+        child: RepaintBoundary(
+          key: previewContainer,
+          child: DecoratedBox(
+            decoration: BoxDecoration(
+              color: getBackgroundColor(context),
+            ),
+            child: ListView(
+              children: <Widget>[
+                GridView.count(
+                  crossAxisCount: width > 700 ? 2 : 1,
+                  childAspectRatio: width > 700 ? width / 200 : width / 100,
+                  primary: false,
+                  shrinkWrap: true,
+                  children: <Widget>[
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 8.0),
+                      child: PlatformTextField(
+                        enabled: false,
+                        controller: _mainNameController,
+                        label: 'Name',
+                        decoration: const InputDecoration(labelText: 'Name'),
                       ),
-                      Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 8.0),
-                        child: PlatformTextField(
-                          enabled: false,
-                          controller: _mainDateController,
-                          decoration: const InputDecoration(labelText: 'Date'),
-                        ),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 8.0),
+                      child: PlatformTextField(
+                        enabled: false,
+                        controller: _mainDateController,
+                        label: 'Date',
+                        decoration: const InputDecoration(labelText: 'Date'),
                       ),
-                    ],
-                  ),
-                  GridView.count(
-                    crossAxisCount: 2,
-                    childAspectRatio: width / 200,
-                    primary: false,
-                    shrinkWrap: true,
-                    children: <Widget>[
-                      Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 8.0),
-                        child: PlatformTextField(
-                          enabled: false,
-                          controller:
-                              TextEditingController(text: widget.apft.gender),
-                          decoration:
-                              const InputDecoration(labelText: 'Gender'),
-                        ),
+                    ),
+                  ],
+                ),
+                GridView.count(
+                  crossAxisCount: 2,
+                  childAspectRatio: width / 200,
+                  primary: false,
+                  shrinkWrap: true,
+                  children: <Widget>[
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 8.0),
+                      child: PlatformTextField(
+                        enabled: false,
+                        controller:
+                            TextEditingController(text: widget.apft.gender),
+                        label: 'Gender',
+                        decoration: const InputDecoration(labelText: 'Gender'),
                       ),
-                      Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 8.0),
-                        child: PlatformTextField(
-                          enabled: false,
-                          controller:
-                              TextEditingController(text: widget.apft.age),
-                          decoration: const InputDecoration(labelText: 'Age'),
-                        ),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 8.0),
+                      child: PlatformTextField(
+                        enabled: false,
+                        controller:
+                            TextEditingController(text: widget.apft.age),
+                        label: 'Age',
+                        decoration: const InputDecoration(labelText: 'Age'),
                       ),
-                    ],
-                  ),
-                  GridView.count(
-                    crossAxisCount: 3,
-                    childAspectRatio: width / 300,
-                    primary: false,
-                    shrinkWrap: true,
-                    children: <Widget>[
-                      Padding(
-                        padding: const EdgeInsets.fromLTRB(8.0, 24.0, 8.0, 0.0),
-                        child: const Text(
-                          'PU',
-                          style: TextStyle(fontSize: 18.0),
-                        ),
+                    ),
+                  ],
+                ),
+                GridView.count(
+                  crossAxisCount: 3,
+                  childAspectRatio: width / 300,
+                  primary: false,
+                  shrinkWrap: true,
+                  children: <Widget>[
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(8.0, 24.0, 8.0, 0.0),
+                      child: const Text(
+                        'PU',
+                        style: TextStyle(fontSize: 18.0),
                       ),
-                      Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 8.0),
-                        child: PlatformTextField(
-                          enabled: false,
-                          controller:
-                              TextEditingController(text: widget.apft.puRaw),
-                          decoration: const InputDecoration(labelText: 'Raw'),
-                        ),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 8.0),
+                      child: PlatformTextField(
+                        enabled: false,
+                        controller:
+                            TextEditingController(text: widget.apft.puRaw),
+                        label: 'Raw',
+                        decoration: const InputDecoration(labelText: 'Raw'),
                       ),
-                      Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 8.0),
-                        child: PlatformTextField(
-                          enabled: false,
-                          controller:
-                              TextEditingController(text: widget.apft.puScore),
-                          decoration: const InputDecoration(labelText: 'Score'),
-                        ),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 8.0),
+                      child: PlatformTextField(
+                        enabled: false,
+                        controller:
+                            TextEditingController(text: widget.apft.puScore),
+                        label: 'Score',
+                        decoration: const InputDecoration(labelText: 'Score'),
                       ),
-                      Padding(
-                        padding: const EdgeInsets.fromLTRB(8.0, 24.0, 8.0, 0.0),
-                        child: const Text(
-                          'SU',
-                          style: TextStyle(fontSize: 18.0),
-                        ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(8.0, 24.0, 8.0, 0.0),
+                      child: const Text(
+                        'SU',
+                        style: TextStyle(fontSize: 18.0),
                       ),
-                      Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 8.0),
-                        child: PlatformTextField(
-                          enabled: false,
-                          controller:
-                              TextEditingController(text: widget.apft.suRaw),
-                          decoration: const InputDecoration(labelText: 'Raw'),
-                        ),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 8.0),
+                      child: PlatformTextField(
+                        enabled: false,
+                        controller:
+                            TextEditingController(text: widget.apft.suRaw),
+                        label: 'Raw',
+                        decoration: const InputDecoration(labelText: 'Raw'),
                       ),
-                      Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 8.0),
-                        child: PlatformTextField(
-                          enabled: false,
-                          controller:
-                              TextEditingController(text: widget.apft.suScore),
-                          decoration: const InputDecoration(labelText: 'Score'),
-                        ),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 8.0),
+                      child: PlatformTextField(
+                        enabled: false,
+                        controller:
+                            TextEditingController(text: widget.apft.suScore),
+                        label: 'Score',
+                        decoration: const InputDecoration(labelText: 'Score'),
                       ),
-                      Padding(
-                        padding: const EdgeInsets.fromLTRB(8.0, 24.0, 8.0, 0.0),
-                        child: Text(
-                          widget.apft.runEvent,
-                          style: const TextStyle(fontSize: 18.0),
-                        ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(8.0, 24.0, 8.0, 0.0),
+                      child: Text(
+                        widget.apft.runEvent,
+                        style: const TextStyle(fontSize: 18.0),
                       ),
-                      Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 8.0),
-                        child: PlatformTextField(
-                          enabled: false,
-                          controller:
-                              TextEditingController(text: widget.apft.runRaw),
-                          decoration: const InputDecoration(labelText: 'Raw'),
-                        ),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 8.0),
+                      child: PlatformTextField(
+                        enabled: false,
+                        controller:
+                            TextEditingController(text: widget.apft.runRaw),
+                        label: 'Raw',
+                        decoration: const InputDecoration(labelText: 'Raw'),
                       ),
-                      Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 8.0),
-                        child: PlatformTextField(
-                          enabled: false,
-                          controller:
-                              TextEditingController(text: widget.apft.runScore),
-                          decoration: const InputDecoration(labelText: 'Score'),
-                        ),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 8.0),
+                      child: PlatformTextField(
+                        enabled: false,
+                        controller:
+                            TextEditingController(text: widget.apft.runScore),
+                        label: 'Score',
+                        decoration: const InputDecoration(labelText: 'Score'),
                       ),
-                      Padding(
-                        padding: const EdgeInsets.fromLTRB(8.0, 24.0, 8.0, 0.0),
-                        child: const Text(
-                          'Total',
-                          style: TextStyle(fontSize: 18.0),
-                        ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(8.0, 24.0, 8.0, 0.0),
+                      child: const Text(
+                        'Total',
+                        style: TextStyle(fontSize: 18.0),
                       ),
-                      Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 8.0),
-                        child: const Text(
-                          '',
-                          style: TextStyle(fontSize: 18.0),
-                        ),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 8.0),
+                      child: const Text(
+                        '',
+                        style: TextStyle(fontSize: 18.0),
                       ),
-                      Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 8.0),
-                        child: PlatformTextField(
-                          enabled: false,
-                          controller:
-                              TextEditingController(text: widget.apft.total),
-                          decoration: const InputDecoration(labelText: 'Score'),
-                        ),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 8.0),
+                      child: PlatformTextField(
+                        enabled: false,
+                        controller:
+                            TextEditingController(text: widget.apft.total),
+                        decoration: const InputDecoration(labelText: 'Score'),
                       ),
-                    ],
-                  )
-                ],
-              ),
+                    ),
+                  ],
+                )
+              ],
             ),
           ),
         ),

@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../methods/platform_show_modal_bottom_sheet.dart';
 import '../../methods/theme_methods.dart';
 import '../../providers/purchases_provider.dart';
 import '../../services/purchases_service.dart';
@@ -217,10 +218,11 @@ class _BodyfatPageState extends ConsumerState<BodyfatPage> {
     final _dateController = TextEditingController(text: date);
     final _rankController = TextEditingController();
     final _nameController = TextEditingController();
-    showModalBottomSheet(
+    showPlatformModalBottomSheet(
       context: context,
-      isScrollControlled: true,
+      // isScrollControlled: true,
       builder: (ctx) => Container(
+        color: Colors.white,
         padding: EdgeInsets.only(
             left: 8,
             right: 8,
@@ -234,6 +236,7 @@ class _BodyfatPageState extends ConsumerState<BodyfatPage> {
                 padding: const EdgeInsets.all(8.0),
                 child: PlatformTextField(
                   controller: _dateController,
+                  label: 'Date',
                   decoration: const InputDecoration(
                     labelText: 'Date',
                   ),
@@ -252,6 +255,7 @@ class _BodyfatPageState extends ConsumerState<BodyfatPage> {
                 padding: const EdgeInsets.all(8.0),
                 child: PlatformTextField(
                   controller: _rankController,
+                  label: 'Rank',
                   decoration: const InputDecoration(labelText: 'Rank'),
                   keyboardType: TextInputType.text,
                   textCapitalization: TextCapitalization.characters,
@@ -263,6 +267,7 @@ class _BodyfatPageState extends ConsumerState<BodyfatPage> {
                 padding: const EdgeInsets.all(8.0),
                 child: PlatformTextField(
                   controller: _nameController,
+                  label: 'Name',
                   decoration: const InputDecoration(labelText: 'Name'),
                   keyboardType: TextInputType.text,
                   textCapitalization: TextCapitalization.words,
@@ -305,19 +310,22 @@ class _BodyfatPageState extends ConsumerState<BodyfatPage> {
       padding: const EdgeInsets.all(16.0),
       child: ListView(
         children: <Widget>[
-          PlatformSelectionWidget(
-            titles: [Text('M'), Text('F')],
-            values: ['Male', 'Female'],
-            groupValue: gender,
-            onChanged: (value) {
-              FocusScope.of(context).unfocus();
-              setState(() {
-                gender = value!;
-                setBenchmarks();
-                calcBmi();
-                calcBf();
-              });
-            },
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: PlatformSelectionWidget(
+              titles: [Text('M'), Text('F')],
+              values: ['Male', 'Female'],
+              groupValue: gender,
+              onChanged: (value) {
+                FocusScope.of(context).unfocus();
+                setState(() {
+                  gender = value!;
+                  setBenchmarks();
+                  calcBmi();
+                  calcBf();
+                });
+              },
+            ),
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,

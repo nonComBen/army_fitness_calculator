@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:acft_calculator/methods/platform_show_modal_bottom_sheet.dart';
 import 'package:acft_calculator/methods/theme_methods.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -35,7 +36,7 @@ class _AcftDetailsPageState extends State<AcftDetailsPage> {
     final _dateController = new TextEditingController(text: acft.date);
     final _rankController = TextEditingController(text: acft.rank ?? '');
     final _nameController = new TextEditingController(text: acft.name);
-    showModalBottomSheet(
+    showPlatformModalBottomSheet(
       context: context,
       builder: (ctx) => Container(
         padding: EdgeInsets.only(
@@ -44,6 +45,7 @@ class _AcftDetailsPageState extends State<AcftDetailsPage> {
             bottom: MediaQuery.of(ctx).viewInsets.bottom == 0
                 ? MediaQuery.of(ctx).padding.bottom
                 : MediaQuery.of(ctx).viewInsets.bottom + 24),
+        color: Colors.white,
         child: SingleChildScrollView(
           child: Column(
             children: <Widget>[
@@ -62,6 +64,7 @@ class _AcftDetailsPageState extends State<AcftDetailsPage> {
                 padding: const EdgeInsets.all(8.0),
                 child: PlatformTextField(
                   controller: _dateController,
+                  label: 'Date',
                   keyboardType: TextInputType.numberWithOptions(signed: true),
                   inputFormatters: [
                     FilteringTextInputFormatter.digitsOnly,
@@ -82,6 +85,7 @@ class _AcftDetailsPageState extends State<AcftDetailsPage> {
                 padding: const EdgeInsets.all(8.0),
                 child: PlatformTextField(
                   controller: _rankController,
+                  label: 'Rank',
                   decoration: const InputDecoration(labelText: 'Rank'),
                   keyboardType: TextInputType.text,
                   textCapitalization: TextCapitalization.characters,
@@ -94,6 +98,7 @@ class _AcftDetailsPageState extends State<AcftDetailsPage> {
                 padding: const EdgeInsets.all(8.0),
                 child: PlatformTextField(
                   controller: _nameController,
+                  label: 'Name',
                   decoration: const InputDecoration(labelText: 'Name'),
                   keyboardType: TextInputType.text,
                   textCapitalization: TextCapitalization.words,
@@ -123,7 +128,7 @@ class _AcftDetailsPageState extends State<AcftDetailsPage> {
   }
 
   void _downloadPdf() {
-    showModalBottomSheet(
+    showPlatformModalBottomSheet(
       context: context,
       builder: (ctx) => DownloadAcftWidget(widget.acft),
     );
@@ -160,14 +165,23 @@ class _AcftDetailsPageState extends State<AcftDetailsPage> {
             onPressed: () {
               _updateAcft(context, widget.acft);
             },
-            icon: const Icon(Icons.edit),
+            icon: Icon(
+              Icons.edit,
+              color: getOnPrimaryColor(context),
+            ),
           ),
         PlatformIconButton(
           onPressed: _downloadPdf,
-          icon: Icon(Icons.picture_as_pdf),
+          icon: Icon(
+            Icons.picture_as_pdf,
+            color: getOnPrimaryColor(context),
+          ),
         ),
         PlatformIconButton(
-          icon: const Icon(Icons.delete),
+          icon: Icon(
+            Icons.delete,
+            color: getOnPrimaryColor(context),
+          ),
           onPressed: () {
             DeleteRecord.deleteRecord(
                 context: context,
@@ -195,222 +209,258 @@ class _AcftDetailsPageState extends State<AcftDetailsPage> {
           right: 16.0,
           bottom: MediaQuery.of(context).viewPadding.bottom + 16.0,
         ),
-        child: SingleChildScrollView(
-          child: RepaintBoundary(
-            key: previewContainer,
-            child: DecoratedBox(
-              decoration: BoxDecoration(
-                color: getBackgroundColor(context),
-              ),
-              child: Column(
-                children: <Widget>[
-                  GridView.count(
-                    crossAxisCount: width > 700 ? 2 : 1,
-                    childAspectRatio: width > 700 ? width / 200 : width / 100,
-                    primary: false,
-                    shrinkWrap: true,
-                    children: <Widget>[
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                        child: PlatformTextField(
-                          enabled: false,
-                          controller: _mainNameController,
-                          decoration: const InputDecoration(labelText: 'Name'),
-                        ),
+        child: RepaintBoundary(
+          key: previewContainer,
+          child: DecoratedBox(
+            decoration: BoxDecoration(
+              color: getBackgroundColor(context),
+            ),
+            child: ListView(
+              children: <Widget>[
+                GridView.count(
+                  crossAxisCount: width > 700 ? 2 : 1,
+                  childAspectRatio: width > 700 ? width / 200 : width / 100,
+                  primary: false,
+                  shrinkWrap: true,
+                  children: <Widget>[
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                      child: PlatformTextField(
+                        label: 'Name',
+                        enabled: false,
+                        controller: _mainNameController,
+                        decoration: const InputDecoration(labelText: 'Name'),
                       ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                        child: PlatformTextField(
-                          enabled: false,
-                          controller: _mainDateController,
-                          decoration: const InputDecoration(labelText: 'Date'),
-                        ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                      child: PlatformTextField(
+                        label: 'Date',
+                        enabled: false,
+                        controller: _mainDateController,
+                        decoration: const InputDecoration(labelText: 'Date'),
                       ),
-                    ],
-                  ),
-                  GridView.count(
-                    crossAxisCount: 3,
-                    childAspectRatio: width / 300,
-                    primary: false,
-                    shrinkWrap: true,
-                    children: <Widget>[
-                      Padding(
-                        padding: const EdgeInsets.fromLTRB(8.0, 24.0, 8.0, 0.0),
-                        child: const Text(
-                          'MDL',
-                          style: TextStyle(fontSize: 18.0),
-                        ),
+                    ),
+                  ],
+                ),
+                GridView.count(
+                  crossAxisCount: 3,
+                  childAspectRatio: width / 300,
+                  primary: false,
+                  shrinkWrap: true,
+                  children: <Widget>[
+                    Padding(
+                      padding: const EdgeInsets.only(
+                        left: 8.0,
+                        right: 8.0,
+                        top: 24.0,
                       ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                        child: PlatformTextField(
-                          enabled: false,
-                          controller:
-                              TextEditingController(text: widget.acft.mdlRaw),
-                          decoration: const InputDecoration(labelText: 'Raw'),
-                        ),
+                      child: const Text(
+                        'MDL',
+                        style: TextStyle(fontSize: 18.0),
                       ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                        child: PlatformTextField(
-                          enabled: false,
-                          controller:
-                              TextEditingController(text: widget.acft.mdlScore),
-                          decoration: const InputDecoration(labelText: 'Score'),
-                        ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                      child: PlatformTextField(
+                        enabled: false,
+                        label: 'Raw',
+                        controller:
+                            TextEditingController(text: widget.acft.mdlRaw),
+                        decoration: const InputDecoration(labelText: 'Raw'),
                       ),
-                      Padding(
-                        padding: const EdgeInsets.fromLTRB(8.0, 24.0, 8.0, 0.0),
-                        child: const Text(
-                          'SPT',
-                          style: TextStyle(fontSize: 18.0),
-                        ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                      child: PlatformTextField(
+                        enabled: false,
+                        label: 'Score',
+                        controller:
+                            TextEditingController(text: widget.acft.mdlScore),
+                        decoration: const InputDecoration(labelText: 'Score'),
                       ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                        child: PlatformTextField(
-                          enabled: false,
-                          controller:
-                              TextEditingController(text: widget.acft.sptRaw),
-                          decoration: const InputDecoration(labelText: 'Raw'),
-                        ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(
+                        left: 8.0,
+                        right: 8.0,
+                        top: 24.0,
                       ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                        child: PlatformTextField(
-                          enabled: false,
-                          controller:
-                              TextEditingController(text: widget.acft.sptScore),
-                          decoration: const InputDecoration(labelText: 'Score'),
-                        ),
+                      child: const Text(
+                        'SPT',
+                        style: TextStyle(fontSize: 18.0),
                       ),
-                      Padding(
-                        padding: const EdgeInsets.fromLTRB(8.0, 24.0, 8.0, 0.0),
-                        child: const Text(
-                          'HRP',
-                          style: TextStyle(fontSize: 18.0),
-                        ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                      child: PlatformTextField(
+                        enabled: false,
+                        label: 'Raw',
+                        controller:
+                            TextEditingController(text: widget.acft.sptRaw),
+                        decoration: const InputDecoration(labelText: 'Raw'),
                       ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                        child: PlatformTextField(
-                          enabled: false,
-                          controller:
-                              TextEditingController(text: widget.acft.hrpRaw),
-                          decoration: const InputDecoration(labelText: 'Raw'),
-                        ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                      child: PlatformTextField(
+                        enabled: false,
+                        label: 'Score',
+                        controller:
+                            TextEditingController(text: widget.acft.sptScore),
+                        decoration: const InputDecoration(labelText: 'Score'),
                       ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                        child: PlatformTextField(
-                          enabled: false,
-                          controller:
-                              TextEditingController(text: widget.acft.hrpScore),
-                          decoration: const InputDecoration(labelText: 'Score'),
-                        ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(
+                        left: 8.0,
+                        right: 8.0,
+                        top: 24.0,
                       ),
-                      Padding(
-                        padding: const EdgeInsets.fromLTRB(8.0, 24.0, 8.0, 0.0),
-                        child: const Text(
-                          'SDC',
-                          style: TextStyle(fontSize: 18.0),
-                        ),
+                      child: const Text(
+                        'HRP',
+                        style: TextStyle(fontSize: 18.0),
                       ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                        child: PlatformTextField(
-                          enabled: false,
-                          controller:
-                              TextEditingController(text: widget.acft.sdcRaw),
-                          decoration: const InputDecoration(labelText: 'Raw'),
-                        ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                      child: PlatformTextField(
+                        enabled: false,
+                        label: 'Raw',
+                        controller:
+                            TextEditingController(text: widget.acft.hrpRaw),
+                        decoration: const InputDecoration(labelText: 'Raw'),
                       ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                        child: PlatformTextField(
-                          enabled: false,
-                          controller:
-                              TextEditingController(text: widget.acft.sdcScore),
-                          decoration: const InputDecoration(labelText: 'Score'),
-                        ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                      child: PlatformTextField(
+                        enabled: false,
+                        label: 'Score',
+                        controller:
+                            TextEditingController(text: widget.acft.hrpScore),
+                        decoration: const InputDecoration(labelText: 'Score'),
                       ),
-                      Padding(
-                        padding: const EdgeInsets.fromLTRB(8.0, 24.0, 8.0, 0.0),
-                        child: const Text(
-                          'PLK',
-                          style: TextStyle(fontSize: 18.0),
-                        ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(
+                        left: 8.0,
+                        right: 8.0,
+                        top: 24.0,
                       ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                        child: PlatformTextField(
-                          enabled: false,
-                          controller:
-                              TextEditingController(text: widget.acft.plkRaw),
-                          decoration: const InputDecoration(labelText: 'Raw'),
-                        ),
+                      child: const Text(
+                        'SDC',
+                        style: TextStyle(fontSize: 18.0),
                       ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                        child: PlatformTextField(
-                          enabled: false,
-                          controller:
-                              TextEditingController(text: widget.acft.plkScore),
-                          decoration: const InputDecoration(labelText: 'Score'),
-                        ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                      child: PlatformTextField(
+                        enabled: false,
+                        label: 'Raw',
+                        controller:
+                            TextEditingController(text: widget.acft.sdcRaw),
+                        decoration: const InputDecoration(labelText: 'Raw'),
                       ),
-                      Padding(
-                        padding: const EdgeInsets.fromLTRB(8.0, 24.0, 8.0, 0.0),
-                        child: Text(
-                          widget.acft.runEvent,
-                          style: const TextStyle(fontSize: 18.0),
-                        ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                      child: PlatformTextField(
+                        enabled: false,
+                        label: 'Score',
+                        controller:
+                            TextEditingController(text: widget.acft.sdcScore),
+                        decoration: const InputDecoration(labelText: 'Score'),
                       ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                        child: PlatformTextField(
-                          enabled: false,
-                          controller:
-                              TextEditingController(text: widget.acft.runRaw),
-                          decoration: const InputDecoration(labelText: 'Raw'),
-                        ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(
+                        left: 8.0,
+                        right: 8.0,
+                        top: 24.0,
                       ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                        child: PlatformTextField(
-                          enabled: false,
-                          controller:
-                              TextEditingController(text: widget.acft.runScore),
-                          decoration: const InputDecoration(labelText: 'Score'),
-                        ),
+                      child: const Text(
+                        'PLK',
+                        style: TextStyle(fontSize: 18.0),
                       ),
-                      Padding(
-                        padding: const EdgeInsets.fromLTRB(8.0, 24.0, 8.0, 0.0),
-                        child: const Text(
-                          'Total',
-                          style: TextStyle(fontSize: 18.0),
-                        ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                      child: PlatformTextField(
+                        enabled: false,
+                        label: 'Raw',
+                        controller:
+                            TextEditingController(text: widget.acft.plkRaw),
+                        decoration: const InputDecoration(labelText: 'Raw'),
                       ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                        child: const Text(
-                          '',
-                          style: TextStyle(fontSize: 18.0),
-                        ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                      child: PlatformTextField(
+                        enabled: false,
+                        label: 'Score',
+                        controller:
+                            TextEditingController(text: widget.acft.plkScore),
+                        decoration: const InputDecoration(labelText: 'Score'),
                       ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                        child: PlatformTextField(
-                          enabled: false,
-                          controller:
-                              TextEditingController(text: widget.acft.total),
-                          decoration: const InputDecoration(labelText: 'Score'),
-                        ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(
+                        left: 8.0,
+                        right: 8.0,
+                        top: 24.0,
                       ),
-                    ],
-                  )
-                ],
-              ),
+                      child: Text(
+                        widget.acft.runEvent,
+                        style: const TextStyle(fontSize: 18.0),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                      child: PlatformTextField(
+                        enabled: false,
+                        label: 'Raw',
+                        controller:
+                            TextEditingController(text: widget.acft.runRaw),
+                        decoration: const InputDecoration(labelText: 'Raw'),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                      child: PlatformTextField(
+                        enabled: false,
+                        label: 'Score',
+                        controller:
+                            TextEditingController(text: widget.acft.runScore),
+                        decoration: const InputDecoration(labelText: 'Score'),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: const Text(
+                        'Total',
+                        style: TextStyle(fontSize: 18.0),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                      child: const Text(
+                        '',
+                        style: TextStyle(fontSize: 18.0),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                      child: PlatformTextField(
+                        enabled: false,
+                        controller:
+                            TextEditingController(text: widget.acft.total),
+                        decoration: const InputDecoration(labelText: 'Score'),
+                      ),
+                    ),
+                  ],
+                )
+              ],
             ),
           ),
         ),

@@ -1,13 +1,12 @@
+import 'package:acft_calculator/methods/platform_show_modal_bottom_sheet.dart';
 import 'package:flutter/material.dart';
 
 import '../../widgets/platform_widgets/platform_button.dart';
 
 class DeleteRecord {
   static void deleteRecord({BuildContext? context, Function? onConfirm}) {
-    showModalBottomSheet(
+    showPlatformModalBottomSheet(
       context: context!,
-      constraints:
-          BoxConstraints(maxHeight: MediaQuery.of(context).size.height / 4),
       builder: (ctx) => Container(
         padding: EdgeInsets.only(
           top: 8.0,
@@ -15,6 +14,9 @@ class DeleteRecord {
           right: 8.0,
           bottom: MediaQuery.of(context).viewPadding.bottom + 8.0,
         ),
+        constraints:
+            BoxConstraints(maxHeight: MediaQuery.of(context).size.height / 4),
+        color: Colors.white,
         child: Column(
           children: [
             Padding(
@@ -33,7 +35,7 @@ class DeleteRecord {
               child: Text('Are you sure you want to delete this record?'),
             ),
             Row(
-              mainAxisAlignment: MainAxisAlignment.end,
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Padding(
                   padding: const EdgeInsets.all(8.0),

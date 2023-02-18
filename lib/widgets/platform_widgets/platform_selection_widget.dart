@@ -89,18 +89,18 @@ class IOSSelectionWidget extends StatelessWidget
   final void Function(Object?) onChanged;
   @override
   Widget build(BuildContext context) {
-    return CupertinoSlidingSegmentedControl(
+    return CupertinoSlidingSegmentedControl<String>(
       children: {
-        values[0]: Padding(
+        values[0].toString(): Padding(
           padding: EdgeInsets.symmetric(horizontal: 20),
           child: titles[0],
         ),
-        values[1]: Padding(
+        values[1].toString(): Padding(
           padding: EdgeInsets.symmetric(horizontal: 20),
           child: titles[1],
         ),
       },
-      groupValue: groupValue,
+      groupValue: groupValue.toString(),
       onValueChanged: onChanged,
     );
   }

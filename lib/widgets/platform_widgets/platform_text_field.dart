@@ -9,6 +9,7 @@ abstract class PlatformTextField extends Widget {
     required TextEditingController controller,
     TextStyle? style,
     FocusNode? focusNode,
+    String? label,
     InputDecoration? decoration,
     BoxDecoration? iosDecoration,
     String? Function(String?)? validator,
@@ -52,7 +53,13 @@ abstract class PlatformTextField extends Widget {
         style: style,
         focusNode: focusNode,
         enabled: enabled,
-        decoration: iosDecoration,
+        label: label,
+        iosDecoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(8.0),
+          border: Border.all(
+            color: Colors.black,
+          ),
+        ),
         obscureText: obscureText,
         keyboardType: keyboardType,
         inputFormatters: inputFormatters,
@@ -91,23 +98,77 @@ class AndroidTextField extends TextFormField implements PlatformTextField {
   });
 }
 
-class IOSTextField extends CupertinoTextField implements PlatformTextField {
+class IOSTextField extends StatelessWidget implements PlatformTextField {
   IOSTextField({
-    super.controller,
-    super.focusNode,
-    super.enabled = true,
-    super.decoration,
-    super.inputFormatters,
-    super.keyboardType,
-    super.obscureText,
-    super.textInputAction,
-    super.textCapitalization,
-    super.autofocus,
-    super.autocorrect,
-    super.textAlign,
-    super.maxLines,
-    super.onChanged,
-    super.onEditingComplete,
-    super.style,
+    required this.controller,
+    this.focusNode,
+    this.enabled = true,
+    this.label,
+    this.iosDecoration,
+    this.inputFormatters,
+    this.keyboardType,
+    this.obscureText = false,
+    this.textInputAction = TextInputAction.done,
+    this.textCapitalization = TextCapitalization.none,
+    this.autofocus = false,
+    this.autocorrect = false,
+    this.textAlign = TextAlign.start,
+    this.maxLines = 1,
+    this.onChanged,
+    this.onEditingComplete,
+    this.style,
   });
+
+  final TextEditingController controller;
+  final TextStyle? style;
+  final FocusNode? focusNode;
+  final BoxDecoration? iosDecoration;
+  final String? label;
+  final TextInputType? keyboardType;
+  final List<TextInputFormatter>? inputFormatters;
+  final bool enabled;
+  final bool obscureText;
+  final bool autofocus;
+  final bool autocorrect;
+  final TextInputAction textInputAction;
+  final TextCapitalization textCapitalization;
+  final TextAlign textAlign;
+  final int maxLines;
+  final void Function(String)? onChanged;
+  final void Function()? onEditingComplete;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        if (label != null)
+          SizedBox(
+              width: double.infinity,
+              height: 30,
+              child: Text(
+                label!,
+                textAlign: TextAlign.start,
+              )),
+        CupertinoTextField(
+          padding: EdgeInsets.all(8.0),
+          controller: controller,
+          style: style,
+          focusNode: focusNode,
+          decoration: iosDecoration,
+          keyboardType: keyboardType,
+          inputFormatters: inputFormatters,
+          enabled: enabled,
+          obscureText: obscureText,
+          autofocus: autofocus,
+          autocorrect: autocorrect,
+          textInputAction: textInputAction,
+          textCapitalization: textCapitalization,
+          textAlign: textAlign,
+          maxLines: maxLines,
+          onChanged: onChanged,
+          onEditingComplete: onEditingComplete,
+        )
+      ],
+    );
+  }
 }

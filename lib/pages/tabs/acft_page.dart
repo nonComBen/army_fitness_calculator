@@ -1,3 +1,4 @@
+import 'package:acft_calculator/methods/platform_show_modal_bottom_sheet.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -103,6 +104,10 @@ class AcftPageState extends ConsumerState<AcftPage> {
       altBenchmarks;
   late SharedPreferences prefs;
   DBHelper dbHelper = DBHelper();
+  TextStyle headerStyle = TextStyle(
+    fontSize: 22.0,
+    fontWeight: FontWeight.bold,
+  );
   RegExp regExp = RegExp(r'^\d{4}(0[1-9]|1[012])(0[1-9]|[12][0-9]|3[01])$');
 
   final _ageController = TextEditingController();
@@ -420,9 +425,10 @@ class AcftPageState extends ConsumerState<AcftPage> {
     final _dateController = TextEditingController(text: date);
     final _rankController = TextEditingController();
     final _nameController = TextEditingController();
-    showModalBottomSheet(
+    showPlatformModalBottomSheet(
       context: context,
       builder: (ctx) => Container(
+        color: Colors.white,
         padding: EdgeInsets.only(
             left: 8,
             right: 8,
@@ -436,6 +442,7 @@ class AcftPageState extends ConsumerState<AcftPage> {
                 padding: const EdgeInsets.all(8.0),
                 child: PlatformTextField(
                   controller: _dateController,
+                  label: 'Date',
                   decoration: const InputDecoration(
                     labelText: 'Date',
                   ),
@@ -454,6 +461,7 @@ class AcftPageState extends ConsumerState<AcftPage> {
                 padding: const EdgeInsets.all(8.0),
                 child: PlatformTextField(
                   controller: _rankController,
+                  label: 'Rank',
                   decoration: const InputDecoration(labelText: 'Rank'),
                   keyboardType: TextInputType.text,
                   textCapitalization: TextCapitalization.characters,
@@ -465,6 +473,7 @@ class AcftPageState extends ConsumerState<AcftPage> {
                 padding: const EdgeInsets.all(8.0),
                 child: PlatformTextField(
                   controller: _nameController,
+                  label: 'Name',
                   decoration: const InputDecoration(labelText: 'Name'),
                   keyboardType: TextInputType.text,
                   textCapitalization: TextCapitalization.words,
@@ -505,23 +514,26 @@ class AcftPageState extends ConsumerState<AcftPage> {
       padding: EdgeInsets.all(16.0),
       child: ListView(
         children: <Widget>[
-          PlatformSelectionWidget(
-              titles: [Text('M'), Text('F')],
-              values: ['Male', 'Female'],
-              groupValue: gender,
-              onChanged: (value) {
-                setState(() {
-                  FocusScope.of(context).unfocus();
-                  gender = value!;
-                  calcAll();
-                });
-              }),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: PlatformSelectionWidget(
+                titles: [Text('M'), Text('F')],
+                values: ['Male', 'Female'],
+                groupValue: gender,
+                onChanged: (value) {
+                  setState(() {
+                    FocusScope.of(context).unfocus();
+                    gender = value!;
+                    calcAll();
+                  });
+                }),
+          ),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
               Text(
                 'Age',
-                style: TextStyle(fontSize: 22.0, fontWeight: FontWeight.bold),
+                style: headerStyle,
               ),
               ValueInputField(
                 controller: _ageController,
@@ -600,26 +612,25 @@ class AcftPageState extends ConsumerState<AcftPage> {
               ],
             ),
           ),
-          PlatformItemPicker(
-            label: 'Aerobic Event',
-            value: aerobicEvent!,
-            items: acftAerobicEvents,
-            onChanged: (value) {
-              setState(() {
-                FocusScope.of(context).unfocus();
-                aerobicEvent = value;
-              });
-              setBenchmarks();
-              calcRunScore();
-              calcTotal();
-            },
-            onSelectedItemChanged: (index) => setState(() {
-              FocusScope.of(context).unfocus();
-              aerobicEvent = acftAerobicEvents[index];
-              setBenchmarks();
-              calcRunScore();
-              calcTotal();
-            }),
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 8.0),
+            child: PlatformItemPicker(
+              label: Text(
+                'Aerobic Event',
+                style: headerStyle,
+              ),
+              value: aerobicEvent!,
+              items: acftAerobicEvents,
+              onChanged: (value) {
+                setState(() {
+                  FocusScope.of(context).unfocus();
+                  aerobicEvent = value;
+                });
+                setBenchmarks();
+                calcRunScore();
+                calcTotal();
+              },
+            ),
           ),
           Divider(
             color: Colors.yellow,
@@ -752,9 +763,9 @@ class AcftPageState extends ConsumerState<AcftPage> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
-              const Text(
+              Text(
                 'Standing Power Throw',
-                style: TextStyle(fontSize: 22.0, fontWeight: FontWeight.bold),
+                style: headerStyle,
               ),
               ValueInputField(
                 width: 70,
@@ -880,9 +891,9 @@ class AcftPageState extends ConsumerState<AcftPage> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
-              const Text(
+              Text(
                 'Hand Release Push Ups',
-                style: TextStyle(fontSize: 22.0, fontWeight: FontWeight.bold),
+                style: headerStyle,
               ),
               ValueInputField(
                 controller: _hrpController,
@@ -1003,9 +1014,9 @@ class AcftPageState extends ConsumerState<AcftPage> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
-              const Text(
+              Text(
                 'Sprint-Drag-Carry',
-                style: TextStyle(fontSize: 22.0, fontWeight: FontWeight.bold),
+                style: headerStyle,
               ),
               Row(
                 children: <Widget>[
@@ -1233,7 +1244,7 @@ class AcftPageState extends ConsumerState<AcftPage> {
             children: <Widget>[
               Text(
                 'Plank',
-                style: TextStyle(fontSize: 22.0, fontWeight: FontWeight.bold),
+                style: headerStyle,
               ),
               Row(
                 children: <Widget>[
@@ -1469,8 +1480,7 @@ class AcftPageState extends ConsumerState<AcftPage> {
             children: <Widget>[
               Text(
                 aerobicEvent!,
-                style: const TextStyle(
-                    fontSize: 22.0, fontWeight: FontWeight.bold),
+                style: headerStyle,
               ),
               Row(
                 children: <Widget>[
