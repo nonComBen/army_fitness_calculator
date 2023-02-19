@@ -1,3 +1,4 @@
+import 'package:acft_calculator/methods/theme_methods.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -72,9 +73,9 @@ class _DownloadApftWidgetState extends State<DownloadApftWidget> {
             ? MediaQuery.of(context).padding.bottom
             : MediaQuery.of(context).viewInsets.bottom,
       ),
-      color: Colors.white,
+      color: getBackgroundColor(context),
       constraints: BoxConstraints(
-        maxHeight: MediaQuery.of(context).size.height / 2,
+        maxHeight: MediaQuery.of(context).size.height * 2 / 3,
       ),
       child: ListView(children: [
         Padding(

@@ -168,7 +168,12 @@ class _PromotionPointPageState extends ConsumerState<PromotionPointPage> {
   void initState() {
     super.initState();
 
+    prefs = ref.read(sharedPreferencesProvider);
+
     purchasesService = ref.read(purchasesProvider);
+    if (prefs.getString('rank') != null) {
+      rank = prefs.getString('rank').toString();
+    }
 
     _apftController.text = ptScore.toString();
     _weaponController.text = weaponHits.toString();
@@ -228,13 +233,7 @@ class _PromotionPointPageState extends ConsumerState<PromotionPointPage> {
       }
     });
 
-    prefs = ref.read(sharedPreferencesProvider);
-
-    if (prefs.getString('rank') != null) {
-      setState(() {
-        rank = prefs.getString('rank')!;
-      });
-    }
+    _resetMaximums();
   }
 
   void _resetMaximums() {
@@ -420,7 +419,7 @@ class _PromotionPointPageState extends ConsumerState<PromotionPointPage> {
     showPlatformModalBottomSheet(
       context: context,
       builder: (ctx) => Container(
-        color: Colors.white,
+        color: getBackgroundColor(context),
         padding: EdgeInsets.only(
             left: 8,
             right: 8,
@@ -761,7 +760,12 @@ class _PromotionPointPageState extends ConsumerState<PromotionPointPage> {
                 padding: const EdgeInsets.fromLTRB(8.0, 0.0, 8.0, 0.0),
                 child: PlatformItemPicker(
                   value: weapons,
-                  label: Text('Weapons Card'),
+                  label: Text(
+                    'Weapons Card',
+                    style: TextStyle(
+                      color: getTextColor(context),
+                    ),
+                  ),
                   items: weaponCards,
                   onChanged: (dynamic value) {
                     FocusScope.of(context).unfocus();
@@ -794,6 +798,7 @@ class _PromotionPointPageState extends ConsumerState<PromotionPointPage> {
             initiallyExpanded: false,
             children: [
               Card(
+                color: getContrastingBackgroundColor(context),
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Row(
@@ -830,6 +835,7 @@ class _PromotionPointPageState extends ConsumerState<PromotionPointPage> {
                   children: _decorationWidgets(),
                 ),
               Card(
+                color: getContrastingBackgroundColor(context),
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Row(
@@ -868,7 +874,12 @@ class _PromotionPointPageState extends ConsumerState<PromotionPointPage> {
                 padding: const EdgeInsets.all(8.0),
                 child: PlatformItemPicker(
                   value: airborneLvl,
-                  label: Text('Airborne Advantage'),
+                  label: Text(
+                    'Airborne Advantage',
+                    style: TextStyle(
+                      color: getTextColor(context),
+                    ),
+                  ),
                   items: airborne,
                   onChanged: (value) {
                     FocusScope.of(context).unfocus();
@@ -902,7 +913,12 @@ class _PromotionPointPageState extends ConsumerState<PromotionPointPage> {
                 padding: const EdgeInsets.fromLTRB(8.0, 0.0, 8.0, 0.0),
                 child: PlatformItemPicker(
                   value: ncoes,
-                  label: Text('NCOES Honors'),
+                  label: Text(
+                    'NCOES Honors',
+                    style: TextStyle(
+                      color: getTextColor(context),
+                    ),
+                  ),
                   items: ncoesHonors,
                   onChanged: (value) {
                     setState(() {

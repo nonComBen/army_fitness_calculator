@@ -47,7 +47,7 @@ class MyApp extends ConsumerWidget {
     MobileAds.instance.initialize();
     InAppPurchase.instance.restorePurchases();
     return Consumer(builder: (context, ref, child) {
-      final themeState = ref.watch(themeStateNotifierProvider);
+      ThemeData themeState = ref.watch(themeStateNotifierProvider);
       return PlatformApp(
         title: 'Army Fitness Calculator',
         themeData: themeState,

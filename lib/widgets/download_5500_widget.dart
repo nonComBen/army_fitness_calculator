@@ -1,3 +1,4 @@
+import 'package:acft_calculator/methods/theme_methods.dart';
 import 'package:acft_calculator/widgets/platform_widgets/platform_text_field.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -31,9 +32,9 @@ class Download5500Widget extends StatelessWidget {
             ? MediaQuery.of(context).padding.bottom
             : MediaQuery.of(context).viewInsets.bottom,
       ),
-      color: Colors.white,
+      color: getBackgroundColor(context),
       constraints: BoxConstraints(
-        maxHeight: MediaQuery.of(context).size.height / 2,
+        maxHeight: MediaQuery.of(context).size.height * 2 / 3,
       ),
       child: ListView(
         children: [

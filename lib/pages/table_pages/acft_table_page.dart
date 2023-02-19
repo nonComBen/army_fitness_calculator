@@ -1,3 +1,4 @@
+import 'package:acft_calculator/methods/theme_methods.dart';
 import 'package:acft_calculator/widgets/platform_widgets/platform_item_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -38,49 +39,57 @@ class _AcftTablePageState extends State<AcftTablePage> {
           right: 8,
           top: 8,
         ),
-        child: SingleChildScrollView(
-          child: Column(
-            children: [
-              GridView.count(
-                crossAxisCount: width > 700 ? 2 : 1,
-                childAspectRatio: width > 700 ? width / 230 : width / 115,
-                shrinkWrap: true,
-                primary: false,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: PlatformItemPicker(
-                      label: Text('Age Group'),
-                      value: _ageGroup,
-                      items: ptAgeGroups,
-                      onChanged: (dynamic value) {
-                        setState(() {
-                          _ageGroup = value;
-                        });
-                      },
+        child: ListView(
+          children: [
+            GridView.count(
+              crossAxisCount: width > 700 ? 2 : 1,
+              childAspectRatio: width > 700 ? width / 230 : width / 115,
+              shrinkWrap: true,
+              primary: false,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: PlatformItemPicker(
+                    label: Text(
+                      'Age Group',
+                      style: TextStyle(
+                        color: getTextColor(context),
+                      ),
                     ),
+                    value: _ageGroup,
+                    items: ptAgeGroups,
+                    onChanged: (dynamic value) {
+                      setState(() {
+                        _ageGroup = value;
+                      });
+                    },
                   ),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: PlatformItemPicker(
-                      label: Text('Gender'),
-                      value: _gender,
-                      items: _genders,
-                      onChanged: (dynamic value) {
-                        setState(() {
-                          _gender = value;
-                        });
-                      },
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: PlatformItemPicker(
+                    label: Text(
+                      'Gender',
+                      style: TextStyle(
+                        color: getTextColor(context),
+                      ),
                     ),
+                    value: _gender,
+                    items: _genders,
+                    onChanged: (dynamic value) {
+                      setState(() {
+                        _gender = value;
+                      });
+                    },
                   ),
-                ],
-              ),
-              AcftTable(
-                ageGroup: _ageGroup,
-                gender: _gender,
-              ),
-            ],
-          ),
+                ),
+              ],
+            ),
+            AcftTable(
+              ageGroup: _ageGroup,
+              gender: _gender,
+            ),
+          ],
         ),
       ),
     );

@@ -26,3 +26,31 @@ Color getBackgroundColor(BuildContext context) {
     return CupertinoTheme.of(context).scaffoldBackgroundColor;
   }
 }
+
+Color getContrastingBackgroundColor(BuildContext context) {
+  if (Platform.isAndroid) {
+    return Theme.of(context).dialogBackgroundColor;
+  } else {
+    return CupertinoTheme.of(context).barBackgroundColor;
+  }
+}
+
+Brightness getThemeBrightness(BuildContext context) {
+  if (Platform.isAndroid) {
+    return Theme.of(context).brightness;
+  } else {
+    return CupertinoTheme.of(context).brightness!;
+  }
+}
+
+Color getTextColor(BuildContext context) {
+  if (Platform.isAndroid) {
+    return getThemeBrightness(context) == Brightness.light
+        ? Colors.black
+        : Colors.white;
+  } else {
+    return getThemeBrightness(context) == Brightness.light
+        ? Colors.black
+        : Colors.white;
+  }
+}

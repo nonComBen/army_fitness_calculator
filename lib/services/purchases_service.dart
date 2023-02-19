@@ -44,7 +44,7 @@ class PurchasesService {
           right: 8.0,
           bottom: MediaQuery.of(context).viewPadding.bottom + 50,
         ),
-        color: Colors.white,
+        color: getBackgroundColor(context),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.stretch,

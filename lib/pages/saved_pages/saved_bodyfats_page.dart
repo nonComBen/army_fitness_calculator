@@ -60,7 +60,10 @@ class _SavedBodyfatsPageState extends State<SavedBodyfatsPage> {
             style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
           ),
           PlatformIconButton(
-            icon: const Icon(Icons.show_chart),
+            icon: Icon(
+              Icons.show_chart,
+              color: getTextColor(context),
+            ),
             onPressed: () {
               Navigator.push(
                   context,

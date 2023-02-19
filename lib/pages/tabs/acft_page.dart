@@ -428,7 +428,7 @@ class AcftPageState extends ConsumerState<AcftPage> {
     showPlatformModalBottomSheet(
       context: context,
       builder: (ctx) => Container(
-        color: Colors.white,
+        color: getBackgroundColor(context),
         padding: EdgeInsets.only(
             left: 8,
             right: 8,
@@ -1689,7 +1689,6 @@ class AcftPageState extends ConsumerState<AcftPage> {
                 ),
                 GridBox(
                   title: 'MDL',
-                  centered: false,
                   background: primaryColor,
                   textColor: onPrimary,
                 ),
@@ -1708,7 +1707,6 @@ class AcftPageState extends ConsumerState<AcftPage> {
                 ),
                 GridBox(
                   title: 'SPT',
-                  centered: false,
                   background: primaryColor,
                   textColor: onPrimary,
                 ),
@@ -1727,7 +1725,6 @@ class AcftPageState extends ConsumerState<AcftPage> {
                 ),
                 GridBox(
                   title: 'HRP',
-                  centered: false,
                   background: primaryColor,
                   textColor: onPrimary,
                 ),
@@ -1746,7 +1743,6 @@ class AcftPageState extends ConsumerState<AcftPage> {
                 ),
                 GridBox(
                   title: 'SDC',
-                  centered: false,
                   background: primaryColor,
                   textColor: onPrimary,
                 ),
@@ -1765,7 +1761,6 @@ class AcftPageState extends ConsumerState<AcftPage> {
                 ),
                 GridBox(
                   title: 'PLK',
-                  centered: false,
                   background: primaryColor,
                   textColor: onPrimary,
                 ),
@@ -1784,7 +1779,6 @@ class AcftPageState extends ConsumerState<AcftPage> {
                 ),
                 GridBox(
                   title: '2MR',
-                  centered: false,
                   background: primaryColor,
                   textColor: onPrimary,
                 ),
@@ -1803,7 +1797,6 @@ class AcftPageState extends ConsumerState<AcftPage> {
                 ),
                 GridBox(
                   title: 'Total',
-                  centered: false,
                   background: primaryColor,
                   textColor: onPrimary,
                 ),

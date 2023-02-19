@@ -303,7 +303,10 @@ class _ApftPageState extends ConsumerState<ApftPage> {
     showPlatformModalBottomSheet(
       context: context,
       builder: (ctx) => Container(
-        color: Colors.white,
+        color: getBackgroundColor(context),
+        constraints: BoxConstraints(
+          maxHeight: MediaQuery.of(context).size.height * 2 / 3,
+        ),
         padding: EdgeInsets.only(
             top: 8,
             left: 8,
@@ -311,69 +314,67 @@ class _ApftPageState extends ConsumerState<ApftPage> {
             bottom: MediaQuery.of(ctx).viewInsets.bottom == 0
                 ? MediaQuery.of(ctx).padding.bottom
                 : MediaQuery.of(ctx).viewInsets.bottom),
-        child: SingleChildScrollView(
-          child: Column(
-            children: <Widget>[
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                child: PlatformTextField(
-                  controller: _dateController,
-                  label: 'Date',
-                  decoration: const InputDecoration(
-                    labelText: 'Date',
-                  ),
-                  autovalidateMode: AutovalidateMode.onUserInteraction,
-                  validator: (value) =>
-                      regExp.hasMatch(value!) ? null : 'Use yyyyMMdd Format',
-                  keyboardType: TextInputType.numberWithOptions(signed: true),
-                  inputFormatters: [
-                    FilteringTextInputFormatter.digitsOnly,
-                  ],
-                  textInputAction: TextInputAction.next,
-                  onEditingComplete: () => FocusScope.of(ctx).nextFocus(),
+        child: ListView(
+          children: <Widget>[
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: PlatformTextField(
+                controller: _dateController,
+                label: 'Date',
+                decoration: const InputDecoration(
+                  labelText: 'Date',
                 ),
+                autovalidateMode: AutovalidateMode.onUserInteraction,
+                validator: (value) =>
+                    regExp.hasMatch(value!) ? null : 'Use yyyyMMdd Format',
+                keyboardType: TextInputType.numberWithOptions(signed: true),
+                inputFormatters: [
+                  FilteringTextInputFormatter.digitsOnly,
+                ],
+                textInputAction: TextInputAction.next,
+                onEditingComplete: () => FocusScope.of(ctx).nextFocus(),
               ),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                child: PlatformTextField(
-                  controller: _rankController,
-                  label: 'Rank',
-                  decoration: const InputDecoration(labelText: 'Rank'),
-                  keyboardType: TextInputType.text,
-                  textCapitalization: TextCapitalization.characters,
-                  textInputAction: TextInputAction.next,
-                  onEditingComplete: () => FocusScope.of(ctx).nextFocus(),
-                ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: PlatformTextField(
+                controller: _rankController,
+                label: 'Rank',
+                decoration: const InputDecoration(labelText: 'Rank'),
+                keyboardType: TextInputType.text,
+                textCapitalization: TextCapitalization.characters,
+                textInputAction: TextInputAction.next,
+                onEditingComplete: () => FocusScope.of(ctx).nextFocus(),
               ),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                child: PlatformTextField(
-                  controller: _nameController,
-                  label: 'Name',
-                  decoration: const InputDecoration(labelText: 'Name'),
-                  keyboardType: TextInputType.text,
-                  textCapitalization: TextCapitalization.words,
-                  textInputAction: TextInputAction.done,
-                  onEditingComplete: () => FocusScope.of(ctx).unfocus(),
-                ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: PlatformTextField(
+                controller: _nameController,
+                label: 'Name',
+                decoration: const InputDecoration(labelText: 'Name'),
+                keyboardType: TextInputType.text,
+                textCapitalization: TextCapitalization.words,
+                textInputAction: TextInputAction.done,
+                onEditingComplete: () => FocusScope.of(ctx).unfocus(),
               ),
-              Padding(
-                padding: EdgeInsets.all(8),
-                child: PlatformButton(
-                  child: Text('Save APFT'),
-                  onPressed: () {
-                    apft.date = _dateController.text;
-                    apft.rank = _rankController.text;
-                    apft.name = _nameController.text;
-                    dbHelper.saveAPft(apft);
-                    Navigator.pop(ctx);
-                    Navigator.of(context, rootNavigator: true)
-                        .pushNamed(SavedApftsPage.routeName);
-                  },
-                ),
-              )
-            ],
-          ),
+            ),
+            Padding(
+              padding: EdgeInsets.all(8),
+              child: PlatformButton(
+                child: Text('Save APFT'),
+                onPressed: () {
+                  apft.date = _dateController.text;
+                  apft.rank = _rankController.text;
+                  apft.name = _nameController.text;
+                  dbHelper.saveAPft(apft);
+                  Navigator.pop(ctx);
+                  Navigator.of(context, rootNavigator: true)
+                      .pushNamed(SavedApftsPage.routeName);
+                },
+              ),
+            )
+          ],
         ),
       ),
     );
@@ -501,7 +502,12 @@ class _ApftPageState extends ConsumerState<ApftPage> {
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: PlatformItemPicker(
-                label: Text('Aerobic Event'),
+                label: Text(
+                  'Aerobic Event',
+                  style: TextStyle(
+                    color: getTextColor(context),
+                  ),
+                ),
                 value: event,
                 items: events,
                 onChanged: (value) {

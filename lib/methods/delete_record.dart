@@ -1,4 +1,5 @@
 import 'package:acft_calculator/methods/platform_show_modal_bottom_sheet.dart';
+import 'package:acft_calculator/methods/theme_methods.dart';
 import 'package:flutter/material.dart';
 
 import '../../widgets/platform_widgets/platform_button.dart';
@@ -15,8 +16,8 @@ class DeleteRecord {
           bottom: MediaQuery.of(context).viewPadding.bottom + 8.0,
         ),
         constraints:
-            BoxConstraints(maxHeight: MediaQuery.of(context).size.height / 4),
-        color: Colors.white,
+            BoxConstraints(maxHeight: MediaQuery.of(context).size.height / 2),
+        color: getBackgroundColor(context),
         child: Column(
           children: [
             Padding(

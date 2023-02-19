@@ -7,15 +7,15 @@ import './shared_preferences_provider.dart';
 final themeStateNotifierProvider =
     StateNotifierProvider<ThemeStateNotifier, ThemeData>(
   (ref) => ThemeStateNotifier(
-    ref.watch(sharedPreferencesProvider),
+    ref.read(sharedPreferencesProvider),
   ),
 );
 
 enum ThemeState { lightTheme, darkTheme }
 
 ThemeData darkTheme = ThemeData(
-  scaffoldBackgroundColor: Colors.grey[900],
-  dialogBackgroundColor: Colors.black87,
+  scaffoldBackgroundColor: Colors.grey[800],
+  dialogBackgroundColor: Colors.grey[700],
   colorScheme: ColorScheme.highContrastDark(
     brightness: Brightness.dark,
     primary: Colors.black87,
@@ -31,7 +31,7 @@ ThemeData darkTheme = ThemeData(
 );
 ThemeData lightTheme = ThemeData(
   scaffoldBackgroundColor: Colors.grey[300],
-  dialogBackgroundColor: Colors.grey[300],
+  dialogBackgroundColor: Colors.grey[400],
   bottomNavigationBarTheme:
       BottomNavigationBarThemeData(backgroundColor: Colors.grey),
   colorScheme: ColorScheme.highContrastLight(
@@ -58,6 +58,7 @@ class ThemeStateNotifier extends StateNotifier<ThemeData> {
   final SharedPreferences prefs;
 
   void switchTheme(ThemeState newTheme) {
+    print('New Theme: $newTheme');
     if (newTheme == ThemeState.lightTheme) {
       prefs.setString('brightness', 'Light');
       state = lightTheme;

@@ -222,7 +222,7 @@ class _BodyfatPageState extends ConsumerState<BodyfatPage> {
       context: context,
       // isScrollControlled: true,
       builder: (ctx) => Container(
-        color: Colors.white,
+        color: getBackgroundColor(context),
         padding: EdgeInsets.only(
             left: 8,
             right: 8,
@@ -642,7 +642,6 @@ class _BodyfatPageState extends ConsumerState<BodyfatPage> {
                 ),
                 GridBox(
                   title: '${height.toString()} in.',
-                  centered: false,
                   background: primaryColor,
                   textColor: textColor,
                 ),
@@ -1035,7 +1034,6 @@ class _BodyfatPageState extends ConsumerState<BodyfatPage> {
                         title: gender == 'Male'
                             ? '${(waist - neck).toString()} in.'
                             : '${(hip + waist - neck).toString()} in.',
-                        centered: false,
                         background: primaryColor,
                         textColor: textColor,
                       ),

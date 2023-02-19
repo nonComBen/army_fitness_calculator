@@ -36,12 +36,16 @@ class _SavedPpwsPageState extends State<SavedPpwsPage> {
           Text(
             name,
             style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-                color: getOnPrimaryColor(context)),
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+              color: getTextColor(context),
+            ),
           ),
           PlatformIconButton(
-            icon: const Icon(Icons.show_chart),
+            icon: Icon(
+              Icons.show_chart,
+              color: getTextColor(context),
+            ),
             onPressed: () {
               Navigator.push(
                   context,

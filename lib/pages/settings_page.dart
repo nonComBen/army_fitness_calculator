@@ -197,7 +197,13 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                     primary: false,
                     children: <Widget>[
                       PlatformItemPicker(
-                        label: Text('Default ACFT Aerobic Event'),
+                        label: Text(
+                          'Default ACFT Aerobic Event',
+                          style: TextStyle(
+                              color: getTextColor(
+                            context,
+                          )),
+                        ),
                         value: acftEvent,
                         items: acftEvents,
                         onChanged: (value) {
@@ -232,7 +238,12 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                         ),
                       ),
                       PlatformItemPicker(
-                        label: Text('Default APFT Aerobic Event'),
+                        label: Text(
+                          'Default APFT Aerobic Event',
+                          style: TextStyle(
+                            color: getTextColor(context),
+                          ),
+                        ),
                         value: apftEvent,
                         items: events,
                         onChanged: (value) {

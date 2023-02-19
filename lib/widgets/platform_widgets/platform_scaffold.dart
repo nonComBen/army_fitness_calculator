@@ -76,7 +76,9 @@ class IOSScaffold extends StatelessWidget implements PlatformScaffold {
       navigationBar: title != null
           ? CupertinoNavigationBar(
               backgroundColor: getPrimaryColor(context),
-              middle: Text(title!),
+              middle: Text(
+                title!,
+              ),
               trailing: actions.isNotEmpty
                   ? SizedBox(
                       width: MediaQuery.of(context).size.width / 4,

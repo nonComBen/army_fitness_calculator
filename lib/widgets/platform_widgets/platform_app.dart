@@ -27,14 +27,15 @@ abstract class PlatformApp extends StatelessWidget {
         primaryColor: themeData.colorScheme.primary,
         primaryContrastingColor: themeData.colorScheme.onPrimary,
         scaffoldBackgroundColor: themeData.scaffoldBackgroundColor,
+        barBackgroundColor: themeData.dialogBackgroundColor,
         textTheme: CupertinoTextThemeData(
           primaryColor: themeData.colorScheme.onPrimary,
           navTitleTextStyle: TextStyle(
+            inherit: false,
             color: themeData.colorScheme.onPrimary,
             fontSize: 22,
             fontWeight: FontWeight.bold,
           ),
-          //tabLabelTextStyle:
         ),
       );
       return IOSApp(
@@ -72,10 +73,10 @@ class AndroidApp extends StatelessWidget implements PlatformApp {
       navigatorObservers: [
         FirebaseAnalyticsObserver(analytics: FirebaseAnalytics.instance)
       ],
-      builder: ((context, child) => MediaQuery(
-            data: MediaQuery.of(context).copyWith(alwaysUse24HourFormat: true),
-            child: child!,
-          )),
+      // builder: ((context, child) => MediaQuery(
+      //       data: MediaQuery.of(context).copyWith(alwaysUse24HourFormat: true),
+      //       child: child!,
+      //     )),
       home: home,
       debugShowCheckedModeBanner: false,
     );

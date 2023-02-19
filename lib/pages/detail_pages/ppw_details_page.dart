@@ -88,14 +88,21 @@ class _PpwDetailsPageState extends State<PpwDetailsPage> {
               : MediaQuery.of(ctx).viewInsets.bottom + 24,
         ),
         constraints: BoxConstraints(
-          maxHeight: MediaQuery.of(context).size.height / 2,
+          maxHeight: MediaQuery.of(context).size.height * 2 / 3,
         ),
-        color: Colors.white,
+        color: getBackgroundColor(context),
         child: ListView(
           children: <Widget>[
             Padding(
               padding: const EdgeInsets.all(8.0),
-              child: const Text('Date and Name are the only editable fields.'),
+              child: const Text(
+                'Date and Name are the only editable fields.',
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                ),
+                textAlign: TextAlign.center,
+              ),
             ),
             Padding(
               padding: const EdgeInsets.all(8.0),

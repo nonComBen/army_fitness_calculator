@@ -29,18 +29,18 @@ class _BodyfatChartPageState extends State<BodyfatChartPage> {
           measureFn: (bf, _) => int.tryParse(bf.weight),
           data: myData,
           id: 'Total',
-          colorFn: (bf, _) => Theme.of(context).brightness == Brightness.light
-              ? charts.Color.black
-              : charts.Color.white),
+          colorFn: (bf, _) => charts.MaterialPalette.black),
     ];
     if (bf) {
-      _seriesBarData.add(charts.Series(
-        domainFn: (bf, _) => DateTime.parse(bf.date!),
-        measureFn: (bf, _) => int.tryParse(bf.bfPercent),
-        data: myData,
-        id: 'Bodyfat',
-        colorFn: (bf, _) => charts.MaterialPalette.blue.shadeDefault,
-      )..setAttribute(charts.measureAxisIdKey, secondaryMeasureAxisId));
+      _seriesBarData.add(
+        charts.Series(
+          domainFn: (bf, _) => DateTime.parse(bf.date!),
+          measureFn: (bf, _) => int.tryParse(bf.bfPercent),
+          data: myData,
+          id: 'Bodyfat',
+          colorFn: (bf, _) => charts.MaterialPalette.blue.shadeDefault,
+        )..setAttribute(charts.measureAxisIdKey, secondaryMeasureAxisId),
+      );
     }
   }
 
@@ -54,7 +54,13 @@ class _BodyfatChartPageState extends State<BodyfatChartPage> {
         _seriesBarData,
         defaultRenderer: new charts.LineRendererConfig(),
         dateTimeFactory: const charts.LocalDateTimeFactory(),
-        behaviors: [new charts.SeriesLegend()],
+        behaviors: [
+          new charts.SeriesLegend(
+            entryTextStyle: charts.TextStyleSpec(
+              color: charts.Color(r: 0, g: 0, b: 0),
+            ),
+          ),
+        ],
         primaryMeasureAxis: new charts.NumericAxisSpec(
             tickProviderSpec: new charts.BasicNumericTickProviderSpec(
                 zeroBound: false, desiredTickCount: 3)),
@@ -122,9 +128,11 @@ class _BodyfatChartPageState extends State<BodyfatChartPage> {
         child: Center(
           child: ListView(
             children: <Widget>[
-              DecoratedBox(
+              Container(
+                padding: EdgeInsets.all(8.0),
                 decoration: BoxDecoration(
-                  color: getBackgroundColor(context),
+                  borderRadius: BorderRadius.circular(16.0),
+                  color: getContrastingBackgroundColor(context),
                 ),
                 child: Column(
                   children: <Widget>[

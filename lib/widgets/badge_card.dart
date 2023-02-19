@@ -1,3 +1,4 @@
+import 'package:acft_calculator/methods/theme_methods.dart';
 import 'package:flutter/material.dart';
 
 import 'platform_widgets/platform_item_picker.dart';
@@ -62,11 +63,17 @@ class BadgeCard extends StatelessWidget {
     return GestureDetector(
       onLongPress: onLongPressed as void Function()?,
       child: Card(
+        color: getContrastingBackgroundColor(context),
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 8.0),
           child: PlatformItemPicker(
             value: badgeName!,
-            label: Text('Badge'),
+            label: Text(
+              'Badge',
+              style: TextStyle(
+                color: getTextColor(context),
+              ),
+            ),
             items: badges,
             onChanged: onBadgeChosen!,
           ),

@@ -33,8 +33,6 @@ class _BodyfatDetailsPageState extends State<BodyfatDetailsPage> {
   TextEditingController _mainNameController = TextEditingController();
   TextEditingController _mainDateController = TextEditingController();
 
-  static GlobalKey previewContainer = new GlobalKey();
-
   _updateBf(BuildContext context, Bodyfat bf) {
     final _dateController = new TextEditingController(text: bf.date);
     final _rankController = TextEditingController(text: bf.rank ?? '');
@@ -50,86 +48,88 @@ class _BodyfatDetailsPageState extends State<BodyfatDetailsPage> {
               : MediaQuery.of(ctx).viewInsets.bottom + 24,
         ),
         constraints: BoxConstraints(
-          maxHeight: MediaQuery.of(context).size.height / 2,
+          maxHeight: MediaQuery.of(context).size.height * 2 / 3,
         ),
-        color: Colors.white,
-        child: Material(
-          child: SingleChildScrollView(
-            child: Column(
-              children: <Widget>[
-                Padding(
-                  padding: EdgeInsets.all(8.0),
-                  child: Text(
-                      'Date, Rank, and Name are the only editable fields.'),
+        color: getBackgroundColor(context),
+        child: ListView(
+          children: <Widget>[
+            Padding(
+              padding: EdgeInsets.all(8.0),
+              child: Text(
+                'Date, Rank, and Name are the only editable fields.',
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
                 ),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: PlatformTextField(
-                    controller: _dateController,
-                    label: 'Date',
-                    keyboardType: TextInputType.numberWithOptions(signed: true),
-                    inputFormatters: [
-                      FilteringTextInputFormatter.digitsOnly,
-                    ],
-                    decoration: InputDecoration(
-                      labelText: 'Date',
-                    ),
-                    autovalidateMode: AutovalidateMode.onUserInteraction,
-                    validator: (value) =>
-                        regExp.hasMatch(value!) ? null : 'Use yyyyMMdd Format',
-                    autofocus: true,
-                    autocorrect: false,
-                    textInputAction: TextInputAction.next,
-                    onEditingComplete: () => FocusScope.of(context).nextFocus(),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: PlatformTextField(
-                    controller: _rankController,
-                    label: 'Rank',
-                    decoration: InputDecoration(labelText: 'Rank'),
-                    keyboardType: TextInputType.text,
-                    textCapitalization: TextCapitalization.characters,
-                    autocorrect: false,
-                    textInputAction: TextInputAction.next,
-                    onEditingComplete: () => FocusScope.of(context).nextFocus(),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: PlatformTextField(
-                    controller: _nameController,
-                    label: 'Name',
-                    decoration: InputDecoration(labelText: 'Name'),
-                    keyboardType: TextInputType.text,
-                    textCapitalization: TextCapitalization.words,
-                    autocorrect: false,
-                    textInputAction: TextInputAction.done,
-                    onEditingComplete: () => FocusScope.of(context).unfocus(),
-                  ),
-                ),
-                Padding(
-                  padding: EdgeInsets.all(8),
-                  child: PlatformButton(
-                    child: Text('Update Body Comp'),
-                    onPressed: () {
-                      setState(() {
-                        _mainDateController.text = _dateController.text;
-                        _mainNameController.text =
-                            '${_rankController.text} ${_nameController.text}';
-                      });
-                      bf.date = _dateController.text;
-                      bf.rank = _rankController.text;
-                      bf.name = _nameController.text;
-                      dbHelper.updateBodyfat(bf);
-                      Navigator.pop(context);
-                    },
-                  ),
-                )
-              ],
+                textAlign: TextAlign.center,
+              ),
             ),
-          ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: PlatformTextField(
+                controller: _dateController,
+                label: 'Date',
+                keyboardType: TextInputType.numberWithOptions(signed: true),
+                inputFormatters: [
+                  FilteringTextInputFormatter.digitsOnly,
+                ],
+                decoration: InputDecoration(
+                  labelText: 'Date',
+                ),
+                autovalidateMode: AutovalidateMode.onUserInteraction,
+                validator: (value) =>
+                    regExp.hasMatch(value!) ? null : 'Use yyyyMMdd Format',
+                autofocus: true,
+                autocorrect: false,
+                textInputAction: TextInputAction.next,
+                onEditingComplete: () => FocusScope.of(context).nextFocus(),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: PlatformTextField(
+                controller: _rankController,
+                label: 'Rank',
+                decoration: InputDecoration(labelText: 'Rank'),
+                keyboardType: TextInputType.text,
+                textCapitalization: TextCapitalization.characters,
+                autocorrect: false,
+                textInputAction: TextInputAction.next,
+                onEditingComplete: () => FocusScope.of(context).nextFocus(),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: PlatformTextField(
+                controller: _nameController,
+                label: 'Name',
+                decoration: InputDecoration(labelText: 'Name'),
+                keyboardType: TextInputType.text,
+                textCapitalization: TextCapitalization.words,
+                autocorrect: false,
+                textInputAction: TextInputAction.done,
+                onEditingComplete: () => FocusScope.of(context).unfocus(),
+              ),
+            ),
+            Padding(
+              padding: EdgeInsets.all(8),
+              child: PlatformButton(
+                child: Text('Update Body Comp'),
+                onPressed: () {
+                  setState(() {
+                    _mainDateController.text = _dateController.text;
+                    _mainNameController.text =
+                        '${_rankController.text} ${_nameController.text}';
+                  });
+                  bf.date = _dateController.text;
+                  bf.rank = _rankController.text;
+                  bf.name = _nameController.text;
+                  dbHelper.updateBodyfat(bf);
+                  Navigator.pop(context);
+                },
+              ),
+            )
+          ],
         ),
       ),
     );
@@ -358,115 +358,111 @@ class _BodyfatDetailsPageState extends State<BodyfatDetailsPage> {
           right: 16.0,
           bottom: MediaQuery.of(context).viewPadding.bottom + 16.0,
         ),
-        child: RepaintBoundary(
-          key: previewContainer,
-          child: DecoratedBox(
-            decoration: BoxDecoration(
-              color: getBackgroundColor(context),
-            ),
-            child: ListView(
-              children: <Widget>[
-                GridView.count(
-                  crossAxisCount: width > 700 ? 2 : 1,
-                  childAspectRatio: width > 700 ? width / 200 : width / 100,
-                  primary: false,
-                  shrinkWrap: true,
-                  children: <Widget>[
-                    Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 8.0),
-                      child: PlatformTextField(
-                        label: 'Name',
-                        enabled: false,
-                        controller: _mainNameController,
-                        decoration: const InputDecoration(labelText: 'Name'),
-                      ),
+        child: DecoratedBox(
+          decoration: BoxDecoration(
+            color: getBackgroundColor(context),
+          ),
+          child: ListView(
+            children: <Widget>[
+              GridView.count(
+                crossAxisCount: width > 700 ? 2 : 1,
+                childAspectRatio: width > 700 ? width / 200 : width / 100,
+                primary: false,
+                shrinkWrap: true,
+                children: <Widget>[
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 8.0),
+                    child: PlatformTextField(
+                      label: 'Name',
+                      enabled: false,
+                      controller: _mainNameController,
+                      decoration: const InputDecoration(labelText: 'Name'),
                     ),
-                    Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 8.0),
-                      child: PlatformTextField(
-                        label: 'Date',
-                        enabled: false,
-                        controller: _mainDateController,
-                        decoration: const InputDecoration(labelText: 'Date'),
-                      ),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 8.0),
+                    child: PlatformTextField(
+                      label: 'Date',
+                      enabled: false,
+                      controller: _mainDateController,
+                      decoration: const InputDecoration(labelText: 'Date'),
                     ),
-                  ],
-                ),
-                GridView.count(
-                  crossAxisCount: 2,
-                  childAspectRatio: width / 200,
-                  primary: false,
-                  shrinkWrap: true,
-                  children: <Widget>[
-                    Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 8.0),
-                      child: PlatformTextField(
-                        label: 'Gender',
-                        enabled: false,
-                        controller:
-                            TextEditingController(text: widget.bf.gender),
-                        decoration: const InputDecoration(labelText: 'Gender'),
-                      ),
+                  ),
+                ],
+              ),
+              GridView.count(
+                crossAxisCount: 2,
+                childAspectRatio: width / 200,
+                primary: false,
+                shrinkWrap: true,
+                children: <Widget>[
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 8.0),
+                    child: PlatformTextField(
+                      label: 'Gender',
+                      enabled: false,
+                      controller: TextEditingController(text: widget.bf.gender),
+                      decoration: const InputDecoration(labelText: 'Gender'),
                     ),
-                    Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 8.0),
-                      child: PlatformTextField(
-                        label: 'Age',
-                        enabled: false,
-                        controller: TextEditingController(text: widget.bf.age),
-                        decoration: const InputDecoration(labelText: 'Age'),
-                      ),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 8.0),
+                    child: PlatformTextField(
+                      label: 'Age',
+                      enabled: false,
+                      controller: TextEditingController(text: widget.bf.age),
+                      decoration: const InputDecoration(labelText: 'Age'),
                     ),
-                    Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 8.0),
-                      child: PlatformTextField(
-                        label: 'Height',
-                        enabled: false,
-                        controller: TextEditingController(
-                            text: widget.bf.heightDouble.toString() + ' in.'),
-                        decoration: const InputDecoration(labelText: 'Height'),
-                      ),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 8.0),
+                    child: PlatformTextField(
+                      label: 'Height',
+                      enabled: false,
+                      controller: TextEditingController(
+                          text: widget.bf.heightDouble.toString() + ' in.'),
+                      decoration: const InputDecoration(labelText: 'Height'),
                     ),
-                    Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 8.0),
-                      child: PlatformTextField(
-                        label: 'Weight',
-                        enabled: false,
-                        controller: TextEditingController(
-                            text: widget.bf.weight + ' lbs.'),
-                        decoration: const InputDecoration(labelText: 'Weight'),
-                      ),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 8.0),
+                    child: PlatformTextField(
+                      label: 'Weight',
+                      enabled: false,
+                      controller: TextEditingController(
+                          text: widget.bf.weight + ' lbs.'),
+                      decoration: const InputDecoration(labelText: 'Weight'),
                     ),
-                    Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 8.0),
-                      child: PlatformTextField(
-                        label: 'Max Weight',
-                        enabled: false,
-                        controller: TextEditingController(
-                            text: widget.bf.maxWeight + ' lbs.'),
-                        decoration:
-                            const InputDecoration(labelText: 'Max Weight'),
-                      ),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 8.0),
+                    child: PlatformTextField(
+                      label: 'Max Weight',
+                      enabled: false,
+                      controller: TextEditingController(
+                          text: widget.bf.maxWeight + ' lbs.'),
+                      decoration:
+                          const InputDecoration(labelText: 'Max Weight'),
                     ),
-                    Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 8.0),
-                      child: PlatformTextField(
-                        label: 'Over/Under',
-                        enabled: false,
-                        controller: TextEditingController(
-                            text: (int.tryParse(widget.bf.weight)! -
-                                        int.tryParse(widget.bf.maxWeight)!)
-                                    .toString() +
-                                ' lbs.'),
-                        decoration:
-                            const InputDecoration(labelText: 'Over/Under'),
-                      ),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 8.0),
+                    child: PlatformTextField(
+                      label: 'Over/Under',
+                      enabled: false,
+                      controller: TextEditingController(
+                          text: (int.tryParse(widget.bf.weight)! -
+                                      int.tryParse(widget.bf.maxWeight)!)
+                                  .toString() +
+                              ' lbs.'),
+                      decoration:
+                          const InputDecoration(labelText: 'Over/Under'),
                     ),
-                  ],
-                ),
-                if (widget.bf.bmiPass == 0) measurements(width),
-              ],
-            ),
+                  ),
+                ],
+              ),
+              if (widget.bf.bmiPass == 0) measurements(width),
+            ],
           ),
         ),
       ),

@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:acft_calculator/methods/theme_methods.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:pull_down_button/pull_down_button.dart';
@@ -48,14 +49,19 @@ abstract class PlatformItemPicker extends Widget {
               Container(
                 width: double.infinity,
                 decoration: BoxDecoration(
-                    border: Border.all(color: Colors.black),
+                    border: Border.all(
+                      color: getTextColor(context),
+                    ),
                     borderRadius: BorderRadius.circular(8.0)),
                 child: CupertinoButton(
                   padding: EdgeInsets.all(8.0),
                   onPressed: showMenu,
                   child: Text(
                     value,
-                    style: const TextStyle(fontSize: 18),
+                    style: TextStyle(
+                      fontSize: 18,
+                      color: getTextColor(context),
+                    ),
                   ),
                 ),
               ),

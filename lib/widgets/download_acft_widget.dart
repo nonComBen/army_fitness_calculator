@@ -1,3 +1,4 @@
+import 'package:acft_calculator/methods/theme_methods.dart';
 import 'package:acft_calculator/widgets/platform_widgets/platform_checkbox_list_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -65,9 +66,9 @@ class _DownloadAcftWidgetState extends State<DownloadAcftWidget> {
             : MediaQuery.of(context).viewInsets.bottom,
       ),
       constraints: BoxConstraints(
-        maxHeight: MediaQuery.of(context).size.height / 2,
+        maxHeight: MediaQuery.of(context).size.height * 2 / 3,
       ),
-      color: Colors.white,
+      color: getBackgroundColor(context),
       child: ListView(
         children: [
           Padding(

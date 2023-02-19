@@ -38,17 +38,20 @@ class _SavedAcftsPageState extends State<SavedAcftsPage> {
             style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
           ),
           PlatformIconButton(
-            icon: const Icon(Icons.show_chart),
+            icon: Icon(
+              Icons.show_chart,
+              color: getTextColor(context),
+            ),
             onPressed: () {
               Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => AcftChartPage(
-                            acfts: acftList
-                                .where((acft) => acft.name == name)
-                                .toList(),
-                            soldier: rank == '' ? name : '$rank $name',
-                          )));
+                context,
+                MaterialPageRoute(
+                  builder: (context) => AcftChartPage(
+                    acfts: acftList.where((acft) => acft.name == name).toList(),
+                    soldier: rank == '' ? name : '$rank $name',
+                  ),
+                ),
+              );
             },
           )
         ],
@@ -120,11 +123,13 @@ class _SavedAcftsPageState extends State<SavedAcftsPage> {
             ),
             onTap: () {
               Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => AcftDetailsPage(
-                            acft: acftList[i],
-                          )));
+                context,
+                MaterialPageRoute(
+                  builder: (context) => AcftDetailsPage(
+                    acft: acftList[i],
+                  ),
+                ),
+              );
             },
           ),
         ),

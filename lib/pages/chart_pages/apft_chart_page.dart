@@ -22,37 +22,43 @@ class _ApftChartPageState extends State<ApftChartPage> {
 
   _generateData(List<Apft> myData) {
     _seriesBarData.clear();
-    _seriesBarData.add(charts.Series(
-        domainFn: (apft, _) => DateTime.parse(apft.date!),
-        measureFn: (apft, _) => int.tryParse(apft.total),
-        data: myData,
-        id: 'Total',
-        colorFn: (apft, _) => Theme.of(context).brightness == Brightness.light
-            ? charts.Color.black
-            : charts.Color.white));
-    if (pu) {
-      _seriesBarData.add(charts.Series(
+    _seriesBarData.add(
+      charts.Series(
           domainFn: (apft, _) => DateTime.parse(apft.date!),
-          measureFn: (apft, _) => int.tryParse(apft.puScore),
+          measureFn: (apft, _) => int.tryParse(apft.total),
           data: myData,
-          id: 'PU',
-          colorFn: (apft, _) => charts.MaterialPalette.blue.shadeDefault));
+          id: 'Total',
+          colorFn: (apft, _) => charts.MaterialPalette.black),
+    );
+    if (pu) {
+      _seriesBarData.add(
+        charts.Series(
+            domainFn: (apft, _) => DateTime.parse(apft.date!),
+            measureFn: (apft, _) => int.tryParse(apft.puScore),
+            data: myData,
+            id: 'PU',
+            colorFn: (apft, _) => charts.MaterialPalette.blue.shadeDefault),
+      );
     }
     if (su) {
-      _seriesBarData.add(charts.Series(
-          domainFn: (apft, _) => DateTime.parse(apft.date!),
-          measureFn: (apft, _) => int.tryParse(apft.suScore),
-          data: myData,
-          id: 'SU',
-          colorFn: (apft, _) => charts.MaterialPalette.green.shadeDefault));
+      _seriesBarData.add(
+        charts.Series(
+            domainFn: (apft, _) => DateTime.parse(apft.date!),
+            measureFn: (apft, _) => int.tryParse(apft.suScore),
+            data: myData,
+            id: 'SU',
+            colorFn: (apft, _) => charts.MaterialPalette.green.shadeDefault),
+      );
     }
     if (run) {
-      _seriesBarData.add(charts.Series(
-          domainFn: (apft, _) => DateTime.parse(apft.date!),
-          measureFn: (apft, _) => int.tryParse(apft.runScore),
-          data: myData,
-          id: 'Run',
-          colorFn: (apft, _) => charts.MaterialPalette.red.shadeDefault));
+      _seriesBarData.add(
+        charts.Series(
+            domainFn: (apft, _) => DateTime.parse(apft.date!),
+            measureFn: (apft, _) => int.tryParse(apft.runScore),
+            data: myData,
+            id: 'Run',
+            colorFn: (apft, _) => charts.MaterialPalette.red.shadeDefault),
+      );
     }
   }
 
@@ -69,6 +75,9 @@ class _ApftChartPageState extends State<ApftChartPage> {
         behaviors: [
           new charts.SeriesLegend(
             desiredMaxRows: 2,
+            entryTextStyle: charts.TextStyleSpec(
+              color: charts.Color(r: 0, g: 0, b: 0),
+            ),
           )
         ],
         primaryMeasureAxis: charts.NumericAxisSpec(
@@ -134,9 +143,12 @@ class _ApftChartPageState extends State<ApftChartPage> {
         child: Center(
           child: ListView(
             children: <Widget>[
-              DecoratedBox(
+              Container(
+                padding: EdgeInsets.all(8.0),
                 decoration: BoxDecoration(
-                    color: Theme.of(context).scaffoldBackgroundColor),
+                  borderRadius: BorderRadius.circular(16.0),
+                  color: getContrastingBackgroundColor(context),
+                ),
                 child: Column(
                   children: <Widget>[
                     Text(

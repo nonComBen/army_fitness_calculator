@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:acft_calculator/methods/theme_methods.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -54,12 +55,6 @@ abstract class PlatformTextField extends Widget {
         focusNode: focusNode,
         enabled: enabled,
         label: label,
-        iosDecoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(8.0),
-          border: Border.all(
-            color: Colors.black,
-          ),
-        ),
         obscureText: obscureText,
         keyboardType: keyboardType,
         inputFormatters: inputFormatters,
@@ -104,7 +99,6 @@ class IOSTextField extends StatelessWidget implements PlatformTextField {
     this.focusNode,
     this.enabled = true,
     this.label,
-    this.iosDecoration,
     this.inputFormatters,
     this.keyboardType,
     this.obscureText = false,
@@ -122,7 +116,6 @@ class IOSTextField extends StatelessWidget implements PlatformTextField {
   final TextEditingController controller;
   final TextStyle? style;
   final FocusNode? focusNode;
-  final BoxDecoration? iosDecoration;
   final String? label;
   final TextInputType? keyboardType;
   final List<TextInputFormatter>? inputFormatters;
@@ -154,7 +147,10 @@ class IOSTextField extends StatelessWidget implements PlatformTextField {
           controller: controller,
           style: style,
           focusNode: focusNode,
-          decoration: iosDecoration,
+          decoration: BoxDecoration(
+            border: Border.all(color: getTextColor(context)),
+            borderRadius: BorderRadius.circular(8.0),
+          ),
           keyboardType: keyboardType,
           inputFormatters: inputFormatters,
           enabled: enabled,

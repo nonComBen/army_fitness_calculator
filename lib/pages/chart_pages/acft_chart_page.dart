@@ -27,62 +27,75 @@ class _AcftChartPageState extends State<AcftChartPage> {
 
   _generateData(List<Acft> myData) {
     _seriesBarData.clear();
-    _seriesBarData.add(charts.Series(
+    _seriesBarData.add(
+      charts.Series(
         domainFn: (acft, _) => DateTime.parse(acft.date!),
         measureFn: (acft, _) => int.tryParse(acft.total),
         data: myData,
         id: 'Total',
-        colorFn: (acft, _) => Theme.of(context).brightness == Brightness.light
-            ? charts.Color.black
-            : charts.Color.white));
+        colorFn: (acft, _) => charts.MaterialPalette.black,
+      ),
+    );
     if (mdl) {
-      _seriesBarData.add(charts.Series(
-          domainFn: (acft, _) => DateTime.parse(acft.date!),
-          measureFn: (acft, _) => int.tryParse(acft.mdlScore),
-          data: myData,
-          id: 'MDL',
-          colorFn: (acft, _) => charts.MaterialPalette.blue.shadeDefault));
+      _seriesBarData.add(
+        charts.Series(
+            domainFn: (acft, _) => DateTime.parse(acft.date!),
+            measureFn: (acft, _) => int.tryParse(acft.mdlScore),
+            data: myData,
+            id: 'MDL',
+            colorFn: (acft, _) => charts.MaterialPalette.blue.shadeDefault),
+      );
     }
     if (spt) {
-      _seriesBarData.add(charts.Series(
-          domainFn: (acft, _) => DateTime.parse(acft.date!),
-          measureFn: (acft, _) => int.tryParse(acft.sptScore),
-          data: myData,
-          id: 'SPT',
-          colorFn: (acft, _) => charts.MaterialPalette.green.shadeDefault));
+      _seriesBarData.add(
+        charts.Series(
+            domainFn: (acft, _) => DateTime.parse(acft.date!),
+            measureFn: (acft, _) => int.tryParse(acft.sptScore),
+            data: myData,
+            id: 'SPT',
+            colorFn: (acft, _) => charts.MaterialPalette.green.shadeDefault),
+      );
     }
     if (hrp) {
-      _seriesBarData.add(charts.Series(
-          domainFn: (acft, _) => DateTime.parse(acft.date!),
-          measureFn: (acft, _) => int.tryParse(acft.hrpScore),
-          data: myData,
-          id: 'HRP',
-          colorFn: (acft, _) => charts.MaterialPalette.yellow.shadeDefault));
+      _seriesBarData.add(
+        charts.Series(
+            domainFn: (acft, _) => DateTime.parse(acft.date!),
+            measureFn: (acft, _) => int.tryParse(acft.hrpScore),
+            data: myData,
+            id: 'HRP',
+            colorFn: (acft, _) => charts.MaterialPalette.yellow.shadeDefault),
+      );
     }
     if (sdc) {
-      _seriesBarData.add(charts.Series(
-          domainFn: (acft, _) => DateTime.parse(acft.date!),
-          measureFn: (acft, _) => int.tryParse(acft.sdcScore),
-          data: myData,
-          id: 'SDC',
-          colorFn: (acft, _) =>
-              charts.MaterialPalette.deepOrange.shadeDefault));
+      _seriesBarData.add(
+        charts.Series(
+            domainFn: (acft, _) => DateTime.parse(acft.date!),
+            measureFn: (acft, _) => int.tryParse(acft.sdcScore),
+            data: myData,
+            id: 'SDC',
+            colorFn: (acft, _) =>
+                charts.MaterialPalette.deepOrange.shadeDefault),
+      );
     }
     if (plk) {
-      _seriesBarData.add(charts.Series(
-          domainFn: (acft, _) => DateTime.parse(acft.date!),
-          measureFn: (acft, _) => int.tryParse(acft.plkScore),
-          data: myData,
-          id: 'PLK',
-          colorFn: (acft, _) => charts.MaterialPalette.red.shadeDefault));
+      _seriesBarData.add(
+        charts.Series(
+            domainFn: (acft, _) => DateTime.parse(acft.date!),
+            measureFn: (acft, _) => int.tryParse(acft.plkScore),
+            data: myData,
+            id: 'PLK',
+            colorFn: (acft, _) => charts.MaterialPalette.red.shadeDefault),
+      );
     }
     if (run) {
-      _seriesBarData.add(charts.Series(
-          domainFn: (acft, _) => DateTime.parse(acft.date!),
-          measureFn: (acft, _) => int.tryParse(acft.runScore),
-          data: myData,
-          id: 'Run',
-          colorFn: (acft, _) => charts.MaterialPalette.purple.shadeDefault));
+      _seriesBarData.add(
+        charts.Series(
+            domainFn: (acft, _) => DateTime.parse(acft.date!),
+            measureFn: (acft, _) => int.tryParse(acft.runScore),
+            data: myData,
+            id: 'Run',
+            colorFn: (acft, _) => charts.MaterialPalette.purple.shadeDefault),
+      );
     }
   }
 
@@ -100,6 +113,9 @@ class _AcftChartPageState extends State<AcftChartPage> {
           new charts.SeriesLegend(
             desiredMaxRows: 2,
             desiredMaxColumns: width < 600 ? 4 : 7,
+            entryTextStyle: charts.TextStyleSpec(
+              color: charts.Color(r: 0, g: 0, b: 0),
+            ),
           )
         ],
         primaryMeasureAxis: new charts.NumericAxisSpec(
@@ -127,12 +143,15 @@ class _AcftChartPageState extends State<AcftChartPage> {
           right: 16.0,
           bottom: MediaQuery.of(context).viewPadding.bottom + 16.0,
         ),
-        child: new Center(
-          child: new ListView(
+        child: Center(
+          child: ListView(
             children: <Widget>[
-              DecoratedBox(
+              Container(
+                padding: EdgeInsets.all(8.0),
                 decoration: BoxDecoration(
-                    color: Theme.of(context).scaffoldBackgroundColor),
+                  borderRadius: BorderRadius.circular(16.0),
+                  color: getContrastingBackgroundColor(context),
+                ),
                 child: Column(
                   children: <Widget>[
                     Text(

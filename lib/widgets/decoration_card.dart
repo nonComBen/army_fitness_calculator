@@ -1,3 +1,4 @@
+import 'package:acft_calculator/methods/theme_methods.dart';
 import 'package:acft_calculator/widgets/platform_widgets/platform_text_field.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -59,6 +60,7 @@ class _DecorationCardState extends State<DecorationCard> {
     return GestureDetector(
       onLongPress: widget.onLongPressed as void Function()?,
       child: Card(
+        color: getContrastingBackgroundColor(context),
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 8.0),
           child: Row(
@@ -67,7 +69,12 @@ class _DecorationCardState extends State<DecorationCard> {
                 flex: 3,
                 child: PlatformItemPicker(
                   value: widget.decoration!.name!,
-                  label: Text('Decoration'),
+                  label: Text(
+                    'Decoration',
+                    style: TextStyle(
+                      color: getTextColor(context),
+                    ),
+                  ),
                   items: DecorationCard.awards,
                   onChanged: widget.onAwardChosen!,
                 ),
@@ -84,8 +91,11 @@ class _DecorationCardState extends State<DecorationCard> {
                     ],
                     textInputAction: TextInputAction.done,
                     textAlign: TextAlign.start,
-                    style: const TextStyle(
-                        fontSize: 18, fontWeight: FontWeight.normal),
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.normal,
+                      color: getTextColor(context),
+                    ),
                     decoration: const InputDecoration(
                       border: OutlineInputBorder(),
                     ),

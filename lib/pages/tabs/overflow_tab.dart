@@ -42,7 +42,10 @@ class OverflowTab extends ConsumerWidget {
           ),
           PlatformListTile(
             title: const Text('Saved ACFT Scores'),
-            leading: const Icon(Icons.fitness_center),
+            leading: Icon(
+              Icons.fitness_center,
+              color: getTextColor(context),
+            ),
             onTap: () {
               if (purchasesService.isPremium) {
                 Navigator.of(context, rootNavigator: true)
@@ -54,7 +57,10 @@ class OverflowTab extends ConsumerWidget {
           ),
           PlatformListTile(
             title: const Text('Saved APFT Scores'),
-            leading: const Icon(Icons.directions_run),
+            leading: Icon(
+              Icons.directions_run,
+              color: getTextColor(context),
+            ),
             onTap: () {
               if (purchasesService.isPremium) {
                 Navigator.of(context, rootNavigator: true)
@@ -66,7 +72,10 @@ class OverflowTab extends ConsumerWidget {
           ),
           PlatformListTile(
             title: const Text('Saved Body Comp Scores'),
-            leading: const Icon(Icons.accessibility),
+            leading: Icon(
+              Icons.accessibility,
+              color: getTextColor(context),
+            ),
             onTap: () {
               if (purchasesService.isPremium) {
                 Navigator.of(context, rootNavigator: true)
@@ -78,7 +87,10 @@ class OverflowTab extends ConsumerWidget {
           ),
           PlatformListTile(
             title: const Text('Saved Promotion Point Scores'),
-            leading: const Icon(Icons.attach_money),
+            leading: Icon(
+              Icons.attach_money,
+              color: getTextColor(context),
+            ),
             onTap: () {
               if (purchasesService.isPremium) {
                 Navigator.of(context, rootNavigator: true)
@@ -94,7 +106,10 @@ class OverflowTab extends ConsumerWidget {
           ),
           PlatformListTile(
             title: const Text('ACFT Instructions'),
-            leading: const Icon(Icons.fitness_center),
+            leading: Icon(
+              Icons.fitness_center,
+              color: getTextColor(context),
+            ),
             onTap: () {
               Navigator.of(context, rootNavigator: true)
                   .pushNamed(AcftVerbiagePage.routeName);
@@ -102,7 +117,10 @@ class OverflowTab extends ConsumerWidget {
           ),
           PlatformListTile(
             title: const Text('MDL Setup'),
-            leading: const Icon(Icons.fitness_center),
+            leading: Icon(
+              Icons.fitness_center,
+              color: getTextColor(context),
+            ),
             onTap: () {
               Navigator.of(context, rootNavigator: true)
                   .pushNamed(MdlSetupPage.routeName);
@@ -110,7 +128,10 @@ class OverflowTab extends ConsumerWidget {
           ),
           PlatformListTile(
             title: const Text('APFT Instructions'),
-            leading: const Icon(Icons.directions_run),
+            leading: Icon(
+              Icons.directions_run,
+              color: getTextColor(context),
+            ),
             onTap: () {
               Navigator.of(context, rootNavigator: true)
                   .pushNamed(ApftVerbiagePage.routeName);
@@ -118,7 +139,10 @@ class OverflowTab extends ConsumerWidget {
           ),
           PlatformListTile(
             title: const Text('Body Comp Instructions'),
-            leading: const Icon(Icons.accessibility),
+            leading: Icon(
+              Icons.accessibility,
+              color: getTextColor(context),
+            ),
             onTap: () {
               Navigator.of(context, rootNavigator: true)
                   .pushNamed(BodyfatVerbiagePage.routeName);
@@ -132,20 +156,29 @@ class OverflowTab extends ConsumerWidget {
           ),
           PlatformListTile(
             title: const Text('AFPT Calculator'),
-            leading: const Icon(Icons.directions_run),
+            leading: Icon(
+              Icons.directions_run,
+              color: getTextColor(context),
+            ),
             onTap: () => Navigator.of(context, rootNavigator: true)
                 .pushNamed(ApftPage.routeName),
           ),
           PlatformListTile(
             title: const Text('www.army.mil/acft'),
-            leading: const Icon(Icons.web),
+            leading: Icon(
+              Icons.web,
+              color: getTextColor(context),
+            ),
             onTap: () {
               launchUrlString('https://www.army.mil/acft');
             },
           ),
           PlatformListTile(
             title: const Text('Upgrade'),
-            leading: const Icon(Icons.monetization_on),
+            leading: Icon(
+              Icons.monetization_on,
+              color: getTextColor(context),
+            ),
             onTap: () {
               if (purchasesService.isPremium) {
                 FToast toast = FToast();
@@ -169,7 +202,10 @@ class OverflowTab extends ConsumerWidget {
           ),
           PlatformListTile(
             title: const Text('Rate App'),
-            leading: const Icon(Icons.rate_review),
+            leading: Icon(
+              Icons.rate_review,
+              color: getTextColor(context),
+            ),
             onTap: () {
               RateMyApp rateMyApp = RateMyApp();
               rateMyApp.launchStore();
@@ -177,7 +213,10 @@ class OverflowTab extends ConsumerWidget {
           ),
           PlatformListTile(
             title: const Text('Privacy Policy'),
-            leading: const Icon(Icons.info),
+            leading: Icon(
+              Icons.info,
+              color: getTextColor(context),
+            ),
             onTap: () {
               Navigator.of(context, rootNavigator: true)
                   .pushNamed(PrivacyPolicyPage.routeName);
@@ -185,14 +224,20 @@ class OverflowTab extends ConsumerWidget {
           ),
           PlatformListTile(
             title: const Text('Contact Us'),
-            leading: const Icon(Icons.email),
+            leading: Icon(
+              Icons.email,
+              color: getTextColor(context),
+            ),
             onTap: () {
               launchUrlString('mailto:armynoncomtools@gmail.com');
             },
           ),
           PlatformListTile(
             title: const Text('Settings'),
-            leading: const Icon(Icons.settings),
+            leading: Icon(
+              Icons.settings,
+              color: getTextColor(context),
+            ),
             onTap: () {
               Navigator.of(context, rootNavigator: true)
                   .pushNamed(SettingsPage.routeName);

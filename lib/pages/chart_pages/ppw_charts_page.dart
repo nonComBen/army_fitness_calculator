@@ -29,70 +29,76 @@ class _PpwChartPageState extends State<PpwChartPage> {
           measureFn: (ppw, _) => ppw.total,
           data: myData,
           id: 'Total',
-          colorFn: (bf, _) => Theme.of(context).brightness == Brightness.light
-              ? charts.Color.black
-              : charts.Color.white),
+          colorFn: (bf, _) => charts.MaterialPalette.black),
     ];
     if (milTrain) {
-      _seriesBarData.add(charts.Series(
-        domainFn: (ppw, _) => DateTime.parse(ppw.date!),
-        measureFn: (ppw, _) {
-          int milTrainPts = ppw.ptTest + ppw.weapons;
-          if (milTrainPts > ppw.milTrainMax) {
-            milTrainPts = ppw.milTrainMax;
-          }
-          return milTrainPts;
-        },
-        data: myData,
-        id: 'Mil Train',
-        colorFn: (bf, _) => charts.MaterialPalette.blue.shadeDefault,
-      )..setAttribute(charts.measureAxisIdKey, secondaryMeasureAxisId));
+      _seriesBarData.add(
+        charts.Series(
+          domainFn: (ppw, _) => DateTime.parse(ppw.date!),
+          measureFn: (ppw, _) {
+            int milTrainPts = ppw.ptTest + ppw.weapons;
+            if (milTrainPts > ppw.milTrainMax) {
+              milTrainPts = ppw.milTrainMax;
+            }
+            return milTrainPts;
+          },
+          data: myData,
+          id: 'Mil Train',
+          colorFn: (bf, _) => charts.MaterialPalette.blue.shadeDefault,
+        )..setAttribute(charts.measureAxisIdKey, secondaryMeasureAxisId),
+      );
     }
     if (awards) {
-      _seriesBarData.add(charts.Series(
-        domainFn: (ppw, _) => DateTime.parse(ppw.date!),
-        measureFn: (ppw, _) {
-          int awardsPts = ppw.awards + ppw.badges;
-          if (awardsPts > ppw.awardsMax) {
-            awardsPts = ppw.awardsMax;
-          }
-          return awardsPts + ppw.airborne;
-        },
-        data: myData,
-        id: 'Awards',
-        colorFn: (bf, _) => charts.MaterialPalette.green.shadeDefault,
-      )..setAttribute(charts.measureAxisIdKey, secondaryMeasureAxisId));
+      _seriesBarData.add(
+        charts.Series(
+          domainFn: (ppw, _) => DateTime.parse(ppw.date!),
+          measureFn: (ppw, _) {
+            int awardsPts = ppw.awards + ppw.badges;
+            if (awardsPts > ppw.awardsMax) {
+              awardsPts = ppw.awardsMax;
+            }
+            return awardsPts + ppw.airborne;
+          },
+          data: myData,
+          id: 'Awards',
+          colorFn: (bf, _) => charts.MaterialPalette.green.shadeDefault,
+        )..setAttribute(charts.measureAxisIdKey, secondaryMeasureAxisId),
+      );
     }
     if (milEd) {
-      _seriesBarData.add(charts.Series(
-        domainFn: (ppw, _) => DateTime.parse(ppw.date!),
-        measureFn: (ppw, _) {
-          int milEdpts = ppw.ncoes + ppw.resident + ppw.wbc + ppw.tabs;
-          if (milEdpts > ppw.milEdMax) {
-            milEdpts = ppw.milEdMax;
-          }
-          return milEdpts;
-        },
-        data: myData,
-        id: 'Mil Ed',
-        colorFn: (bf, _) => charts.MaterialPalette.red.shadeDefault,
-      )..setAttribute(charts.measureAxisIdKey, secondaryMeasureAxisId));
+      _seriesBarData.add(
+        charts.Series(
+          domainFn: (ppw, _) => DateTime.parse(ppw.date!),
+          measureFn: (ppw, _) {
+            int milEdpts = ppw.ncoes + ppw.resident + ppw.wbc + ppw.tabs;
+            if (milEdpts > ppw.milEdMax) {
+              milEdpts = ppw.milEdMax;
+            }
+            return milEdpts;
+          },
+          data: myData,
+          id: 'Mil Ed',
+          colorFn: (bf, _) => charts.MaterialPalette.red.shadeDefault,
+        )..setAttribute(charts.measureAxisIdKey, secondaryMeasureAxisId),
+      );
     }
     if (civEd) {
-      _seriesBarData.add(charts.Series(
-        domainFn: (ppw, _) => DateTime.parse(ppw.date!),
-        measureFn: (ppw, _) {
-          int civEdPts =
-              ppw.semesterHours + ppw.degree + ppw.certs + ppw.language;
-          if (civEdPts > ppw.civEdMax) {
-            civEdPts = ppw.civEdMax;
-          }
-          return civEdPts;
-        },
-        data: myData,
-        id: 'Civ Ed',
-        colorFn: (bf, _) => charts.MaterialPalette.yellow.shadeDefault,
-      )..setAttribute(charts.measureAxisIdKey, secondaryMeasureAxisId));
+      _seriesBarData.add(
+        charts.Series(
+          domainFn: (ppw, _) => DateTime.parse(ppw.date!),
+          measureFn: (ppw, _) {
+            int civEdPts =
+                ppw.semesterHours + ppw.degree + ppw.certs + ppw.language;
+            if (civEdPts > ppw.civEdMax) {
+              civEdPts = ppw.civEdMax;
+            }
+            return civEdPts;
+          },
+          data: myData,
+          id: 'Civ Ed',
+          colorFn: (bf, _) => charts.MaterialPalette.yellow.shadeDefault,
+        )..setAttribute(charts.measureAxisIdKey, secondaryMeasureAxisId),
+      );
     }
   }
 
@@ -110,7 +116,10 @@ class _PpwChartPageState extends State<PpwChartPage> {
           new charts.SeriesLegend(
             desiredMaxRows: 2,
             desiredMaxColumns: width < 600 ? 3 : 5,
-          )
+            entryTextStyle: charts.TextStyleSpec(
+              color: charts.Color(r: 0, g: 0, b: 0),
+            ),
+          ),
         ],
         primaryMeasureAxis: new charts.NumericAxisSpec(
           tickProviderSpec: new charts.BasicNumericTickProviderSpec(
@@ -178,9 +187,11 @@ class _PpwChartPageState extends State<PpwChartPage> {
         child: Center(
           child: ListView(
             children: <Widget>[
-              DecoratedBox(
+              Container(
+                padding: EdgeInsets.all(8.0),
                 decoration: BoxDecoration(
-                  color: getBackgroundColor(context),
+                  borderRadius: BorderRadius.circular(16.0),
+                  color: getContrastingBackgroundColor(context),
                 ),
                 child: Column(
                   children: <Widget>[
