@@ -157,10 +157,13 @@ class DownloadApft {
             Expanded(
               flex: 1,
               child: PlatformTextButton(
-                child: Text(
-                  'Open',
-                  style: TextStyle(
-                    color: getOnPrimaryColor(context),
+                child: FittedBox(
+                  fit: BoxFit.contain,
+                  child: Text(
+                    'Open',
+                    style: TextStyle(
+                      color: getOnPrimaryColor(context),
+                    ),
                   ),
                 ),
                 onPressed: () => OpenFile.open(fileName),

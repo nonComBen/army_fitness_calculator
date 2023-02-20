@@ -3,9 +3,11 @@ import 'dart:io';
 import 'package:acft_calculator/methods/platform_show_modal_bottom_sheet.dart';
 import 'package:acft_calculator/methods/theme_methods.dart';
 import 'package:acft_calculator/widgets/my_toast.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:pull_down_button/pull_down_button.dart';
 
 import '../../methods/delete_record.dart';
 import '../../widgets/download_5501_widget.dart';
@@ -300,51 +302,138 @@ class _BodyfatDetailsPageState extends State<BodyfatDetailsPage> {
     super.initState();
   }
 
+  List<Widget> actions(double width) {
+    bool isWideScreen = width > 500;
+    List<Widget> actions = [];
+    if (Platform.isAndroid) {
+      actions = [
+        Padding(
+          padding: const EdgeInsets.all(4.0),
+          child: PlatformIconButton(
+            onPressed: _downloadPdf,
+            icon: Icon(
+              Icons.picture_as_pdf,
+              color: getOnPrimaryColor(context),
+            ),
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.all(4.0),
+          child: PlatformIconButton(
+            icon: Icon(
+              Icons.delete,
+              color: getOnPrimaryColor(context),
+            ),
+            onPressed: () {
+              DeleteRecord.deleteRecord(
+                  context: context,
+                  onConfirm: () {
+                    Navigator.pop(context);
+                    dbHelper.deleteBodyfat(widget.bf.id);
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => SavedBodyfatsPage()),
+                    );
+                  });
+            },
+          ),
+        ),
+      ];
+    } else {
+      if (isWideScreen) {
+        actions.add(
+          Padding(
+            padding: const EdgeInsets.all(4.0),
+            child: PlatformIconButton(
+              onPressed: () {
+                _updateBf(context, widget.bf);
+              },
+              icon: Icon(
+                Icons.edit,
+                color: getOnPrimaryColor(context),
+              ),
+            ),
+          ),
+        );
+        actions.add(
+          Padding(
+            padding: const EdgeInsets.all(4.0),
+            child: PlatformIconButton(
+              onPressed: _downloadPdf,
+              icon: Icon(
+                Icons.picture_as_pdf,
+                color: getOnPrimaryColor(context),
+              ),
+            ),
+          ),
+        );
+      }
+      actions.add(
+        Padding(
+          padding: const EdgeInsets.all(4.0),
+          child: PlatformIconButton(
+            icon: Icon(
+              Icons.delete,
+              color: getOnPrimaryColor(context),
+            ),
+            onPressed: () {
+              DeleteRecord.deleteRecord(
+                context: context,
+                onConfirm: () {
+                  Navigator.pop(context);
+                  dbHelper.deleteBodyfat(widget.bf.id);
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => SavedBodyfatsPage()),
+                  );
+                },
+              );
+            },
+          ),
+        ),
+      );
+      if (!isWideScreen) {
+        actions.add(
+          PullDownButton(
+            itemBuilder: (context) => [
+              PullDownMenuItem(
+                onTap: () => _updateBf(context, widget.bf),
+                title: 'Update Body Comp',
+              ),
+              PullDownMenuItem(
+                onTap: () => _downloadPdf(),
+                title: widget.bf.gender == 'Male'
+                    ? 'Download DA 5500'
+                    : 'Download DA 5501',
+              ),
+            ],
+            buttonBuilder: (context, showMenu) {
+              return Padding(
+                padding: const EdgeInsets.all(4.0),
+                child: PlatformIconButton(
+                  icon: Icon(
+                    CupertinoIcons.ellipsis_vertical_circle,
+                    color: getOnPrimaryColor(context),
+                  ),
+                  onPressed: showMenu,
+                ),
+              );
+            },
+          ),
+        );
+      }
+    }
+    return actions;
+  }
+
   @override
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
     return PlatformScaffold(
-      title: 'Body Comp Details',
-      actions: <Widget>[
-        if (Platform.isIOS)
-          PlatformIconButton(
-            onPressed: () {
-              _updateBf(context, widget.bf);
-            },
-            icon: Icon(
-              Icons.edit,
-              color: getOnPrimaryColor(context),
-            ),
-          ),
-        PlatformIconButton(
-          icon: Icon(
-            Icons.picture_as_pdf,
-            color: getOnPrimaryColor(context),
-          ),
-          onPressed: () {
-            _downloadPdf();
-          },
-        ),
-        PlatformIconButton(
-          icon: Icon(
-            Icons.delete,
-            color: getOnPrimaryColor(context),
-          ),
-          onPressed: () {
-            DeleteRecord.deleteRecord(
-              context: context,
-              onConfirm: () {
-                Navigator.pop(context);
-                dbHelper.deleteBodyfat(widget.bf.id);
-                Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => SavedBodyfatsPage()));
-              },
-            );
-          },
-        )
-      ],
+      title: 'BMI Details',
+      actions: actions(width),
       floatingActionButton: FloatingActionButton(
         child: const Icon(Icons.edit),
         onPressed: () {

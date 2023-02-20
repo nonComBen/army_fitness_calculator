@@ -165,6 +165,11 @@ class _BodyfatChartPageState extends State<BodyfatChartPage> {
                       bf = value!;
                     });
                   },
+                  onIosTap: () {
+                    setState(() {
+                      bf = !bf;
+                    });
+                  },
                 ),
               ),
             ],

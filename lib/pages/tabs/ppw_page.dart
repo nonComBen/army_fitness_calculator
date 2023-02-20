@@ -71,7 +71,7 @@ class _PromotionPointPageState extends ConsumerState<PromotionPointPage> {
       awardsMax = 125,
       milEdMax = 200,
       civEdMax = 135;
-  String weapons = 'DA 3595-R / 5790-R / 5789-R / 7801 (M16/M4)',
+  String weapons = '(M16/M4) DA 3595-R / 5790-R / 5789-R / 7801',
       airborneLvl = 'None',
       ncoes = 'None';
   Object rank = 'SGT', version = 'oldVersion';
@@ -101,13 +101,13 @@ class _PromotionPointPageState extends ConsumerState<PromotionPointPage> {
   final List<String> versions = ['Before 1 Apr 23', 'After 1 Apr 23'];
   final List<String> proRanks = ['SGT', 'SSG'];
   final List<String> weaponCards = [
-    'DA 3595-R / 5790-R / 5789-R / 7801 (M16/M4)',
-    'DA 85 (M240B/M60/M249)',
-    'DA 88-R (M9)',
+    '(M16/M4) DA 3595-R / 5790-R / 5789-R / 7801',
+    '(M240B/M60/M249) DA 85',
+    '(M9) DA 88-R',
     'DA 7814',
-    'DA 5704 (Alt M9)',
-    'DA 7304-R (M249 AR)',
-    'CID (Practical Pistol)',
+    '(Alt M9) DA 5704',
+    '(M249 AR)DA 7304-R',
+    '(Practical Pistol) CID',
     'DA 7820-1',
   ];
   final List<String> airborne = [
@@ -996,46 +996,73 @@ class _PromotionPointPageState extends ConsumerState<PromotionPointPage> {
                     primary: false,
                     children: [
                       Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 20.0),
+                        padding: EdgeInsets.symmetric(
+                            vertical: Platform.isIOS ? 20.0 : 8),
                         child: PlatformCheckboxListTile(
-                            title: const Text('Ranger'),
-                            activeColor: onPrimaryColor,
-                            value: isRanger,
-                            onChanged: (value) {
-                              setState(() {
-                                isRanger = value!;
-                                _calcTabPts();
-                                _calcTotalPts();
-                              });
-                            }),
+                          title: const Text('Ranger'),
+                          activeColor: onPrimaryColor,
+                          value: isRanger,
+                          onChanged: (value) {
+                            setState(() {
+                              isRanger = value!;
+                              _calcTabPts();
+                              _calcTotalPts();
+                            });
+                          },
+                          onIosTap: () {
+                            setState(() {
+                              isRanger = !isRanger;
+                              _calcTabPts();
+                              _calcTotalPts();
+                            });
+                          },
+                        ),
                       ),
                       Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 20.0),
+                        padding: EdgeInsets.symmetric(
+                            vertical: Platform.isIOS ? 20.0 : 8),
                         child: PlatformCheckboxListTile(
-                            title: const Text('Special Forces'),
-                            activeColor: onPrimaryColor,
-                            value: isSf,
-                            onChanged: (value) {
-                              setState(() {
-                                isSf = value!;
-                                _calcTabPts();
-                                _calcTotalPts();
-                              });
-                            }),
+                          title: const Text('Special Forces'),
+                          activeColor: onPrimaryColor,
+                          value: isSf,
+                          onChanged: (value) {
+                            setState(() {
+                              isSf = value!;
+                              _calcTabPts();
+                              _calcTotalPts();
+                            });
+                          },
+                          onIosTap: () {
+                            setState(() {
+                              isSf = !isSf;
+                              _calcTabPts();
+                              _calcTotalPts();
+                            });
+                          },
+                        ),
                       ),
                       Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 20.0),
+                        padding: EdgeInsets.symmetric(
+                            vertical: Platform.isIOS ? 20.0 : 8),
                         child: PlatformCheckboxListTile(
-                            title: const Text('Sapper'),
-                            activeColor: onPrimaryColor,
-                            value: isSapper,
-                            onChanged: (value) {
-                              setState(() {
-                                isSapper = value!;
-                                _calcTabPts();
-                                _calcTotalPts();
-                              });
-                            }),
+                          title: const Text('Sapper'),
+                          activeColor: onPrimaryColor,
+                          value: isSapper,
+                          onChanged: (value) {
+                            setState(() {
+                              isSapper = value!;
+                              _calcTabPts();
+                              _calcTotalPts();
+                            });
+                          },
+                          onIosTap: () {
+                            setState(() {
+                              isSapper = !isSapper;
+                              _calcTabPts();
+                              _calcTotalPts();
+                            });
+                          },
+                        ),
                       ),
                     ]),
               ),
@@ -1100,6 +1127,13 @@ class _PromotionPointPageState extends ConsumerState<PromotionPointPage> {
                       onChanged: (value) {
                         setState(() {
                           degreeCompleted = value!;
+                          _calcDegreePts();
+                          _calcTotalPts();
+                        });
+                      },
+                      onIosTap: () {
+                        setState(() {
+                          degreeCompleted = !degreeCompleted;
                           _calcDegreePts();
                           _calcTotalPts();
                         });
@@ -1185,6 +1219,13 @@ class _PromotionPointPageState extends ConsumerState<PromotionPointPage> {
                       onChanged: (value) {
                         setState(() {
                           hasFornLang = value!;
+                          _calcLangPts();
+                          _calcTotalPts();
+                        });
+                      },
+                      onIosTap: () {
+                        setState(() {
+                          hasFornLang = !hasFornLang;
                           _calcLangPts();
                           _calcTotalPts();
                         });

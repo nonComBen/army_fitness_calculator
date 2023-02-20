@@ -266,6 +266,12 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                               prefs.setBool('jr_soldier', value);
                             });
                           },
+                          onIosTap: () {
+                            setState(() {
+                              jrSoldier = !jrSoldier;
+                              prefs.setBool('jr_soldier', jrSoldier);
+                            });
+                          },
                         ),
                       ),
                       Padding(

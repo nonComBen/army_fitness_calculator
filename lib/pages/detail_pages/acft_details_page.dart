@@ -2,8 +2,10 @@ import 'dart:io';
 
 import 'package:acft_calculator/methods/platform_show_modal_bottom_sheet.dart';
 import 'package:acft_calculator/methods/theme_methods.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:pull_down_button/pull_down_button.dart';
 
 import '../../methods/delete_record.dart';
 import '../../widgets/platform_widgets/platform_icon_button.dart';
@@ -153,48 +155,170 @@ class _AcftDetailsPageState extends State<AcftDetailsPage> {
     regExp = new RegExp(r'^\d{4}(0[1-9]|1[012])(0[1-9]|[12][0-9]|3[01])$');
   }
 
+  List<Widget> actions(double width) {
+    bool isWideScreen = width > 500;
+    List<Widget> actions = [];
+    if (Platform.isAndroid) {
+      actions = [
+        Padding(
+          padding: const EdgeInsets.all(4.0),
+          child: PlatformIconButton(
+            onPressed: _downloadPdf,
+            icon: Icon(
+              Icons.picture_as_pdf,
+              color: getOnPrimaryColor(context),
+            ),
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.all(4.0),
+          child: PlatformIconButton(
+            icon: Icon(
+              Icons.delete,
+              color: getOnPrimaryColor(context),
+            ),
+            onPressed: () {
+              DeleteRecord.deleteRecord(
+                  context: context,
+                  onConfirm: () {
+                    Navigator.pop(context);
+                    dbHelper.deleteAcft(widget.acft.id);
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(builder: (context) => SavedAcftsPage()),
+                    );
+                  });
+            },
+          ),
+        ),
+      ];
+    } else {
+      if (isWideScreen) {
+        actions.add(
+          Padding(
+            padding: const EdgeInsets.all(4.0),
+            child: PlatformIconButton(
+              onPressed: () {
+                _updateAcft(context, widget.acft);
+              },
+              icon: Icon(
+                Icons.edit,
+                color: getOnPrimaryColor(context),
+              ),
+            ),
+          ),
+        );
+        actions.add(
+          Padding(
+            padding: const EdgeInsets.all(4.0),
+            child: PlatformIconButton(
+              onPressed: _downloadPdf,
+              icon: Icon(
+                Icons.picture_as_pdf,
+                color: getOnPrimaryColor(context),
+              ),
+            ),
+          ),
+        );
+      }
+      actions.add(
+        Padding(
+          padding: const EdgeInsets.all(4.0),
+          child: PlatformIconButton(
+            icon: Icon(
+              Icons.delete,
+              color: getOnPrimaryColor(context),
+            ),
+            onPressed: () {
+              DeleteRecord.deleteRecord(
+                  context: context,
+                  onConfirm: () {
+                    Navigator.pop(context);
+                    dbHelper.deleteAcft(widget.acft.id);
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(builder: (context) => SavedAcftsPage()),
+                    );
+                  });
+            },
+          ),
+        ),
+      );
+      if (!isWideScreen) {
+        actions.add(
+          PullDownButton(
+            itemBuilder: (context) => [
+              PullDownMenuItem(
+                onTap: () => _updateAcft(context, widget.acft),
+                title: 'Update ACFT',
+              ),
+              PullDownMenuItem(
+                onTap: () => _downloadPdf(),
+                title: 'Download DA 705',
+              ),
+            ],
+            buttonBuilder: (context, showMenu) {
+              return Padding(
+                padding: const EdgeInsets.all(4.0),
+                child: PlatformIconButton(
+                  icon: Icon(
+                    CupertinoIcons.ellipsis_vertical_circle,
+                    color: getOnPrimaryColor(context),
+                  ),
+                  onPressed: showMenu,
+                ),
+              );
+            },
+          ),
+        );
+      }
+    }
+    return actions;
+  }
+
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
     return PlatformScaffold(
       title: 'ACFT Details',
-      actions: <Widget>[
-        if (Platform.isIOS)
-          PlatformIconButton(
-            onPressed: () {
-              _updateAcft(context, widget.acft);
-            },
-            icon: Icon(
-              Icons.edit,
-              color: getOnPrimaryColor(context),
-            ),
-          ),
-        PlatformIconButton(
-          onPressed: _downloadPdf,
-          icon: Icon(
-            Icons.picture_as_pdf,
-            color: getOnPrimaryColor(context),
-          ),
-        ),
-        PlatformIconButton(
-          icon: Icon(
-            Icons.delete,
-            color: getOnPrimaryColor(context),
-          ),
-          onPressed: () {
-            DeleteRecord.deleteRecord(
-                context: context,
-                onConfirm: () {
-                  Navigator.pop(context);
-                  dbHelper.deleteAcft(widget.acft.id);
-                  Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(builder: (context) => SavedAcftsPage()),
-                  );
-                });
-          },
-        )
-      ],
+      actions: actions(width),
+      // <Widget>[
+      //   if (Platform.isIOS)
+      //     PlatformIconButton(
+      //       onPressed: () {
+      //         _updateAcft(context, widget.acft);
+      //       },
+      //       icon: Icon(
+      //         Icons.edit,
+      //         color: getOnPrimaryColor(context),
+      //       ),
+      //     ),
+      //   PlatformIconButton(
+      //     onPressed: _downloadPdf,
+      //     icon: Icon(
+      //       Icons.picture_as_pdf,
+      //       color: getOnPrimaryColor(context),
+      //     ),
+      //   ),
+      //   PlatformIconButton(
+      //     icon: Icon(
+      //       Icons.delete,
+      //       color: getOnPrimaryColor(context),
+      //     ),
+      //     onPressed: () {
+      //       DeleteRecord.deleteRecord(
+      //           context: context,
+      //           onConfirm: () {
+      //             Navigator.pop(context);
+      //             dbHelper.deleteAcft(widget.acft.id);
+      //             Navigator.pushReplacement(
+      //               context,
+      //               MaterialPageRoute(builder: (context) => SavedAcftsPage()),
+      //             );
+      //           });
+      //     },
+      //   ),
+      // ],
       floatingActionButton: FloatingActionButton(
         child: const Icon(Icons.edit),
         onPressed: () {

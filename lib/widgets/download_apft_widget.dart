@@ -152,6 +152,11 @@ class _DownloadApftWidgetState extends State<DownloadApftWidget> {
                   altPass = value!;
                 });
               },
+              onIosTap: () {
+                setState(() {
+                  altPass = !altPass;
+                });
+              },
               title: Text('Aerobic Event Go'),
             ),
           ),
@@ -163,6 +168,16 @@ class _DownloadApftWidgetState extends State<DownloadApftWidget> {
               setState(() {
                 bodyComp = value!;
                 if (value) {
+                  _bmiDateFocus.requestFocus();
+                } else {
+                  FocusScope.of(context).unfocus();
+                }
+              });
+            },
+            onIosTap: () {
+              setState(() {
+                bodyComp = !bodyComp;
+                if (bodyComp) {
                   _bmiDateFocus.requestFocus();
                 } else {
                   FocusScope.of(context).unfocus();
@@ -236,6 +251,16 @@ class _DownloadApftWidgetState extends State<DownloadApftWidget> {
                       }
                     });
                   },
+                  onIosTap: () {
+                    setState(() {
+                      bmiPass = !bmiPass;
+                      if (bmiPass) {
+                        FocusScope.of(context).unfocus();
+                      } else {
+                        _bfFocus.requestFocus();
+                      }
+                    });
+                  },
                   title: Text('Height/Weight Pass'),
                 ),
               ),
@@ -264,6 +289,11 @@ class _DownloadApftWidgetState extends State<DownloadApftWidget> {
                     onChanged: (value) {
                       setState(() {
                         bfPass = value!;
+                      });
+                    },
+                    onIosTap: () {
+                      setState(() {
+                        bfPass = !bfPass;
                       });
                     },
                     title: Text('Bodyfat % Pass'),

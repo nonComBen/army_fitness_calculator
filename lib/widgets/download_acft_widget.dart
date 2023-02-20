@@ -145,6 +145,11 @@ class _DownloadAcftWidgetState extends State<DownloadAcftWidget> {
                     altPass = value!;
                   });
                 },
+                onIosTap: () {
+                  setState(() {
+                    altPass = !altPass;
+                  });
+                },
                 title: Text('Aerobic Event Go'),
               ),
             ),
@@ -156,6 +161,16 @@ class _DownloadAcftWidgetState extends State<DownloadAcftWidget> {
                 setState(() {
                   bodyComp = value!;
                   if (value) {
+                    _bmiDateFocus.requestFocus();
+                  } else {
+                    FocusScope.of(context).unfocus();
+                  }
+                });
+              },
+              onIosTap: () {
+                setState(() {
+                  bodyComp = !bodyComp;
+                  if (bodyComp) {
                     _bmiDateFocus.requestFocus();
                   } else {
                     FocusScope.of(context).unfocus();
@@ -210,6 +225,16 @@ class _DownloadAcftWidgetState extends State<DownloadAcftWidget> {
                       }
                     });
                   },
+                  onIosTap: () {
+                    setState(() {
+                      bmiPass = !bmiPass;
+                      if (bmiPass) {
+                        FocusScope.of(context).unfocus();
+                      } else {
+                        _bfFocus.requestFocus();
+                      }
+                    });
+                  },
                   title: Text('Height/Weight Pass'),
                 ),
                 if (!bmiPass)
@@ -236,6 +261,11 @@ class _DownloadAcftWidgetState extends State<DownloadAcftWidget> {
                     onChanged: (value) {
                       setState(() {
                         bfPass = value!;
+                      });
+                    },
+                    onIosTap: () {
+                      setState(() {
+                        bfPass = !bfPass;
                       });
                     },
                     title: Text('Bodyfat % Pass'),

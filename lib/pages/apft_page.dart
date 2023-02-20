@@ -606,23 +606,37 @@ class _ApftPageState extends ConsumerState<ApftPage> {
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: PlatformCheckboxListTile(
-                  title: const Text('Profile'),
-                  value: hasPuProfile,
-                  controlAffinity: ListTileControlAffinity.leading,
-                  activeColor: onSecondary,
-                  onChanged: (value) {
-                    FocusScope.of(context).unfocus();
-                    setState(() {
-                      hasPuProfile = value!;
-                      if (value) {
-                        pu = 0;
-                        _puController.text = pu.toString();
-                      }
-                      _calcPu();
-                      if (isJrSoldier) _calcRun();
-                      _calcTotal();
-                    });
-                  }),
+                title: const Text('Profile'),
+                value: hasPuProfile,
+                controlAffinity: ListTileControlAffinity.leading,
+                activeColor: onSecondary,
+                onChanged: (value) {
+                  FocusScope.of(context).unfocus();
+                  setState(() {
+                    hasPuProfile = value!;
+                    if (value) {
+                      pu = 0;
+                      _puController.text = pu.toString();
+                    }
+                    _calcPu();
+                    if (isJrSoldier) _calcRun();
+                    _calcTotal();
+                  });
+                },
+                onIosTap: () {
+                  FocusScope.of(context).unfocus();
+                  setState(() {
+                    hasPuProfile = !hasPuProfile;
+                    if (hasPuProfile) {
+                      pu = 0;
+                      _puController.text = pu.toString();
+                    }
+                    _calcPu();
+                    if (isJrSoldier) _calcRun();
+                    _calcTotal();
+                  });
+                },
+              ),
             ),
             Divider(
               color: Colors.yellow,
@@ -715,13 +729,14 @@ class _ApftPageState extends ConsumerState<ApftPage> {
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: PlatformCheckboxListTile(
-                  title: const Text('Profile'),
-                  value: hasSuProfile,
-                  controlAffinity: ListTileControlAffinity.leading,
-                  activeColor: onSecondary,
-                  onChanged: (value) {
-                    FocusScope.of(context).unfocus();
-                    setState(() {
+                title: const Text('Profile'),
+                value: hasSuProfile,
+                controlAffinity: ListTileControlAffinity.leading,
+                activeColor: onSecondary,
+                onChanged: (value) {
+                  FocusScope.of(context).unfocus();
+                  setState(
+                    () {
                       hasSuProfile = value!;
                       if (value) {
                         su = 0;
@@ -730,8 +745,25 @@ class _ApftPageState extends ConsumerState<ApftPage> {
                       _calcSu();
                       if (isJrSoldier) _calcRun();
                       _calcTotal();
-                    });
-                  }),
+                    },
+                  );
+                },
+                onIosTap: () {
+                  FocusScope.of(context).unfocus();
+                  setState(
+                    () {
+                      hasSuProfile = !hasSuProfile;
+                      if (hasSuProfile) {
+                        su = 0;
+                        _suController.text = su.toString();
+                      }
+                      _calcSu();
+                      if (isJrSoldier) _calcRun();
+                      _calcTotal();
+                    },
+                  );
+                },
+              ),
             ),
             Divider(
               color: Colors.yellow,
@@ -912,30 +944,48 @@ class _ApftPageState extends ConsumerState<ApftPage> {
               color: Colors.yellow,
             ),
             Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: PlatformCheckboxListTile(
-                  title: Text('For Promotion Points'),
-                  value: isJrSoldier,
-                  controlAffinity: ListTileControlAffinity.leading,
-                  activeColor: onSecondary,
-                  onChanged: (value) {
-                    FocusScope.of(context).unfocus();
-                    if (value!) {
-                      if (hasPuProfile) puScore = 60;
-                      if (hasSuProfile) suScore = 60;
-                      if (event != 'Run')
-                        runScore = ((puScore + suScore) / 2).floor();
-                    } else {
-                      if (hasPuProfile) puScore = 0;
-                      if (hasSuProfile) suScore = 0;
-                      if (event != 'Run') runScore = 0;
-                    }
-                    setState(() {
-                      isJrSoldier = value;
-                      _calcTotal();
-                    });
-                  },
-                )),
+              padding: const EdgeInsets.all(8.0),
+              child: PlatformCheckboxListTile(
+                title: Text('For Promotion Points'),
+                value: isJrSoldier,
+                controlAffinity: ListTileControlAffinity.leading,
+                activeColor: onSecondary,
+                onChanged: (value) {
+                  FocusScope.of(context).unfocus();
+                  if (value!) {
+                    if (hasPuProfile) puScore = 60;
+                    if (hasSuProfile) suScore = 60;
+                    if (event != 'Run')
+                      runScore = ((puScore + suScore) / 2).floor();
+                  } else {
+                    if (hasPuProfile) puScore = 0;
+                    if (hasSuProfile) suScore = 0;
+                    if (event != 'Run') runScore = 0;
+                  }
+                  setState(() {
+                    isJrSoldier = value;
+                    _calcTotal();
+                  });
+                },
+                onIosTap: () {
+                  FocusScope.of(context).unfocus();
+                  if (isJrSoldier) {
+                    if (hasPuProfile) puScore = 60;
+                    if (hasSuProfile) suScore = 60;
+                    if (event != 'Run')
+                      runScore = ((puScore + suScore) / 2).floor();
+                  } else {
+                    if (hasPuProfile) puScore = 0;
+                    if (hasSuProfile) suScore = 0;
+                    if (event != 'Run') runScore = 0;
+                  }
+                  setState(() {
+                    isJrSoldier = !isJrSoldier;
+                    _calcTotal();
+                  });
+                },
+              ),
+            ),
             Divider(
               color: Colors.yellow,
             ),

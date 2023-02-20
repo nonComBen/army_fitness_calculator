@@ -739,23 +739,37 @@ class AcftPageState extends ConsumerState<AcftPage> {
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: PlatformCheckboxListTile(
-                title: const Text('Profile'),
-                value: hasMdlProfile,
-                controlAffinity: ListTileControlAffinity.leading,
-                activeColor: onPrimary,
-                onChanged: (value) {
-                  FocusScope.of(context).unfocus();
-                  setState(() {
-                    hasMdlProfile = value!;
-                    if (value) {
-                      mdlRaw = 0;
-                      _mdlController.text = mdlRaw.toString();
-                    }
-                    mdlScore = 0;
-                    isMdlValid = true;
-                    calcTotal();
-                  });
-                }),
+              title: const Text('Profile'),
+              value: hasMdlProfile,
+              controlAffinity: ListTileControlAffinity.leading,
+              activeColor: onPrimary,
+              onChanged: (value) {
+                FocusScope.of(context).unfocus();
+                setState(() {
+                  hasMdlProfile = value!;
+                  if (value) {
+                    mdlRaw = 0;
+                    _mdlController.text = mdlRaw.toString();
+                  }
+                  mdlScore = 0;
+                  isMdlValid = true;
+                  calcTotal();
+                });
+              },
+              onIosTap: () {
+                FocusScope.of(context).unfocus();
+                setState(() {
+                  hasMdlProfile = !hasMdlProfile;
+                  if (hasMdlProfile) {
+                    mdlRaw = 0;
+                    _mdlController.text = mdlRaw.toString();
+                  }
+                  mdlScore = 0;
+                  isMdlValid = true;
+                  calcTotal();
+                });
+              },
+            ),
           ),
           Divider(
             color: Colors.yellow,
@@ -867,23 +881,37 @@ class AcftPageState extends ConsumerState<AcftPage> {
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: PlatformCheckboxListTile(
-                title: const Text('Profile'),
-                value: hasSptProfile,
-                controlAffinity: ListTileControlAffinity.leading,
-                activeColor: onPrimary,
-                onChanged: (value) {
-                  FocusScope.of(context).unfocus();
-                  setState(() {
-                    hasSptProfile = value!;
-                    if (value) {
-                      sptRaw = 0;
-                      _sptController.text = sptRaw.toString();
-                    }
-                    sptScore = 0;
-                    isSptValid = true;
-                    calcTotal();
-                  });
-                }),
+              title: const Text('Profile'),
+              value: hasSptProfile,
+              controlAffinity: ListTileControlAffinity.leading,
+              activeColor: onPrimary,
+              onChanged: (value) {
+                FocusScope.of(context).unfocus();
+                setState(() {
+                  hasSptProfile = value!;
+                  if (value) {
+                    sptRaw = 0;
+                    _sptController.text = sptRaw.toString();
+                  }
+                  sptScore = 0;
+                  isSptValid = true;
+                  calcTotal();
+                });
+              },
+              onIosTap: () {
+                FocusScope.of(context).unfocus();
+                setState(() {
+                  hasSptProfile = !hasSptProfile;
+                  if (hasSptProfile) {
+                    sptRaw = 0;
+                    _sptController.text = sptRaw.toString();
+                  }
+                  sptScore = 0;
+                  isSptValid = true;
+                  calcTotal();
+                });
+              },
+            ),
           ),
           Divider(
             color: Colors.yellow,
@@ -990,23 +1018,37 @@ class AcftPageState extends ConsumerState<AcftPage> {
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: PlatformCheckboxListTile(
-                title: const Text('Profile'),
-                value: hasHrpProfile,
-                controlAffinity: ListTileControlAffinity.leading,
-                activeColor: onPrimary,
-                onChanged: (value) {
-                  FocusScope.of(context).unfocus();
-                  setState(() {
-                    hasHrpProfile = value!;
-                    if (value) {
-                      hrpRaw = 0;
-                      _hrpController.text = hrpRaw.toString();
-                    }
-                    hrpScore = 0;
-                    isHrpValid = true;
-                    calcTotal();
-                  });
-                }),
+              title: const Text('Profile'),
+              value: hasHrpProfile,
+              controlAffinity: ListTileControlAffinity.leading,
+              activeColor: onPrimary,
+              onChanged: (value) {
+                FocusScope.of(context).unfocus();
+                setState(() {
+                  hasHrpProfile = value!;
+                  if (value) {
+                    hrpRaw = 0;
+                    _hrpController.text = hrpRaw.toString();
+                  }
+                  hrpScore = 0;
+                  isHrpValid = true;
+                  calcTotal();
+                });
+              },
+              onIosTap: () {
+                FocusScope.of(context).unfocus();
+                setState(() {
+                  hasHrpProfile = !hasHrpProfile;
+                  if (hasHrpProfile) {
+                    hrpRaw = 0;
+                    _hrpController.text = hrpRaw.toString();
+                  }
+                  hrpScore = 0;
+                  isHrpValid = true;
+                  calcTotal();
+                });
+              },
+            ),
           ),
           Divider(
             color: Colors.yellow,
@@ -1215,26 +1257,43 @@ class AcftPageState extends ConsumerState<AcftPage> {
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: PlatformCheckboxListTile(
-                title: const Text('Profile'),
-                value: hasSdcProfile,
-                controlAffinity: ListTileControlAffinity.leading,
-                activeColor: onPrimary,
-                onChanged: (value) {
-                  FocusScope.of(context).unfocus();
-                  setState(() {
-                    hasSdcProfile = value!;
-                    if (value) {
-                      sdcMins = 0;
-                      sdcSecs = 0;
-                      _sdcMinsController.text = sdcMins.toString();
-                      _sdcSecsController.text = sdcSecs.toString();
-                    }
-                    sdcScore = 0;
-                    isSdcMinsValid = true;
-                    isSdcSecsValid = true;
-                    calcTotal();
-                  });
-                }),
+              title: const Text('Profile'),
+              value: hasSdcProfile,
+              controlAffinity: ListTileControlAffinity.leading,
+              activeColor: onPrimary,
+              onChanged: (value) {
+                FocusScope.of(context).unfocus();
+                setState(() {
+                  hasSdcProfile = value!;
+                  if (value) {
+                    sdcMins = 0;
+                    sdcSecs = 0;
+                    _sdcMinsController.text = sdcMins.toString();
+                    _sdcSecsController.text = sdcSecs.toString();
+                  }
+                  sdcScore = 0;
+                  isSdcMinsValid = true;
+                  isSdcSecsValid = true;
+                  calcTotal();
+                });
+              },
+              onIosTap: () {
+                FocusScope.of(context).unfocus();
+                setState(() {
+                  hasSdcProfile = !hasSdcProfile;
+                  if (hasSdcProfile) {
+                    sdcMins = 0;
+                    sdcSecs = 0;
+                    _sdcMinsController.text = sdcMins.toString();
+                    _sdcSecsController.text = sdcSecs.toString();
+                  }
+                  sdcScore = 0;
+                  isSdcMinsValid = true;
+                  isSdcSecsValid = true;
+                  calcTotal();
+                });
+              },
+            ),
           ),
           Divider(
             color: Colors.yellow,
@@ -1451,26 +1510,43 @@ class AcftPageState extends ConsumerState<AcftPage> {
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: PlatformCheckboxListTile(
-                title: const Text('Profile'),
-                value: hasPlkProfile,
-                controlAffinity: ListTileControlAffinity.leading,
-                activeColor: onPrimary,
-                onChanged: (value) {
-                  FocusScope.of(context).unfocus();
-                  setState(() {
-                    hasPlkProfile = value!;
-                    if (value) {
-                      plankMins = 0;
-                      plankSecs = 0;
-                      _plankMinsController.text = plankMins.toString();
-                      _plankSecsController.text = plankSecs.toString();
-                    }
-                    plankScore = 0;
-                    isPlankMinsValid = true;
-                    isPlankSecsValid = true;
-                    calcTotal();
-                  });
-                }),
+              title: const Text('Profile'),
+              value: hasPlkProfile,
+              controlAffinity: ListTileControlAffinity.leading,
+              activeColor: onPrimary,
+              onChanged: (value) {
+                FocusScope.of(context).unfocus();
+                setState(() {
+                  hasPlkProfile = value!;
+                  if (value) {
+                    plankMins = 0;
+                    plankSecs = 0;
+                    _plankMinsController.text = plankMins.toString();
+                    _plankSecsController.text = plankSecs.toString();
+                  }
+                  plankScore = 0;
+                  isPlankMinsValid = true;
+                  isPlankSecsValid = true;
+                  calcTotal();
+                });
+              },
+              onIosTap: () {
+                FocusScope.of(context).unfocus();
+                setState(() {
+                  hasPlkProfile = !hasPlkProfile;
+                  if (hasPlkProfile) {
+                    plankMins = 0;
+                    plankSecs = 0;
+                    _plankMinsController.text = plankMins.toString();
+                    _plankSecsController.text = plankSecs.toString();
+                  }
+                  plankScore = 0;
+                  isPlankMinsValid = true;
+                  isPlankSecsValid = true;
+                  calcTotal();
+                });
+              },
+            ),
           ),
           Divider(
             color: Colors.yellow,

@@ -11,6 +11,7 @@ abstract class PlatformCheckboxListTile extends Widget {
     Color? activeColor,
     ListTileControlAffinity controlAffinity = ListTileControlAffinity.leading,
     void Function(bool?)? onChanged,
+    void Function()? onIosTap,
   }) {
     if (Platform.isAndroid) {
       return AndroidCheckboxListTile(
@@ -29,6 +30,7 @@ abstract class PlatformCheckboxListTile extends Widget {
         activeColor: activeColor,
         controlAffinity: controlAffinity,
         onChanged: onChanged,
+        onIosTap: onIosTap,
       );
     }
   }
@@ -55,6 +57,7 @@ class IOSCheckboxListTile extends StatelessWidget
     this.activeColor,
     this.controlAffinity = ListTileControlAffinity.leading,
     this.onChanged,
+    this.onIosTap,
   });
 
   final Widget title;
@@ -63,6 +66,7 @@ class IOSCheckboxListTile extends StatelessWidget
   final Color? activeColor;
   final ListTileControlAffinity? controlAffinity;
   final void Function(bool?)? onChanged;
+  final void Function()? onIosTap;
 
   @override
   Widget build(BuildContext context) {
@@ -77,6 +81,7 @@ class IOSCheckboxListTile extends StatelessWidget
       trailing: controlAffinity == ListTileControlAffinity.trailing
           ? cupertinoSwitch
           : null,
+      onTap: onIosTap,
     );
   }
 }

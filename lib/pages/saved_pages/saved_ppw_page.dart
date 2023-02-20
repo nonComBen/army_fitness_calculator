@@ -159,7 +159,10 @@ class _SavedPpwsPageState extends State<SavedPpwsPage> {
               trailing: SizedBox(
                 width: 30,
                 child: PlatformIconButton(
-                  icon: const Icon(Icons.delete),
+                  icon: Icon(
+                    Icons.delete,
+                    color: getOnPrimaryColor(context),
+                  ),
                   onPressed: () {
                     DeleteRecord.deleteRecord(
                       context: context,

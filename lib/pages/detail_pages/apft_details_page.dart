@@ -2,8 +2,10 @@ import 'dart:io';
 
 import 'package:acft_calculator/methods/platform_show_modal_bottom_sheet.dart';
 import 'package:acft_calculator/methods/theme_methods.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:pull_down_button/pull_down_button.dart';
 
 import '../../methods/delete_record.dart';
 import '../../widgets/download_apft_widget.dart';
@@ -160,49 +162,134 @@ class _ApftDetailsPageState extends State<ApftDetailsPage> {
     super.initState();
   }
 
+  List<Widget> actions(double width) {
+    bool isWideScreen = width > 500;
+    List<Widget> actions = [];
+    if (Platform.isAndroid) {
+      actions = [
+        Padding(
+          padding: const EdgeInsets.all(4.0),
+          child: PlatformIconButton(
+            onPressed: _downloadPdf,
+            icon: Icon(
+              Icons.picture_as_pdf,
+              color: getOnPrimaryColor(context),
+            ),
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.all(4.0),
+          child: PlatformIconButton(
+            icon: Icon(
+              Icons.delete,
+              color: getOnPrimaryColor(context),
+            ),
+            onPressed: () {
+              DeleteRecord.deleteRecord(
+                  context: context,
+                  onConfirm: () {
+                    Navigator.pop(context);
+                    dbHelper.deleteApft(widget.apft.id);
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(builder: (context) => SavedApftsPage()),
+                    );
+                  });
+            },
+          ),
+        ),
+      ];
+    } else {
+      if (isWideScreen) {
+        actions.add(
+          Padding(
+            padding: const EdgeInsets.all(4.0),
+            child: PlatformIconButton(
+              onPressed: () {
+                _updateApft(context, widget.apft);
+              },
+              icon: Icon(
+                Icons.edit,
+                color: getOnPrimaryColor(context),
+              ),
+            ),
+          ),
+        );
+        actions.add(
+          Padding(
+            padding: const EdgeInsets.all(4.0),
+            child: PlatformIconButton(
+              onPressed: _downloadPdf,
+              icon: Icon(
+                Icons.picture_as_pdf,
+                color: getOnPrimaryColor(context),
+              ),
+            ),
+          ),
+        );
+      }
+      actions.add(
+        Padding(
+          padding: const EdgeInsets.all(4.0),
+          child: PlatformIconButton(
+            icon: Icon(
+              Icons.delete,
+              color: getOnPrimaryColor(context),
+            ),
+            onPressed: () {
+              DeleteRecord.deleteRecord(
+                context: context,
+                onConfirm: () {
+                  Navigator.pop(context);
+                  dbHelper.deleteApft(widget.apft.id);
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(builder: (context) => SavedApftsPage()),
+                  );
+                },
+              );
+            },
+          ),
+        ),
+      );
+      if (!isWideScreen) {
+        actions.add(
+          PullDownButton(
+            itemBuilder: (context) => [
+              PullDownMenuItem(
+                onTap: () => _updateApft(context, widget.apft),
+                title: 'Update APFT',
+              ),
+              PullDownMenuItem(
+                onTap: () => _downloadPdf(),
+                title: 'Download DA 705',
+              ),
+            ],
+            buttonBuilder: (context, showMenu) {
+              return Padding(
+                padding: const EdgeInsets.all(4.0),
+                child: PlatformIconButton(
+                  icon: Icon(
+                    CupertinoIcons.ellipsis_vertical_circle,
+                    color: getOnPrimaryColor(context),
+                  ),
+                  onPressed: showMenu,
+                ),
+              );
+            },
+          ),
+        );
+      }
+    }
+    return actions;
+  }
+
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
     return PlatformScaffold(
       title: 'APFT Details',
-      actions: <Widget>[
-        if (Platform.isIOS)
-          PlatformIconButton(
-            onPressed: () {
-              _updateApft(context, widget.apft);
-            },
-            icon: Icon(
-              Icons.edit,
-              color: getOnPrimaryColor(context),
-            ),
-          ),
-        PlatformIconButton(
-          icon: Icon(
-            Icons.picture_as_pdf,
-            color: getOnPrimaryColor(context),
-          ),
-          onPressed: () {
-            _downloadPdf();
-          },
-        ),
-        PlatformIconButton(
-          icon: Icon(
-            Icons.delete,
-            color: getOnPrimaryColor(context),
-          ),
-          onPressed: () {
-            DeleteRecord.deleteRecord(
-              context: context,
-              onConfirm: () {
-                Navigator.pop(context);
-                dbHelper.deleteApft(widget.apft.id);
-                Navigator.pushReplacement(context,
-                    MaterialPageRoute(builder: (context) => SavedApftsPage()));
-              },
-            );
-          },
-        )
-      ],
+      actions: actions(width),
       floatingActionButton: FloatingActionButton(
         child: const Icon(Icons.edit),
         onPressed: () {

@@ -223,22 +223,27 @@ class _PpwChartPageState extends State<PpwChartPage> {
                   primary: false,
                   shrinkWrap: true,
                   childAspectRatio: width > 700
-                      ? width / 240
+                      ? width / 300
                       : width > 400
-                          ? width / 160
-                          : width / 80,
+                          ? width / 200
+                          : width / 100,
                   mainAxisSpacing: 1.0,
                   crossAxisSpacing: 1.0,
                   children: <Widget>[
                     Padding(
                       padding: const EdgeInsets.symmetric(vertical: 24.0),
                       child: PlatformCheckboxListTile(
-                        title: const Text('Military Training'),
+                        title: const Text('Mil Train'),
                         value: milTrain,
                         activeColor: getOnPrimaryColor(context),
                         onChanged: (value) {
                           setState(() {
                             milTrain = value!;
+                          });
+                        },
+                        onIosTap: () {
+                          setState(() {
+                            milTrain = !milTrain;
                           });
                         },
                       ),
@@ -254,17 +259,9 @@ class _PpwChartPageState extends State<PpwChartPage> {
                             awards = value!;
                           });
                         },
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 24.0),
-                      child: PlatformCheckboxListTile(
-                        title: const Text('Military Education'),
-                        value: milEd,
-                        activeColor: getOnPrimaryColor(context),
-                        onChanged: (value) {
+                        onIosTap: () {
                           setState(() {
-                            milEd = value!;
+                            awards = !awards;
                           });
                         },
                       ),
@@ -272,12 +269,35 @@ class _PpwChartPageState extends State<PpwChartPage> {
                     Padding(
                       padding: const EdgeInsets.symmetric(vertical: 24.0),
                       child: PlatformCheckboxListTile(
-                        title: const Text('Civilian Education'),
+                        title: const Text('Mil Ed'),
+                        value: milEd,
+                        activeColor: getOnPrimaryColor(context),
+                        onChanged: (value) {
+                          setState(() {
+                            milEd = value!;
+                          });
+                        },
+                        onIosTap: () {
+                          setState(() {
+                            milEd = !milEd;
+                          });
+                        },
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 24.0),
+                      child: PlatformCheckboxListTile(
+                        title: const Text('Civ Ed'),
                         value: civEd,
                         activeColor: getOnPrimaryColor(context),
                         onChanged: (value) {
                           setState(() {
                             civEd = value!;
+                          });
+                        },
+                        onIosTap: () {
+                          setState(() {
+                            civEd = !civEd;
                           });
                         },
                       ),

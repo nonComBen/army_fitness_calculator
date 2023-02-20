@@ -6,6 +6,7 @@ import 'package:in_app_purchase/in_app_purchase.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
 import '../methods/theme_methods.dart';
+import '../methods/verify_purchase.dart';
 import '../widgets/platform_widgets/platform_text_button.dart';
 import '../../widgets/platform_widgets/platform_button.dart';
 import '../widgets/my_toast.dart';
@@ -29,7 +30,7 @@ class PurchasesService {
       });
       final Stream purchaseUpdates = InAppPurchase.instance.purchaseStream;
       purchaseUpdates.listen((purchases) async {
-        // _isPremium = await listenToPurchaseUpdated(purchases);
+        _isPremium = await listenToPurchaseUpdated(purchases);
       }) as StreamSubscription<List<PurchaseDetails>>;
     }
   }
@@ -145,10 +146,13 @@ class PurchasesService {
           Flexible(
             flex: 1,
             child: PlatformTextButton(
-              child: Text(
-                'Upgrade',
-                style: TextStyle(
-                  color: getOnPrimaryColor(context),
+              child: FittedBox(
+                fit: BoxFit.contain,
+                child: Text(
+                  'Upgrade',
+                  style: TextStyle(
+                    color: getOnPrimaryColor(context),
+                  ),
                 ),
               ),
               onPressed: () => upgrade(context),

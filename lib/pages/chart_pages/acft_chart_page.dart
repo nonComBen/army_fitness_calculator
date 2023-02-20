@@ -181,10 +181,10 @@ class _AcftChartPageState extends State<AcftChartPage> {
                 primary: false,
                 shrinkWrap: true,
                 childAspectRatio: width > 700
-                    ? width / 240
+                    ? width / 300
                     : width > 400
-                        ? width / 160
-                        : width / 80,
+                        ? width / 200
+                        : width / 100,
                 mainAxisSpacing: 1.0,
                 crossAxisSpacing: 1.0,
                 children: <Widget>[
@@ -197,6 +197,11 @@ class _AcftChartPageState extends State<AcftChartPage> {
                       onChanged: (value) {
                         setState(() {
                           mdl = value!;
+                        });
+                      },
+                      onIosTap: () {
+                        setState(() {
+                          mdl = !mdl;
                         });
                       },
                     ),
@@ -212,6 +217,11 @@ class _AcftChartPageState extends State<AcftChartPage> {
                           spt = value!;
                         });
                       },
+                      onIosTap: () {
+                        setState(() {
+                          spt = !spt;
+                        });
+                      },
                     ),
                   ),
                   Padding(
@@ -223,6 +233,11 @@ class _AcftChartPageState extends State<AcftChartPage> {
                       onChanged: (value) {
                         setState(() {
                           hrp = value!;
+                        });
+                      },
+                      onIosTap: () {
+                        setState(() {
+                          hrp = !hrp;
                         });
                       },
                     ),
@@ -238,6 +253,11 @@ class _AcftChartPageState extends State<AcftChartPage> {
                           sdc = value!;
                         });
                       },
+                      onIosTap: () {
+                        setState(() {
+                          sdc = !sdc;
+                        });
+                      },
                     ),
                   ),
                   Padding(
@@ -251,6 +271,11 @@ class _AcftChartPageState extends State<AcftChartPage> {
                           plk = value!;
                         });
                       },
+                      onIosTap: () {
+                        setState(() {
+                          plk = !plk;
+                        });
+                      },
                     ),
                   ),
                   Padding(
@@ -262,6 +287,11 @@ class _AcftChartPageState extends State<AcftChartPage> {
                       onChanged: (value) {
                         setState(() {
                           run = value!;
+                        });
+                      },
+                      onIosTap: () {
+                        setState(() {
+                          run = !run;
                         });
                       },
                     ),

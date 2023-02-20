@@ -14,21 +14,25 @@ abstract class PlatformItemPicker extends Widget {
   }) {
     if (Platform.isAndroid) {
       return AndroidItemPicker(
-          decoration: InputDecoration(
-            label: label,
-          ),
-          value: value,
-          items: items
-              .map(
-                (event) => DropdownMenuItem(
-                  child: Text(
-                    event,
-                    style: TextStyle(fontSize: 22),
-                  ),
+        decoration: InputDecoration(
+          label: label,
+        ),
+        value: value,
+        items: items
+            .map(
+              (event) => DropdownMenuItem<String>(
+                value: event,
+                child: Text(
+                  event,
+                  style: TextStyle(fontSize: 22),
+                  overflow: TextOverflow.ellipsis,
                 ),
-              )
-              .toList(),
-          onChanged: onChanged);
+              ),
+            )
+            .toList(),
+        onChanged: onChanged,
+        isExpanded: true,
+      );
     } else {
       return IOSItemPicker(
         itemBuilder: (context) {
@@ -62,6 +66,7 @@ abstract class PlatformItemPicker extends Widget {
                       fontSize: 18,
                       color: getTextColor(context),
                     ),
+                    overflow: TextOverflow.ellipsis,
                   ),
                 ),
               ),
@@ -75,12 +80,12 @@ abstract class PlatformItemPicker extends Widget {
 
 class AndroidItemPicker extends DropdownButtonFormField
     implements PlatformItemPicker {
-  AndroidItemPicker({
-    super.items,
-    super.value,
-    super.onChanged,
-    super.decoration,
-  });
+  AndroidItemPicker(
+      {super.items,
+      super.value,
+      super.onChanged,
+      super.decoration,
+      super.isExpanded});
 }
 
 class IOSItemPicker extends PullDownButton implements PlatformItemPicker {
