@@ -214,16 +214,16 @@ class _AcftVerbiagePageState extends ConsumerState<AcftVerbiagePage> {
   void initState() {
     super.initState();
     purchasesService = ref.read(purchasesProvider);
-    myBanner = BannerAd(
-      adUnitId: Platform.isAndroid
-          ? 'ca-app-pub-2431077176117105/7254941744'
-          : 'ca-app-pub-2431077176117105/4532397876',
-      size: AdSize.banner,
-      listener: BannerAdListener(),
-      request: AdRequest(nonPersonalizedAds: true),
-    );
-
     if (!purchasesService.isPremium) {
+      myBanner = BannerAd(
+        adUnitId: Platform.isAndroid
+            ? 'ca-app-pub-2431077176117105/7254941744'
+            : 'ca-app-pub-2431077176117105/4532397876',
+        size: AdSize.banner,
+        listener: BannerAdListener(),
+        request: AdRequest(nonPersonalizedAds: true),
+      );
+
       myBanner!.load();
     }
   }

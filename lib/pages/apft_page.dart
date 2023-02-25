@@ -1,7 +1,10 @@
+import 'dart:io';
+
 import 'package:acft_calculator/methods/theme_methods.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:intl/intl.dart';
 
@@ -72,6 +75,7 @@ class _ApftPageState extends ConsumerState<ApftPage> {
   DBHelper dbHelper = DBHelper();
   TextStyle headerStyle = TextStyle(fontSize: 22, fontWeight: FontWeight.bold);
   late PurchasesService purchasesService;
+  late BannerAd myBanner;
 
   final _ageController = new TextEditingController();
   final _ageFocus = new FocusNode();
@@ -109,6 +113,18 @@ class _ApftPageState extends ConsumerState<ApftPage> {
     super.initState();
     dbHelper = new DBHelper();
     purchasesService = ref.read(purchasesProvider);
+    if (!purchasesService.isPremium) {
+      myBanner = BannerAd(
+        adUnitId: Platform.isAndroid
+            ? 'ca-app-pub-2431077176117105/9048806118'
+            : 'ca-app-pub-2431077176117105/4321694244',
+        size: AdSize.banner,
+        listener: BannerAdListener(),
+        request: AdRequest(nonPersonalizedAds: true),
+      );
+
+      myBanner.load();
+    }
 
     _puController.text = pu.toString();
     _suController.text = su.toString();
@@ -181,6 +197,8 @@ class _ApftPageState extends ConsumerState<ApftPage> {
     _suFocus.dispose();
     _minsFocus.dispose();
     _secsFocus.dispose();
+
+    myBanner.dispose();
   }
 
   void calcAll() {
@@ -397,739 +415,757 @@ class _ApftPageState extends ConsumerState<ApftPage> {
           right: 16.0,
           bottom: MediaQuery.of(context).viewPadding.bottom + 16.0,
         ),
-        child: ListView(
-          children: <Widget>[
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: PlatformSelectionWidget(
-                  titles: [Text('M'), Text('F')],
-                  values: ['Male', 'Female'],
-                  groupValue: gender,
-                  onChanged: (value) {
-                    FocusScope.of(context).unfocus();
-                    setState(() {
-                      gender = value!;
-                      calcAll();
-                    });
-                  }),
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[
-                Text(
-                  'Age',
-                  style: headerStyle,
-                ),
-                ValueInputField(
-                  width: 60,
-                  controller: _ageController,
-                  focusNode: _ageFocus,
-                  textInputAction: TextInputAction.next,
-                  onEditingComplete: () => _puFocus.requestFocus(),
-                  errorText: isAgeValid ? null : '17-80',
-                  onChanged: (value) {
-                    int raw = int.tryParse(value) ?? 0;
-                    if (raw > 80) {
-                      isAgeValid = false;
-                      age = 80;
-                    } else if (raw < 17) {
-                      isAgeValid = false;
-                      age = 17;
-                    } else {
-                      age = raw;
-                      isAgeValid = true;
-                    }
-                    ageGroup = getAgeGroup(age);
-                    calcAll();
-                  },
-                ),
-              ],
-            ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Row(
+        child: Column(
+          children: [
+            Expanded(
+              child: ListView(
                 children: <Widget>[
-                  IncrementDecrementButton(
-                    child: '-',
-                    onPressed: () {
-                      FocusScope.of(context).unfocus();
-                      if (age > 17) {
-                        age--;
-                      } else {
-                        age = 17;
-                      }
-                      isAgeValid = true;
-                      ageGroup = getAgeGroup(age);
-                      _ageController.text = age.toString();
-                      calcAll();
-                    },
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: PlatformSelectionWidget(
+                        titles: [Text('M'), Text('F')],
+                        values: ['Male', 'Female'],
+                        groupValue: gender,
+                        onChanged: (value) {
+                          FocusScope.of(context).unfocus();
+                          setState(() {
+                            gender = value!;
+                            calcAll();
+                          });
+                        }),
                   ),
-                  Expanded(
-                    child: PlatformSlider(
-                      activeColor: primaryColor,
-                      value: age.toDouble(),
-                      min: 17,
-                      max: 80,
-                      divisions: 64,
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: <Widget>[
+                      Text(
+                        'Age',
+                        style: headerStyle,
+                      ),
+                      ValueInputField(
+                        width: 60,
+                        controller: _ageController,
+                        focusNode: _ageFocus,
+                        textInputAction: TextInputAction.next,
+                        onEditingComplete: () => _puFocus.requestFocus(),
+                        errorText: isAgeValid ? null : '17-80',
+                        onChanged: (value) {
+                          int raw = int.tryParse(value) ?? 0;
+                          if (raw > 80) {
+                            isAgeValid = false;
+                            age = 80;
+                          } else if (raw < 17) {
+                            isAgeValid = false;
+                            age = 17;
+                          } else {
+                            age = raw;
+                            isAgeValid = true;
+                          }
+                          ageGroup = getAgeGroup(age);
+                          calcAll();
+                        },
+                      ),
+                    ],
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Row(
+                      children: <Widget>[
+                        IncrementDecrementButton(
+                          child: '-',
+                          onPressed: () {
+                            FocusScope.of(context).unfocus();
+                            if (age > 17) {
+                              age--;
+                            } else {
+                              age = 17;
+                            }
+                            isAgeValid = true;
+                            ageGroup = getAgeGroup(age);
+                            _ageController.text = age.toString();
+                            calcAll();
+                          },
+                        ),
+                        Expanded(
+                          child: PlatformSlider(
+                            activeColor: primaryColor,
+                            value: age.toDouble(),
+                            min: 17,
+                            max: 80,
+                            divisions: 64,
+                            onChanged: (value) {
+                              FocusScope.of(context).unfocus();
+                              isAgeValid = true;
+                              age = value.floor();
+                              ageGroup = getAgeGroup(age);
+                              _ageController.text = age.toString();
+                              calcAll();
+                            },
+                          ),
+                        ),
+                        IncrementDecrementButton(
+                          child: '+',
+                          onPressed: () {
+                            FocusScope.of(context).unfocus();
+                            if (age < 80) {
+                              age++;
+                            } else {
+                              age = 80;
+                            }
+                            isAgeValid = true;
+                            ageGroup = getAgeGroup(age);
+                            _ageController.text = age.toString();
+                            calcAll();
+                          },
+                        ),
+                      ],
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: PlatformItemPicker(
+                      label: Text(
+                        'Aerobic Event',
+                        style: TextStyle(
+                          color: getTextColor(context),
+                        ),
+                      ),
+                      value: event,
+                      items: events,
                       onChanged: (value) {
                         FocusScope.of(context).unfocus();
-                        isAgeValid = true;
-                        age = value.floor();
-                        ageGroup = getAgeGroup(age);
-                        _ageController.text = age.toString();
+                        setState(() {
+                          event = value!;
+                        });
                         calcAll();
                       },
                     ),
                   ),
-                  IncrementDecrementButton(
-                    child: '+',
-                    onPressed: () {
-                      FocusScope.of(context).unfocus();
-                      if (age < 80) {
-                        age++;
-                      } else {
-                        age = 80;
-                      }
-                      isAgeValid = true;
-                      ageGroup = getAgeGroup(age);
-                      _ageController.text = age.toString();
-                      calcAll();
-                    },
-                  ),
-                ],
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: PlatformItemPicker(
-                label: Text(
-                  'Aerobic Event',
-                  style: TextStyle(
-                    color: getTextColor(context),
-                  ),
-                ),
-                value: event,
-                items: events,
-                onChanged: (value) {
-                  FocusScope.of(context).unfocus();
-                  setState(() {
-                    event = value!;
-                  });
-                  calcAll();
-                },
-              ),
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[
-                Text(
-                  'Push Ups',
-                  style: headerStyle,
-                ),
-                ValueInputField(
-                  width: 60,
-                  controller: _puController,
-                  focusNode: _puFocus,
-                  textInputAction: TextInputAction.next,
-                  onEditingComplete: () => _suFocus.requestFocus(),
-                  onChanged: (value) {
-                    int raw = int.tryParse(value) ?? 0;
-                    setState(() {
-                      pu = raw;
-                      _calcPu();
-                      if (isJrSoldier) _calcRun();
-                      _calcTotal();
-                    });
-                  },
-                ),
-              ],
-            ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Row(
-                children: <Widget>[
-                  IncrementDecrementButton(
-                    child: '-',
-                    onPressed: () {
-                      FocusScope.of(context).unfocus();
-                      if (pu > 0 && !hasPuProfile) {
-                        pu--;
-                        _puController.text = pu.toString();
-                        _calcPu();
-                        if (isJrSoldier) _calcRun();
-                        _calcTotal();
-                      }
-                    },
-                  ),
-                  Expanded(
-                    flex: 1,
-                    child: PlatformSlider(
-                      activeColor: primaryColor,
-                      value: pu.toDouble(),
-                      min: 0,
-                      max: 99,
-                      divisions: 100,
-                      onChanged: (value) {
-                        FocusScope.of(context).unfocus();
-                        setState(() {
-                          if (hasPuProfile) {
-                            pu = 0;
-                          } else {
-                            pu = value.floor();
-                            _puController.text = pu.toString();
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: <Widget>[
+                      Text(
+                        'Push Ups',
+                        style: headerStyle,
+                      ),
+                      ValueInputField(
+                        width: 60,
+                        controller: _puController,
+                        focusNode: _puFocus,
+                        textInputAction: TextInputAction.next,
+                        onEditingComplete: () => _suFocus.requestFocus(),
+                        onChanged: (value) {
+                          int raw = int.tryParse(value) ?? 0;
+                          setState(() {
+                            pu = raw;
                             _calcPu();
                             if (isJrSoldier) _calcRun();
                             _calcTotal();
-                          }
-                        });
-                      },
+                          });
+                        },
+                      ),
+                    ],
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Row(
+                      children: <Widget>[
+                        IncrementDecrementButton(
+                          child: '-',
+                          onPressed: () {
+                            FocusScope.of(context).unfocus();
+                            if (pu > 0 && !hasPuProfile) {
+                              pu--;
+                              _puController.text = pu.toString();
+                              _calcPu();
+                              if (isJrSoldier) _calcRun();
+                              _calcTotal();
+                            }
+                          },
+                        ),
+                        Expanded(
+                          flex: 1,
+                          child: PlatformSlider(
+                            activeColor: primaryColor,
+                            value: pu.toDouble(),
+                            min: 0,
+                            max: 99,
+                            divisions: 100,
+                            onChanged: (value) {
+                              FocusScope.of(context).unfocus();
+                              setState(() {
+                                if (hasPuProfile) {
+                                  pu = 0;
+                                } else {
+                                  pu = value.floor();
+                                  _puController.text = pu.toString();
+                                  _calcPu();
+                                  if (isJrSoldier) _calcRun();
+                                  _calcTotal();
+                                }
+                              });
+                            },
+                          ),
+                        ),
+                        IncrementDecrementButton(
+                          child: '+',
+                          onPressed: () {
+                            FocusScope.of(context).unfocus();
+                            if (pu < 99 && !hasPuProfile) {
+                              setState(() {
+                                pu++;
+                                _puController.text = pu.toString();
+                                _calcPu();
+                                if (isJrSoldier) _calcRun();
+                                _calcTotal();
+                              });
+                            }
+                          },
+                        ),
+                      ],
                     ),
                   ),
-                  IncrementDecrementButton(
-                    child: '+',
-                    onPressed: () {
-                      FocusScope.of(context).unfocus();
-                      if (pu < 99 && !hasPuProfile) {
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: PlatformCheckboxListTile(
+                      title: const Text('Profile'),
+                      value: hasPuProfile,
+                      controlAffinity: ListTileControlAffinity.leading,
+                      activeColor: onSecondary,
+                      onChanged: (value) {
+                        FocusScope.of(context).unfocus();
                         setState(() {
-                          pu++;
-                          _puController.text = pu.toString();
+                          hasPuProfile = value!;
+                          if (value) {
+                            pu = 0;
+                            _puController.text = pu.toString();
+                          }
                           _calcPu();
                           if (isJrSoldier) _calcRun();
                           _calcTotal();
                         });
-                      }
-                    },
-                  ),
-                ],
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: PlatformCheckboxListTile(
-                title: const Text('Profile'),
-                value: hasPuProfile,
-                controlAffinity: ListTileControlAffinity.leading,
-                activeColor: onSecondary,
-                onChanged: (value) {
-                  FocusScope.of(context).unfocus();
-                  setState(() {
-                    hasPuProfile = value!;
-                    if (value) {
-                      pu = 0;
-                      _puController.text = pu.toString();
-                    }
-                    _calcPu();
-                    if (isJrSoldier) _calcRun();
-                    _calcTotal();
-                  });
-                },
-                onIosTap: () {
-                  FocusScope.of(context).unfocus();
-                  setState(() {
-                    hasPuProfile = !hasPuProfile;
-                    if (hasPuProfile) {
-                      pu = 0;
-                      _puController.text = pu.toString();
-                    }
-                    _calcPu();
-                    if (isJrSoldier) _calcRun();
-                    _calcTotal();
-                  });
-                },
-              ),
-            ),
-            Divider(
-              color: Colors.yellow,
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[
-                Text(
-                  'Sit Ups',
-                  style: const TextStyle(
-                      fontSize: 22.0, fontWeight: FontWeight.bold),
-                ),
-                ValueInputField(
-                  width: 60,
-                  controller: _suController,
-                  focusNode: _suFocus,
-                  textInputAction: TextInputAction.next,
-                  onEditingComplete: () => _minsFocus.requestFocus(),
-                  onChanged: (value) {
-                    int raw = int.tryParse(value) ?? 0;
-                    setState(() {
-                      su = raw;
-                      _calcSu();
-                      if (isJrSoldier) _calcRun();
-                      _calcTotal();
-                    });
-                  },
-                ),
-              ],
-            ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Row(
-                children: <Widget>[
-                  IncrementDecrementButton(
-                    child: '-',
-                    onPressed: () {
-                      FocusScope.of(context).unfocus();
-                      if (su > 0 && !hasSuProfile) {
-                        su--;
-                        _suController.text = su.toString();
-                        _calcSu();
-                        if (isJrSoldier) _calcRun();
-                        _calcTotal();
-                      }
-                    },
-                  ),
-                  Expanded(
-                    flex: 1,
-                    child: PlatformSlider(
-                      activeColor: primaryColor,
-                      value: su.toDouble(),
-                      min: 0,
-                      max: 99,
-                      divisions: 100,
-                      onChanged: (value) {
+                      },
+                      onIosTap: () {
                         FocusScope.of(context).unfocus();
                         setState(() {
-                          if (hasSuProfile) {
-                            su = 0;
-                          } else {
-                            su = value.floor();
-                            _suController.text = su.toString();
-                            _calcSu();
-                            if (isJrSoldier) _calcRun();
-                            _calcTotal();
+                          hasPuProfile = !hasPuProfile;
+                          if (hasPuProfile) {
+                            pu = 0;
+                            _puController.text = pu.toString();
                           }
-                        });
-                      },
-                    ),
-                  ),
-                  IncrementDecrementButton(
-                    child: '+',
-                    onPressed: () {
-                      FocusScope.of(context).unfocus();
-                      if (su < 99 && !hasSuProfile) {
-                        setState(() {
-                          su++;
-                          _suController.text = su.toString();
-                          _calcSu();
+                          _calcPu();
                           if (isJrSoldier) _calcRun();
                           _calcTotal();
                         });
-                      }
-                    },
-                  ),
-                ],
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: PlatformCheckboxListTile(
-                title: const Text('Profile'),
-                value: hasSuProfile,
-                controlAffinity: ListTileControlAffinity.leading,
-                activeColor: onSecondary,
-                onChanged: (value) {
-                  FocusScope.of(context).unfocus();
-                  setState(
-                    () {
-                      hasSuProfile = value!;
-                      if (value) {
-                        su = 0;
-                        _suController.text = su.toString();
-                      }
-                      _calcSu();
-                      if (isJrSoldier) _calcRun();
-                      _calcTotal();
-                    },
-                  );
-                },
-                onIosTap: () {
-                  FocusScope.of(context).unfocus();
-                  setState(
-                    () {
-                      hasSuProfile = !hasSuProfile;
-                      if (hasSuProfile) {
-                        su = 0;
-                        _suController.text = su.toString();
-                      }
-                      _calcSu();
-                      if (isJrSoldier) _calcRun();
-                      _calcTotal();
-                    },
-                  );
-                },
-              ),
-            ),
-            Divider(
-              color: Colors.yellow,
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[
-                Text(
-                  event,
-                  style: const TextStyle(
-                      fontSize: 22.0, fontWeight: FontWeight.bold),
-                ),
-                Row(
-                  children: <Widget>[
-                    ValueInputField(
-                      width: 60,
-                      controller: _minsController,
-                      focusNode: _minsFocus,
-                      textInputAction: TextInputAction.next,
-                      onEditingComplete: () => _secsFocus.requestFocus(),
-                      errorText: isMinsValid ? null : '0-50',
-                      onChanged: (value) {
-                        int raw = int.tryParse(value) ?? -1;
-                        if (raw < 0) {
-                          runMins = 0;
-                          isMinsValid = false;
-                        } else if (raw > 50) {
-                          runMins = 50;
-                          isMinsValid = false;
-                        } else {
-                          runMins = raw;
-                          isMinsValid = true;
-                        }
-                        _calcRun();
-                        _calcTotal();
                       },
                     ),
-                    Padding(
-                      padding: const EdgeInsets.fromLTRB(4.0, 0.0, 4.0, 8.0),
-                      child: const Text(
-                        ':',
-                        style: TextStyle(fontSize: 18),
-                        textAlign: TextAlign.center,
+                  ),
+                  Divider(
+                    color: Colors.yellow,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: <Widget>[
+                      Text(
+                        'Sit Ups',
+                        style: const TextStyle(
+                            fontSize: 22.0, fontWeight: FontWeight.bold),
                       ),
+                      ValueInputField(
+                        width: 60,
+                        controller: _suController,
+                        focusNode: _suFocus,
+                        textInputAction: TextInputAction.next,
+                        onEditingComplete: () => _minsFocus.requestFocus(),
+                        onChanged: (value) {
+                          int raw = int.tryParse(value) ?? 0;
+                          setState(() {
+                            su = raw;
+                            _calcSu();
+                            if (isJrSoldier) _calcRun();
+                            _calcTotal();
+                          });
+                        },
+                      ),
+                    ],
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Row(
+                      children: <Widget>[
+                        IncrementDecrementButton(
+                          child: '-',
+                          onPressed: () {
+                            FocusScope.of(context).unfocus();
+                            if (su > 0 && !hasSuProfile) {
+                              su--;
+                              _suController.text = su.toString();
+                              _calcSu();
+                              if (isJrSoldier) _calcRun();
+                              _calcTotal();
+                            }
+                          },
+                        ),
+                        Expanded(
+                          flex: 1,
+                          child: PlatformSlider(
+                            activeColor: primaryColor,
+                            value: su.toDouble(),
+                            min: 0,
+                            max: 99,
+                            divisions: 100,
+                            onChanged: (value) {
+                              FocusScope.of(context).unfocus();
+                              setState(() {
+                                if (hasSuProfile) {
+                                  su = 0;
+                                } else {
+                                  su = value.floor();
+                                  _suController.text = su.toString();
+                                  _calcSu();
+                                  if (isJrSoldier) _calcRun();
+                                  _calcTotal();
+                                }
+                              });
+                            },
+                          ),
+                        ),
+                        IncrementDecrementButton(
+                          child: '+',
+                          onPressed: () {
+                            FocusScope.of(context).unfocus();
+                            if (su < 99 && !hasSuProfile) {
+                              setState(() {
+                                su++;
+                                _suController.text = su.toString();
+                                _calcSu();
+                                if (isJrSoldier) _calcRun();
+                                _calcTotal();
+                              });
+                            }
+                          },
+                        ),
+                      ],
                     ),
-                    ValueInputField(
-                      width: 60,
-                      controller: _secsController,
-                      focusNode: _secsFocus,
-                      textInputAction: TextInputAction.done,
-                      onEditingComplete: () => FocusScope.of(context).unfocus(),
-                      errorText: isSecValid ? null : '0-59',
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: PlatformCheckboxListTile(
+                      title: const Text('Profile'),
+                      value: hasSuProfile,
+                      controlAffinity: ListTileControlAffinity.leading,
+                      activeColor: onSecondary,
                       onChanged: (value) {
-                        int raw = int.tryParse(value) ?? -1;
-                        if (raw < 0) {
-                          runSecs = 0;
-                          isSecValid = false;
-                        } else if (raw > 59) {
-                          runSecs = 59;
-                          isSecValid = false;
+                        FocusScope.of(context).unfocus();
+                        setState(
+                          () {
+                            hasSuProfile = value!;
+                            if (value) {
+                              su = 0;
+                              _suController.text = su.toString();
+                            }
+                            _calcSu();
+                            if (isJrSoldier) _calcRun();
+                            _calcTotal();
+                          },
+                        );
+                      },
+                      onIosTap: () {
+                        FocusScope.of(context).unfocus();
+                        setState(
+                          () {
+                            hasSuProfile = !hasSuProfile;
+                            if (hasSuProfile) {
+                              su = 0;
+                              _suController.text = su.toString();
+                            }
+                            _calcSu();
+                            if (isJrSoldier) _calcRun();
+                            _calcTotal();
+                          },
+                        );
+                      },
+                    ),
+                  ),
+                  Divider(
+                    color: Colors.yellow,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: <Widget>[
+                      Text(
+                        event,
+                        style: const TextStyle(
+                            fontSize: 22.0, fontWeight: FontWeight.bold),
+                      ),
+                      Row(
+                        children: <Widget>[
+                          ValueInputField(
+                            width: 60,
+                            controller: _minsController,
+                            focusNode: _minsFocus,
+                            textInputAction: TextInputAction.next,
+                            onEditingComplete: () => _secsFocus.requestFocus(),
+                            errorText: isMinsValid ? null : '0-50',
+                            onChanged: (value) {
+                              int raw = int.tryParse(value) ?? -1;
+                              if (raw < 0) {
+                                runMins = 0;
+                                isMinsValid = false;
+                              } else if (raw > 50) {
+                                runMins = 50;
+                                isMinsValid = false;
+                              } else {
+                                runMins = raw;
+                                isMinsValid = true;
+                              }
+                              _calcRun();
+                              _calcTotal();
+                            },
+                          ),
+                          Padding(
+                            padding:
+                                const EdgeInsets.fromLTRB(4.0, 0.0, 4.0, 8.0),
+                            child: const Text(
+                              ':',
+                              style: TextStyle(fontSize: 18),
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
+                          ValueInputField(
+                            width: 60,
+                            controller: _secsController,
+                            focusNode: _secsFocus,
+                            textInputAction: TextInputAction.done,
+                            onEditingComplete: () =>
+                                FocusScope.of(context).unfocus(),
+                            errorText: isSecValid ? null : '0-59',
+                            onChanged: (value) {
+                              int raw = int.tryParse(value) ?? -1;
+                              if (raw < 0) {
+                                runSecs = 0;
+                                isSecValid = false;
+                              } else if (raw > 59) {
+                                runSecs = 59;
+                                isSecValid = false;
+                              } else {
+                                runSecs = raw;
+                                isSecValid = true;
+                              }
+                              _calcRun();
+                              _calcTotal();
+                            },
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Row(
+                      children: <Widget>[
+                        IncrementDecrementButton(
+                          child: '-',
+                          onPressed: () {
+                            FocusScope.of(context).unfocus();
+                            if (runMins > 0) {
+                              runMins--;
+                              _minsController.text = runMins.toString();
+                              _calcRun();
+                              _calcTotal();
+                            }
+                          },
+                        ),
+                        Expanded(
+                          flex: 1,
+                          child: PlatformSlider(
+                            activeColor: primaryColor,
+                            value: runMins.toDouble(),
+                            min: 0,
+                            max: 50,
+                            divisions: 51,
+                            onChanged: (value) {
+                              FocusScope.of(context).unfocus();
+                              setState(() {
+                                runMins = value.floor();
+                                _minsController.text = runMins.toString();
+                                _calcRun();
+                                _calcTotal();
+                              });
+                            },
+                          ),
+                        ),
+                        IncrementDecrementButton(
+                          child: '+',
+                          onPressed: () {
+                            FocusScope.of(context).unfocus();
+                            if (runMins < 50) {
+                              setState(() {
+                                runMins++;
+                                _minsController.text = runMins.toString();
+                                _calcRun();
+                                _calcTotal();
+                              });
+                            }
+                          },
+                        ),
+                      ],
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Row(
+                      children: <Widget>[
+                        IncrementDecrementButton(
+                          child: '-',
+                          onPressed: () {
+                            FocusScope.of(context).unfocus();
+                            if (runSecs > 0) {
+                              runSecs--;
+                              _secsController.text = runSecs.toString();
+                              _calcRun();
+                              _calcTotal();
+                            }
+                          },
+                        ),
+                        Expanded(
+                          flex: 1,
+                          child: PlatformSlider(
+                            activeColor: primaryColor,
+                            value: runSecs.toDouble(),
+                            min: 0,
+                            max: 59,
+                            divisions: 60,
+                            onChanged: (value) {
+                              FocusScope.of(context).unfocus();
+                              setState(() {
+                                runSecs = value.floor();
+                                _secsController.text = runSecs.toString();
+                                _calcRun();
+                                _calcTotal();
+                              });
+                            },
+                          ),
+                        ),
+                        IncrementDecrementButton(
+                          child: '+',
+                          onPressed: () {
+                            FocusScope.of(context).unfocus();
+                            if (runSecs < 59) {
+                              setState(() {
+                                runSecs++;
+                                _secsController.text = runSecs.toString();
+                                _calcRun();
+                                _calcTotal();
+                              });
+                            }
+                          },
+                        ),
+                      ],
+                    ),
+                  ),
+                  Divider(
+                    color: Colors.yellow,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: PlatformCheckboxListTile(
+                      title: Text('For Promotion Points'),
+                      value: isJrSoldier,
+                      controlAffinity: ListTileControlAffinity.leading,
+                      activeColor: onSecondary,
+                      onChanged: (value) {
+                        FocusScope.of(context).unfocus();
+                        if (value!) {
+                          if (hasPuProfile) puScore = 60;
+                          if (hasSuProfile) suScore = 60;
+                          if (event != 'Run')
+                            runScore = ((puScore + suScore) / 2).floor();
                         } else {
-                          runSecs = raw;
-                          isSecValid = true;
+                          if (hasPuProfile) puScore = 0;
+                          if (hasSuProfile) suScore = 0;
+                          if (event != 'Run') runScore = 0;
                         }
-                        _calcRun();
-                        _calcTotal();
+                        setState(() {
+                          isJrSoldier = value;
+                          _calcTotal();
+                        });
+                      },
+                      onIosTap: () {
+                        FocusScope.of(context).unfocus();
+                        if (isJrSoldier) {
+                          if (hasPuProfile) puScore = 60;
+                          if (hasSuProfile) suScore = 60;
+                          if (event != 'Run')
+                            runScore = ((puScore + suScore) / 2).floor();
+                        } else {
+                          if (hasPuProfile) puScore = 0;
+                          if (hasSuProfile) suScore = 0;
+                          if (event != 'Run') runScore = 0;
+                        }
+                        setState(() {
+                          isJrSoldier = !isJrSoldier;
+                          _calcTotal();
+                        });
                       },
                     ),
-                  ],
+                  ),
+                  Divider(
+                    color: Colors.yellow,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: GridView.count(
+                      crossAxisCount: 5,
+                      childAspectRatio: width / 180,
+                      crossAxisSpacing: 0.0,
+                      mainAxisSpacing: 0.0,
+                      shrinkWrap: true,
+                      primary: false,
+                      children: <Widget>[
+                        GridBox(
+                          title: 'Event',
+                          background: primaryColor,
+                          textColor: textColor,
+                        ),
+                        GridBox(
+                          title: 'Min',
+                          background: primaryColor,
+                          textColor: textColor,
+                        ),
+                        GridBox(
+                          title: '90%',
+                          background: primaryColor,
+                          textColor: textColor,
+                        ),
+                        GridBox(
+                          title: 'Max',
+                          background: primaryColor,
+                          textColor: textColor,
+                        ),
+                        GridBox(
+                          title: 'Score',
+                          background: primaryColor,
+                          textColor: textColor,
+                        ),
+                        GridBox(
+                          title: 'PU',
+                          centered: false,
+                          background: primaryColor,
+                          textColor: textColor,
+                        ),
+                        GridBox(
+                          title: puMin,
+                        ),
+                        GridBox(
+                          title: pu90,
+                        ),
+                        GridBox(
+                          title: puMax,
+                        ),
+                        GridBox(
+                          title: puScore.toString(),
+                          background: puPass ? backgroundColor : errorColor,
+                        ),
+                        GridBox(
+                          title: 'SU',
+                          centered: false,
+                          background: primaryColor,
+                          textColor: textColor,
+                        ),
+                        GridBox(
+                          title: suMin,
+                        ),
+                        GridBox(
+                          title: su90,
+                        ),
+                        GridBox(
+                          title: suMax,
+                        ),
+                        GridBox(
+                          title: suScore.toString(),
+                          background: suPass ? backgroundColor : errorColor,
+                        ),
+                        GridBox(
+                          title: event,
+                          centered: false,
+                          background: primaryColor,
+                          textColor: textColor,
+                        ),
+                        GridBox(
+                          title: runMin,
+                        ),
+                        GridBox(
+                          title: run90,
+                        ),
+                        GridBox(
+                          title: runMax,
+                        ),
+                        GridBox(
+                          title: runScore.toString(),
+                          background: runPass ? backgroundColor : errorColor,
+                        ),
+                        GridBox(
+                          title: 'Total',
+                          centered: false,
+                          background: primaryColor,
+                          textColor: textColor,
+                        ),
+                        GridBox(),
+                        GridBox(),
+                        GridBox(),
+                        GridBox(
+                          title: totalScore.toString(),
+                          background: totalPass ? backgroundColor : errorColor,
+                        ),
+                      ],
+                    ),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.all(8.0),
+                    child: PlatformButton(
+                      child: const Text('Save APFT Score'),
+                      onPressed: () {
+                        String runSeconds = runSecs.toString().length == 1
+                            ? '0$runSecs'
+                            : runSecs.toString();
+                        if (purchasesService.isPremium) {
+                          Apft apft = new Apft(
+                              id: null,
+                              date: null,
+                              rank: null,
+                              name: null,
+                              gender: gender.toString(),
+                              age: age.toString(),
+                              puRaw: pu.toString(),
+                              puScore: puScore.toString(),
+                              suRaw: su.toString(),
+                              suScore: suScore.toString(),
+                              runRaw: runMins.toString() + ':' + runSeconds,
+                              runScore: runScore.toString(),
+                              runEvent: event,
+                              total: totalScore.toString(),
+                              altPass: runPass ? 1 : 0,
+                              pass: totalPass ? 1 : 0);
+                          _saveApft(context, apft);
+                        } else {
+                          purchasesService.upgradeNeeded(context);
+                        }
+                      },
+                    ),
+                  )
+                ],
+              ),
+            ),
+            if (!purchasesService.isPremium)
+              Container(
+                constraints: BoxConstraints(maxHeight: 90),
+                alignment: Alignment.center,
+                child: AdWidget(
+                  ad: myBanner,
                 ),
-              ],
-            ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Row(
-                children: <Widget>[
-                  IncrementDecrementButton(
-                    child: '-',
-                    onPressed: () {
-                      FocusScope.of(context).unfocus();
-                      if (runMins > 0) {
-                        runMins--;
-                        _minsController.text = runMins.toString();
-                        _calcRun();
-                        _calcTotal();
-                      }
-                    },
-                  ),
-                  Expanded(
-                    flex: 1,
-                    child: PlatformSlider(
-                      activeColor: primaryColor,
-                      value: runMins.toDouble(),
-                      min: 0,
-                      max: 50,
-                      divisions: 51,
-                      onChanged: (value) {
-                        FocusScope.of(context).unfocus();
-                        setState(() {
-                          runMins = value.floor();
-                          _minsController.text = runMins.toString();
-                          _calcRun();
-                          _calcTotal();
-                        });
-                      },
-                    ),
-                  ),
-                  IncrementDecrementButton(
-                    child: '+',
-                    onPressed: () {
-                      FocusScope.of(context).unfocus();
-                      if (runMins < 50) {
-                        setState(() {
-                          runMins++;
-                          _minsController.text = runMins.toString();
-                          _calcRun();
-                          _calcTotal();
-                        });
-                      }
-                    },
-                  ),
-                ],
+                width: myBanner.size.width.toDouble(),
+                height: myBanner.size.height.toDouble(),
               ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Row(
-                children: <Widget>[
-                  IncrementDecrementButton(
-                    child: '-',
-                    onPressed: () {
-                      FocusScope.of(context).unfocus();
-                      if (runSecs > 0) {
-                        runSecs--;
-                        _secsController.text = runSecs.toString();
-                        _calcRun();
-                        _calcTotal();
-                      }
-                    },
-                  ),
-                  Expanded(
-                    flex: 1,
-                    child: PlatformSlider(
-                      activeColor: primaryColor,
-                      value: runSecs.toDouble(),
-                      min: 0,
-                      max: 59,
-                      divisions: 60,
-                      onChanged: (value) {
-                        FocusScope.of(context).unfocus();
-                        setState(() {
-                          runSecs = value.floor();
-                          _secsController.text = runSecs.toString();
-                          _calcRun();
-                          _calcTotal();
-                        });
-                      },
-                    ),
-                  ),
-                  IncrementDecrementButton(
-                    child: '+',
-                    onPressed: () {
-                      FocusScope.of(context).unfocus();
-                      if (runSecs < 59) {
-                        setState(() {
-                          runSecs++;
-                          _secsController.text = runSecs.toString();
-                          _calcRun();
-                          _calcTotal();
-                        });
-                      }
-                    },
-                  ),
-                ],
-              ),
-            ),
-            Divider(
-              color: Colors.yellow,
-            ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: PlatformCheckboxListTile(
-                title: Text('For Promotion Points'),
-                value: isJrSoldier,
-                controlAffinity: ListTileControlAffinity.leading,
-                activeColor: onSecondary,
-                onChanged: (value) {
-                  FocusScope.of(context).unfocus();
-                  if (value!) {
-                    if (hasPuProfile) puScore = 60;
-                    if (hasSuProfile) suScore = 60;
-                    if (event != 'Run')
-                      runScore = ((puScore + suScore) / 2).floor();
-                  } else {
-                    if (hasPuProfile) puScore = 0;
-                    if (hasSuProfile) suScore = 0;
-                    if (event != 'Run') runScore = 0;
-                  }
-                  setState(() {
-                    isJrSoldier = value;
-                    _calcTotal();
-                  });
-                },
-                onIosTap: () {
-                  FocusScope.of(context).unfocus();
-                  if (isJrSoldier) {
-                    if (hasPuProfile) puScore = 60;
-                    if (hasSuProfile) suScore = 60;
-                    if (event != 'Run')
-                      runScore = ((puScore + suScore) / 2).floor();
-                  } else {
-                    if (hasPuProfile) puScore = 0;
-                    if (hasSuProfile) suScore = 0;
-                    if (event != 'Run') runScore = 0;
-                  }
-                  setState(() {
-                    isJrSoldier = !isJrSoldier;
-                    _calcTotal();
-                  });
-                },
-              ),
-            ),
-            Divider(
-              color: Colors.yellow,
-            ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: GridView.count(
-                crossAxisCount: 5,
-                childAspectRatio: width / 180,
-                crossAxisSpacing: 0.0,
-                mainAxisSpacing: 0.0,
-                shrinkWrap: true,
-                primary: false,
-                children: <Widget>[
-                  GridBox(
-                    title: 'Event',
-                    background: primaryColor,
-                    textColor: textColor,
-                  ),
-                  GridBox(
-                    title: 'Min',
-                    background: primaryColor,
-                    textColor: textColor,
-                  ),
-                  GridBox(
-                    title: '90%',
-                    background: primaryColor,
-                    textColor: textColor,
-                  ),
-                  GridBox(
-                    title: 'Max',
-                    background: primaryColor,
-                    textColor: textColor,
-                  ),
-                  GridBox(
-                    title: 'Score',
-                    background: primaryColor,
-                    textColor: textColor,
-                  ),
-                  GridBox(
-                    title: 'PU',
-                    centered: false,
-                    background: primaryColor,
-                    textColor: textColor,
-                  ),
-                  GridBox(
-                    title: puMin,
-                  ),
-                  GridBox(
-                    title: pu90,
-                  ),
-                  GridBox(
-                    title: puMax,
-                  ),
-                  GridBox(
-                    title: puScore.toString(),
-                    background: puPass ? backgroundColor : errorColor,
-                  ),
-                  GridBox(
-                    title: 'SU',
-                    centered: false,
-                    background: primaryColor,
-                    textColor: textColor,
-                  ),
-                  GridBox(
-                    title: suMin,
-                  ),
-                  GridBox(
-                    title: su90,
-                  ),
-                  GridBox(
-                    title: suMax,
-                  ),
-                  GridBox(
-                    title: suScore.toString(),
-                    background: suPass ? backgroundColor : errorColor,
-                  ),
-                  GridBox(
-                    title: event,
-                    centered: false,
-                    background: primaryColor,
-                    textColor: textColor,
-                  ),
-                  GridBox(
-                    title: runMin,
-                  ),
-                  GridBox(
-                    title: run90,
-                  ),
-                  GridBox(
-                    title: runMax,
-                  ),
-                  GridBox(
-                    title: runScore.toString(),
-                    background: runPass ? backgroundColor : errorColor,
-                  ),
-                  GridBox(
-                    title: 'Total',
-                    centered: false,
-                    background: primaryColor,
-                    textColor: textColor,
-                  ),
-                  GridBox(),
-                  GridBox(),
-                  GridBox(),
-                  GridBox(
-                    title: totalScore.toString(),
-                    background: totalPass ? backgroundColor : errorColor,
-                  ),
-                ],
-              ),
-            ),
-            Padding(
-              padding: EdgeInsets.all(8.0),
-              child: PlatformButton(
-                child: const Text('Save APFT Score'),
-                onPressed: () {
-                  String runSeconds = runSecs.toString().length == 1
-                      ? '0$runSecs'
-                      : runSecs.toString();
-                  if (purchasesService.isPremium) {
-                    Apft apft = new Apft(
-                        id: null,
-                        date: null,
-                        rank: null,
-                        name: null,
-                        gender: gender.toString(),
-                        age: age.toString(),
-                        puRaw: pu.toString(),
-                        puScore: puScore.toString(),
-                        suRaw: su.toString(),
-                        suScore: suScore.toString(),
-                        runRaw: runMins.toString() + ':' + runSeconds,
-                        runScore: runScore.toString(),
-                        runEvent: event,
-                        total: totalScore.toString(),
-                        altPass: runPass ? 1 : 0,
-                        pass: totalPass ? 1 : 0);
-                    _saveApft(context, apft);
-                  } else {
-                    purchasesService.upgradeNeeded(context);
-                  }
-                },
-              ),
-            )
           ],
         ),
       ),

@@ -13,7 +13,7 @@ import '../widgets/my_toast.dart';
 import '../widgets/bullet_item.dart';
 
 class PurchasesService {
-  bool _isPremium = true;
+  bool _isPremium = false;
   List<ProductDetails>? _products;
 
   bool get isPremium {

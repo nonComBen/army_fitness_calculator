@@ -3,15 +3,12 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:rate_my_app/rate_my_app.dart';
 
 import '../../methods/theme_methods.dart';
 import '../../pages/tabs/acft_page.dart';
 import '../../pages/tabs/bodyfat_page.dart';
 import '../../pages/tabs/ppw_page.dart';
-import '../../providers/ad_provider.dart';
-import '../../providers/purchases_provider.dart';
 import '../../pages/table_pages/acft_table_page.dart';
 import '../../pages/tabs/overflow_tab.dart';
 import 'platform_icon_button.dart';
@@ -91,12 +88,6 @@ class _AndroidHomePageState extends ConsumerState<AndroidHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    final adService = ref.watch(adProvider);
-    adService.initialize(
-      width: MediaQuery.of(context).size.width,
-      height: MediaQuery.of(context).size.height,
-    );
-    final purchasesService = ref.watch(purchasesProvider);
     return Scaffold(
       appBar: AppBar(
         title: Text(titles[index]),
@@ -140,25 +131,7 @@ class _AndroidHomePageState extends ConsumerState<AndroidHomePage> {
           });
         },
       ),
-      body: Column(
-        children: [
-          Expanded(child: pages[index]),
-          if (!purchasesService.isPremium && adService.adLoaded)
-            Container(
-              constraints: BoxConstraints(maxHeight: 90),
-              alignment: Alignment.center,
-              child: AdWidget(
-                ad: adService.bannerAd!,
-              ),
-              width: adService.bannerAd != null
-                  ? adService.bannerAd!.size.width.toDouble()
-                  : 320,
-              height: adService.bannerAd != null
-                  ? adService.bannerAd!.size.height.toDouble()
-                  : 100,
-            )
-        ],
-      ),
+      body: pages[index],
     );
   }
 }
@@ -203,12 +176,6 @@ class _IOSHomePageState extends ConsumerState<IOSHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    final adService = ref.watch(adProvider);
-    adService.initialize(
-      width: MediaQuery.of(context).size.width,
-      height: MediaQuery.of(context).size.height,
-    );
-    final purchasesService = ref.watch(purchasesProvider);
     final tabs = [
       AcftPage(),
       BodyfatPage(),
@@ -268,25 +235,7 @@ class _IOSHomePageState extends ConsumerState<IOSHomePage> {
                     )
                   : null,
             ),
-            child: Column(
-              children: [
-                Expanded(child: tabs[index]),
-                if (!purchasesService.isPremium && adService.adLoaded)
-                  Container(
-                    constraints: BoxConstraints(maxHeight: 90),
-                    alignment: Alignment.center,
-                    child: AdWidget(
-                      ad: adService.bannerAd!,
-                    ),
-                    width: adService.bannerAd != null
-                        ? adService.bannerAd!.size.width.toDouble()
-                        : 320,
-                    height: adService.bannerAd != null
-                        ? adService.bannerAd!.size.height.toDouble()
-                        : 100,
-                  )
-              ],
-            ),
+            child: tabs[index],
           ),
         );
       },

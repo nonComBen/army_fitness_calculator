@@ -163,7 +163,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                   ),
                   Consumer(
                     builder: ((context, ref, child) {
-                      final themeState = ref.watch(themeStateNotifierProvider);
+                      final themeState = ref.read(themeStateNotifierProvider);
                       final notifier =
                           ref.read(themeStateNotifierProvider.notifier);
                       return PlatformSelectionWidget(

@@ -1,10 +1,13 @@
-import 'package:acft_calculator/methods/platform_show_modal_bottom_sheet.dart';
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:intl/intl.dart';
 
+import '../../methods/platform_show_modal_bottom_sheet.dart';
 import '../../methods/theme_methods.dart';
 import '../../providers/purchases_provider.dart';
 import '../../services/purchases_service.dart';
@@ -108,6 +111,7 @@ class AcftPageState extends ConsumerState<AcftPage> {
     fontSize: 22.0,
     fontWeight: FontWeight.bold,
   );
+  late BannerAd myBanner;
   RegExp regExp = RegExp(r'^\d{4}(0[1-9]|1[012])(0[1-9]|[12][0-9]|3[01])$');
 
   final _ageController = TextEditingController();
@@ -139,6 +143,18 @@ class AcftPageState extends ConsumerState<AcftPage> {
     super.initState();
 
     purchasesService = ref.read(purchasesProvider);
+    if (!purchasesService.isPremium) {
+      myBanner = BannerAd(
+        adUnitId: Platform.isAndroid
+            ? 'ca-app-pub-2431077176117105/8950325543'
+            : 'ca-app-pub-2431077176117105/4488336359',
+        size: AdSize.banner,
+        listener: BannerAdListener(),
+        request: AdRequest(nonPersonalizedAds: true),
+      );
+
+      myBanner.load();
+    }
 
     _mdlController.text = mdlRaw.toString();
     _sptController.text = sptRaw.toString();
@@ -255,6 +271,8 @@ class AcftPageState extends ConsumerState<AcftPage> {
     _plkSecsFocus.dispose();
     _runMinsFocus.dispose();
     _runSecsFocus.dispose();
+
+    myBanner.dispose();
   }
 
   void setAgeGroup() {
@@ -512,1425 +530,1492 @@ class AcftPageState extends ConsumerState<AcftPage> {
     final onPrimary = getOnPrimaryColor(context);
     return Container(
       padding: EdgeInsets.all(16.0),
-      child: ListView(
-        children: <Widget>[
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: PlatformSelectionWidget(
-                titles: [Text('M'), Text('F')],
-                values: ['Male', 'Female'],
-                groupValue: gender,
-                onChanged: (value) {
-                  setState(() {
-                    FocusScope.of(context).unfocus();
-                    gender = value!;
-                    calcAll();
-                  });
-                }),
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: <Widget>[
-              Text(
-                'Age',
-                style: headerStyle,
-              ),
-              ValueInputField(
-                controller: _ageController,
-                focusNode: _ageFocus,
-                onEditingComplete: () => _mdlFocus.requestFocus(),
-                errorText: isAgeValid ? null : '17-80',
-                onChanged: (value) {
-                  int raw = int.tryParse(value) ?? 0;
-                  if (raw > 80) {
-                    isAgeValid = false;
-                    age = 80;
-                  } else if (raw < 17) {
-                    isAgeValid = false;
-                    age = 17;
-                  } else {
-                    age = raw;
-                    isAgeValid = true;
-                  }
-                  setAgeGroup();
-                  calcAll();
-                },
-              ),
-            ],
-          ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Row(
+      child: Column(
+        children: [
+          Expanded(
+            child: ListView(
               children: <Widget>[
-                IncrementDecrementButton(
-                  child: '-',
-                  onPressed: () {
-                    FocusScope.of(context).unfocus();
-                    if (age > 17) {
-                      age--;
-                    } else {
-                      age = 17;
-                    }
-                    isAgeValid = true;
-                    setAgeGroup();
-                    _ageController.text = age.toString();
-                    calcAll();
-                  },
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: PlatformSelectionWidget(
+                      titles: [Text('M'), Text('F')],
+                      values: ['Male', 'Female'],
+                      groupValue: gender,
+                      onChanged: (value) {
+                        setState(() {
+                          FocusScope.of(context).unfocus();
+                          gender = value!;
+                          calcAll();
+                        });
+                      }),
                 ),
-                Expanded(
-                  child: PlatformSlider(
-                    activeColor: primaryColor,
-                    value: age.toDouble(),
-                    min: 17,
-                    max: 80,
-                    divisions: 64,
-                    onChanged: (value) {
-                      FocusScope.of(context).unfocus();
-                      isAgeValid = true;
-                      age = value.floor();
-                      setAgeGroup();
-                      _ageController.text = age.toString();
-                      calcAll();
-                    },
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
+                    Text(
+                      'Age',
+                      style: headerStyle,
+                    ),
+                    ValueInputField(
+                      controller: _ageController,
+                      focusNode: _ageFocus,
+                      onEditingComplete: () => _mdlFocus.requestFocus(),
+                      errorText: isAgeValid ? null : '17-80',
+                      onChanged: (value) {
+                        int raw = int.tryParse(value) ?? 0;
+                        if (raw > 80) {
+                          isAgeValid = false;
+                          age = 80;
+                        } else if (raw < 17) {
+                          isAgeValid = false;
+                          age = 17;
+                        } else {
+                          age = raw;
+                          isAgeValid = true;
+                        }
+                        setAgeGroup();
+                        calcAll();
+                      },
+                    ),
+                  ],
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Row(
+                    children: <Widget>[
+                      IncrementDecrementButton(
+                        child: '-',
+                        onPressed: () {
+                          FocusScope.of(context).unfocus();
+                          if (age > 17) {
+                            age--;
+                          } else {
+                            age = 17;
+                          }
+                          isAgeValid = true;
+                          setAgeGroup();
+                          _ageController.text = age.toString();
+                          calcAll();
+                        },
+                      ),
+                      Expanded(
+                        child: PlatformSlider(
+                          activeColor: primaryColor,
+                          value: age.toDouble(),
+                          min: 17,
+                          max: 80,
+                          divisions: 64,
+                          onChanged: (value) {
+                            FocusScope.of(context).unfocus();
+                            isAgeValid = true;
+                            age = value.floor();
+                            setAgeGroup();
+                            _ageController.text = age.toString();
+                            calcAll();
+                          },
+                        ),
+                      ),
+                      IncrementDecrementButton(
+                        child: '+',
+                        onPressed: () {
+                          FocusScope.of(context).unfocus();
+                          if (age < 80) {
+                            age++;
+                          } else {
+                            age = 80;
+                          }
+                          isAgeValid = true;
+                          setAgeGroup();
+                          _ageController.text = age.toString();
+                          calcAll();
+                        },
+                      ),
+                    ],
                   ),
                 ),
-                IncrementDecrementButton(
-                  child: '+',
-                  onPressed: () {
-                    FocusScope.of(context).unfocus();
-                    if (age < 80) {
-                      age++;
-                    } else {
-                      age = 80;
-                    }
-                    isAgeValid = true;
-                    setAgeGroup();
-                    _ageController.text = age.toString();
-                    calcAll();
-                  },
-                ),
-              ],
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 8.0),
-            child: PlatformItemPicker(
-              label: Text(
-                'Aerobic Event',
-                style: headerStyle,
-              ),
-              value: aerobicEvent!,
-              items: acftAerobicEvents,
-              onChanged: (value) {
-                setState(() {
-                  FocusScope.of(context).unfocus();
-                  aerobicEvent = value;
-                });
-                setBenchmarks();
-                calcRunScore();
-                calcTotal();
-              },
-            ),
-          ),
-          Divider(
-            color: Colors.yellow,
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: <Widget>[
-              Text(
-                'Max Deadlift',
-                style: TextStyle(fontSize: 22.0, fontWeight: FontWeight.bold),
-              ),
-              ValueInputField(
-                width: 70,
-                controller: _mdlController,
-                focusNode: _mdlFocus,
-                onEditingComplete: () => _sptFocus.requestFocus(),
-                errorText: isMdlValid ? null : '0-400',
-                onChanged: (value) {
-                  int raw = int.tryParse(value) ?? 0;
-                  if (raw > 400) {
-                    hasMdlProfile = false;
-                    isMdlValid = false;
-                    mdlRaw = 400;
-                  } else if (raw < 0) {
-                    isMdlValid = false;
-                    mdlRaw = 0;
-                  } else {
-                    hasMdlProfile = false;
-                    mdlRaw = raw;
-                    isMdlValid = true;
-                  }
-                  mdlScore = getMdlScore(mdlRaw,
-                      ptAgeGroups.indexOf(ageGroup) + 1, gender == 'Male');
-                  calcTotal();
-                },
-              ),
-            ],
-          ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Row(
-              children: <Widget>[
-                IncrementDecrementButton(
-                  child: '-',
-                  onPressed: () {
-                    FocusScope.of(context).unfocus();
-                    if (mdlRaw > 0) {
-                      mdlRaw = mdlRaw - 10;
-                      calcTotal();
-                    } else {
-                      mdlRaw = 0;
-                    }
-                    _mdlController.text = mdlRaw.toString();
-                    isMdlValid = true;
-                    mdlScore = getMdlScore(mdlRaw,
-                        ptAgeGroups.indexOf(ageGroup) + 1, gender == 'Male');
-                    calcTotal();
-                  },
-                ),
-                Expanded(
-                  flex: 1,
-                  child: PlatformSlider(
-                    activeColor: primaryColor,
-                    value: mdlRaw.toDouble(),
-                    min: 0,
-                    max: 400,
-                    divisions: 40,
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 8.0),
+                  child: PlatformItemPicker(
+                    label: Text(
+                      'Aerobic Event',
+                      style: headerStyle,
+                    ),
+                    value: aerobicEvent!,
+                    items: acftAerobicEvents,
                     onChanged: (value) {
-                      FocusScope.of(context).unfocus();
-                      if (hasMdlProfile) {
-                        mdlRaw = 0;
-                      } else {
-                        mdlRaw = (value / 10).round() * 10;
-                      }
-                      _mdlController.text = mdlRaw.toString();
-                      isMdlValid = true;
-                      mdlScore = getMdlScore(mdlRaw,
-                          ptAgeGroups.indexOf(ageGroup) + 1, gender == 'Male');
+                      setState(() {
+                        FocusScope.of(context).unfocus();
+                        aerobicEvent = value;
+                      });
+                      setBenchmarks();
+                      calcRunScore();
                       calcTotal();
                     },
                   ),
                 ),
-                IncrementDecrementButton(
-                  child: '+',
-                  onPressed: () {
-                    FocusScope.of(context).unfocus();
-                    if (hasMdlProfile) {
-                      mdlRaw = 0;
-                    } else {
-                      if (mdlRaw < 400) {
-                        mdlRaw = mdlRaw + 10;
-                      } else {
-                        mdlRaw = 400;
-                      }
-                    }
-                    _mdlController.text = mdlRaw.toString();
-                    mdlScore = getMdlScore(mdlRaw,
-                        ptAgeGroups.indexOf(ageGroup) + 1, gender == 'Male');
-                    isMdlValid = true;
-                    calcTotal();
-                  },
+                Divider(
+                  color: Colors.yellow,
                 ),
-              ],
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: PlatformCheckboxListTile(
-              title: const Text('Profile'),
-              value: hasMdlProfile,
-              controlAffinity: ListTileControlAffinity.leading,
-              activeColor: onPrimary,
-              onChanged: (value) {
-                FocusScope.of(context).unfocus();
-                setState(() {
-                  hasMdlProfile = value!;
-                  if (value) {
-                    mdlRaw = 0;
-                    _mdlController.text = mdlRaw.toString();
-                  }
-                  mdlScore = 0;
-                  isMdlValid = true;
-                  calcTotal();
-                });
-              },
-              onIosTap: () {
-                FocusScope.of(context).unfocus();
-                setState(() {
-                  hasMdlProfile = !hasMdlProfile;
-                  if (hasMdlProfile) {
-                    mdlRaw = 0;
-                    _mdlController.text = mdlRaw.toString();
-                  }
-                  mdlScore = 0;
-                  isMdlValid = true;
-                  calcTotal();
-                });
-              },
-            ),
-          ),
-          Divider(
-            color: Colors.yellow,
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: <Widget>[
-              Text(
-                'Standing Power Throw',
-                style: headerStyle,
-              ),
-              ValueInputField(
-                width: 70,
-                controller: _sptController,
-                focusNode: _sptFocus,
-                onEditingComplete: () => _hrpFocus.requestFocus(),
-                errorText: isSptValid ? null : '0-14.0',
-                onChanged: (value) {
-                  double raw = double.tryParse(value) ?? 0;
-                  if (raw > 14.0) {
-                    hasSptProfile = false;
-                    isSptValid = false;
-                    sptRaw = 14.0;
-                  } else if (raw < 0.0) {
-                    isSptValid = false;
-                    sptRaw = 0.0;
-                  } else {
-                    hasSptProfile = false;
-                    sptRaw = raw;
-                    isSptValid = true;
-                  }
-                  sptScore = getSptScore(sptRaw,
-                      ptAgeGroups.indexOf(ageGroup) + 1, gender == 'Male');
-                  calcTotal();
-                },
-              ),
-            ],
-          ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Row(
-              children: <Widget>[
-                IncrementDecrementButton(
-                  child: '-',
-                  onPressed: () {
-                    FocusScope.of(context).unfocus();
-                    if (sptRaw > 0.0) {
-                      sptRaw =
-                          double.tryParse((sptRaw - 0.1).toStringAsFixed(1)) ??
-                              sptRaw - 0.1;
-                    } else {
-                      sptRaw = 0.0;
-                    }
-                    _sptController.text = sptRaw.toString();
-                    isSptValid = true;
-                    sptScore = getSptScore(sptRaw,
-                        ptAgeGroups.indexOf(ageGroup) + 1, gender == 'Male');
-                    calcTotal();
-                  },
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
+                    Text(
+                      'Max Deadlift',
+                      style: TextStyle(
+                          fontSize: 22.0, fontWeight: FontWeight.bold),
+                    ),
+                    ValueInputField(
+                      width: 70,
+                      controller: _mdlController,
+                      focusNode: _mdlFocus,
+                      onEditingComplete: () => _sptFocus.requestFocus(),
+                      errorText: isMdlValid ? null : '0-400',
+                      onChanged: (value) {
+                        int raw = int.tryParse(value) ?? 0;
+                        if (raw > 400) {
+                          hasMdlProfile = false;
+                          isMdlValid = false;
+                          mdlRaw = 400;
+                        } else if (raw < 0) {
+                          isMdlValid = false;
+                          mdlRaw = 0;
+                        } else {
+                          hasMdlProfile = false;
+                          mdlRaw = raw;
+                          isMdlValid = true;
+                        }
+                        mdlScore = getMdlScore(
+                            mdlRaw,
+                            ptAgeGroups.indexOf(ageGroup) + 1,
+                            gender == 'Male');
+                        calcTotal();
+                      },
+                    ),
+                  ],
                 ),
-                Expanded(
-                  flex: 1,
-                  child: PlatformSlider(
-                    activeColor: getPrimaryColor(context),
-                    value: sptRaw,
-                    min: 0,
-                    max: 14.0,
-                    divisions: 141,
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Row(
+                    children: <Widget>[
+                      IncrementDecrementButton(
+                        child: '-',
+                        onPressed: () {
+                          FocusScope.of(context).unfocus();
+                          if (mdlRaw > 0) {
+                            mdlRaw = mdlRaw - 10;
+                            calcTotal();
+                          } else {
+                            mdlRaw = 0;
+                          }
+                          _mdlController.text = mdlRaw.toString();
+                          isMdlValid = true;
+                          mdlScore = getMdlScore(
+                              mdlRaw,
+                              ptAgeGroups.indexOf(ageGroup) + 1,
+                              gender == 'Male');
+                          calcTotal();
+                        },
+                      ),
+                      Expanded(
+                        flex: 1,
+                        child: PlatformSlider(
+                          activeColor: primaryColor,
+                          value: mdlRaw.toDouble(),
+                          min: 0,
+                          max: 400,
+                          divisions: 40,
+                          onChanged: (value) {
+                            FocusScope.of(context).unfocus();
+                            if (hasMdlProfile) {
+                              mdlRaw = 0;
+                            } else {
+                              mdlRaw = (value / 10).round() * 10;
+                            }
+                            _mdlController.text = mdlRaw.toString();
+                            isMdlValid = true;
+                            mdlScore = getMdlScore(
+                                mdlRaw,
+                                ptAgeGroups.indexOf(ageGroup) + 1,
+                                gender == 'Male');
+                            calcTotal();
+                          },
+                        ),
+                      ),
+                      IncrementDecrementButton(
+                        child: '+',
+                        onPressed: () {
+                          FocusScope.of(context).unfocus();
+                          if (hasMdlProfile) {
+                            mdlRaw = 0;
+                          } else {
+                            if (mdlRaw < 400) {
+                              mdlRaw = mdlRaw + 10;
+                            } else {
+                              mdlRaw = 400;
+                            }
+                          }
+                          _mdlController.text = mdlRaw.toString();
+                          mdlScore = getMdlScore(
+                              mdlRaw,
+                              ptAgeGroups.indexOf(ageGroup) + 1,
+                              gender == 'Male');
+                          isMdlValid = true;
+                          calcTotal();
+                        },
+                      ),
+                    ],
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: PlatformCheckboxListTile(
+                    title: const Text('Profile'),
+                    value: hasMdlProfile,
+                    controlAffinity: ListTileControlAffinity.leading,
+                    activeColor: onPrimary,
                     onChanged: (value) {
                       FocusScope.of(context).unfocus();
-                      if (hasSptProfile) {
-                        sptRaw = 0;
-                      } else {
-                        sptRaw = (value * 10).round() / 10;
-                      }
-                      _sptController.text = sptRaw.toString();
-                      isSptValid = true;
-                      sptScore = getSptScore(sptRaw,
-                          ptAgeGroups.indexOf(ageGroup) + 1, gender == 'Male');
-                      calcTotal();
+                      setState(() {
+                        hasMdlProfile = value!;
+                        if (value) {
+                          mdlRaw = 0;
+                          _mdlController.text = mdlRaw.toString();
+                        }
+                        mdlScore = 0;
+                        isMdlValid = true;
+                        calcTotal();
+                      });
+                    },
+                    onIosTap: () {
+                      FocusScope.of(context).unfocus();
+                      setState(() {
+                        hasMdlProfile = !hasMdlProfile;
+                        if (hasMdlProfile) {
+                          mdlRaw = 0;
+                          _mdlController.text = mdlRaw.toString();
+                        }
+                        mdlScore = 0;
+                        isMdlValid = true;
+                        calcTotal();
+                      });
                     },
                   ),
                 ),
-                IncrementDecrementButton(
-                  child: '+',
-                  onPressed: () {
-                    FocusScope.of(context).unfocus();
-                    if (hasSptProfile) {
-                      sptRaw = 0;
-                    } else {
-                      if (sptRaw < 14.0) {
-                        sptRaw = double.tryParse(
-                                (sptRaw + 0.1).toStringAsFixed(1)) ??
-                            sptRaw + 0.1;
-                      } else {
-                        sptRaw = 14.0;
-                      }
-                    }
-                    _sptController.text = sptRaw.toString();
-                    isSptValid = true;
-                    sptScore = getSptScore(sptRaw,
-                        ptAgeGroups.indexOf(ageGroup) + 1, gender == 'Male');
-                    calcTotal();
-                  },
+                Divider(
+                  color: Colors.yellow,
                 ),
-              ],
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: PlatformCheckboxListTile(
-              title: const Text('Profile'),
-              value: hasSptProfile,
-              controlAffinity: ListTileControlAffinity.leading,
-              activeColor: onPrimary,
-              onChanged: (value) {
-                FocusScope.of(context).unfocus();
-                setState(() {
-                  hasSptProfile = value!;
-                  if (value) {
-                    sptRaw = 0;
-                    _sptController.text = sptRaw.toString();
-                  }
-                  sptScore = 0;
-                  isSptValid = true;
-                  calcTotal();
-                });
-              },
-              onIosTap: () {
-                FocusScope.of(context).unfocus();
-                setState(() {
-                  hasSptProfile = !hasSptProfile;
-                  if (hasSptProfile) {
-                    sptRaw = 0;
-                    _sptController.text = sptRaw.toString();
-                  }
-                  sptScore = 0;
-                  isSptValid = true;
-                  calcTotal();
-                });
-              },
-            ),
-          ),
-          Divider(
-            color: Colors.yellow,
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: <Widget>[
-              Text(
-                'Hand Release Push Ups',
-                style: headerStyle,
-              ),
-              ValueInputField(
-                controller: _hrpController,
-                focusNode: _hrpFocus,
-                onEditingComplete: () => _sdcMinsFocus.requestFocus(),
-                errorText: isHrpValid ? null : '0-80',
-                onChanged: (value) {
-                  int raw = int.tryParse(value) ?? -1;
-                  if (raw > 80) {
-                    hasHrpProfile = false;
-                    isHrpValid = false;
-                    hrpRaw = 80;
-                  } else if (raw < 0) {
-                    isHrpValid = false;
-                    hrpRaw = 0;
-                  } else {
-                    hasHrpProfile = false;
-                    hrpRaw = raw;
-                    isHrpValid = true;
-                  }
-                  hrpScore = getHrpScore(hrpRaw,
-                      ptAgeGroups.indexOf(ageGroup) + 1, gender == 'Male');
-                  calcTotal();
-                },
-              ),
-            ],
-          ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Row(
-              children: <Widget>[
-                IncrementDecrementButton(
-                  child: '-',
-                  onPressed: () {
-                    FocusScope.of(context).unfocus();
-                    if (hrpRaw > 0) {
-                      hrpRaw--;
-                    } else {
-                      hrpRaw = 0;
-                    }
-                    _hrpController.text = hrpRaw.toString();
-                    isHrpValid = true;
-                    hrpScore = getHrpScore(hrpRaw,
-                        ptAgeGroups.indexOf(ageGroup) + 1, gender == 'Male');
-                    calcTotal();
-                  },
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
+                    Text(
+                      'Standing Power Throw',
+                      style: headerStyle,
+                    ),
+                    ValueInputField(
+                      width: 70,
+                      controller: _sptController,
+                      focusNode: _sptFocus,
+                      onEditingComplete: () => _hrpFocus.requestFocus(),
+                      errorText: isSptValid ? null : '0-14.0',
+                      onChanged: (value) {
+                        double raw = double.tryParse(value) ?? 0;
+                        if (raw > 14.0) {
+                          hasSptProfile = false;
+                          isSptValid = false;
+                          sptRaw = 14.0;
+                        } else if (raw < 0.0) {
+                          isSptValid = false;
+                          sptRaw = 0.0;
+                        } else {
+                          hasSptProfile = false;
+                          sptRaw = raw;
+                          isSptValid = true;
+                        }
+                        sptScore = getSptScore(
+                            sptRaw,
+                            ptAgeGroups.indexOf(ageGroup) + 1,
+                            gender == 'Male');
+                        calcTotal();
+                      },
+                    ),
+                  ],
                 ),
-                Expanded(
-                  flex: 1,
-                  child: PlatformSlider(
-                    activeColor: getPrimaryColor(context),
-                    value: hrpRaw.toDouble(),
-                    min: 0,
-                    max: 80,
-                    divisions: 81,
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Row(
+                    children: <Widget>[
+                      IncrementDecrementButton(
+                        child: '-',
+                        onPressed: () {
+                          FocusScope.of(context).unfocus();
+                          if (sptRaw > 0.0) {
+                            sptRaw = double.tryParse(
+                                    (sptRaw - 0.1).toStringAsFixed(1)) ??
+                                sptRaw - 0.1;
+                          } else {
+                            sptRaw = 0.0;
+                          }
+                          _sptController.text = sptRaw.toString();
+                          isSptValid = true;
+                          sptScore = getSptScore(
+                              sptRaw,
+                              ptAgeGroups.indexOf(ageGroup) + 1,
+                              gender == 'Male');
+                          calcTotal();
+                        },
+                      ),
+                      Expanded(
+                        flex: 1,
+                        child: PlatformSlider(
+                          activeColor: getPrimaryColor(context),
+                          value: sptRaw,
+                          min: 0,
+                          max: 14.0,
+                          divisions: 141,
+                          onChanged: (value) {
+                            FocusScope.of(context).unfocus();
+                            if (hasSptProfile) {
+                              sptRaw = 0;
+                            } else {
+                              sptRaw = (value * 10).round() / 10;
+                            }
+                            _sptController.text = sptRaw.toString();
+                            isSptValid = true;
+                            sptScore = getSptScore(
+                                sptRaw,
+                                ptAgeGroups.indexOf(ageGroup) + 1,
+                                gender == 'Male');
+                            calcTotal();
+                          },
+                        ),
+                      ),
+                      IncrementDecrementButton(
+                        child: '+',
+                        onPressed: () {
+                          FocusScope.of(context).unfocus();
+                          if (hasSptProfile) {
+                            sptRaw = 0;
+                          } else {
+                            if (sptRaw < 14.0) {
+                              sptRaw = double.tryParse(
+                                      (sptRaw + 0.1).toStringAsFixed(1)) ??
+                                  sptRaw + 0.1;
+                            } else {
+                              sptRaw = 14.0;
+                            }
+                          }
+                          _sptController.text = sptRaw.toString();
+                          isSptValid = true;
+                          sptScore = getSptScore(
+                              sptRaw,
+                              ptAgeGroups.indexOf(ageGroup) + 1,
+                              gender == 'Male');
+                          calcTotal();
+                        },
+                      ),
+                    ],
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: PlatformCheckboxListTile(
+                    title: const Text('Profile'),
+                    value: hasSptProfile,
+                    controlAffinity: ListTileControlAffinity.leading,
+                    activeColor: onPrimary,
                     onChanged: (value) {
                       FocusScope.of(context).unfocus();
-                      if (hasHrpProfile) {
-                        hrpRaw = 0;
-                      } else {
-                        hrpRaw = value.floor();
-                      }
-                      _hrpController.text = hrpRaw.toString();
-                      isHrpValid = true;
-                      hrpScore = getHrpScore(hrpRaw,
-                          ptAgeGroups.indexOf(ageGroup) + 1, gender == 'Male');
-                      calcTotal();
+                      setState(() {
+                        hasSptProfile = value!;
+                        if (value) {
+                          sptRaw = 0;
+                          _sptController.text = sptRaw.toString();
+                        }
+                        sptScore = 0;
+                        isSptValid = true;
+                        calcTotal();
+                      });
+                    },
+                    onIosTap: () {
+                      FocusScope.of(context).unfocus();
+                      setState(() {
+                        hasSptProfile = !hasSptProfile;
+                        if (hasSptProfile) {
+                          sptRaw = 0;
+                          _sptController.text = sptRaw.toString();
+                        }
+                        sptScore = 0;
+                        isSptValid = true;
+                        calcTotal();
+                      });
                     },
                   ),
                 ),
-                IncrementDecrementButton(
-                  child: '+',
-                  onPressed: () {
-                    FocusScope.of(context).unfocus();
-                    if (hasHrpProfile) {
-                      hrpRaw = 0;
-                    } else {
-                      if (hrpRaw < 80) {
-                        hrpRaw++;
-                      } else {
-                        hrpRaw = 80;
-                      }
-                    }
-                    _hrpController.text = hrpRaw.toString();
-                    isHrpValid = true;
-                    hrpScore = getHrpScore(hrpRaw,
-                        ptAgeGroups.indexOf(ageGroup) + 1, gender == 'Male');
-                    calcTotal();
-                  },
+                Divider(
+                  color: Colors.yellow,
                 ),
-              ],
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: PlatformCheckboxListTile(
-              title: const Text('Profile'),
-              value: hasHrpProfile,
-              controlAffinity: ListTileControlAffinity.leading,
-              activeColor: onPrimary,
-              onChanged: (value) {
-                FocusScope.of(context).unfocus();
-                setState(() {
-                  hasHrpProfile = value!;
-                  if (value) {
-                    hrpRaw = 0;
-                    _hrpController.text = hrpRaw.toString();
-                  }
-                  hrpScore = 0;
-                  isHrpValid = true;
-                  calcTotal();
-                });
-              },
-              onIosTap: () {
-                FocusScope.of(context).unfocus();
-                setState(() {
-                  hasHrpProfile = !hasHrpProfile;
-                  if (hasHrpProfile) {
-                    hrpRaw = 0;
-                    _hrpController.text = hrpRaw.toString();
-                  }
-                  hrpScore = 0;
-                  isHrpValid = true;
-                  calcTotal();
-                });
-              },
-            ),
-          ),
-          Divider(
-            color: Colors.yellow,
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: <Widget>[
-              Text(
-                'Sprint-Drag-Carry',
-                style: headerStyle,
-              ),
-              Row(
-                children: <Widget>[
-                  ValueInputField(
-                    controller: _sdcMinsController,
-                    focusNode: _sdcMinsFocus,
-                    onEditingComplete: () => FocusScope.of(context).nextFocus(),
-                    errorText: isSdcMinsValid ? null : '0-5',
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
+                    Text(
+                      'Hand Release Push Ups',
+                      style: headerStyle,
+                    ),
+                    ValueInputField(
+                      controller: _hrpController,
+                      focusNode: _hrpFocus,
+                      onEditingComplete: () => _sdcMinsFocus.requestFocus(),
+                      errorText: isHrpValid ? null : '0-80',
+                      onChanged: (value) {
+                        int raw = int.tryParse(value) ?? -1;
+                        if (raw > 80) {
+                          hasHrpProfile = false;
+                          isHrpValid = false;
+                          hrpRaw = 80;
+                        } else if (raw < 0) {
+                          isHrpValid = false;
+                          hrpRaw = 0;
+                        } else {
+                          hasHrpProfile = false;
+                          hrpRaw = raw;
+                          isHrpValid = true;
+                        }
+                        hrpScore = getHrpScore(
+                            hrpRaw,
+                            ptAgeGroups.indexOf(ageGroup) + 1,
+                            gender == 'Male');
+                        calcTotal();
+                      },
+                    ),
+                  ],
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Row(
+                    children: <Widget>[
+                      IncrementDecrementButton(
+                        child: '-',
+                        onPressed: () {
+                          FocusScope.of(context).unfocus();
+                          if (hrpRaw > 0) {
+                            hrpRaw--;
+                          } else {
+                            hrpRaw = 0;
+                          }
+                          _hrpController.text = hrpRaw.toString();
+                          isHrpValid = true;
+                          hrpScore = getHrpScore(
+                              hrpRaw,
+                              ptAgeGroups.indexOf(ageGroup) + 1,
+                              gender == 'Male');
+                          calcTotal();
+                        },
+                      ),
+                      Expanded(
+                        flex: 1,
+                        child: PlatformSlider(
+                          activeColor: getPrimaryColor(context),
+                          value: hrpRaw.toDouble(),
+                          min: 0,
+                          max: 80,
+                          divisions: 81,
+                          onChanged: (value) {
+                            FocusScope.of(context).unfocus();
+                            if (hasHrpProfile) {
+                              hrpRaw = 0;
+                            } else {
+                              hrpRaw = value.floor();
+                            }
+                            _hrpController.text = hrpRaw.toString();
+                            isHrpValid = true;
+                            hrpScore = getHrpScore(
+                                hrpRaw,
+                                ptAgeGroups.indexOf(ageGroup) + 1,
+                                gender == 'Male');
+                            calcTotal();
+                          },
+                        ),
+                      ),
+                      IncrementDecrementButton(
+                        child: '+',
+                        onPressed: () {
+                          FocusScope.of(context).unfocus();
+                          if (hasHrpProfile) {
+                            hrpRaw = 0;
+                          } else {
+                            if (hrpRaw < 80) {
+                              hrpRaw++;
+                            } else {
+                              hrpRaw = 80;
+                            }
+                          }
+                          _hrpController.text = hrpRaw.toString();
+                          isHrpValid = true;
+                          hrpScore = getHrpScore(
+                              hrpRaw,
+                              ptAgeGroups.indexOf(ageGroup) + 1,
+                              gender == 'Male');
+                          calcTotal();
+                        },
+                      ),
+                    ],
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: PlatformCheckboxListTile(
+                    title: const Text('Profile'),
+                    value: hasHrpProfile,
+                    controlAffinity: ListTileControlAffinity.leading,
+                    activeColor: onPrimary,
                     onChanged: (value) {
-                      int raw = int.tryParse(value) ?? -1;
-                      if (raw < 0) {
-                        isSdcMinsValid = false;
-                        sdcMins = 0;
-                      } else if (raw > 5) {
-                        hasSdcProfile = false;
-                        isSdcMinsValid = false;
-                        sdcMins = 5;
-                      } else {
-                        hasSdcProfile = false;
+                      FocusScope.of(context).unfocus();
+                      setState(() {
+                        hasHrpProfile = value!;
+                        if (value) {
+                          hrpRaw = 0;
+                          _hrpController.text = hrpRaw.toString();
+                        }
+                        hrpScore = 0;
+                        isHrpValid = true;
+                        calcTotal();
+                      });
+                    },
+                    onIosTap: () {
+                      FocusScope.of(context).unfocus();
+                      setState(() {
+                        hasHrpProfile = !hasHrpProfile;
+                        if (hasHrpProfile) {
+                          hrpRaw = 0;
+                          _hrpController.text = hrpRaw.toString();
+                        }
+                        hrpScore = 0;
+                        isHrpValid = true;
+                        calcTotal();
+                      });
+                    },
+                  ),
+                ),
+                Divider(
+                  color: Colors.yellow,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
+                    Text(
+                      'Sprint-Drag-Carry',
+                      style: headerStyle,
+                    ),
+                    Row(
+                      children: <Widget>[
+                        ValueInputField(
+                          controller: _sdcMinsController,
+                          focusNode: _sdcMinsFocus,
+                          onEditingComplete: () =>
+                              FocusScope.of(context).nextFocus(),
+                          errorText: isSdcMinsValid ? null : '0-5',
+                          onChanged: (value) {
+                            int raw = int.tryParse(value) ?? -1;
+                            if (raw < 0) {
+                              isSdcMinsValid = false;
+                              sdcMins = 0;
+                            } else if (raw > 5) {
+                              hasSdcProfile = false;
+                              isSdcMinsValid = false;
+                              sdcMins = 5;
+                            } else {
+                              hasSdcProfile = false;
+                              isSdcMinsValid = true;
+                              sdcMins = raw;
+                            }
+                            sdcScore = getSdcScore(
+                                getTimeAsInt(sdcMins, sdcSecs),
+                                ptAgeGroups.indexOf(ageGroup) + 1,
+                                gender == 'Male');
+                            calcTotal();
+                          },
+                        ),
+                        const Padding(
+                          padding: EdgeInsets.fromLTRB(4.0, 0.0, 4.0, 8.0),
+                          child: Text(
+                            ':',
+                            style: TextStyle(fontSize: 18),
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                        ValueInputField(
+                          controller: _sdcSecsController,
+                          focusNode: _sdcSecsFocus,
+                          onEditingComplete: () => _plkMinsFocus.requestFocus(),
+                          errorText: isSdcSecsValid ? null : '0-59',
+                          onChanged: (value) {
+                            int raw = int.tryParse(value) ?? -1;
+                            if (raw > 59) {
+                              hasSdcProfile = false;
+                              isSdcSecsValid = false;
+                              sdcSecs = 59;
+                            } else if (raw < 0) {
+                              isSdcSecsValid = false;
+                              sdcSecs = 0;
+                            } else {
+                              hasSdcProfile = false;
+                              isSdcSecsValid = true;
+                              sdcSecs = raw;
+                            }
+                            sdcScore = getSdcScore(
+                                getTimeAsInt(sdcMins, sdcSecs),
+                                ptAgeGroups.indexOf(ageGroup) + 1,
+                                gender == 'Male');
+                            calcTotal();
+                          },
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Row(
+                    children: <Widget>[
+                      IncrementDecrementButton(
+                        child: '-',
+                        onPressed: () {
+                          FocusScope.of(context).unfocus();
+                          if (sdcMins > 0) {
+                            sdcMins--;
+                          } else {
+                            sdcMins = 0;
+                          }
+                          _sdcMinsController.text = sdcMins.toString();
+                          isSdcMinsValid = true;
+                          sdcScore = getSdcScore(
+                              getTimeAsInt(sdcMins, sdcSecs),
+                              ptAgeGroups.indexOf(ageGroup) + 1,
+                              gender == 'Male');
+                          calcTotal();
+                        },
+                      ),
+                      Expanded(
+                        flex: 1,
+                        child: PlatformSlider(
+                          activeColor: getPrimaryColor(context),
+                          value: sdcMins.toDouble(),
+                          min: 0,
+                          max: 5,
+                          divisions: 6,
+                          onChanged: (value) {
+                            FocusScope.of(context).unfocus();
+                            if (hasSdcProfile) {
+                              sdcMins = 0;
+                            } else {
+                              sdcMins = value.floor();
+                            }
+                            _sdcMinsController.text = sdcMins.toString();
+                            isSdcMinsValid = true;
+                            sdcScore = getSdcScore(
+                                getTimeAsInt(sdcMins, sdcSecs),
+                                ptAgeGroups.indexOf(ageGroup) + 1,
+                                gender == 'Male');
+                            calcTotal();
+                          },
+                        ),
+                      ),
+                      IncrementDecrementButton(
+                        child: '+',
+                        onPressed: () {
+                          FocusScope.of(context).unfocus();
+                          if (hasSdcProfile) {
+                            sdcMins = 0;
+                          } else {
+                            if (sdcMins < 5) {
+                              sdcMins++;
+                            } else {
+                              sdcMins = 5;
+                            }
+                          }
+                          _sdcMinsController.text = sdcMins.toString();
+                          isSdcMinsValid = true;
+                          sdcScore = getSdcScore(
+                              getTimeAsInt(sdcMins, sdcSecs),
+                              ptAgeGroups.indexOf(ageGroup) + 1,
+                              gender == 'Male');
+                          calcTotal();
+                        },
+                      ),
+                    ],
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Row(
+                    children: <Widget>[
+                      IncrementDecrementButton(
+                        child: '-',
+                        onPressed: () {
+                          FocusScope.of(context).unfocus();
+                          if (sdcSecs > 0) {
+                            sdcSecs--;
+                          } else {
+                            sdcSecs = 0;
+                          }
+                          _sdcSecsController.text = sdcSecs.toString();
+                          isSdcSecsValid = true;
+                          sdcScore = getSdcScore(
+                              getTimeAsInt(sdcMins, sdcSecs),
+                              ptAgeGroups.indexOf(ageGroup) + 1,
+                              gender == 'Male');
+                          calcTotal();
+                        },
+                      ),
+                      Expanded(
+                        flex: 1,
+                        child: PlatformSlider(
+                          activeColor: getPrimaryColor(context),
+                          value: sdcSecs.toDouble(),
+                          min: 0,
+                          max: 59,
+                          divisions: 60,
+                          onChanged: (value) {
+                            FocusScope.of(context).unfocus();
+                            if (hasSdcProfile) {
+                              sdcSecs = 0;
+                            } else {
+                              sdcSecs = value.floor();
+                            }
+                            _sdcSecsController.text = sdcSecs.toString();
+                            isSdcSecsValid = true;
+                            sdcScore = getSdcScore(
+                                getTimeAsInt(sdcMins, sdcSecs),
+                                ptAgeGroups.indexOf(ageGroup) + 1,
+                                gender == 'Male');
+                            calcTotal();
+                          },
+                        ),
+                      ),
+                      IncrementDecrementButton(
+                        child: '+',
+                        onPressed: () {
+                          FocusScope.of(context).unfocus();
+                          if (hasSdcProfile) {
+                            sdcSecs = 0;
+                          } else {
+                            if (sdcSecs < 59) {
+                              sdcSecs++;
+                            } else {
+                              sdcSecs = 59;
+                            }
+                          }
+                          _sdcSecsController.text = sdcSecs.toString();
+                          isSdcSecsValid = true;
+                          sdcScore = getSdcScore(
+                              getTimeAsInt(sdcMins, sdcSecs),
+                              ptAgeGroups.indexOf(ageGroup) + 1,
+                              gender == 'Male');
+                          calcTotal();
+                        },
+                      ),
+                    ],
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: PlatformCheckboxListTile(
+                    title: const Text('Profile'),
+                    value: hasSdcProfile,
+                    controlAffinity: ListTileControlAffinity.leading,
+                    activeColor: onPrimary,
+                    onChanged: (value) {
+                      FocusScope.of(context).unfocus();
+                      setState(() {
+                        hasSdcProfile = value!;
+                        if (value) {
+                          sdcMins = 0;
+                          sdcSecs = 0;
+                          _sdcMinsController.text = sdcMins.toString();
+                          _sdcSecsController.text = sdcSecs.toString();
+                        }
+                        sdcScore = 0;
                         isSdcMinsValid = true;
-                        sdcMins = raw;
-                      }
-                      sdcScore = getSdcScore(getTimeAsInt(sdcMins, sdcSecs),
-                          ptAgeGroups.indexOf(ageGroup) + 1, gender == 'Male');
-                      calcTotal();
-                    },
-                  ),
-                  const Padding(
-                    padding: EdgeInsets.fromLTRB(4.0, 0.0, 4.0, 8.0),
-                    child: Text(
-                      ':',
-                      style: TextStyle(fontSize: 18),
-                      textAlign: TextAlign.center,
-                    ),
-                  ),
-                  ValueInputField(
-                    controller: _sdcSecsController,
-                    focusNode: _sdcSecsFocus,
-                    onEditingComplete: () => _plkMinsFocus.requestFocus(),
-                    errorText: isSdcSecsValid ? null : '0-59',
-                    onChanged: (value) {
-                      int raw = int.tryParse(value) ?? -1;
-                      if (raw > 59) {
-                        hasSdcProfile = false;
-                        isSdcSecsValid = false;
-                        sdcSecs = 59;
-                      } else if (raw < 0) {
-                        isSdcSecsValid = false;
-                        sdcSecs = 0;
-                      } else {
-                        hasSdcProfile = false;
                         isSdcSecsValid = true;
-                        sdcSecs = raw;
-                      }
-                      sdcScore = getSdcScore(getTimeAsInt(sdcMins, sdcSecs),
-                          ptAgeGroups.indexOf(ageGroup) + 1, gender == 'Male');
-                      calcTotal();
+                        calcTotal();
+                      });
+                    },
+                    onIosTap: () {
+                      FocusScope.of(context).unfocus();
+                      setState(() {
+                        hasSdcProfile = !hasSdcProfile;
+                        if (hasSdcProfile) {
+                          sdcMins = 0;
+                          sdcSecs = 0;
+                          _sdcMinsController.text = sdcMins.toString();
+                          _sdcSecsController.text = sdcSecs.toString();
+                        }
+                        sdcScore = 0;
+                        isSdcMinsValid = true;
+                        isSdcSecsValid = true;
+                        calcTotal();
+                      });
                     },
                   ),
-                ],
-              ),
-            ],
-          ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Row(
-              children: <Widget>[
-                IncrementDecrementButton(
-                  child: '-',
-                  onPressed: () {
-                    FocusScope.of(context).unfocus();
-                    if (sdcMins > 0) {
-                      sdcMins--;
-                    } else {
-                      sdcMins = 0;
-                    }
-                    _sdcMinsController.text = sdcMins.toString();
-                    isSdcMinsValid = true;
-                    sdcScore = getSdcScore(getTimeAsInt(sdcMins, sdcSecs),
-                        ptAgeGroups.indexOf(ageGroup) + 1, gender == 'Male');
-                    calcTotal();
-                  },
                 ),
-                Expanded(
-                  flex: 1,
-                  child: PlatformSlider(
-                    activeColor: getPrimaryColor(context),
-                    value: sdcMins.toDouble(),
-                    min: 0,
-                    max: 5,
-                    divisions: 6,
+                Divider(
+                  color: Colors.yellow,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
+                    Text(
+                      'Plank',
+                      style: headerStyle,
+                    ),
+                    Row(
+                      children: <Widget>[
+                        ValueInputField(
+                          controller: _plankMinsController,
+                          focusNode: _plkMinsFocus,
+                          onEditingComplete: () =>
+                              FocusScope.of(context).nextFocus(),
+                          errorText: isPlankMinsValid ? null : '0-4',
+                          onChanged: (value) {
+                            int raw = int.tryParse(value) ?? -1;
+                            if (raw < 0) {
+                              isPlankMinsValid = false;
+                              plankMins = 0;
+                            } else if (raw > 4) {
+                              hasPlkProfile = false;
+                              isPlankMinsValid = false;
+                              plankMins = 4;
+                            } else {
+                              hasPlkProfile = false;
+                              isPlankMinsValid = true;
+                              plankMins = raw;
+                            }
+                            plankScore = getPlkScore(
+                                getTimeAsInt(plankMins, plankSecs),
+                                ptAgeGroups.indexOf(ageGroup) + 1,
+                                gender == 'Male');
+                            calcTotal();
+                          },
+                        ),
+                        const Padding(
+                          padding: EdgeInsets.fromLTRB(4.0, 0.0, 4.0, 8.0),
+                          child: Text(
+                            ':',
+                            style: TextStyle(fontSize: 18),
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                        ValueInputField(
+                          controller: _plankSecsController,
+                          focusNode: _plkSecsFocus,
+                          onEditingComplete: () => _runMinsFocus.requestFocus(),
+                          errorText: isPlankSecsValid ? null : '0-59',
+                          onChanged: (value) {
+                            int raw = int.tryParse(value) ?? -1;
+                            if (raw > 59) {
+                              hasPlkProfile = false;
+                              isPlankSecsValid = false;
+                              plankSecs = 59;
+                            } else if (raw < 0) {
+                              isPlankSecsValid = false;
+                              plankSecs = 0;
+                            } else {
+                              hasPlkProfile = false;
+                              isPlankSecsValid = true;
+                              plankSecs = raw;
+                            }
+                            plankScore = getPlkScore(
+                                getTimeAsInt(plankMins, plankSecs),
+                                ptAgeGroups.indexOf(ageGroup) + 1,
+                                gender == 'Male');
+                            calcTotal();
+                          },
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Row(
+                    children: <Widget>[
+                      IncrementDecrementButton(
+                        child: '-',
+                        onPressed: () {
+                          FocusScope.of(context).unfocus();
+                          if (plankMins > 0) {
+                            plankMins--;
+                          } else {
+                            plankMins = 0;
+                          }
+                          _plankMinsController.text = plankMins.toString();
+                          isPlankMinsValid = true;
+                          plankScore = getPlkScore(
+                              getTimeAsInt(plankMins, plankSecs),
+                              ptAgeGroups.indexOf(ageGroup) + 1,
+                              gender == 'Male');
+                          calcTotal();
+                        },
+                      ),
+                      Expanded(
+                        flex: 1,
+                        child: PlatformSlider(
+                          activeColor: getPrimaryColor(context),
+                          value: plankMins.toDouble(),
+                          min: 0,
+                          max: 4,
+                          divisions: 5,
+                          onChanged: (value) {
+                            FocusScope.of(context).unfocus();
+                            if (hasPlkProfile) {
+                              plankMins = 0;
+                            } else {
+                              plankMins = value.floor();
+                            }
+                            _plankMinsController.text = plankMins.toString();
+                            isPlankMinsValid = true;
+                            plankScore = getPlkScore(
+                                getTimeAsInt(plankMins, plankSecs),
+                                ptAgeGroups.indexOf(ageGroup) + 1,
+                                gender == 'Male');
+                            calcTotal();
+                          },
+                        ),
+                      ),
+                      IncrementDecrementButton(
+                        child: '+',
+                        onPressed: () {
+                          FocusScope.of(context).unfocus();
+                          if (hasPlkProfile) {
+                            plankMins = 0;
+                          } else {
+                            if (plankMins < 4) {
+                              plankMins++;
+                            } else {
+                              plankMins = 4;
+                            }
+                          }
+                          _plankMinsController.text = plankMins.toString();
+                          isPlankMinsValid = true;
+                          plankScore = getPlkScore(
+                              getTimeAsInt(plankMins, plankSecs),
+                              ptAgeGroups.indexOf(ageGroup) + 1,
+                              gender == 'Male');
+                          calcTotal();
+                        },
+                      ),
+                    ],
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Row(
+                    children: <Widget>[
+                      IncrementDecrementButton(
+                        child: '-',
+                        onPressed: () {
+                          FocusScope.of(context).unfocus();
+                          if (plankSecs > 0) {
+                            plankSecs--;
+                          } else {
+                            plankSecs = 0;
+                          }
+                          _plankSecsController.text = plankSecs.toString();
+                          isPlankSecsValid = true;
+                          plankScore = getPlkScore(
+                              getTimeAsInt(plankMins, plankSecs),
+                              ptAgeGroups.indexOf(ageGroup) + 1,
+                              gender == 'Male');
+                          calcTotal();
+                        },
+                      ),
+                      Expanded(
+                        flex: 1,
+                        child: PlatformSlider(
+                          activeColor: getPrimaryColor(context),
+                          value: plankSecs.toDouble(),
+                          min: 0,
+                          max: 59,
+                          divisions: 60,
+                          onChanged: (value) {
+                            FocusScope.of(context).unfocus();
+                            if (hasPlkProfile) {
+                              plankSecs = 0;
+                            } else {
+                              plankSecs = value.floor();
+                            }
+                            _plankSecsController.text = plankSecs.toString();
+                            isPlankSecsValid = true;
+                            plankScore = getPlkScore(
+                                getTimeAsInt(plankMins, plankSecs),
+                                ptAgeGroups.indexOf(ageGroup) + 1,
+                                gender == 'Male');
+                            calcTotal();
+                          },
+                        ),
+                      ),
+                      IncrementDecrementButton(
+                        child: '+',
+                        onPressed: () {
+                          FocusScope.of(context).unfocus();
+                          if (hasPlkProfile) {
+                            plankSecs = 0;
+                          } else {
+                            if (plankSecs < 59) {
+                              plankSecs++;
+                            } else {
+                              plankSecs = 59;
+                            }
+                          }
+                          _plankSecsController.text = plankSecs.toString();
+                          isPlankSecsValid = true;
+                          plankScore = getPlkScore(
+                              getTimeAsInt(plankMins, plankSecs),
+                              ptAgeGroups.indexOf(ageGroup) + 1,
+                              gender == 'Male');
+                          calcTotal();
+                        },
+                      ),
+                    ],
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: PlatformCheckboxListTile(
+                    title: const Text('Profile'),
+                    value: hasPlkProfile,
+                    controlAffinity: ListTileControlAffinity.leading,
+                    activeColor: onPrimary,
                     onChanged: (value) {
                       FocusScope.of(context).unfocus();
-                      if (hasSdcProfile) {
-                        sdcMins = 0;
-                      } else {
-                        sdcMins = value.floor();
-                      }
-                      _sdcMinsController.text = sdcMins.toString();
-                      isSdcMinsValid = true;
-                      sdcScore = getSdcScore(getTimeAsInt(sdcMins, sdcSecs),
-                          ptAgeGroups.indexOf(ageGroup) + 1, gender == 'Male');
-                      calcTotal();
-                    },
-                  ),
-                ),
-                IncrementDecrementButton(
-                  child: '+',
-                  onPressed: () {
-                    FocusScope.of(context).unfocus();
-                    if (hasSdcProfile) {
-                      sdcMins = 0;
-                    } else {
-                      if (sdcMins < 5) {
-                        sdcMins++;
-                      } else {
-                        sdcMins = 5;
-                      }
-                    }
-                    _sdcMinsController.text = sdcMins.toString();
-                    isSdcMinsValid = true;
-                    sdcScore = getSdcScore(getTimeAsInt(sdcMins, sdcSecs),
-                        ptAgeGroups.indexOf(ageGroup) + 1, gender == 'Male');
-                    calcTotal();
-                  },
-                ),
-              ],
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Row(
-              children: <Widget>[
-                IncrementDecrementButton(
-                  child: '-',
-                  onPressed: () {
-                    FocusScope.of(context).unfocus();
-                    if (sdcSecs > 0) {
-                      sdcSecs--;
-                    } else {
-                      sdcSecs = 0;
-                    }
-                    _sdcSecsController.text = sdcSecs.toString();
-                    isSdcSecsValid = true;
-                    sdcScore = getSdcScore(getTimeAsInt(sdcMins, sdcSecs),
-                        ptAgeGroups.indexOf(ageGroup) + 1, gender == 'Male');
-                    calcTotal();
-                  },
-                ),
-                Expanded(
-                  flex: 1,
-                  child: PlatformSlider(
-                    activeColor: getPrimaryColor(context),
-                    value: sdcSecs.toDouble(),
-                    min: 0,
-                    max: 59,
-                    divisions: 60,
-                    onChanged: (value) {
-                      FocusScope.of(context).unfocus();
-                      if (hasSdcProfile) {
-                        sdcSecs = 0;
-                      } else {
-                        sdcSecs = value.floor();
-                      }
-                      _sdcSecsController.text = sdcSecs.toString();
-                      isSdcSecsValid = true;
-                      sdcScore = getSdcScore(getTimeAsInt(sdcMins, sdcSecs),
-                          ptAgeGroups.indexOf(ageGroup) + 1, gender == 'Male');
-                      calcTotal();
-                    },
-                  ),
-                ),
-                IncrementDecrementButton(
-                  child: '+',
-                  onPressed: () {
-                    FocusScope.of(context).unfocus();
-                    if (hasSdcProfile) {
-                      sdcSecs = 0;
-                    } else {
-                      if (sdcSecs < 59) {
-                        sdcSecs++;
-                      } else {
-                        sdcSecs = 59;
-                      }
-                    }
-                    _sdcSecsController.text = sdcSecs.toString();
-                    isSdcSecsValid = true;
-                    sdcScore = getSdcScore(getTimeAsInt(sdcMins, sdcSecs),
-                        ptAgeGroups.indexOf(ageGroup) + 1, gender == 'Male');
-                    calcTotal();
-                  },
-                ),
-              ],
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: PlatformCheckboxListTile(
-              title: const Text('Profile'),
-              value: hasSdcProfile,
-              controlAffinity: ListTileControlAffinity.leading,
-              activeColor: onPrimary,
-              onChanged: (value) {
-                FocusScope.of(context).unfocus();
-                setState(() {
-                  hasSdcProfile = value!;
-                  if (value) {
-                    sdcMins = 0;
-                    sdcSecs = 0;
-                    _sdcMinsController.text = sdcMins.toString();
-                    _sdcSecsController.text = sdcSecs.toString();
-                  }
-                  sdcScore = 0;
-                  isSdcMinsValid = true;
-                  isSdcSecsValid = true;
-                  calcTotal();
-                });
-              },
-              onIosTap: () {
-                FocusScope.of(context).unfocus();
-                setState(() {
-                  hasSdcProfile = !hasSdcProfile;
-                  if (hasSdcProfile) {
-                    sdcMins = 0;
-                    sdcSecs = 0;
-                    _sdcMinsController.text = sdcMins.toString();
-                    _sdcSecsController.text = sdcSecs.toString();
-                  }
-                  sdcScore = 0;
-                  isSdcMinsValid = true;
-                  isSdcSecsValid = true;
-                  calcTotal();
-                });
-              },
-            ),
-          ),
-          Divider(
-            color: Colors.yellow,
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: <Widget>[
-              Text(
-                'Plank',
-                style: headerStyle,
-              ),
-              Row(
-                children: <Widget>[
-                  ValueInputField(
-                    controller: _plankMinsController,
-                    focusNode: _plkMinsFocus,
-                    onEditingComplete: () => FocusScope.of(context).nextFocus(),
-                    errorText: isPlankMinsValid ? null : '0-4',
-                    onChanged: (value) {
-                      int raw = int.tryParse(value) ?? -1;
-                      if (raw < 0) {
-                        isPlankMinsValid = false;
-                        plankMins = 0;
-                      } else if (raw > 4) {
-                        hasPlkProfile = false;
-                        isPlankMinsValid = false;
-                        plankMins = 4;
-                      } else {
-                        hasPlkProfile = false;
+                      setState(() {
+                        hasPlkProfile = value!;
+                        if (value) {
+                          plankMins = 0;
+                          plankSecs = 0;
+                          _plankMinsController.text = plankMins.toString();
+                          _plankSecsController.text = plankSecs.toString();
+                        }
+                        plankScore = 0;
                         isPlankMinsValid = true;
-                        plankMins = raw;
-                      }
-                      plankScore = getPlkScore(
-                          getTimeAsInt(plankMins, plankSecs),
-                          ptAgeGroups.indexOf(ageGroup) + 1,
-                          gender == 'Male');
-                      calcTotal();
-                    },
-                  ),
-                  const Padding(
-                    padding: EdgeInsets.fromLTRB(4.0, 0.0, 4.0, 8.0),
-                    child: Text(
-                      ':',
-                      style: TextStyle(fontSize: 18),
-                      textAlign: TextAlign.center,
-                    ),
-                  ),
-                  ValueInputField(
-                    controller: _plankSecsController,
-                    focusNode: _plkSecsFocus,
-                    onEditingComplete: () => _runMinsFocus.requestFocus(),
-                    errorText: isPlankSecsValid ? null : '0-59',
-                    onChanged: (value) {
-                      int raw = int.tryParse(value) ?? -1;
-                      if (raw > 59) {
-                        hasPlkProfile = false;
-                        isPlankSecsValid = false;
-                        plankSecs = 59;
-                      } else if (raw < 0) {
-                        isPlankSecsValid = false;
-                        plankSecs = 0;
-                      } else {
-                        hasPlkProfile = false;
                         isPlankSecsValid = true;
-                        plankSecs = raw;
-                      }
-                      plankScore = getPlkScore(
-                          getTimeAsInt(plankMins, plankSecs),
-                          ptAgeGroups.indexOf(ageGroup) + 1,
-                          gender == 'Male');
-                      calcTotal();
+                        calcTotal();
+                      });
                     },
-                  ),
-                ],
-              ),
-            ],
-          ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Row(
-              children: <Widget>[
-                IncrementDecrementButton(
-                  child: '-',
-                  onPressed: () {
-                    FocusScope.of(context).unfocus();
-                    if (plankMins > 0) {
-                      plankMins--;
-                    } else {
-                      plankMins = 0;
-                    }
-                    _plankMinsController.text = plankMins.toString();
-                    isPlankMinsValid = true;
-                    plankScore = getPlkScore(getTimeAsInt(plankMins, plankSecs),
-                        ptAgeGroups.indexOf(ageGroup) + 1, gender == 'Male');
-                    calcTotal();
-                  },
-                ),
-                Expanded(
-                  flex: 1,
-                  child: PlatformSlider(
-                    activeColor: getPrimaryColor(context),
-                    value: plankMins.toDouble(),
-                    min: 0,
-                    max: 4,
-                    divisions: 5,
-                    onChanged: (value) {
+                    onIosTap: () {
                       FocusScope.of(context).unfocus();
-                      if (hasPlkProfile) {
-                        plankMins = 0;
-                      } else {
-                        plankMins = value.floor();
-                      }
-                      _plankMinsController.text = plankMins.toString();
-                      isPlankMinsValid = true;
-                      plankScore = getPlkScore(
-                          getTimeAsInt(plankMins, plankSecs),
-                          ptAgeGroups.indexOf(ageGroup) + 1,
-                          gender == 'Male');
-                      calcTotal();
+                      setState(() {
+                        hasPlkProfile = !hasPlkProfile;
+                        if (hasPlkProfile) {
+                          plankMins = 0;
+                          plankSecs = 0;
+                          _plankMinsController.text = plankMins.toString();
+                          _plankSecsController.text = plankSecs.toString();
+                        }
+                        plankScore = 0;
+                        isPlankMinsValid = true;
+                        isPlankSecsValid = true;
+                        calcTotal();
+                      });
                     },
                   ),
                 ),
-                IncrementDecrementButton(
-                  child: '+',
-                  onPressed: () {
-                    FocusScope.of(context).unfocus();
-                    if (hasPlkProfile) {
-                      plankMins = 0;
-                    } else {
-                      if (plankMins < 4) {
-                        plankMins++;
-                      } else {
-                        plankMins = 4;
-                      }
-                    }
-                    _plankMinsController.text = plankMins.toString();
-                    isPlankMinsValid = true;
-                    plankScore = getPlkScore(getTimeAsInt(plankMins, plankSecs),
-                        ptAgeGroups.indexOf(ageGroup) + 1, gender == 'Male');
-                    calcTotal();
-                  },
+                Divider(
+                  color: Colors.yellow,
                 ),
-              ],
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Row(
-              children: <Widget>[
-                IncrementDecrementButton(
-                  child: '-',
-                  onPressed: () {
-                    FocusScope.of(context).unfocus();
-                    if (plankSecs > 0) {
-                      plankSecs--;
-                    } else {
-                      plankSecs = 0;
-                    }
-                    _plankSecsController.text = plankSecs.toString();
-                    isPlankSecsValid = true;
-                    plankScore = getPlkScore(getTimeAsInt(plankMins, plankSecs),
-                        ptAgeGroups.indexOf(ageGroup) + 1, gender == 'Male');
-                    calcTotal();
-                  },
-                ),
-                Expanded(
-                  flex: 1,
-                  child: PlatformSlider(
-                    activeColor: getPrimaryColor(context),
-                    value: plankSecs.toDouble(),
-                    min: 0,
-                    max: 59,
-                    divisions: 60,
-                    onChanged: (value) {
-                      FocusScope.of(context).unfocus();
-                      if (hasPlkProfile) {
-                        plankSecs = 0;
-                      } else {
-                        plankSecs = value.floor();
-                      }
-                      _plankSecsController.text = plankSecs.toString();
-                      isPlankSecsValid = true;
-                      plankScore = getPlkScore(
-                          getTimeAsInt(plankMins, plankSecs),
-                          ptAgeGroups.indexOf(ageGroup) + 1,
-                          gender == 'Male');
-                      calcTotal();
-                    },
-                  ),
-                ),
-                IncrementDecrementButton(
-                  child: '+',
-                  onPressed: () {
-                    FocusScope.of(context).unfocus();
-                    if (hasPlkProfile) {
-                      plankSecs = 0;
-                    } else {
-                      if (plankSecs < 59) {
-                        plankSecs++;
-                      } else {
-                        plankSecs = 59;
-                      }
-                    }
-                    _plankSecsController.text = plankSecs.toString();
-                    isPlankSecsValid = true;
-                    plankScore = getPlkScore(getTimeAsInt(plankMins, plankSecs),
-                        ptAgeGroups.indexOf(ageGroup) + 1, gender == 'Male');
-                    calcTotal();
-                  },
-                ),
-              ],
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: PlatformCheckboxListTile(
-              title: const Text('Profile'),
-              value: hasPlkProfile,
-              controlAffinity: ListTileControlAffinity.leading,
-              activeColor: onPrimary,
-              onChanged: (value) {
-                FocusScope.of(context).unfocus();
-                setState(() {
-                  hasPlkProfile = value!;
-                  if (value) {
-                    plankMins = 0;
-                    plankSecs = 0;
-                    _plankMinsController.text = plankMins.toString();
-                    _plankSecsController.text = plankSecs.toString();
-                  }
-                  plankScore = 0;
-                  isPlankMinsValid = true;
-                  isPlankSecsValid = true;
-                  calcTotal();
-                });
-              },
-              onIosTap: () {
-                FocusScope.of(context).unfocus();
-                setState(() {
-                  hasPlkProfile = !hasPlkProfile;
-                  if (hasPlkProfile) {
-                    plankMins = 0;
-                    plankSecs = 0;
-                    _plankMinsController.text = plankMins.toString();
-                    _plankSecsController.text = plankSecs.toString();
-                  }
-                  plankScore = 0;
-                  isPlankMinsValid = true;
-                  isPlankSecsValid = true;
-                  calcTotal();
-                });
-              },
-            ),
-          ),
-          Divider(
-            color: Colors.yellow,
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: <Widget>[
-              Text(
-                aerobicEvent!,
-                style: headerStyle,
-              ),
-              Row(
-                children: <Widget>[
-                  ValueInputField(
-                    controller: _runMinsController,
-                    focusNode: _runMinsFocus,
-                    onEditingComplete: () => _runSecsFocus.requestFocus(),
-                    errorText: isRunMinsValid ? null : '10-40',
-                    onChanged: (value) {
-                      int raw = int.tryParse(value) ?? -1;
-                      if (raw < 10) {
-                        isRunMinsValid = false;
-                        runMins = 10;
-                      } else if (raw > 40) {
-                        isRunMinsValid = false;
-                        runMins = 40;
-                      } else {
-                        isRunMinsValid = true;
-                        runMins = raw;
-                      }
-                      calcRunScore();
-                      calcTotal();
-                    },
-                  ),
-                  const Padding(
-                    padding: EdgeInsets.fromLTRB(4.0, 0.0, 4.0, 8.0),
-                    child: Text(
-                      ':',
-                      style: TextStyle(fontSize: 18),
-                      textAlign: TextAlign.center,
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
+                    Text(
+                      aerobicEvent!,
+                      style: headerStyle,
                     ),
+                    Row(
+                      children: <Widget>[
+                        ValueInputField(
+                          controller: _runMinsController,
+                          focusNode: _runMinsFocus,
+                          onEditingComplete: () => _runSecsFocus.requestFocus(),
+                          errorText: isRunMinsValid ? null : '10-40',
+                          onChanged: (value) {
+                            int raw = int.tryParse(value) ?? -1;
+                            if (raw < 10) {
+                              isRunMinsValid = false;
+                              runMins = 10;
+                            } else if (raw > 40) {
+                              isRunMinsValid = false;
+                              runMins = 40;
+                            } else {
+                              isRunMinsValid = true;
+                              runMins = raw;
+                            }
+                            calcRunScore();
+                            calcTotal();
+                          },
+                        ),
+                        const Padding(
+                          padding: EdgeInsets.fromLTRB(4.0, 0.0, 4.0, 8.0),
+                          child: Text(
+                            ':',
+                            style: TextStyle(fontSize: 18),
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                        ValueInputField(
+                          controller: _runSecsController,
+                          focusNode: _runSecsFocus,
+                          textInputAction: TextInputAction.done,
+                          onEditingComplete: () => _runSecsFocus.unfocus(),
+                          errorText: isRunSecsValid ? null : '0-59',
+                          onChanged: (value) {
+                            int raw = int.tryParse(value) ?? -1;
+                            if (raw > 59) {
+                              isRunSecsValid = false;
+                              runSecs = 59;
+                            } else if (raw < 0) {
+                              isRunSecsValid = false;
+                              runSecs = 0;
+                            } else {
+                              isRunSecsValid = true;
+                              runSecs = raw;
+                            }
+                            calcRunScore();
+                            calcTotal();
+                          },
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Row(
+                    children: <Widget>[
+                      IncrementDecrementButton(
+                        child: '-',
+                        onPressed: () {
+                          FocusScope.of(context).unfocus();
+                          if (runMins > 10) {
+                            runMins--;
+                          } else {
+                            runMins = 10;
+                          }
+                          _runMinsController.text = runMins.toString();
+                          isRunMinsValid = true;
+                          calcRunScore();
+                          calcTotal();
+                        },
+                      ),
+                      Expanded(
+                        flex: 1,
+                        child: PlatformSlider(
+                          activeColor: getPrimaryColor(context),
+                          value: runMins.toDouble(),
+                          min: 10,
+                          max: 40,
+                          divisions: 31,
+                          onChanged: (value) {
+                            FocusScope.of(context).unfocus();
+                            runMins = value.floor();
+                            _runMinsController.text = runMins.toString();
+                            isRunMinsValid = true;
+                            calcRunScore();
+                            calcTotal();
+                          },
+                        ),
+                      ),
+                      IncrementDecrementButton(
+                        child: '+',
+                        onPressed: () {
+                          FocusScope.of(context).unfocus();
+                          if (runMins < 40) {
+                            runMins++;
+                          } else {
+                            runMins = 40;
+                          }
+                          _runMinsController.text = runMins.toString();
+                          isRunMinsValid = true;
+                          calcRunScore();
+                          calcTotal();
+                        },
+                      ),
+                    ],
                   ),
-                  ValueInputField(
-                    controller: _runSecsController,
-                    focusNode: _runSecsFocus,
-                    textInputAction: TextInputAction.done,
-                    onEditingComplete: () => _runSecsFocus.unfocus(),
-                    errorText: isRunSecsValid ? null : '0-59',
-                    onChanged: (value) {
-                      int raw = int.tryParse(value) ?? -1;
-                      if (raw > 59) {
-                        isRunSecsValid = false;
-                        runSecs = 59;
-                      } else if (raw < 0) {
-                        isRunSecsValid = false;
-                        runSecs = 0;
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Row(
+                    children: <Widget>[
+                      IncrementDecrementButton(
+                        child: '-',
+                        onPressed: () {
+                          FocusScope.of(context).unfocus();
+                          if (runSecs > 0) {
+                            runSecs--;
+                          } else {
+                            runSecs = 0;
+                          }
+                          _runSecsController.text = runSecs.toString();
+                          isRunSecsValid = true;
+                          calcRunScore();
+                          calcTotal();
+                        },
+                      ),
+                      Expanded(
+                        flex: 1,
+                        child: PlatformSlider(
+                          activeColor: getPrimaryColor(context),
+                          value: runSecs.toDouble(),
+                          min: 0,
+                          max: 59,
+                          divisions: 60,
+                          onChanged: (value) {
+                            FocusScope.of(context).unfocus();
+                            runSecs = value.floor();
+                            _runSecsController.text = runSecs.toString();
+                            isRunSecsValid = true;
+                            calcRunScore();
+                            calcTotal();
+                          },
+                        ),
+                      ),
+                      IncrementDecrementButton(
+                        child: '+',
+                        onPressed: () {
+                          FocusScope.of(context).unfocus();
+                          if (runSecs < 59) {
+                            runSecs++;
+                          } else {
+                            runSecs = 59;
+                          }
+                          _runSecsController.text = runSecs.toString();
+                          isRunSecsValid = true;
+                          calcRunScore();
+                          calcTotal();
+                        },
+                      ),
+                    ],
+                  ),
+                ),
+                Divider(
+                  color: Colors.yellow,
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: GridView.count(
+                    crossAxisCount: 5,
+                    childAspectRatio: width / 180,
+                    crossAxisSpacing: 0.0,
+                    mainAxisSpacing: 0.0,
+                    shrinkWrap: true,
+                    primary: false,
+                    children: <Widget>[
+                      GridBox(
+                        title: 'Event',
+                        background: primaryColor,
+                        textColor: onPrimary,
+                      ),
+                      GridBox(
+                        title: 'Min',
+                        background: primaryColor,
+                        textColor: onPrimary,
+                      ),
+                      GridBox(
+                        title: '90%',
+                        background: primaryColor,
+                        textColor: onPrimary,
+                      ),
+                      GridBox(
+                        title: 'Max',
+                        background: primaryColor,
+                        textColor: onPrimary,
+                      ),
+                      GridBox(
+                        title: 'Score',
+                        background: primaryColor,
+                        textColor: onPrimary,
+                      ),
+                      GridBox(
+                        title: 'MDL',
+                        background: primaryColor,
+                        textColor: onPrimary,
+                      ),
+                      GridBox(
+                        title: mdlMinimum,
+                      ),
+                      GridBox(
+                        title: mdl90,
+                      ),
+                      GridBox(
+                        title: mdlMax,
+                      ),
+                      GridBox(
+                        title: mdlScore.toString(),
+                        background: mdlPass ? backgroundColor : failColor,
+                      ),
+                      GridBox(
+                        title: 'SPT',
+                        background: primaryColor,
+                        textColor: onPrimary,
+                      ),
+                      GridBox(
+                        title: sptMinimum,
+                      ),
+                      GridBox(
+                        title: spt90,
+                      ),
+                      GridBox(
+                        title: sptMax,
+                      ),
+                      GridBox(
+                        title: sptScore.toString(),
+                        background: sptPass ? backgroundColor : failColor,
+                      ),
+                      GridBox(
+                        title: 'HRP',
+                        background: primaryColor,
+                        textColor: onPrimary,
+                      ),
+                      GridBox(
+                        title: hrpMinimum,
+                      ),
+                      GridBox(
+                        title: hrp90,
+                      ),
+                      GridBox(
+                        title: hrpMax,
+                      ),
+                      GridBox(
+                        title: hrpScore.toString(),
+                        background: hrpPass ? backgroundColor : failColor,
+                      ),
+                      GridBox(
+                        title: 'SDC',
+                        background: primaryColor,
+                        textColor: onPrimary,
+                      ),
+                      GridBox(
+                        title: sdcMinimum,
+                      ),
+                      GridBox(
+                        title: sdc90,
+                      ),
+                      GridBox(
+                        title: sdcMax,
+                      ),
+                      GridBox(
+                        title: sdcScore.toString(),
+                        background: sdcPass ? backgroundColor : failColor,
+                      ),
+                      GridBox(
+                        title: 'PLK',
+                        background: primaryColor,
+                        textColor: onPrimary,
+                      ),
+                      GridBox(
+                        title: plkMinimum,
+                      ),
+                      GridBox(
+                        title: plk90,
+                      ),
+                      GridBox(
+                        title: plkMax,
+                      ),
+                      GridBox(
+                        title: plankScore.toString(),
+                        background: plkPass ? backgroundColor : failColor,
+                      ),
+                      GridBox(
+                        title: '2MR',
+                        background: primaryColor,
+                        textColor: onPrimary,
+                      ),
+                      GridBox(
+                        title: runMinimum,
+                      ),
+                      GridBox(
+                        title: run90,
+                      ),
+                      GridBox(
+                        title: runMax,
+                      ),
+                      GridBox(
+                        title: runScore.toString(),
+                        background: runPass ? backgroundColor : failColor,
+                      ),
+                      GridBox(
+                        title: 'Total',
+                        background: primaryColor,
+                        textColor: onPrimary,
+                      ),
+                      GridBox(),
+                      GridBox(),
+                      GridBox(),
+                      GridBox(
+                        title: total.toString(),
+                        background: totalPass ? backgroundColor : failColor,
+                      ),
+                    ],
+                  ),
+                ),
+                Padding(
+                  padding: EdgeInsets.all(8.0),
+                  child: PlatformButton(
+                    child: const Text('Save ACFT Score'),
+                    onPressed: () {
+                      String sdcSeconds = sdcSecs.toString().length == 1
+                          ? '0$sdcSecs'
+                          : sdcSecs.toString();
+                      String plankSeconds = plankSecs.toString().length == 1
+                          ? '0$plankSecs'
+                          : plankSecs.toString();
+                      String runSeconds = runSecs.toString().length == 1
+                          ? '0$runSecs'
+                          : runSecs.toString();
+                      if (purchasesService.isPremium) {
+                        Acft acft = new Acft(
+                            id: null,
+                            date: null,
+                            rank: null,
+                            name: null,
+                            gender: gender.toString(),
+                            age: age.toString(),
+                            mdlRaw: mdlRaw.toString(),
+                            mdlScore: mdlScore.toString(),
+                            sptRaw: sptRaw.toString(),
+                            sptScore: sptScore.toString(),
+                            hrpRaw: hrpRaw.toString(),
+                            hrpScore: hrpScore.toString(),
+                            sdcRaw: '${sdcMins.toString()}:$sdcSeconds',
+                            sdcScore: sdcScore.toString(),
+                            plkRaw: '${plankMins.toString()}:$plankSeconds',
+                            plkScore: plankScore.toString(),
+                            runRaw: '${runMins.toString()}:$runSeconds',
+                            runScore: runScore.toString(),
+                            runEvent: aerobicEvent!,
+                            total: total.toString(),
+                            altPass: runPass ? 1 : 0,
+                            pass: totalPass ? 1 : 0);
+                        _saveAcft(context, acft);
                       } else {
-                        isRunSecsValid = true;
-                        runSecs = raw;
+                        purchasesService.upgradeNeeded(context);
                       }
-                      calcRunScore();
-                      calcTotal();
                     },
                   ),
-                ],
+                ),
+              ],
+            ),
+          ),
+          if (!purchasesService.isPremium)
+            Container(
+              constraints: BoxConstraints(maxHeight: 90),
+              alignment: Alignment.center,
+              child: AdWidget(
+                ad: myBanner,
               ),
-            ],
-          ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Row(
-              children: <Widget>[
-                IncrementDecrementButton(
-                  child: '-',
-                  onPressed: () {
-                    FocusScope.of(context).unfocus();
-                    if (runMins > 10) {
-                      runMins--;
-                    } else {
-                      runMins = 10;
-                    }
-                    _runMinsController.text = runMins.toString();
-                    isRunMinsValid = true;
-                    calcRunScore();
-                    calcTotal();
-                  },
-                ),
-                Expanded(
-                  flex: 1,
-                  child: PlatformSlider(
-                    activeColor: getPrimaryColor(context),
-                    value: runMins.toDouble(),
-                    min: 10,
-                    max: 40,
-                    divisions: 31,
-                    onChanged: (value) {
-                      FocusScope.of(context).unfocus();
-                      runMins = value.floor();
-                      _runMinsController.text = runMins.toString();
-                      isRunMinsValid = true;
-                      calcRunScore();
-                      calcTotal();
-                    },
-                  ),
-                ),
-                IncrementDecrementButton(
-                  child: '+',
-                  onPressed: () {
-                    FocusScope.of(context).unfocus();
-                    if (runMins < 40) {
-                      runMins++;
-                    } else {
-                      runMins = 40;
-                    }
-                    _runMinsController.text = runMins.toString();
-                    isRunMinsValid = true;
-                    calcRunScore();
-                    calcTotal();
-                  },
-                ),
-              ],
+              width: myBanner.size.width.toDouble(),
+              height: myBanner.size.height.toDouble(),
             ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Row(
-              children: <Widget>[
-                IncrementDecrementButton(
-                  child: '-',
-                  onPressed: () {
-                    FocusScope.of(context).unfocus();
-                    if (runSecs > 0) {
-                      runSecs--;
-                    } else {
-                      runSecs = 0;
-                    }
-                    _runSecsController.text = runSecs.toString();
-                    isRunSecsValid = true;
-                    calcRunScore();
-                    calcTotal();
-                  },
-                ),
-                Expanded(
-                  flex: 1,
-                  child: PlatformSlider(
-                    activeColor: getPrimaryColor(context),
-                    value: runSecs.toDouble(),
-                    min: 0,
-                    max: 59,
-                    divisions: 60,
-                    onChanged: (value) {
-                      FocusScope.of(context).unfocus();
-                      runSecs = value.floor();
-                      _runSecsController.text = runSecs.toString();
-                      isRunSecsValid = true;
-                      calcRunScore();
-                      calcTotal();
-                    },
-                  ),
-                ),
-                IncrementDecrementButton(
-                  child: '+',
-                  onPressed: () {
-                    FocusScope.of(context).unfocus();
-                    if (runSecs < 59) {
-                      runSecs++;
-                    } else {
-                      runSecs = 59;
-                    }
-                    _runSecsController.text = runSecs.toString();
-                    isRunSecsValid = true;
-                    calcRunScore();
-                    calcTotal();
-                  },
-                ),
-              ],
-            ),
-          ),
-          Divider(
-            color: Colors.yellow,
-          ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: GridView.count(
-              crossAxisCount: 5,
-              childAspectRatio: width / 180,
-              crossAxisSpacing: 0.0,
-              mainAxisSpacing: 0.0,
-              shrinkWrap: true,
-              primary: false,
-              children: <Widget>[
-                GridBox(
-                  title: 'Event',
-                  background: primaryColor,
-                  textColor: onPrimary,
-                ),
-                GridBox(
-                  title: 'Min',
-                  background: primaryColor,
-                  textColor: onPrimary,
-                ),
-                GridBox(
-                  title: '90%',
-                  background: primaryColor,
-                  textColor: onPrimary,
-                ),
-                GridBox(
-                  title: 'Max',
-                  background: primaryColor,
-                  textColor: onPrimary,
-                ),
-                GridBox(
-                  title: 'Score',
-                  background: primaryColor,
-                  textColor: onPrimary,
-                ),
-                GridBox(
-                  title: 'MDL',
-                  background: primaryColor,
-                  textColor: onPrimary,
-                ),
-                GridBox(
-                  title: mdlMinimum,
-                ),
-                GridBox(
-                  title: mdl90,
-                ),
-                GridBox(
-                  title: mdlMax,
-                ),
-                GridBox(
-                  title: mdlScore.toString(),
-                  background: mdlPass ? backgroundColor : failColor,
-                ),
-                GridBox(
-                  title: 'SPT',
-                  background: primaryColor,
-                  textColor: onPrimary,
-                ),
-                GridBox(
-                  title: sptMinimum,
-                ),
-                GridBox(
-                  title: spt90,
-                ),
-                GridBox(
-                  title: sptMax,
-                ),
-                GridBox(
-                  title: sptScore.toString(),
-                  background: sptPass ? backgroundColor : failColor,
-                ),
-                GridBox(
-                  title: 'HRP',
-                  background: primaryColor,
-                  textColor: onPrimary,
-                ),
-                GridBox(
-                  title: hrpMinimum,
-                ),
-                GridBox(
-                  title: hrp90,
-                ),
-                GridBox(
-                  title: hrpMax,
-                ),
-                GridBox(
-                  title: hrpScore.toString(),
-                  background: hrpPass ? backgroundColor : failColor,
-                ),
-                GridBox(
-                  title: 'SDC',
-                  background: primaryColor,
-                  textColor: onPrimary,
-                ),
-                GridBox(
-                  title: sdcMinimum,
-                ),
-                GridBox(
-                  title: sdc90,
-                ),
-                GridBox(
-                  title: sdcMax,
-                ),
-                GridBox(
-                  title: sdcScore.toString(),
-                  background: sdcPass ? backgroundColor : failColor,
-                ),
-                GridBox(
-                  title: 'PLK',
-                  background: primaryColor,
-                  textColor: onPrimary,
-                ),
-                GridBox(
-                  title: plkMinimum,
-                ),
-                GridBox(
-                  title: plk90,
-                ),
-                GridBox(
-                  title: plkMax,
-                ),
-                GridBox(
-                  title: plankScore.toString(),
-                  background: plkPass ? backgroundColor : failColor,
-                ),
-                GridBox(
-                  title: '2MR',
-                  background: primaryColor,
-                  textColor: onPrimary,
-                ),
-                GridBox(
-                  title: runMinimum,
-                ),
-                GridBox(
-                  title: run90,
-                ),
-                GridBox(
-                  title: runMax,
-                ),
-                GridBox(
-                  title: runScore.toString(),
-                  background: runPass ? backgroundColor : failColor,
-                ),
-                GridBox(
-                  title: 'Total',
-                  background: primaryColor,
-                  textColor: onPrimary,
-                ),
-                GridBox(),
-                GridBox(),
-                GridBox(),
-                GridBox(
-                  title: total.toString(),
-                  background: totalPass ? backgroundColor : failColor,
-                ),
-              ],
-            ),
-          ),
-          Padding(
-            padding: EdgeInsets.all(8.0),
-            child: PlatformButton(
-              child: const Text('Save ACFT Score'),
-              onPressed: () {
-                String sdcSeconds = sdcSecs.toString().length == 1
-                    ? '0$sdcSecs'
-                    : sdcSecs.toString();
-                String plankSeconds = plankSecs.toString().length == 1
-                    ? '0$plankSecs'
-                    : plankSecs.toString();
-                String runSeconds = runSecs.toString().length == 1
-                    ? '0$runSecs'
-                    : runSecs.toString();
-                if (purchasesService.isPremium) {
-                  Acft acft = new Acft(
-                      id: null,
-                      date: null,
-                      rank: null,
-                      name: null,
-                      gender: gender.toString(),
-                      age: age.toString(),
-                      mdlRaw: mdlRaw.toString(),
-                      mdlScore: mdlScore.toString(),
-                      sptRaw: sptRaw.toString(),
-                      sptScore: sptScore.toString(),
-                      hrpRaw: hrpRaw.toString(),
-                      hrpScore: hrpScore.toString(),
-                      sdcRaw: '${sdcMins.toString()}:$sdcSeconds',
-                      sdcScore: sdcScore.toString(),
-                      plkRaw: '${plankMins.toString()}:$plankSeconds',
-                      plkScore: plankScore.toString(),
-                      runRaw: '${runMins.toString()}:$runSeconds',
-                      runScore: runScore.toString(),
-                      runEvent: aerobicEvent!,
-                      total: total.toString(),
-                      altPass: runPass ? 1 : 0,
-                      pass: totalPass ? 1 : 0);
-                  _saveAcft(context, acft);
-                } else {
-                  purchasesService.upgradeNeeded(context);
-                }
-              },
-            ),
-          )
         ],
       ),
     );
