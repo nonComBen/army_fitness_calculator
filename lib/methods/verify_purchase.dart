@@ -5,7 +5,7 @@ import 'package:in_app_purchase/in_app_purchase.dart';
 
 Future<bool> listenToPurchaseUpdated(
     List<PurchaseDetails> purchaseDetailsList) async {
-  bool isSubscribed = false;
+  bool isSubscribed = true;
   print('Listen to Purchase got called.');
   for (PurchaseDetails purchaseDetails in purchaseDetailsList) {
     print(purchaseDetails.status);

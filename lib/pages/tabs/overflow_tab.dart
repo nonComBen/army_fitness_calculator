@@ -42,9 +42,8 @@ class OverflowTab extends ConsumerWidget {
       listener: BannerAdListener(),
       request: AdRequest(nonPersonalizedAds: true),
     );
-    if (!purchasesService.isPremium) {
-      myBanner.load();
-    }
+    myBanner.load();
+
     return Container(
       padding: const EdgeInsets.all(16.0),
       child: Column(

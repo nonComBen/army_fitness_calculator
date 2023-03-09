@@ -13,8 +13,8 @@ import '../widgets/my_toast.dart';
 import '../widgets/bullet_item.dart';
 
 class PurchasesService {
-  bool _isPremium = false;
-  List<ProductDetails>? _products;
+  bool _isPremium = true;
+  List<ProductDetails> _products = [];
 
   bool get isPremium {
     return _isPremium;
@@ -22,16 +22,20 @@ class PurchasesService {
 
   initialize() async {
     bool available = await InAppPurchase.instance.isAvailable();
+    print('In App Purchases Available: $available');
     if (available) {
       InAppPurchase.instance
           .queryProductDetails({'premium_upgrade'}).then((response) {
-        if (response.notFoundIDs.isEmpty) {}
+        if (response.productDetails.isNotEmpty) {}
         _products = response.productDetails;
       });
       final Stream purchaseUpdates = InAppPurchase.instance.purchaseStream;
       purchaseUpdates.listen((purchases) async {
+        print('Purchases: $purchases');
+
         _isPremium = await listenToPurchaseUpdated(purchases);
       }) as StreamSubscription<List<PurchaseDetails>>;
+      InAppPurchase.instance.restorePurchases();
     }
   }
 
@@ -92,7 +96,7 @@ class PurchasesService {
                       'Upgrade',
                     ),
                     onPressed: () {
-                      if (_products!.isEmpty) {
+                      if (_products.isEmpty) {
                         Navigator.pop(ctx);
                         FToast toast = FToast();
                         toast.context = context;
@@ -110,7 +114,7 @@ class PurchasesService {
                         );
                       } else {
                         Navigator.pop(ctx);
-                        ProductDetails product = _products!.firstWhere(
+                        ProductDetails product = _products.firstWhere(
                             (product) => product.id == 'premium_upgrade');
 
                         final PurchaseParam purchaseParam =

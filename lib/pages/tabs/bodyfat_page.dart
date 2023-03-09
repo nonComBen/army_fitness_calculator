@@ -77,18 +77,16 @@ class _BodyfatPageState extends ConsumerState<BodyfatPage> {
     super.initState();
 
     purchasesService = ref.read(purchasesProvider);
-    if (!purchasesService.isPremium) {
-      myBanner = BannerAd(
-        adUnitId: Platform.isAndroid
-            ? 'ca-app-pub-2431077176117105/8950325543'
-            : 'ca-app-pub-2431077176117105/5634775918',
-        size: AdSize.banner,
-        listener: BannerAdListener(),
-        request: AdRequest(nonPersonalizedAds: true),
-      );
+    myBanner = BannerAd(
+      adUnitId: Platform.isAndroid
+          ? 'ca-app-pub-2431077176117105/8950325543'
+          : 'ca-app-pub-2431077176117105/5634775918',
+      size: AdSize.banner,
+      listener: BannerAdListener(),
+      request: AdRequest(nonPersonalizedAds: true),
+    );
 
-      myBanner.load();
-    }
+    myBanner.load();
 
     _weightController.text = weight.toString();
     _neckController.text = neck.toString();
@@ -790,7 +788,7 @@ class _BodyfatPageState extends ConsumerState<BodyfatPage> {
                                   neck = 30;
                                   isNeckValid = false;
                                 } else {
-                                  neck = raw;
+                                  neck = (raw * 2).round() / 2;
                                   isNeckValid = true;
                                 }
                                 calcBf();
@@ -880,7 +878,7 @@ class _BodyfatPageState extends ConsumerState<BodyfatPage> {
                                   waist = 50;
                                   isWaistValid = false;
                                 } else {
-                                  waist = raw;
+                                  waist = (raw * 2).round() / 2;
                                   isWaistValid = true;
                                 }
                                 calcBf();
@@ -968,7 +966,7 @@ class _BodyfatPageState extends ConsumerState<BodyfatPage> {
                                     hip = 50;
                                     isHipValid = false;
                                   } else {
-                                    hip = raw;
+                                    hip = (raw * 2).round() / 2;
                                     isHipValid = true;
                                   }
                                   calcBf();

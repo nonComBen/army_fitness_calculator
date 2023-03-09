@@ -141,20 +141,17 @@ class AcftPageState extends ConsumerState<AcftPage> {
   @override
   void initState() {
     super.initState();
-
     purchasesService = ref.read(purchasesProvider);
-    if (!purchasesService.isPremium) {
-      myBanner = BannerAd(
-        adUnitId: Platform.isAndroid
-            ? 'ca-app-pub-2431077176117105/8950325543'
-            : 'ca-app-pub-2431077176117105/4488336359',
-        size: AdSize.banner,
-        listener: BannerAdListener(),
-        request: AdRequest(nonPersonalizedAds: true),
-      );
+    myBanner = BannerAd(
+      adUnitId: Platform.isAndroid
+          ? 'ca-app-pub-2431077176117105/8950325543'
+          : 'ca-app-pub-2431077176117105/4488336359',
+      size: AdSize.banner,
+      listener: BannerAdListener(),
+      request: AdRequest(nonPersonalizedAds: true),
+    );
 
-      myBanner.load();
-    }
+    myBanner.load();
 
     _mdlController.text = mdlRaw.toString();
     _sptController.text = sptRaw.toString();
@@ -523,6 +520,7 @@ class AcftPageState extends ConsumerState<AcftPage> {
 
   @override
   Widget build(BuildContext context) {
+    ref.watch(purchasesProvider);
     final width = MediaQuery.of(context).size.width;
     final backgroundColor = getBackgroundColor(context);
     final primaryColor = getPrimaryColor(context);

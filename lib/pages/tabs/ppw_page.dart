@@ -184,9 +184,8 @@ class _PromotionPointPageState extends ConsumerState<PromotionPointPage> {
       listener: BannerAdListener(),
       request: AdRequest(nonPersonalizedAds: true),
     );
-    if (!purchasesService.isPremium) {
-      myBanner.load();
-    }
+    myBanner.load();
+
     if (prefs.getString('rank') != null) {
       rank = prefs.getString('rank').toString();
     }

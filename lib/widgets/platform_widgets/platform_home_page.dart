@@ -3,8 +3,11 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:pull_down_button/pull_down_button.dart';
 import 'package:rate_my_app/rate_my_app.dart';
 
+import '../../pages/mdl_setup_page.dart';
+import '../../providers/purchases_provider.dart';
 import '../../methods/theme_methods.dart';
 import '../../pages/tabs/acft_page.dart';
 import '../../pages/tabs/bodyfat_page.dart';
@@ -75,26 +78,31 @@ class _AndroidHomePageState extends ConsumerState<AndroidHomePage> {
     });
   }
 
-  void _openTablePage() {
-    Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (ctx) => AcftTablePage(
-          ageGroup: AcftPageState.ageGroup,
-          gender: AcftPageState.gender.toString(),
-        ),
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
+    // ref.watch(purchasesProvider);
     return Scaffold(
       appBar: AppBar(
         title: Text(titles[index]),
         actions: [
           if (index == 0)
             PlatformIconButton(
-              onPressed: () => _openTablePage(),
+              onPressed: () =>
+                  Navigator.of(context).pushNamed(MdlSetupPage.routeName),
+              icon: Icon(Icons.fitness_center),
+            ),
+          if (index == 0)
+            PlatformIconButton(
+              onPressed: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (ctx) => AcftTablePage(
+                      ageGroup: AcftPageState.ageGroup,
+                      gender: AcftPageState.gender.toString(),
+                    ),
+                  ),
+                );
+              },
               icon: Icon(Icons.table_chart),
             ),
         ],
@@ -176,6 +184,7 @@ class _IOSHomePageState extends ConsumerState<IOSHomePage> {
 
   @override
   Widget build(BuildContext context) {
+    ref.watch(purchasesProvider);
     final tabs = [
       AcftPage(),
       BodyfatPage(),
@@ -217,20 +226,32 @@ class _IOSHomePageState extends ConsumerState<IOSHomePage> {
             navigationBar: CupertinoNavigationBar(
               backgroundColor: getPrimaryColor(context),
               trailing: index == 0
-                  ? PlatformIconButton(
-                      onPressed: () {
-                        Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (ctx) => AcftTablePage(
-                              ageGroup: AcftPageState.ageGroup,
-                              gender: AcftPageState.gender.toString(),
+                  ? PullDownButton(
+                      itemBuilder: (context) => [
+                        PullDownMenuItem(
+                          onTap: () =>
+                              Navigator.of(context, rootNavigator: true)
+                                  .pushNamed(MdlSetupPage.routeName),
+                          title: 'MDL Setup',
+                        ),
+                        PullDownMenuItem(
+                          onTap: () => Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (ctx) => AcftTablePage(
+                                ageGroup: AcftPageState.ageGroup,
+                                gender: AcftPageState.gender.toString(),
+                              ),
                             ),
                           ),
-                        );
-                      },
-                      icon: Icon(
-                        Icons.table_chart,
-                        color: getOnPrimaryColor(context),
+                          title: 'ACFT Table',
+                        )
+                      ],
+                      buttonBuilder: (context, showMenu) => PlatformIconButton(
+                        icon: Icon(
+                          CupertinoIcons.ellipsis_vertical,
+                          color: getOnPrimaryColor(context),
+                        ),
+                        onPressed: showMenu,
                       ),
                     )
                   : null,

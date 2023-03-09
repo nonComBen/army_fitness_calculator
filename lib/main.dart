@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:in_app_purchase/in_app_purchase.dart';
 
 import '../providers/shared_preferences_provider.dart';
 import '../widgets/platform_widgets/platform_app.dart';
@@ -45,7 +44,6 @@ class MyApp extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     ref.read(purchasesProvider).initialize();
     MobileAds.instance.initialize();
-    InAppPurchase.instance.restorePurchases();
     return Consumer(builder: (context, ref, child) {
       ThemeData themeState = ref.watch(themeStateNotifierProvider);
       return PlatformApp(

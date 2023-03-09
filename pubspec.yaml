@@ -1,6 +1,6 @@
 name: acft_calculator
 description: A new Flutter application.
-version: 2.0.0
+version: 2.0.2
 
 environment:
   sdk: '>=2.17.0 <3.0.0'
