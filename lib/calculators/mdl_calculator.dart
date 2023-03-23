@@ -1,23 +1,16 @@
 import '../constants/mdl_table.dart';
 
-int getMdlScore(int? weight, int ageGroup, bool male) {
-  if (male) {
-    if (weight! > 330) return 100;
-    if (weight < 90) return 0;
-    for (int i = 0; i < mdlTable.length; i++) {
-      if (mdlTable[i][ageGroup * 2 - 1] <= weight) {
+int getMdlScore(int weight, int ageGroup, bool male) {
+  int ageIndex = male ? ageGroup * 2 - 1 : ageGroup * 2;
+  if (weight >= mdlTable[0][ageIndex]) return 100;
+  for (int i = mdlTable.length - 1; i >= 0; i--) {
+    if (mdlTable[i][ageIndex] >= weight) {
+      if (weight == mdlTable[i][ageIndex]) {
         return mdlTable[i][0];
+      } else if (i < mdlTable.length - 1) {
+        return mdlTable[i + 1][0];
       }
     }
-    return 0;
-  } else {
-    if (weight! > 220) return 100;
-    if (weight < 70) return 0;
-    for (int i = 0; i < mdlTable.length; i++) {
-      if (mdlTable[i][ageGroup * 2] <= weight) {
-        return mdlTable[i][0];
-      }
-    }
-    return 0;
   }
+  return 0;
 }
