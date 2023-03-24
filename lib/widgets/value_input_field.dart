@@ -5,7 +5,8 @@ import 'package:flutter/services.dart';
 class ValueInputField extends StatelessWidget {
   const ValueInputField(
       {Key? key,
-      this.width = 60,
+      this.width = 50,
+      this.isEnabled = true,
       this.controller,
       this.focusNode,
       this.textInputAction = TextInputAction.next,
@@ -14,6 +15,7 @@ class ValueInputField extends StatelessWidget {
       this.onChanged})
       : super(key: key);
   final double width;
+  final bool isEnabled;
   final TextEditingController? controller;
   final FocusNode? focusNode;
   final TextInputAction textInputAction;
@@ -28,6 +30,7 @@ class ValueInputField extends StatelessWidget {
       child: PlatformTextField(
         controller: controller!,
         focusNode: focusNode,
+        enabled: isEnabled,
         keyboardType:
             TextInputType.numberWithOptions(signed: true, decimal: true),
         inputFormatters: [
