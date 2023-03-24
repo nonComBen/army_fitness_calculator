@@ -7,18 +7,16 @@ import 'package:fluttertoast/fluttertoast.dart';
 
 import '../methods/theme_methods.dart';
 import '../methods/verify_purchase.dart';
+import '../providers/premium_state_provider.dart';
 import '../widgets/platform_widgets/platform_text_button.dart';
 import '../../widgets/platform_widgets/platform_button.dart';
 import '../widgets/my_toast.dart';
 import '../widgets/bullet_item.dart';
 
 class PurchasesService {
-  bool _isPremium = true;
+  PurchasesService({required this.premiumState});
+  final PremiumState premiumState;
   List<ProductDetails> _products = [];
-
-  bool get isPremium {
-    return _isPremium;
-  }
 
   initialize() async {
     bool available = await InAppPurchase.instance.isAvailable();
@@ -33,7 +31,7 @@ class PurchasesService {
       purchaseUpdates.listen((purchases) async {
         print('Purchases: $purchases');
 
-        _isPremium = await listenToPurchaseUpdated(purchases);
+        premiumState.setState(await listenToPurchaseUpdated(purchases));
       }) as StreamSubscription<List<PurchaseDetails>>;
       InAppPurchase.instance.restorePurchases();
     }

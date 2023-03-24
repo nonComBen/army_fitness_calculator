@@ -1,19 +1,18 @@
 import 'dart:io';
 
-import 'package:acft_calculator/methods/theme_methods.dart';
-import 'package:acft_calculator/widgets/platform_widgets/platform_checkbox_list_tile.dart';
-import 'package:acft_calculator/widgets/platform_widgets/platform_text_field.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../methods/theme_methods.dart';
+import '../../providers/premium_state_provider.dart';
+import '../../widgets/platform_widgets/platform_checkbox_list_tile.dart';
+import '../../widgets/platform_widgets/platform_text_field.dart';
 import '../providers/shared_preferences_provider.dart';
 import '../providers/theme_provider.dart';
 import '../widgets/platform_widgets/platform_item_picker.dart';
 import '../widgets/platform_widgets/platform_selection_widget.dart';
 import 'package:flutter/material.dart';
-import '../../providers/purchases_provider.dart';
-import '../../services/purchases_service.dart';
 import '../../widgets/platform_widgets/platform_scaffold.dart';
 
 class SettingsPage extends ConsumerStatefulWidget {
@@ -29,7 +28,6 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
   Object gender = 'Male', rank = 'SGT';
   bool jrSoldier = true;
   late SharedPreferences prefs;
-  late PurchasesService purchasesService;
 
   final _ageController = TextEditingController();
   final _heightController = TextEditingController();
@@ -60,11 +58,6 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
   @override
   void initState() {
     super.initState();
-    purchasesService = ref.read(purchasesProvider);
-
-    if (!purchasesService.isPremium) {
-      myBanner.load();
-    }
 
     prefs = ref.read(sharedPreferencesProvider);
 
@@ -138,6 +131,10 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
 
   @override
   Widget build(BuildContext context) {
+    final isPremium = ref.read(premiumStateProvider);
+    if (!isPremium) {
+      myBanner.load();
+    }
     double width = MediaQuery.of(context).size.width;
     return PlatformScaffold(
       title: 'Settings',
@@ -303,7 +300,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                 ],
               ),
             ),
-            if (!purchasesService.isPremium)
+            if (!isPremium)
               Container(
                 constraints: const BoxConstraints(maxHeight: 90),
                 alignment: Alignment.center,

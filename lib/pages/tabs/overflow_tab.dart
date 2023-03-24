@@ -1,7 +1,5 @@
 import 'dart:io';
 
-import 'package:acft_calculator/methods/theme_methods.dart';
-import 'package:acft_calculator/widgets/my_toast.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -9,6 +7,9 @@ import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:rate_my_app/rate_my_app.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
+import '../../methods/theme_methods.dart';
+import '../../providers/premium_state_provider.dart';
+import '../../widgets/my_toast.dart';
 import '../../pages/apft_page.dart';
 import '../../widgets/header_text.dart';
 import '../../widgets/platform_widgets/platform_list_tile.dart';
@@ -34,6 +35,7 @@ class OverflowTab extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final purchasesService = ref.read(purchasesProvider);
+    final isPremium = ref.read(premiumStateProvider);
     BannerAd myBanner = BannerAd(
       adUnitId: Platform.isAndroid
           ? 'ca-app-pub-2431077176117105/6231071083'
@@ -63,7 +65,7 @@ class OverflowTab extends ConsumerWidget {
                     color: getTextColor(context),
                   ),
                   onTap: () {
-                    if (purchasesService.isPremium) {
+                    if (isPremium) {
                       Navigator.of(context, rootNavigator: true)
                           .pushNamed(SavedAcftsPage.routeName);
                     } else {
@@ -78,7 +80,7 @@ class OverflowTab extends ConsumerWidget {
                     color: getTextColor(context),
                   ),
                   onTap: () {
-                    if (purchasesService.isPremium) {
+                    if (isPremium) {
                       Navigator.of(context, rootNavigator: true)
                           .pushNamed(SavedApftsPage.routeName);
                     } else {
@@ -93,7 +95,7 @@ class OverflowTab extends ConsumerWidget {
                     color: getTextColor(context),
                   ),
                   onTap: () {
-                    if (purchasesService.isPremium) {
+                    if (isPremium) {
                       Navigator.of(context, rootNavigator: true)
                           .pushNamed(SavedBodyfatsPage.routeName);
                     } else {
@@ -108,7 +110,7 @@ class OverflowTab extends ConsumerWidget {
                     color: getTextColor(context),
                   ),
                   onTap: () {
-                    if (purchasesService.isPremium) {
+                    if (isPremium) {
                       Navigator.of(context, rootNavigator: true)
                           .pushNamed(SavedPpwsPage.routeName);
                     } else {
@@ -196,7 +198,7 @@ class OverflowTab extends ConsumerWidget {
                     color: getTextColor(context),
                   ),
                   onTap: () {
-                    if (purchasesService.isPremium) {
+                    if (isPremium) {
                       FToast toast = FToast();
                       toast.context = context;
                       toast.showToast(
@@ -262,7 +264,7 @@ class OverflowTab extends ConsumerWidget {
               ],
             ),
           ),
-          if (!purchasesService.isPremium)
+          if (!isPremium)
             Container(
               constraints: BoxConstraints(maxHeight: 90),
               alignment: Alignment.center,

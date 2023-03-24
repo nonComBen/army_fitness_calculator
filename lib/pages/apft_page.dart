@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:acft_calculator/methods/theme_methods.dart';
+import 'package:acft_calculator/providers/premium_state_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -113,18 +114,16 @@ class _ApftPageState extends ConsumerState<ApftPage> {
     super.initState();
     dbHelper = new DBHelper();
     purchasesService = ref.read(purchasesProvider);
-    if (!purchasesService.isPremium) {
-      myBanner = BannerAd(
-        adUnitId: Platform.isAndroid
-            ? 'ca-app-pub-2431077176117105/9048806118'
-            : 'ca-app-pub-2431077176117105/4321694244',
-        size: AdSize.banner,
-        listener: BannerAdListener(),
-        request: AdRequest(nonPersonalizedAds: true),
-      );
+    myBanner = BannerAd(
+      adUnitId: Platform.isAndroid
+          ? 'ca-app-pub-2431077176117105/9048806118'
+          : 'ca-app-pub-2431077176117105/4321694244',
+      size: AdSize.banner,
+      listener: BannerAdListener(),
+      request: AdRequest(nonPersonalizedAds: true),
+    );
 
-      myBanner.load();
-    }
+    myBanner.load();
 
     _puController.text = pu.toString();
     _suController.text = su.toString();
@@ -400,6 +399,7 @@ class _ApftPageState extends ConsumerState<ApftPage> {
 
   @override
   Widget build(BuildContext context) {
+    final isPremium = ref.read(premiumStateProvider);
     double width = MediaQuery.of(context).size.width;
     final primaryColor = getPrimaryColor(context);
     final textColor = getOnPrimaryColor(context);
@@ -1128,7 +1128,7 @@ class _ApftPageState extends ConsumerState<ApftPage> {
                         String runSeconds = runSecs.toString().length == 1
                             ? '0$runSecs'
                             : runSecs.toString();
-                        if (purchasesService.isPremium) {
+                        if (isPremium) {
                           Apft apft = new Apft(
                               id: null,
                               date: null,
@@ -1156,7 +1156,7 @@ class _ApftPageState extends ConsumerState<ApftPage> {
                 ],
               ),
             ),
-            if (!purchasesService.isPremium)
+            if (!isPremium)
               Container(
                 constraints: BoxConstraints(maxHeight: 90),
                 alignment: Alignment.center,

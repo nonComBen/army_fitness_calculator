@@ -1,7 +1,5 @@
 import 'dart:io';
 
-import 'package:acft_calculator/methods/theme_methods.dart';
-import 'package:acft_calculator/widgets/platform_widgets/platform_item_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -10,6 +8,9 @@ import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../methods/theme_methods.dart';
+import '../../providers/premium_state_provider.dart';
+import '../../widgets/platform_widgets/platform_item_picker.dart';
 import '../../methods/platform_show_modal_bottom_sheet.dart';
 import '../../providers/purchases_provider.dart';
 import '../../services/purchases_service.dart';
@@ -630,6 +631,7 @@ class _PromotionPointPageState extends ConsumerState<PromotionPointPage> {
 
   @override
   Widget build(BuildContext context) {
+    final isPremium = ref.read(premiumStateProvider);
     primaryColor = getPrimaryColor(context);
     onPrimaryColor = getOnPrimaryColor(context);
     final width = MediaQuery.of(context).size.width -
@@ -1290,7 +1292,7 @@ class _PromotionPointPageState extends ConsumerState<PromotionPointPage> {
                   child: PlatformButton(
                     child: const Text('Save Promotion Point Score'),
                     onPressed: () {
-                      if (purchasesService.isPremium) {
+                      if (isPremium) {
                         PPW ppw = PPW(
                           id: null,
                           date: null,
@@ -1327,7 +1329,7 @@ class _PromotionPointPageState extends ConsumerState<PromotionPointPage> {
               ],
             ),
           ),
-          if (!purchasesService.isPremium)
+          if (!isPremium)
             Container(
               constraints: BoxConstraints(maxHeight: 90),
               alignment: Alignment.center,

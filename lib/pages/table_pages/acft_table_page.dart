@@ -1,14 +1,13 @@
 import 'dart:io';
 
-import 'package:acft_calculator/methods/theme_methods.dart';
-import 'package:acft_calculator/widgets/platform_widgets/platform_item_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 
-import '../../providers/purchases_provider.dart';
-import '../../services/purchases_service.dart';
+import '../../methods/theme_methods.dart';
+import '../../providers/premium_state_provider.dart';
+import '../../widgets/platform_widgets/platform_item_picker.dart';
 import '../../widgets/platform_widgets/platform_scaffold.dart';
 import '../../constants/pt_age_group_table.dart';
 import '../../widgets/acft_table.dart';
@@ -26,13 +25,11 @@ class _AcftTablePageState extends ConsumerState<AcftTablePage> {
   late String _ageGroup, _gender;
   List<String> _genders = ['Male', 'Female'];
 
-  late PurchasesService purchasesService;
   late BannerAd myBanner;
 
   @override
   void initState() {
     super.initState();
-    purchasesService = ref.read(purchasesProvider);
     myBanner = BannerAd(
       adUnitId: Platform.isAndroid
           ? 'ca-app-pub-2431077176117105/5102704125'
@@ -49,6 +46,7 @@ class _AcftTablePageState extends ConsumerState<AcftTablePage> {
 
   @override
   Widget build(BuildContext context) {
+    final isPremium = ref.read(premiumStateProvider);
     final width = MediaQuery.of(context).size.width;
     return PlatformScaffold(
       title: 'ACFT Table',
@@ -115,7 +113,7 @@ class _AcftTablePageState extends ConsumerState<AcftTablePage> {
                 ],
               ),
             ),
-            if (!purchasesService.isPremium)
+            if (!isPremium)
               Container(
                 constraints: BoxConstraints(maxHeight: 90),
                 alignment: Alignment.center,

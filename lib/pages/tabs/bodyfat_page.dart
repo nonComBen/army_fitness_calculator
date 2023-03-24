@@ -7,6 +7,7 @@ import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../providers/premium_state_provider.dart';
 import '../../methods/platform_show_modal_bottom_sheet.dart';
 import '../../methods/theme_methods.dart';
 import '../../providers/purchases_provider.dart';
@@ -317,6 +318,7 @@ class _BodyfatPageState extends ConsumerState<BodyfatPage> {
 
   @override
   Widget build(BuildContext context) {
+    final isPremium = ref.read(premiumStateProvider);
     final width = MediaQuery.of(context).size.width;
     final primaryColor = getPrimaryColor(context);
     final textColor = getOnPrimaryColor(context);
@@ -1089,7 +1091,7 @@ class _BodyfatPageState extends ConsumerState<BodyfatPage> {
                   child: PlatformButton(
                     child: const Text('Save Body Comp Score'),
                     onPressed: () {
-                      if (purchasesService.isPremium) {
+                      if (isPremium) {
                         Bodyfat bf = new Bodyfat(
                             id: null,
                             date: null,
@@ -1119,7 +1121,7 @@ class _BodyfatPageState extends ConsumerState<BodyfatPage> {
               ],
             ),
           ),
-          if (!purchasesService.isPremium)
+          if (!isPremium)
             Container(
               constraints: BoxConstraints(maxHeight: 90),
               alignment: Alignment.center,

@@ -1,14 +1,13 @@
 import 'dart:io';
 
-import 'package:acft_calculator/methods/theme_methods.dart';
-import 'package:acft_calculator/widgets/platform_widgets/platform_expansion_list_tile.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 
-import '../../providers/purchases_provider.dart';
-import '../../services/purchases_service.dart';
+import '../../methods/theme_methods.dart';
+import '../../providers/premium_state_provider.dart';
+import '../../widgets/platform_widgets/platform_expansion_list_tile.dart';
 import '../../widgets/platform_widgets/platform_scaffold.dart';
 
 class AcftVerbiagePage extends ConsumerStatefulWidget {
@@ -25,7 +24,6 @@ class Verbiage {
 }
 
 class _AcftVerbiagePageState extends ConsumerState<AcftVerbiagePage> {
-  late PurchasesService purchasesService;
   List<Verbiage> _verbiages = <Verbiage>[
     Verbiage(
         false,
@@ -213,23 +211,21 @@ class _AcftVerbiagePageState extends ConsumerState<AcftVerbiagePage> {
   @override
   void initState() {
     super.initState();
-    purchasesService = ref.read(purchasesProvider);
-    if (!purchasesService.isPremium) {
-      myBanner = BannerAd(
-        adUnitId: Platform.isAndroid
-            ? 'ca-app-pub-2431077176117105/7254941744'
-            : 'ca-app-pub-2431077176117105/4532397876',
-        size: AdSize.banner,
-        listener: BannerAdListener(),
-        request: AdRequest(nonPersonalizedAds: true),
-      );
+    myBanner = BannerAd(
+      adUnitId: Platform.isAndroid
+          ? 'ca-app-pub-2431077176117105/7254941744'
+          : 'ca-app-pub-2431077176117105/4532397876',
+      size: AdSize.banner,
+      listener: BannerAdListener(),
+      request: AdRequest(nonPersonalizedAds: true),
+    );
 
-      myBanner!.load();
-    }
+    myBanner!.load();
   }
 
   @override
   Widget build(BuildContext context) {
+    final isPremium = ref.read(premiumStateProvider);
     final expansionTextStyle =
         TextStyle(color: getOnPrimaryColor(context), fontSize: 22);
     return PlatformScaffold(
@@ -276,7 +272,7 @@ class _AcftVerbiagePageState extends ConsumerState<AcftVerbiagePage> {
                 ],
               ),
             ),
-            if (!purchasesService.isPremium)
+            if (!isPremium)
               Container(
                 constraints: BoxConstraints(maxHeight: 90),
                 alignment: Alignment.center,

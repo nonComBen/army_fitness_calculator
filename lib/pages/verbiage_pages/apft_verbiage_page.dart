@@ -6,8 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 
 import '../../methods/theme_methods.dart';
-import '../../providers/purchases_provider.dart';
-import '../../services/purchases_service.dart';
+import '../../providers/premium_state_provider.dart';
 import '../../widgets/platform_widgets/platform_expansion_list_tile.dart';
 import '../../widgets/platform_widgets/platform_scaffold.dart';
 
@@ -25,7 +24,6 @@ class Verbiage {
 }
 
 class _ApftVerbiagePageState extends ConsumerState<ApftVerbiagePage> {
-  late PurchasesService purchasesService;
   List<Verbiage> _verbiages = <Verbiage>[
     Verbiage(
         false,
@@ -198,7 +196,6 @@ class _ApftVerbiagePageState extends ConsumerState<ApftVerbiagePage> {
   @override
   void initState() {
     super.initState();
-    purchasesService = ref.read(purchasesProvider);
     myBanner = BannerAd(
       adUnitId: Platform.isAndroid
           ? 'ca-app-pub-2431077176117105/2976785389'
@@ -209,14 +206,14 @@ class _ApftVerbiagePageState extends ConsumerState<ApftVerbiagePage> {
         nonPersonalizedAds: true,
       ),
     );
-
-    if (!purchasesService.isPremium) {
-      myBanner!.load();
-    }
   }
 
   @override
   Widget build(BuildContext context) {
+    final isPremium = ref.read(premiumStateProvider);
+    if (!isPremium) {
+      myBanner!.load();
+    }
     final expansionTextStyle =
         TextStyle(color: getOnPrimaryColor(context), fontSize: 22);
     return PlatformScaffold(
@@ -263,7 +260,7 @@ class _ApftVerbiagePageState extends ConsumerState<ApftVerbiagePage> {
                 ],
               ),
             ),
-            if (!purchasesService.isPremium)
+            if (!isPremium)
               Container(
                 constraints: BoxConstraints(maxHeight: 90),
                 alignment: Alignment.center,

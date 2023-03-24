@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:acft_calculator/providers/premium_state_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -520,7 +521,7 @@ class AcftPageState extends ConsumerState<AcftPage> {
 
   @override
   Widget build(BuildContext context) {
-    ref.watch(purchasesProvider);
+    final isPremium = ref.watch(premiumStateProvider);
     final width = MediaQuery.of(context).size.width;
     final backgroundColor = getBackgroundColor(context);
     final primaryColor = getPrimaryColor(context);
@@ -1819,7 +1820,7 @@ class AcftPageState extends ConsumerState<AcftPage> {
                         textColor: onPrimary,
                       ),
                       GridBox(
-                        title: '90%',
+                        title: '80%',
                         background: primaryColor,
                         textColor: onPrimary,
                       ),
@@ -1970,7 +1971,7 @@ class AcftPageState extends ConsumerState<AcftPage> {
                       String runSeconds = runSecs.toString().length == 1
                           ? '0$runSecs'
                           : runSecs.toString();
-                      if (purchasesService.isPremium) {
+                      if (isPremium) {
                         Acft acft = new Acft(
                             id: null,
                             date: null,
@@ -2004,7 +2005,7 @@ class AcftPageState extends ConsumerState<AcftPage> {
               ],
             ),
           ),
-          if (!purchasesService.isPremium)
+          if (!isPremium)
             Container(
               constraints: BoxConstraints(maxHeight: 90),
               alignment: Alignment.center,

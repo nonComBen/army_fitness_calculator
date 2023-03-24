@@ -5,9 +5,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 
 import '../constants/mdl_setup_table.dart';
-import '../providers/purchases_provider.dart';
 import '../widgets/mdl_setup_card.dart';
 import '../../widgets/platform_widgets/platform_scaffold.dart';
+import '../../providers/premium_state_provider.dart';
 
 class MdlSetupPage extends ConsumerWidget {
   const MdlSetupPage({Key? key}) : super(key: key);
@@ -16,7 +16,7 @@ class MdlSetupPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final purchasesService = ref.read(purchasesProvider);
+    final isPremium = ref.read(premiumStateProvider);
     late BannerAd myBanner;
     myBanner = BannerAd(
       adUnitId: Platform.isAndroid
@@ -58,7 +58,7 @@ class MdlSetupPage extends ConsumerWidget {
                     .toList(),
               ),
             ),
-            if (!purchasesService.isPremium)
+            if (!isPremium)
               Container(
                 constraints: BoxConstraints(maxHeight: 90),
                 alignment: Alignment.center,
