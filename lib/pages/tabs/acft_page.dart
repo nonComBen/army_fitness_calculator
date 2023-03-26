@@ -12,6 +12,7 @@ import '../../methods/platform_show_modal_bottom_sheet.dart';
 import '../../methods/theme_methods.dart';
 import '../../providers/purchases_provider.dart';
 import '../../services/purchases_service.dart';
+import '../../widgets/min_max_table.dart';
 import '../../widgets/platform_widgets/platform_button.dart';
 import '../../sqlite/db_helper.dart';
 import '../../sqlite/acft.dart';
@@ -81,22 +82,22 @@ class AcftPageState extends ConsumerState<AcftPage> {
   static String ageGroup = '17-21';
   static Object gender = 'Male';
   String? mdlMinimum,
-      mdl90,
+      mdl80,
       mdlMax,
       sptMinimum,
-      spt90,
+      spt80,
       sptMax,
       hrpMinimum,
-      hrp90,
+      hrp80,
       hrpMax,
       sdcMinimum,
-      sdc90,
+      sdc80,
       sdcMax,
       plkMinimum,
-      plk90,
+      plk80,
       plkMax,
       runMinimum,
-      run90,
+      run80,
       runMax,
       aerobicEvent;
   List<String>? mdlBenchmarks,
@@ -106,6 +107,7 @@ class AcftPageState extends ConsumerState<AcftPage> {
       plkBenchmarks,
       runBenchmarks,
       altBenchmarks;
+  List<String> tableHeaders = ['Min', '80%', 'Max'];
   late SharedPreferences prefs;
   DBHelper dbHelper = DBHelper();
   TextStyle headerStyle = TextStyle(
@@ -125,13 +127,6 @@ class AcftPageState extends ConsumerState<AcftPage> {
   final _plankSecsController = TextEditingController();
   final _runMinsController = TextEditingController();
   final _runSecsController = TextEditingController();
-
-  final _mdlScoreController = TextEditingController();
-  final _sptScoreController = TextEditingController();
-  final _hrpScoreController = TextEditingController();
-  final _sdcScoreController = TextEditingController();
-  final _plankScoreController = TextEditingController();
-  final _runScoreController = TextEditingController();
 
   final _ageFocus = FocusNode();
   final _mdlFocus = FocusNode();
@@ -266,13 +261,6 @@ class AcftPageState extends ConsumerState<AcftPage> {
     _runMinsController.dispose();
     _runSecsController.dispose();
 
-    _mdlScoreController.dispose();
-    _sptScoreController.dispose();
-    _hrpScoreController.dispose();
-    _sdcScoreController.dispose();
-    _plankScoreController.dispose();
-    _runScoreController.dispose();
-
     _ageFocus.dispose();
     _mdlFocus.dispose();
     _sptFocus.dispose();
@@ -331,19 +319,14 @@ class AcftPageState extends ConsumerState<AcftPage> {
     setBenchmarks();
     mdlScore = getMdlScore(
         mdlRaw, ptAgeGroups.indexOf(ageGroup) + 1, gender == 'Male');
-    _mdlScoreController.text = mdlScore.toString();
     sptScore = getSptScore(
         sptRaw, ptAgeGroups.indexOf(ageGroup) + 1, gender == 'Male');
-    _sptScoreController.text = sptScore.toString();
     hrpScore = getHrpScore(
         hrpRaw, ptAgeGroups.indexOf(ageGroup) + 1, gender == 'Male');
-    _hrpScoreController.text = hrpScore.toString();
     sdcScore = getSdcScore(getTimeAsInt(sdcMins, sdcSecs),
         ptAgeGroups.indexOf(ageGroup) + 1, gender == 'Male');
-    _sdcScoreController.text = sdcScore.toString();
     plankScore = getPlkScore(getTimeAsInt(plankMins, plankSecs),
         ptAgeGroups.indexOf(ageGroup) + 1, gender == 'Male');
-    _plankScoreController.text = plankScore.toString();
     calcRunScore();
     calcTotal();
   }
@@ -365,45 +348,45 @@ class AcftPageState extends ConsumerState<AcftPage> {
         getAltBenchmarks(ptAgeGroups.indexOf(ageGroup), gender == "Male");
 
     mdlMinimum = mdlBenchmarks![0];
-    mdl90 = mdlBenchmarks![1];
+    mdl80 = mdlBenchmarks![1];
     mdlMax = mdlBenchmarks![2];
     sptMinimum = sptBenchmarks![0];
-    spt90 = sptBenchmarks![1];
+    spt80 = sptBenchmarks![1];
     sptMax = sptBenchmarks![2];
     hrpMinimum = hrpBenchmarks![0];
-    hrp90 = hrpBenchmarks![1];
+    hrp80 = hrpBenchmarks![1];
     hrpMax = hrpBenchmarks![2];
     sdcMinimum = sdcBenchmarks![0];
-    sdc90 = sdcBenchmarks![1];
+    sdc80 = sdcBenchmarks![1];
     sdcMax = sdcBenchmarks![2];
     plkMinimum = plkBenchmarks![0];
-    plk90 = plkBenchmarks![1];
+    plk80 = plkBenchmarks![1];
     plkMax = plkBenchmarks![2];
 
     switch (aerobicEvent) {
       case "Run":
         runMinimum = runBenchmarks![0];
-        run90 = runBenchmarks![1];
+        run80 = runBenchmarks![1];
         runMax = runBenchmarks![2];
         break;
       case "Walk":
         runMinimum = altBenchmarks![0];
-        run90 = '-';
+        run80 = '-';
         runMax = '-';
         break;
       case "Bike":
         runMinimum = altBenchmarks![1];
-        run90 = '-';
+        run80 = '-';
         runMax = '-';
         break;
       case "Swim":
         runMinimum = altBenchmarks![2];
-        run90 = '-';
+        run80 = '-';
         runMax = '-';
         break;
       case "Row":
         runMinimum = altBenchmarks![2];
-        run90 = '-';
+        run80 = '-';
         runMax = '-';
         break;
     }
@@ -429,7 +412,6 @@ class AcftPageState extends ConsumerState<AcftPage> {
         runScore = 0;
       }
     }
-    _runScoreController.text = runScore.toString();
   }
 
   void calcTotal() {
@@ -542,7 +524,6 @@ class AcftPageState extends ConsumerState<AcftPage> {
   @override
   Widget build(BuildContext context) {
     final isPremium = ref.watch(premiumStateProvider);
-    final width = MediaQuery.of(context).size.width;
     final backgroundColor = getBackgroundColor(context);
     final primaryColor = getPrimaryColor(context);
     final failColor = Theme.of(context).colorScheme.error;
@@ -709,17 +690,22 @@ class AcftPageState extends ConsumerState<AcftPage> {
                                 mdlRaw,
                                 ptAgeGroups.indexOf(ageGroup) + 1,
                                 gender == 'Male');
-                            _mdlScoreController.text = mdlScore.toString();
                             calcTotal();
                           },
                         ),
                         SizedBox(
                           width: 8,
                         ),
-                        ValueInputField(
+                        GridBox(
+                          title: mdlScore.toString(),
+                          background: mdlPass ? backgroundColor : failColor,
                           width: 60,
-                          isEnabled: false,
-                          controller: _mdlScoreController,
+                          height: 40,
+                          borderColor: Colors.white,
+                          borderBottomLeft: 8,
+                          borderBottomRight: 8,
+                          borderTopLeft: 8,
+                          borderTopRight: 8,
                         ),
                       ],
                     ),
@@ -745,7 +731,6 @@ class AcftPageState extends ConsumerState<AcftPage> {
                               mdlRaw,
                               ptAgeGroups.indexOf(ageGroup) + 1,
                               gender == 'Male');
-                          _mdlScoreController.text = mdlScore.toString();
                           calcTotal();
                         },
                       ),
@@ -770,7 +755,6 @@ class AcftPageState extends ConsumerState<AcftPage> {
                                 mdlRaw,
                                 ptAgeGroups.indexOf(ageGroup) + 1,
                                 gender == 'Male');
-                            _mdlScoreController.text = mdlScore.toString();
                             calcTotal();
                           },
                         ),
@@ -793,7 +777,6 @@ class AcftPageState extends ConsumerState<AcftPage> {
                               mdlRaw,
                               ptAgeGroups.indexOf(ageGroup) + 1,
                               gender == 'Male');
-                          _mdlScoreController.text = mdlScore.toString();
                           isMdlValid = true;
                           calcTotal();
                         },
@@ -817,7 +800,6 @@ class AcftPageState extends ConsumerState<AcftPage> {
                           _mdlController.text = mdlRaw.toString();
                         }
                         mdlScore = 0;
-                        _mdlScoreController.text = mdlScore.toString();
                         isMdlValid = true;
                         calcTotal();
                       });
@@ -831,11 +813,21 @@ class AcftPageState extends ConsumerState<AcftPage> {
                           _mdlController.text = mdlRaw.toString();
                         }
                         mdlScore = 0;
-                        _mdlScoreController.text = mdlScore.toString();
                         isMdlValid = true;
                         calcTotal();
                       });
                     },
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: MinMaxTable(
+                    headers: tableHeaders,
+                    values: [
+                      mdlMinimum.toString(),
+                      mdl80.toString(),
+                      mdlMax.toString()
+                    ],
                   ),
                 ),
                 Divider(
@@ -874,17 +866,22 @@ class AcftPageState extends ConsumerState<AcftPage> {
                                 sptRaw,
                                 ptAgeGroups.indexOf(ageGroup) + 1,
                                 gender == 'Male');
-                            _sptScoreController.text = sptScore.toString();
                             calcTotal();
                           },
                         ),
                         SizedBox(
                           width: 8,
                         ),
-                        ValueInputField(
+                        GridBox(
+                          title: sptScore.toString(),
+                          background: sptPass ? backgroundColor : failColor,
                           width: 60,
-                          isEnabled: false,
-                          controller: _sptScoreController,
+                          height: 40,
+                          borderColor: Colors.white,
+                          borderBottomLeft: 8,
+                          borderBottomRight: 8,
+                          borderTopLeft: 8,
+                          borderTopRight: 8,
                         ),
                       ],
                     ),
@@ -911,7 +908,6 @@ class AcftPageState extends ConsumerState<AcftPage> {
                               sptRaw,
                               ptAgeGroups.indexOf(ageGroup) + 1,
                               gender == 'Male');
-                          _sptScoreController.text = sptScore.toString();
                           calcTotal();
                         },
                       ),
@@ -936,7 +932,6 @@ class AcftPageState extends ConsumerState<AcftPage> {
                                 sptRaw,
                                 ptAgeGroups.indexOf(ageGroup) + 1,
                                 gender == 'Male');
-                            _sptScoreController.text = sptScore.toString();
                             calcTotal();
                           },
                         ),
@@ -962,7 +957,6 @@ class AcftPageState extends ConsumerState<AcftPage> {
                               sptRaw,
                               ptAgeGroups.indexOf(ageGroup) + 1,
                               gender == 'Male');
-                          _sptScoreController.text = sptScore.toString();
                           calcTotal();
                         },
                       ),
@@ -985,7 +979,6 @@ class AcftPageState extends ConsumerState<AcftPage> {
                           _sptController.text = sptRaw.toString();
                         }
                         sptScore = 0;
-                        _sptScoreController.text = sptScore.toString();
                         isSptValid = true;
                         calcTotal();
                       });
@@ -999,11 +992,21 @@ class AcftPageState extends ConsumerState<AcftPage> {
                           _sptController.text = sptRaw.toString();
                         }
                         sptScore = 0;
-                        _sptScoreController.text = sptScore.toString();
                         isSptValid = true;
                         calcTotal();
                       });
                     },
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: MinMaxTable(
+                    headers: tableHeaders,
+                    values: [
+                      sptMinimum.toString(),
+                      spt80.toString(),
+                      sptMax.toString()
+                    ],
                   ),
                 ),
                 Divider(
@@ -1041,17 +1044,22 @@ class AcftPageState extends ConsumerState<AcftPage> {
                                 hrpRaw,
                                 ptAgeGroups.indexOf(ageGroup) + 1,
                                 gender == 'Male');
-                            _hrpScoreController.text = hrpScore.toString();
                             calcTotal();
                           },
                         ),
                         SizedBox(
                           width: 8,
                         ),
-                        ValueInputField(
+                        GridBox(
+                          title: hrpScore.toString(),
+                          background: hrpPass ? backgroundColor : failColor,
                           width: 60,
-                          isEnabled: false,
-                          controller: _hrpScoreController,
+                          height: 40,
+                          borderColor: Colors.white,
+                          borderBottomLeft: 8,
+                          borderBottomRight: 8,
+                          borderTopLeft: 8,
+                          borderTopRight: 8,
                         ),
                       ],
                     ),
@@ -1076,7 +1084,6 @@ class AcftPageState extends ConsumerState<AcftPage> {
                               hrpRaw,
                               ptAgeGroups.indexOf(ageGroup) + 1,
                               gender == 'Male');
-                          _hrpScoreController.text = hrpScore.toString();
                           calcTotal();
                         },
                       ),
@@ -1101,7 +1108,6 @@ class AcftPageState extends ConsumerState<AcftPage> {
                                 hrpRaw,
                                 ptAgeGroups.indexOf(ageGroup) + 1,
                                 gender == 'Male');
-                            _hrpScoreController.text = hrpScore.toString();
                             calcTotal();
                           },
                         ),
@@ -1125,7 +1131,6 @@ class AcftPageState extends ConsumerState<AcftPage> {
                               hrpRaw,
                               ptAgeGroups.indexOf(ageGroup) + 1,
                               gender == 'Male');
-                          _hrpScoreController.text = hrpScore.toString();
                           calcTotal();
                         },
                       ),
@@ -1148,7 +1153,6 @@ class AcftPageState extends ConsumerState<AcftPage> {
                           _hrpController.text = hrpRaw.toString();
                         }
                         hrpScore = 0;
-                        _hrpScoreController.text = hrpScore.toString();
                         isHrpValid = true;
                         calcTotal();
                       });
@@ -1162,11 +1166,21 @@ class AcftPageState extends ConsumerState<AcftPage> {
                           _hrpController.text = hrpRaw.toString();
                         }
                         hrpScore = 0;
-                        _hrpScoreController.text = hrpScore.toString();
                         isHrpValid = true;
                         calcTotal();
                       });
                     },
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: MinMaxTable(
+                    headers: tableHeaders,
+                    values: [
+                      hrpMinimum.toString(),
+                      hrp80.toString(),
+                      hrpMax.toString()
+                    ],
                   ),
                 ),
                 Divider(
@@ -1206,7 +1220,6 @@ class AcftPageState extends ConsumerState<AcftPage> {
                                 getTimeAsInt(sdcMins, sdcSecs),
                                 ptAgeGroups.indexOf(ageGroup) + 1,
                                 gender == 'Male');
-                            _sdcScoreController.text = sdcScore.toString();
                             calcTotal();
                           },
                         ),
@@ -1241,17 +1254,22 @@ class AcftPageState extends ConsumerState<AcftPage> {
                                 getTimeAsInt(sdcMins, sdcSecs),
                                 ptAgeGroups.indexOf(ageGroup) + 1,
                                 gender == 'Male');
-                            _sdcScoreController.text = sdcScore.toString();
                             calcTotal();
                           },
                         ),
                         SizedBox(
                           width: 8,
                         ),
-                        ValueInputField(
+                        GridBox(
+                          title: sdcScore.toString(),
+                          background: sdcPass ? backgroundColor : failColor,
                           width: 60,
-                          isEnabled: false,
-                          controller: _sdcScoreController,
+                          height: 40,
+                          borderColor: Colors.white,
+                          borderBottomLeft: 8,
+                          borderBottomRight: 8,
+                          borderTopLeft: 8,
+                          borderTopRight: 8,
                         ),
                       ],
                     ),
@@ -1276,7 +1294,6 @@ class AcftPageState extends ConsumerState<AcftPage> {
                               getTimeAsInt(sdcMins, sdcSecs),
                               ptAgeGroups.indexOf(ageGroup) + 1,
                               gender == 'Male');
-                          _sdcScoreController.text = sdcScore.toString();
                           calcTotal();
                         },
                       ),
@@ -1301,7 +1318,6 @@ class AcftPageState extends ConsumerState<AcftPage> {
                                 getTimeAsInt(sdcMins, sdcSecs),
                                 ptAgeGroups.indexOf(ageGroup) + 1,
                                 gender == 'Male');
-                            _sdcScoreController.text = sdcScore.toString();
                             calcTotal();
                           },
                         ),
@@ -1325,7 +1341,6 @@ class AcftPageState extends ConsumerState<AcftPage> {
                               getTimeAsInt(sdcMins, sdcSecs),
                               ptAgeGroups.indexOf(ageGroup) + 1,
                               gender == 'Male');
-                          _sdcScoreController.text = sdcScore.toString();
                           calcTotal();
                         },
                       ),
@@ -1351,7 +1366,6 @@ class AcftPageState extends ConsumerState<AcftPage> {
                               getTimeAsInt(sdcMins, sdcSecs),
                               ptAgeGroups.indexOf(ageGroup) + 1,
                               gender == 'Male');
-                          _sdcScoreController.text = sdcScore.toString();
                           calcTotal();
                         },
                       ),
@@ -1376,7 +1390,6 @@ class AcftPageState extends ConsumerState<AcftPage> {
                                 getTimeAsInt(sdcMins, sdcSecs),
                                 ptAgeGroups.indexOf(ageGroup) + 1,
                                 gender == 'Male');
-                            _sdcScoreController.text = sdcScore.toString();
                             calcTotal();
                           },
                         ),
@@ -1400,7 +1413,6 @@ class AcftPageState extends ConsumerState<AcftPage> {
                               getTimeAsInt(sdcMins, sdcSecs),
                               ptAgeGroups.indexOf(ageGroup) + 1,
                               gender == 'Male');
-                          _sdcScoreController.text = sdcScore.toString();
                           calcTotal();
                         },
                       ),
@@ -1425,7 +1437,6 @@ class AcftPageState extends ConsumerState<AcftPage> {
                           _sdcSecsController.text = sdcSecs.toString();
                         }
                         sdcScore = 0;
-                        _sdcScoreController.text = sdcScore.toString();
                         isSdcMinsValid = true;
                         isSdcSecsValid = true;
                         calcTotal();
@@ -1442,12 +1453,22 @@ class AcftPageState extends ConsumerState<AcftPage> {
                           _sdcSecsController.text = sdcSecs.toString();
                         }
                         sdcScore = 0;
-                        _sdcScoreController.text = sdcScore.toString();
                         isSdcMinsValid = true;
                         isSdcSecsValid = true;
                         calcTotal();
                       });
                     },
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: MinMaxTable(
+                    headers: tableHeaders,
+                    values: [
+                      sdcMinimum.toString(),
+                      sdc80.toString(),
+                      sdcMax.toString()
+                    ],
                   ),
                 ),
                 Divider(
@@ -1487,7 +1508,6 @@ class AcftPageState extends ConsumerState<AcftPage> {
                                 getTimeAsInt(plankMins, plankSecs),
                                 ptAgeGroups.indexOf(ageGroup) + 1,
                                 gender == 'Male');
-                            _plankScoreController.text = plankScore.toString();
                             calcTotal();
                           },
                         ),
@@ -1522,17 +1542,22 @@ class AcftPageState extends ConsumerState<AcftPage> {
                                 getTimeAsInt(plankMins, plankSecs),
                                 ptAgeGroups.indexOf(ageGroup) + 1,
                                 gender == 'Male');
-                            _plankScoreController.text = plankScore.toString();
                             calcTotal();
                           },
                         ),
                         SizedBox(
                           width: 8,
                         ),
-                        ValueInputField(
+                        GridBox(
+                          title: plankScore.toString(),
+                          background: plkPass ? backgroundColor : failColor,
                           width: 60,
-                          isEnabled: false,
-                          controller: _plankScoreController,
+                          height: 40,
+                          borderColor: Colors.white,
+                          borderBottomLeft: 8,
+                          borderBottomRight: 8,
+                          borderTopLeft: 8,
+                          borderTopRight: 8,
                         ),
                       ],
                     ),
@@ -1557,7 +1582,6 @@ class AcftPageState extends ConsumerState<AcftPage> {
                               getTimeAsInt(plankMins, plankSecs),
                               ptAgeGroups.indexOf(ageGroup) + 1,
                               gender == 'Male');
-                          _plankScoreController.text = plankScore.toString();
                           calcTotal();
                         },
                       ),
@@ -1582,7 +1606,6 @@ class AcftPageState extends ConsumerState<AcftPage> {
                                 getTimeAsInt(plankMins, plankSecs),
                                 ptAgeGroups.indexOf(ageGroup) + 1,
                                 gender == 'Male');
-                            _plankScoreController.text = plankScore.toString();
                             calcTotal();
                           },
                         ),
@@ -1606,7 +1629,6 @@ class AcftPageState extends ConsumerState<AcftPage> {
                               getTimeAsInt(plankMins, plankSecs),
                               ptAgeGroups.indexOf(ageGroup) + 1,
                               gender == 'Male');
-                          _plankScoreController.text = plankScore.toString();
                           calcTotal();
                         },
                       ),
@@ -1632,7 +1654,6 @@ class AcftPageState extends ConsumerState<AcftPage> {
                               getTimeAsInt(plankMins, plankSecs),
                               ptAgeGroups.indexOf(ageGroup) + 1,
                               gender == 'Male');
-                          _plankScoreController.text = plankScore.toString();
                           calcTotal();
                         },
                       ),
@@ -1657,7 +1678,6 @@ class AcftPageState extends ConsumerState<AcftPage> {
                                 getTimeAsInt(plankMins, plankSecs),
                                 ptAgeGroups.indexOf(ageGroup) + 1,
                                 gender == 'Male');
-                            _plankScoreController.text = plankScore.toString();
                             calcTotal();
                           },
                         ),
@@ -1681,7 +1701,6 @@ class AcftPageState extends ConsumerState<AcftPage> {
                               getTimeAsInt(plankMins, plankSecs),
                               ptAgeGroups.indexOf(ageGroup) + 1,
                               gender == 'Male');
-                          _plankScoreController.text = plankScore.toString();
                           calcTotal();
                         },
                       ),
@@ -1706,7 +1725,6 @@ class AcftPageState extends ConsumerState<AcftPage> {
                           _plankSecsController.text = plankSecs.toString();
                         }
                         plankScore = 0;
-                        _plankScoreController.text = plankScore.toString();
                         isPlankMinsValid = true;
                         isPlankSecsValid = true;
                         calcTotal();
@@ -1723,12 +1741,22 @@ class AcftPageState extends ConsumerState<AcftPage> {
                           _plankSecsController.text = plankSecs.toString();
                         }
                         plankScore = 0;
-                        _plankScoreController.text = plankScore.toString();
                         isPlankMinsValid = true;
                         isPlankSecsValid = true;
                         calcTotal();
                       });
                     },
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: MinMaxTable(
+                    headers: tableHeaders,
+                    values: [
+                      plkMinimum.toString(),
+                      plk80.toString(),
+                      plkMax.toString()
+                    ],
                   ),
                 ),
                 Divider(
@@ -1797,10 +1825,16 @@ class AcftPageState extends ConsumerState<AcftPage> {
                         SizedBox(
                           width: 8,
                         ),
-                        ValueInputField(
+                        GridBox(
+                          title: runScore.toString(),
+                          background: runPass ? backgroundColor : failColor,
                           width: 60,
-                          isEnabled: false,
-                          controller: _runScoreController,
+                          height: 40,
+                          borderColor: Colors.white,
+                          borderBottomLeft: 8,
+                          borderBottomRight: 8,
+                          borderTopLeft: 8,
+                          borderTopRight: 8,
                         ),
                       ],
                     ),
@@ -1916,164 +1950,43 @@ class AcftPageState extends ConsumerState<AcftPage> {
                     ],
                   ),
                 ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: MinMaxTable(
+                    headers: tableHeaders,
+                    values: [
+                      runMinimum.toString(),
+                      run80.toString(),
+                      runMax.toString()
+                    ],
+                  ),
+                ),
                 Divider(
                   color: Colors.yellow,
                 ),
                 Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: GridView.count(
-                    crossAxisCount: 5,
-                    childAspectRatio: width / 180,
-                    crossAxisSpacing: 0.0,
-                    mainAxisSpacing: 0.0,
-                    shrinkWrap: true,
-                    primary: false,
-                    children: <Widget>[
+                  padding: const EdgeInsets.symmetric(
+                    vertical: 8.0,
+                    horizontal: 48.0,
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
                       GridBox(
-                        title: 'Event',
+                        title: 'Total Score',
                         background: primaryColor,
                         textColor: onPrimary,
+                        isTotal: true,
+                        borderTopLeft: 12.0,
+                        borderTopRight: 12.0,
                       ),
-                      GridBox(
-                        title: 'Min',
-                        background: primaryColor,
-                        textColor: onPrimary,
-                      ),
-                      GridBox(
-                        title: '80%',
-                        background: primaryColor,
-                        textColor: onPrimary,
-                      ),
-                      GridBox(
-                        title: 'Max',
-                        background: primaryColor,
-                        textColor: onPrimary,
-                      ),
-                      GridBox(
-                        title: 'Score',
-                        background: primaryColor,
-                        textColor: onPrimary,
-                      ),
-                      GridBox(
-                        title: 'MDL',
-                        background: primaryColor,
-                        textColor: onPrimary,
-                      ),
-                      GridBox(
-                        title: mdlMinimum,
-                      ),
-                      GridBox(
-                        title: mdl90,
-                      ),
-                      GridBox(
-                        title: mdlMax,
-                      ),
-                      GridBox(
-                        title: mdlScore.toString(),
-                        background: mdlPass ? backgroundColor : failColor,
-                      ),
-                      GridBox(
-                        title: 'SPT',
-                        background: primaryColor,
-                        textColor: onPrimary,
-                      ),
-                      GridBox(
-                        title: sptMinimum,
-                      ),
-                      GridBox(
-                        title: spt90,
-                      ),
-                      GridBox(
-                        title: sptMax,
-                      ),
-                      GridBox(
-                        title: sptScore.toString(),
-                        background: sptPass ? backgroundColor : failColor,
-                      ),
-                      GridBox(
-                        title: 'HRP',
-                        background: primaryColor,
-                        textColor: onPrimary,
-                      ),
-                      GridBox(
-                        title: hrpMinimum,
-                      ),
-                      GridBox(
-                        title: hrp90,
-                      ),
-                      GridBox(
-                        title: hrpMax,
-                      ),
-                      GridBox(
-                        title: hrpScore.toString(),
-                        background: hrpPass ? backgroundColor : failColor,
-                      ),
-                      GridBox(
-                        title: 'SDC',
-                        background: primaryColor,
-                        textColor: onPrimary,
-                      ),
-                      GridBox(
-                        title: sdcMinimum,
-                      ),
-                      GridBox(
-                        title: sdc90,
-                      ),
-                      GridBox(
-                        title: sdcMax,
-                      ),
-                      GridBox(
-                        title: sdcScore.toString(),
-                        background: sdcPass ? backgroundColor : failColor,
-                      ),
-                      GridBox(
-                        title: 'PLK',
-                        background: primaryColor,
-                        textColor: onPrimary,
-                      ),
-                      GridBox(
-                        title: plkMinimum,
-                      ),
-                      GridBox(
-                        title: plk90,
-                      ),
-                      GridBox(
-                        title: plkMax,
-                      ),
-                      GridBox(
-                        title: plankScore.toString(),
-                        background: plkPass ? backgroundColor : failColor,
-                      ),
-                      GridBox(
-                        title: '2MR',
-                        background: primaryColor,
-                        textColor: onPrimary,
-                      ),
-                      GridBox(
-                        title: runMinimum,
-                      ),
-                      GridBox(
-                        title: run90,
-                      ),
-                      GridBox(
-                        title: runMax,
-                      ),
-                      GridBox(
-                        title: runScore.toString(),
-                        background: runPass ? backgroundColor : failColor,
-                      ),
-                      GridBox(
-                        title: 'Total',
-                        background: primaryColor,
-                        textColor: onPrimary,
-                      ),
-                      GridBox(),
-                      GridBox(),
-                      GridBox(),
                       GridBox(
                         title: total.toString(),
                         background: totalPass ? backgroundColor : failColor,
-                      ),
+                        isTotal: true,
+                        borderBottomLeft: 12.0,
+                        borderBottomRight: 12.0,
+                      )
                     ],
                   ),
                 ),

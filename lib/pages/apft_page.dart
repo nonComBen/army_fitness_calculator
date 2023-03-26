@@ -12,6 +12,7 @@ import 'package:intl/intl.dart';
 import '../methods/platform_show_modal_bottom_sheet.dart';
 import '../providers/shared_preferences_provider.dart';
 import '../sqlite/db_helper.dart';
+import '../widgets/min_max_table.dart';
 import '../widgets/platform_widgets/platform_item_picker.dart';
 import '../widgets/platform_widgets/platform_selection_widget.dart';
 import '../widgets/grid_box.dart';
@@ -71,6 +72,7 @@ class _ApftPageState extends ConsumerState<ApftPage> {
       isAgeValid = true,
       isMinsValid = true,
       isSecValid = true;
+  List<String> tableHeaders = ['Min', '90%', 'Max'];
   late SharedPreferences prefs;
   RegExp regExp = RegExp(r'^\d{4}(0[1-9]|1[012])(0[1-9]|[12][0-9]|3[01])$');
   DBHelper dbHelper = DBHelper();
@@ -400,10 +402,9 @@ class _ApftPageState extends ConsumerState<ApftPage> {
   @override
   Widget build(BuildContext context) {
     final isPremium = ref.read(premiumStateProvider);
-    double width = MediaQuery.of(context).size.width;
     final primaryColor = getPrimaryColor(context);
-    final textColor = getOnPrimaryColor(context);
-    final errorColor = Theme.of(context).colorScheme.error;
+    final onPrimary = getOnPrimaryColor(context);
+    final failColor = Theme.of(context).colorScheme.error;
     final backgroundColor = getBackgroundColor(context);
     final onSecondary = getOnPrimaryColor(context);
     return PlatformScaffold(
@@ -547,21 +548,39 @@ class _ApftPageState extends ConsumerState<ApftPage> {
                         'Push Ups',
                         style: headerStyle,
                       ),
-                      ValueInputField(
-                        width: 60,
-                        controller: _puController,
-                        focusNode: _puFocus,
-                        textInputAction: TextInputAction.next,
-                        onEditingComplete: () => _suFocus.requestFocus(),
-                        onChanged: (value) {
-                          int raw = int.tryParse(value) ?? 0;
-                          setState(() {
-                            pu = raw;
-                            _calcPu();
-                            if (isJrSoldier) _calcRun();
-                            _calcTotal();
-                          });
-                        },
+                      Row(
+                        children: [
+                          ValueInputField(
+                            width: 60,
+                            controller: _puController,
+                            focusNode: _puFocus,
+                            textInputAction: TextInputAction.next,
+                            onEditingComplete: () => _suFocus.requestFocus(),
+                            onChanged: (value) {
+                              int raw = int.tryParse(value) ?? 0;
+                              setState(() {
+                                pu = raw;
+                                _calcPu();
+                                if (isJrSoldier) _calcRun();
+                                _calcTotal();
+                              });
+                            },
+                          ),
+                          SizedBox(
+                            width: 8.0,
+                          ),
+                          GridBox(
+                            title: puScore.toString(),
+                            background: puPass ? backgroundColor : failColor,
+                            width: 60,
+                            height: 40,
+                            borderColor: Colors.white,
+                            borderBottomLeft: 8,
+                            borderBottomRight: 8,
+                            borderTopLeft: 8,
+                            borderTopRight: 8,
+                          ),
+                        ],
                       ),
                     ],
                   ),
@@ -659,6 +678,17 @@ class _ApftPageState extends ConsumerState<ApftPage> {
                       },
                     ),
                   ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: MinMaxTable(
+                      headers: tableHeaders,
+                      values: [
+                        puMin.toString(),
+                        pu90.toString(),
+                        puMax.toString()
+                      ],
+                    ),
+                  ),
                   Divider(
                     color: Colors.yellow,
                   ),
@@ -670,21 +700,39 @@ class _ApftPageState extends ConsumerState<ApftPage> {
                         style: const TextStyle(
                             fontSize: 22.0, fontWeight: FontWeight.bold),
                       ),
-                      ValueInputField(
-                        width: 60,
-                        controller: _suController,
-                        focusNode: _suFocus,
-                        textInputAction: TextInputAction.next,
-                        onEditingComplete: () => _minsFocus.requestFocus(),
-                        onChanged: (value) {
-                          int raw = int.tryParse(value) ?? 0;
-                          setState(() {
-                            su = raw;
-                            _calcSu();
-                            if (isJrSoldier) _calcRun();
-                            _calcTotal();
-                          });
-                        },
+                      Row(
+                        children: [
+                          ValueInputField(
+                            width: 60,
+                            controller: _suController,
+                            focusNode: _suFocus,
+                            textInputAction: TextInputAction.next,
+                            onEditingComplete: () => _minsFocus.requestFocus(),
+                            onChanged: (value) {
+                              int raw = int.tryParse(value) ?? 0;
+                              setState(() {
+                                su = raw;
+                                _calcSu();
+                                if (isJrSoldier) _calcRun();
+                                _calcTotal();
+                              });
+                            },
+                          ),
+                          SizedBox(
+                            width: 8.0,
+                          ),
+                          GridBox(
+                            title: suScore.toString(),
+                            background: suPass ? backgroundColor : failColor,
+                            width: 60,
+                            height: 40,
+                            borderColor: Colors.white,
+                            borderBottomLeft: 8,
+                            borderBottomRight: 8,
+                            borderTopLeft: 8,
+                            borderTopRight: 8,
+                          ),
+                        ],
                       ),
                     ],
                   ),
@@ -786,6 +834,17 @@ class _ApftPageState extends ConsumerState<ApftPage> {
                       },
                     ),
                   ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: MinMaxTable(
+                      headers: tableHeaders,
+                      values: [
+                        suMin.toString(),
+                        su90.toString(),
+                        suMax.toString()
+                      ],
+                    ),
+                  ),
                   Divider(
                     color: Colors.yellow,
                   ),
@@ -854,6 +913,20 @@ class _ApftPageState extends ConsumerState<ApftPage> {
                               _calcRun();
                               _calcTotal();
                             },
+                          ),
+                          SizedBox(
+                            width: 8,
+                          ),
+                          GridBox(
+                            title: runScore.toString(),
+                            background: runPass ? backgroundColor : failColor,
+                            width: 60,
+                            height: 40,
+                            borderColor: Colors.white,
+                            borderBottomLeft: 8,
+                            borderBottomRight: 8,
+                            borderTopLeft: 8,
+                            borderTopRight: 8,
                           ),
                         ],
                       ),
@@ -963,9 +1036,6 @@ class _ApftPageState extends ConsumerState<ApftPage> {
                       ],
                     ),
                   ),
-                  Divider(
-                    color: Colors.yellow,
-                  ),
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: PlatformCheckboxListTile(
@@ -1009,114 +1079,43 @@ class _ApftPageState extends ConsumerState<ApftPage> {
                       },
                     ),
                   ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: MinMaxTable(
+                      headers: tableHeaders,
+                      values: [
+                        runMin.toString(),
+                        run90.toString(),
+                        runMax.toString()
+                      ],
+                    ),
+                  ),
                   Divider(
                     color: Colors.yellow,
                   ),
                   Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: GridView.count(
-                      crossAxisCount: 5,
-                      childAspectRatio: width / 180,
-                      crossAxisSpacing: 0.0,
-                      mainAxisSpacing: 0.0,
-                      shrinkWrap: true,
-                      primary: false,
-                      children: <Widget>[
+                    padding: const EdgeInsets.symmetric(
+                      vertical: 8.0,
+                      horizontal: 48.0,
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
                         GridBox(
-                          title: 'Event',
+                          title: 'Total Score',
                           background: primaryColor,
-                          textColor: textColor,
+                          textColor: onPrimary,
+                          isTotal: true,
+                          borderTopLeft: 12.0,
+                          borderTopRight: 12.0,
                         ),
-                        GridBox(
-                          title: 'Min',
-                          background: primaryColor,
-                          textColor: textColor,
-                        ),
-                        GridBox(
-                          title: '90%',
-                          background: primaryColor,
-                          textColor: textColor,
-                        ),
-                        GridBox(
-                          title: 'Max',
-                          background: primaryColor,
-                          textColor: textColor,
-                        ),
-                        GridBox(
-                          title: 'Score',
-                          background: primaryColor,
-                          textColor: textColor,
-                        ),
-                        GridBox(
-                          title: 'PU',
-                          centered: false,
-                          background: primaryColor,
-                          textColor: textColor,
-                        ),
-                        GridBox(
-                          title: puMin,
-                        ),
-                        GridBox(
-                          title: pu90,
-                        ),
-                        GridBox(
-                          title: puMax,
-                        ),
-                        GridBox(
-                          title: puScore.toString(),
-                          background: puPass ? backgroundColor : errorColor,
-                        ),
-                        GridBox(
-                          title: 'SU',
-                          centered: false,
-                          background: primaryColor,
-                          textColor: textColor,
-                        ),
-                        GridBox(
-                          title: suMin,
-                        ),
-                        GridBox(
-                          title: su90,
-                        ),
-                        GridBox(
-                          title: suMax,
-                        ),
-                        GridBox(
-                          title: suScore.toString(),
-                          background: suPass ? backgroundColor : errorColor,
-                        ),
-                        GridBox(
-                          title: event,
-                          centered: false,
-                          background: primaryColor,
-                          textColor: textColor,
-                        ),
-                        GridBox(
-                          title: runMin,
-                        ),
-                        GridBox(
-                          title: run90,
-                        ),
-                        GridBox(
-                          title: runMax,
-                        ),
-                        GridBox(
-                          title: runScore.toString(),
-                          background: runPass ? backgroundColor : errorColor,
-                        ),
-                        GridBox(
-                          title: 'Total',
-                          centered: false,
-                          background: primaryColor,
-                          textColor: textColor,
-                        ),
-                        GridBox(),
-                        GridBox(),
-                        GridBox(),
                         GridBox(
                           title: totalScore.toString(),
-                          background: totalPass ? backgroundColor : errorColor,
-                        ),
+                          background: totalPass ? backgroundColor : failColor,
+                          isTotal: true,
+                          borderBottomLeft: 12.0,
+                          borderBottomRight: 12.0,
+                        )
                       ],
                     ),
                   ),

@@ -12,11 +12,11 @@ import '../../methods/platform_show_modal_bottom_sheet.dart';
 import '../../methods/theme_methods.dart';
 import '../../providers/purchases_provider.dart';
 import '../../services/purchases_service.dart';
+import '../../widgets/min_max_table.dart';
 import '../../widgets/platform_widgets/platform_button.dart';
 import '../../providers/shared_preferences_provider.dart';
 import '../../sqlite/db_helper.dart';
 import '../../widgets/platform_widgets/platform_selection_widget.dart';
-import '../../widgets/grid_box.dart';
 import '../../widgets/increment_decrement_button.dart';
 import '../../calculators/bf_calculator.dart';
 import '../../sqlite/bodyfat.dart';
@@ -319,11 +319,7 @@ class _BodyfatPageState extends ConsumerState<BodyfatPage> {
   @override
   Widget build(BuildContext context) {
     final isPremium = ref.read(premiumStateProvider);
-    final width = MediaQuery.of(context).size.width;
     final primaryColor = getPrimaryColor(context);
-    final textColor = getOnPrimaryColor(context);
-    final errorColor = Theme.of(context).colorScheme.error;
-    final backgroundColor = getBackgroundColor(context);
     return Container(
       padding: const EdgeInsets.all(16.0),
       child: Column(
@@ -357,7 +353,7 @@ class _BodyfatPageState extends ConsumerState<BodyfatPage> {
                           fontSize: 22.0, fontWeight: FontWeight.bold),
                     ),
                     ValueInputField(
-                      width: 60,
+                      width: 50,
                       controller: _ageController,
                       focusNode: _ageFocus,
                       textInputAction: TextInputAction.next,
@@ -452,7 +448,7 @@ class _BodyfatPageState extends ConsumerState<BodyfatPage> {
                           fontSize: 22.0, fontWeight: FontWeight.bold),
                     ),
                     ValueInputField(
-                      width: 60,
+                      width: 50,
                       controller: _heightController,
                       focusNode: _heightFocus,
                       textInputAction: TextInputAction.next,
@@ -557,7 +553,7 @@ class _BodyfatPageState extends ConsumerState<BodyfatPage> {
                           fontSize: 22.0, fontWeight: FontWeight.bold),
                     ),
                     ValueInputField(
-                      width: 70,
+                      width: 60,
                       controller: _weightController,
                       focusNode: _weightFocus,
                       textInputAction: TextInputAction.done,
@@ -640,49 +636,12 @@ class _BodyfatPageState extends ConsumerState<BodyfatPage> {
                 ),
                 Padding(
                   padding: const EdgeInsets.all(8.0),
-                  child: GridView.count(
-                    crossAxisCount: 4,
-                    childAspectRatio: width / 144,
-                    crossAxisSpacing: 0.0,
-                    mainAxisSpacing: 0.0,
-                    shrinkWrap: true,
-                    primary: false,
-                    children: <Widget>[
-                      GridBox(
-                        title: ageGroup,
-                        background: primaryColor,
-                        textColor: textColor,
-                      ),
-                      GridBox(
-                        title: 'Min',
-                        background: primaryColor,
-                        textColor: textColor,
-                      ),
-                      GridBox(
-                        title: 'Max',
-                        background: primaryColor,
-                        textColor: textColor,
-                      ),
-                      GridBox(
-                        title: 'Pass/Fail',
-                        background: primaryColor,
-                        textColor: textColor,
-                      ),
-                      GridBox(
-                        title: '${height.toString()} in.',
-                        background: primaryColor,
-                        textColor: textColor,
-                      ),
-                      GridBox(
-                        title: weightMin.toString(),
-                      ),
-                      GridBox(
-                        title: weightMax.toString(),
-                      ),
-                      GridBox(
-                        title: bmiPass ? 'Pass' : 'Fail',
-                        background: bmiPass ? backgroundColor : errorColor,
-                      ),
+                  child: MinMaxTable(
+                    headers: ['Min', 'Max', 'Pass/Fail'],
+                    values: [
+                      weightMin.toString(),
+                      weightMax.toString(),
+                      bmiPass ? 'Pass' : 'Fail'
                     ],
                   ),
                 ),
@@ -731,7 +690,7 @@ class _BodyfatPageState extends ConsumerState<BodyfatPage> {
                               },
                             ),
                             SizedBox(
-                              width: 64,
+                              width: 60,
                               child: PlatformTextField(
                                 controller: _heightDoubleController,
                                 textAlign: TextAlign.center,
@@ -774,7 +733,7 @@ class _BodyfatPageState extends ConsumerState<BodyfatPage> {
                                 fontSize: 22.0, fontWeight: FontWeight.bold),
                           ),
                           ValueInputField(
-                            width: 70,
+                            width: 60,
                             controller: _neckController,
                             focusNode: _neckFocus,
                             textInputAction: TextInputAction.next,
@@ -860,7 +819,7 @@ class _BodyfatPageState extends ConsumerState<BodyfatPage> {
                                 fontSize: 22.0, fontWeight: FontWeight.bold),
                           ),
                           ValueInputField(
-                            width: 70,
+                            width: 60,
                             controller: _waistController,
                             focusNode: _waistFocus,
                             textInputAction: gender == 'Female'
@@ -951,7 +910,7 @@ class _BodyfatPageState extends ConsumerState<BodyfatPage> {
                                   fontSize: 22.0, fontWeight: FontWeight.bold),
                             ),
                             ValueInputField(
-                              width: 70,
+                              width: 60,
                               controller: _hipController,
                               focusNode: _hipFocus,
                               textInputAction: TextInputAction.done,
@@ -1029,58 +988,12 @@ class _BodyfatPageState extends ConsumerState<BodyfatPage> {
                         ),
                       Padding(
                         padding: const EdgeInsets.all(8.0),
-                        child: GridView.count(
-                          crossAxisCount: 5,
-                          childAspectRatio: width / 180,
-                          crossAxisSpacing: 0.0,
-                          mainAxisSpacing: 0.0,
-                          shrinkWrap: true,
-                          primary: false,
-                          children: <Widget>[
-                            GridBox(
-                              title: '${heightDouble.toString()} in.',
-                              background: primaryColor,
-                              textColor: textColor,
-                            ),
-                            GridBox(
-                              title: 'BF %',
-                              background: primaryColor,
-                              textColor: textColor,
-                            ),
-                            GridBox(
-                              title: 'Max %',
-                              background: primaryColor,
-                              textColor: textColor,
-                            ),
-                            GridBox(
-                              title: 'O/U',
-                              background: primaryColor,
-                              textColor: textColor,
-                            ),
-                            GridBox(
-                              title: 'P/F',
-                              background: primaryColor,
-                              textColor: textColor,
-                            ),
-                            GridBox(
-                              title: gender == 'Male'
-                                  ? '${(waist - neck).toString()} in.'
-                                  : '${(hip + waist - neck).toString()} in.',
-                              background: primaryColor,
-                              textColor: textColor,
-                            ),
-                            GridBox(
-                              title: bfPercent.toString(),
-                            ),
-                            GridBox(
-                              title: percentMax.toString(),
-                            ),
-                            GridBox(
-                              title: overUnder.toString(),
-                            ),
-                            GridBox(
-                              title: bfPass ? 'Pass' : 'Fail',
-                            ),
+                        child: MinMaxTable(
+                          headers: ['BF %', 'Max %', 'Pass/Fail'],
+                          values: [
+                            bfPercent.toString(),
+                            percentMax.toString(),
+                            bfPass ? 'Pass' : 'Fail',
                           ],
                         ),
                       ),

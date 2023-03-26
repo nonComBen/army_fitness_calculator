@@ -11,7 +11,7 @@ abstract class PlatformTextField extends Widget {
     TextStyle? style,
     FocusNode? focusNode,
     String? label,
-    InputDecoration? decoration,
+    required InputDecoration decoration,
     BoxDecoration? iosDecoration,
     String? Function(String?)? validator,
     AutovalidateMode? autovalidateMode,
@@ -111,6 +111,7 @@ class IOSTextField extends StatelessWidget implements PlatformTextField {
     this.onChanged,
     this.onEditingComplete,
     this.style,
+    this.borderColor,
   });
 
   final TextEditingController controller;
@@ -127,6 +128,7 @@ class IOSTextField extends StatelessWidget implements PlatformTextField {
   final TextCapitalization textCapitalization;
   final TextAlign textAlign;
   final int maxLines;
+  final Color? borderColor;
   final void Function(String)? onChanged;
   final void Function()? onEditingComplete;
 

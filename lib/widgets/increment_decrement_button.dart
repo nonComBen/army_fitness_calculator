@@ -24,7 +24,7 @@ class IncrementDecrementButton extends StatelessWidget {
         highlightColor: Colors.grey,
         child: Container(
           width: width,
-          height: width,
+          height: 42,
           child: Center(
             child: Text(
               child!,
