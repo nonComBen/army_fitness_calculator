@@ -572,9 +572,10 @@ class _ApftPageState extends ConsumerState<ApftPage> {
                           GridBox(
                             title: puScore.toString(),
                             background: puPass ? backgroundColor : failColor,
+                            textColor:
+                                puPass ? getTextColor(context) : Colors.white,
                             width: 60,
                             height: 40,
-                            borderColor: Colors.white,
                             borderBottomLeft: 8,
                             borderBottomRight: 8,
                             borderTopLeft: 8,
@@ -724,9 +725,10 @@ class _ApftPageState extends ConsumerState<ApftPage> {
                           GridBox(
                             title: suScore.toString(),
                             background: suPass ? backgroundColor : failColor,
+                            textColor:
+                                suPass ? getTextColor(context) : Colors.white,
                             width: 60,
                             height: 40,
-                            borderColor: Colors.white,
                             borderBottomLeft: 8,
                             borderBottomRight: 8,
                             borderTopLeft: 8,
@@ -920,9 +922,10 @@ class _ApftPageState extends ConsumerState<ApftPage> {
                           GridBox(
                             title: runScore.toString(),
                             background: runPass ? backgroundColor : failColor,
+                            textColor:
+                                runPass ? getTextColor(context) : Colors.white,
                             width: 60,
                             height: 40,
-                            borderColor: Colors.white,
                             borderBottomLeft: 8,
                             borderBottomRight: 8,
                             borderTopLeft: 8,
@@ -1112,6 +1115,8 @@ class _ApftPageState extends ConsumerState<ApftPage> {
                         GridBox(
                           title: totalScore.toString(),
                           background: totalPass ? backgroundColor : failColor,
+                          textColor:
+                              totalPass ? getTextColor(context) : Colors.white,
                           isTotal: true,
                           borderBottomLeft: 12.0,
                           borderBottomRight: 12.0,

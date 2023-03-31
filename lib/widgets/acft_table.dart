@@ -26,6 +26,7 @@ class AcftTable extends StatelessWidget {
       child: Row(
         children: [
           AcftTableColumn(
+            header: 'Points',
             table: mdlTable,
           ),
           AcftTableColumn(

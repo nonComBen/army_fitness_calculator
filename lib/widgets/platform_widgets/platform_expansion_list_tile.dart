@@ -95,24 +95,18 @@ class _IOSExpansionTileState extends State<IOSExpansionTile> {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        DecoratedBox(
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(8),
-          ),
-          child: CupertinoListTile(
-            padding: EdgeInsets.all(12),
-            title: widget.title,
-            leading: widget.leading,
-            trailing:
-                isTrailingIcon && isExpanded ? rotatedIcon : widget.trailing,
-            backgroundColor:
-                !isExpanded ? widget.collapsedBackgroundColor : null,
-            onTap: () {
-              setState(() {
-                isExpanded = !isExpanded;
-              });
-            },
-          ),
+        CupertinoListTile(
+          padding: EdgeInsets.all(12),
+          title: widget.title,
+          leading: widget.leading,
+          trailing:
+              isTrailingIcon && isExpanded ? rotatedIcon : widget.trailing,
+          backgroundColor: !isExpanded ? widget.collapsedBackgroundColor : null,
+          onTap: () {
+            setState(() {
+              isExpanded = !isExpanded;
+            });
+          },
         ),
         if (isExpanded)
           Container(

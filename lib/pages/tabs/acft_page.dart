@@ -699,9 +699,10 @@ class AcftPageState extends ConsumerState<AcftPage> {
                         GridBox(
                           title: mdlScore.toString(),
                           background: mdlPass ? backgroundColor : failColor,
+                          textColor:
+                              mdlPass ? getTextColor(context) : Colors.white,
                           width: 60,
                           height: 40,
-                          borderColor: Colors.white,
                           borderBottomLeft: 8,
                           borderBottomRight: 8,
                           borderTopLeft: 8,
@@ -875,9 +876,10 @@ class AcftPageState extends ConsumerState<AcftPage> {
                         GridBox(
                           title: sptScore.toString(),
                           background: sptPass ? backgroundColor : failColor,
+                          textColor:
+                              sptPass ? getTextColor(context) : Colors.white,
                           width: 60,
                           height: 40,
-                          borderColor: Colors.white,
                           borderBottomLeft: 8,
                           borderBottomRight: 8,
                           borderTopLeft: 8,
@@ -1053,9 +1055,10 @@ class AcftPageState extends ConsumerState<AcftPage> {
                         GridBox(
                           title: hrpScore.toString(),
                           background: hrpPass ? backgroundColor : failColor,
+                          textColor:
+                              hrpPass ? getTextColor(context) : Colors.white,
                           width: 60,
                           height: 40,
-                          borderColor: Colors.white,
                           borderBottomLeft: 8,
                           borderBottomRight: 8,
                           borderTopLeft: 8,
@@ -1263,9 +1266,10 @@ class AcftPageState extends ConsumerState<AcftPage> {
                         GridBox(
                           title: sdcScore.toString(),
                           background: sdcPass ? backgroundColor : failColor,
+                          textColor:
+                              sdcPass ? getTextColor(context) : Colors.white,
                           width: 60,
                           height: 40,
-                          borderColor: Colors.white,
                           borderBottomLeft: 8,
                           borderBottomRight: 8,
                           borderTopLeft: 8,
@@ -1551,9 +1555,10 @@ class AcftPageState extends ConsumerState<AcftPage> {
                         GridBox(
                           title: plankScore.toString(),
                           background: plkPass ? backgroundColor : failColor,
+                          textColor:
+                              plkPass ? getTextColor(context) : Colors.white,
                           width: 60,
                           height: 40,
-                          borderColor: Colors.white,
                           borderBottomLeft: 8,
                           borderBottomRight: 8,
                           borderTopLeft: 8,
@@ -1828,9 +1833,10 @@ class AcftPageState extends ConsumerState<AcftPage> {
                         GridBox(
                           title: runScore.toString(),
                           background: runPass ? backgroundColor : failColor,
+                          textColor:
+                              runPass ? getTextColor(context) : Colors.white,
                           width: 60,
                           height: 40,
-                          borderColor: Colors.white,
                           borderBottomLeft: 8,
                           borderBottomRight: 8,
                           borderTopLeft: 8,
@@ -1983,6 +1989,8 @@ class AcftPageState extends ConsumerState<AcftPage> {
                       GridBox(
                         title: total.toString(),
                         background: totalPass ? backgroundColor : failColor,
+                        textColor:
+                            totalPass ? getTextColor(context) : Colors.white,
                         isTotal: true,
                         borderBottomLeft: 12.0,
                         borderBottomRight: 12.0,

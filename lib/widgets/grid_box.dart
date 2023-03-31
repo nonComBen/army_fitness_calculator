@@ -1,3 +1,4 @@
+import 'package:acft_calculator/methods/theme_methods.dart';
 import 'package:flutter/material.dart';
 
 class GridBox extends StatelessWidget {
@@ -9,7 +10,6 @@ class GridBox extends StatelessWidget {
     this.height,
     this.background,
     this.textColor,
-    this.borderColor = Colors.black,
     this.borderBottomLeft = 0.0,
     this.borderBottomRight = 0.0,
     this.borderTopLeft = 0.0,
@@ -21,7 +21,6 @@ class GridBox extends StatelessWidget {
   final double? height;
   final Color? background;
   final Color? textColor;
-  final Color borderColor;
   final double borderTopLeft;
   final double borderTopRight;
   final double borderBottomLeft;
@@ -43,7 +42,7 @@ class GridBox extends StatelessWidget {
           ),
         ),
         decoration: BoxDecoration(
-          border: Border.all(color: borderColor),
+          border: Border.all(color: getTextColor(context)),
           color: background,
           borderRadius: BorderRadius.only(
             topLeft: Radius.circular(borderTopLeft),
