@@ -12,6 +12,7 @@ import '../../methods/platform_show_modal_bottom_sheet.dart';
 import '../../methods/theme_methods.dart';
 import '../../providers/purchases_provider.dart';
 import '../../services/purchases_service.dart';
+import '../../widgets/grid_box.dart';
 import '../../widgets/min_max_table.dart';
 import '../../widgets/platform_widgets/platform_button.dart';
 import '../../providers/shared_preferences_provider.dart';
@@ -60,7 +61,6 @@ class _BodyfatPageState extends ConsumerState<BodyfatPage> {
 
   final _ageController = TextEditingController();
   final _heightController = TextEditingController();
-  final _heightDoubleController = TextEditingController();
   final _weightController = TextEditingController();
   final _neckController = TextEditingController();
   final _waistController = TextEditingController();
@@ -147,7 +147,6 @@ class _BodyfatPageState extends ConsumerState<BodyfatPage> {
     ageGroup = getAgeGroup(age);
     heightDouble = height.toDouble();
     _heightController.text = height.toString();
-    _heightDoubleController.text = heightDouble.toString();
 
     setBenchmarks();
     calcBmi();
@@ -160,7 +159,6 @@ class _BodyfatPageState extends ConsumerState<BodyfatPage> {
 
     _ageController.dispose();
     _heightController.dispose();
-    _heightDoubleController.dispose();
     _weightController.dispose();
     _neckController.dispose();
     _waistController.dispose();
@@ -468,8 +466,6 @@ class _BodyfatPageState extends ConsumerState<BodyfatPage> {
                             isHeightValid = true;
                           }
                           heightDouble = height.toDouble();
-                          _heightDoubleController.text =
-                              heightDouble.toString();
                           setBenchmarks();
                           calcBmi();
                           calcBf();
@@ -490,8 +486,6 @@ class _BodyfatPageState extends ConsumerState<BodyfatPage> {
                             height--;
                             _heightController.text = height.toString();
                             heightDouble = height.toDouble();
-                            _heightDoubleController.text =
-                                heightDouble.toString();
                             setBenchmarks();
                             calcBmi();
                           }
@@ -511,8 +505,6 @@ class _BodyfatPageState extends ConsumerState<BodyfatPage> {
                               height = value.floor();
                               _heightController.text = height.toString();
                               heightDouble = height.toDouble();
-                              _heightDoubleController.text =
-                                  heightDouble.toString();
                               setBenchmarks();
                               calcBmi();
                               calcBf();
@@ -529,8 +521,6 @@ class _BodyfatPageState extends ConsumerState<BodyfatPage> {
                               height++;
                               _heightController.text = height.toString();
                               heightDouble = height.toDouble();
-                              _heightDoubleController.text =
-                                  heightDouble.toString();
                               setBenchmarks();
                               calcBmi();
                               calcBf();
@@ -681,23 +671,20 @@ class _BodyfatPageState extends ConsumerState<BodyfatPage> {
                                       (height.toDouble() - 0.5))) {
                                     setState(() {
                                       heightDouble = heightDouble! - 0.5;
-                                      _heightDoubleController.text =
-                                          heightDouble.toString();
                                     });
                                     calcBf();
                                   }
                                 }
                               },
                             ),
-                            SizedBox(
+                            GridBox(
+                              borderBottomLeft: 12.0,
+                              borderBottomRight: 12.0,
+                              borderTopLeft: 12.0,
+                              borderTopRight: 12.0,
+                              title: heightDouble.toString(),
                               width: 60,
-                              child: PlatformTextField(
-                                controller: _heightDoubleController,
-                                textAlign: TextAlign.center,
-                                enabled: false,
-                                decoration: const InputDecoration(
-                                    border: OutlineInputBorder()),
-                              ),
+                              height: 40,
                             ),
                             IncrementDecrementButton(
                               child: '+ 0.5',
@@ -710,8 +697,6 @@ class _BodyfatPageState extends ConsumerState<BodyfatPage> {
                                       (height.toDouble() + 0.5))) {
                                     setState(() {
                                       heightDouble = heightDouble! + 0.5;
-                                      _heightDoubleController.text =
-                                          heightDouble.toString();
                                     });
                                     calcBf();
                                   }

@@ -407,6 +407,7 @@ class _ApftPageState extends ConsumerState<ApftPage> {
     final failColor = Theme.of(context).colorScheme.error;
     final backgroundColor = getBackgroundColor(context);
     final onSecondary = getOnPrimaryColor(context);
+    final width = MediaQuery.of(context).size.width;
     return PlatformScaffold(
       title: 'APFT Calculator',
       body: Container(
@@ -521,67 +522,46 @@ class _ApftPageState extends ConsumerState<ApftPage> {
                       ],
                     ),
                   ),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: PlatformItemPicker(
-                      label: Text(
-                        'Aerobic Event',
-                        style: TextStyle(
-                          color: getTextColor(context),
-                        ),
-                      ),
-                      value: event,
-                      items: events,
-                      onChanged: (value) {
-                        FocusScope.of(context).unfocus();
-                        setState(() {
-                          event = value!;
-                        });
-                        calcAll();
-                      },
-                    ),
+                  Divider(
+                    color: Colors.yellow,
                   ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: <Widget>[
-                      Text(
-                        'Push Ups',
-                        style: headerStyle,
+                      SizedBox(
+                        width: (width - 32) / 3,
+                        child: Text(
+                          'Push Ups',
+                          style: headerStyle,
+                        ),
                       ),
-                      Row(
-                        children: [
-                          ValueInputField(
-                            width: 60,
-                            controller: _puController,
-                            focusNode: _puFocus,
-                            textInputAction: TextInputAction.next,
-                            onEditingComplete: () => _suFocus.requestFocus(),
-                            onChanged: (value) {
-                              int raw = int.tryParse(value) ?? 0;
-                              setState(() {
-                                pu = raw;
-                                _calcPu();
-                                if (isJrSoldier) _calcRun();
-                                _calcTotal();
-                              });
-                            },
-                          ),
-                          SizedBox(
-                            width: 8.0,
-                          ),
-                          GridBox(
-                            title: puScore.toString(),
-                            background: puPass ? backgroundColor : failColor,
-                            textColor:
-                                puPass ? getTextColor(context) : Colors.white,
-                            width: 60,
-                            height: 40,
-                            borderBottomLeft: 8,
-                            borderBottomRight: 8,
-                            borderTopLeft: 8,
-                            borderTopRight: 8,
-                          ),
-                        ],
+                      ValueInputField(
+                        width: 60,
+                        controller: _puController,
+                        focusNode: _puFocus,
+                        textInputAction: TextInputAction.next,
+                        onEditingComplete: () => _suFocus.requestFocus(),
+                        onChanged: (value) {
+                          int raw = int.tryParse(value) ?? 0;
+                          setState(() {
+                            pu = raw;
+                            _calcPu();
+                            if (isJrSoldier) _calcRun();
+                            _calcTotal();
+                          });
+                        },
+                      ),
+                      GridBox(
+                        title: puScore.toString(),
+                        background: puPass ? backgroundColor : failColor,
+                        textColor:
+                            puPass ? getTextColor(context) : Colors.white,
+                        width: 60,
+                        height: 40,
+                        borderBottomLeft: 8,
+                        borderBottomRight: 8,
+                        borderTopLeft: 8,
+                        borderTopRight: 8,
                       ),
                     ],
                   ),
@@ -696,45 +676,41 @@ class _ApftPageState extends ConsumerState<ApftPage> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: <Widget>[
-                      Text(
-                        'Sit Ups',
-                        style: const TextStyle(
-                            fontSize: 22.0, fontWeight: FontWeight.bold),
+                      SizedBox(
+                        width: (width - 32) / 3,
+                        child: Text(
+                          'Sit Ups',
+                          style: const TextStyle(
+                              fontSize: 22.0, fontWeight: FontWeight.bold),
+                        ),
                       ),
-                      Row(
-                        children: [
-                          ValueInputField(
-                            width: 60,
-                            controller: _suController,
-                            focusNode: _suFocus,
-                            textInputAction: TextInputAction.next,
-                            onEditingComplete: () => _minsFocus.requestFocus(),
-                            onChanged: (value) {
-                              int raw = int.tryParse(value) ?? 0;
-                              setState(() {
-                                su = raw;
-                                _calcSu();
-                                if (isJrSoldier) _calcRun();
-                                _calcTotal();
-                              });
-                            },
-                          ),
-                          SizedBox(
-                            width: 8.0,
-                          ),
-                          GridBox(
-                            title: suScore.toString(),
-                            background: suPass ? backgroundColor : failColor,
-                            textColor:
-                                suPass ? getTextColor(context) : Colors.white,
-                            width: 60,
-                            height: 40,
-                            borderBottomLeft: 8,
-                            borderBottomRight: 8,
-                            borderTopLeft: 8,
-                            borderTopRight: 8,
-                          ),
-                        ],
+                      ValueInputField(
+                        width: 60,
+                        controller: _suController,
+                        focusNode: _suFocus,
+                        textInputAction: TextInputAction.next,
+                        onEditingComplete: () => _minsFocus.requestFocus(),
+                        onChanged: (value) {
+                          int raw = int.tryParse(value) ?? 0;
+                          setState(() {
+                            su = raw;
+                            _calcSu();
+                            if (isJrSoldier) _calcRun();
+                            _calcTotal();
+                          });
+                        },
+                      ),
+                      GridBox(
+                        title: suScore.toString(),
+                        background: suPass ? backgroundColor : failColor,
+                        textColor:
+                            suPass ? getTextColor(context) : Colors.white,
+                        width: 60,
+                        height: 40,
+                        borderBottomLeft: 8,
+                        borderBottomRight: 8,
+                        borderTopLeft: 8,
+                        borderTopRight: 8,
                       ),
                     ],
                   ),
@@ -850,13 +826,34 @@ class _ApftPageState extends ConsumerState<ApftPage> {
                   Divider(
                     color: Colors.yellow,
                   ),
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 12.0),
+                    child: PlatformItemPicker(
+                      label: Text(
+                        'Aerobic Event',
+                        style: headerStyle,
+                      ),
+                      value: event,
+                      items: events,
+                      onChanged: (value) {
+                        FocusScope.of(context).unfocus();
+                        setState(() {
+                          event = value!;
+                        });
+                        calcAll();
+                      },
+                    ),
+                  ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: <Widget>[
-                      Text(
-                        event,
-                        style: const TextStyle(
-                            fontSize: 22.0, fontWeight: FontWeight.bold),
+                      SizedBox(
+                        width: (width - 32) / 3,
+                        child: Text(
+                          event,
+                          style: const TextStyle(
+                              fontSize: 22.0, fontWeight: FontWeight.bold),
+                        ),
                       ),
                       Row(
                         children: <Widget>[
@@ -916,22 +913,19 @@ class _ApftPageState extends ConsumerState<ApftPage> {
                               _calcTotal();
                             },
                           ),
-                          SizedBox(
-                            width: 8,
-                          ),
-                          GridBox(
-                            title: runScore.toString(),
-                            background: runPass ? backgroundColor : failColor,
-                            textColor:
-                                runPass ? getTextColor(context) : Colors.white,
-                            width: 60,
-                            height: 40,
-                            borderBottomLeft: 8,
-                            borderBottomRight: 8,
-                            borderTopLeft: 8,
-                            borderTopRight: 8,
-                          ),
                         ],
+                      ),
+                      GridBox(
+                        title: runScore.toString(),
+                        background: runPass ? backgroundColor : failColor,
+                        textColor:
+                            runPass ? getTextColor(context) : Colors.white,
+                        width: 60,
+                        height: 40,
+                        borderBottomLeft: 8,
+                        borderBottomRight: 8,
+                        borderTopLeft: 8,
+                        borderTopRight: 8,
                       ),
                     ],
                   ),

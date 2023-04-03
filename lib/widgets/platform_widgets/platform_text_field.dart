@@ -90,6 +90,7 @@ class AndroidTextField extends TextFormField implements PlatformTextField {
     super.onChanged,
     super.onEditingComplete,
     super.style,
+    super.textAlignVertical = TextAlignVertical.top,
   });
 }
 
@@ -138,12 +139,13 @@ class IOSTextField extends StatelessWidget implements PlatformTextField {
       children: [
         if (label != null)
           SizedBox(
-              width: double.infinity,
-              height: 30,
-              child: Text(
-                label!,
-                textAlign: TextAlign.start,
-              )),
+            width: double.infinity,
+            height: 30,
+            child: Text(
+              label!,
+              textAlign: TextAlign.start,
+            ),
+          ),
         CupertinoTextField(
           padding: EdgeInsets.all(8.0),
           controller: controller,

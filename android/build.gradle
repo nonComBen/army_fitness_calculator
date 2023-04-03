@@ -1,4 +1,8 @@
 buildscript {
+    ext {
+        kotlinVersion = "1.8.0"
+        androidXVersion = "1.5.+"
+    }
     repositories {
         google()
         jcenter()
@@ -12,10 +16,16 @@ buildscript {
     }
 }
 
+plugins {
+    id 'org.jetbrains.kotlin.android' version '1.8.0' apply false
+}
+
 allprojects {
     repositories {
         google()
+        mavenCentral()
         jcenter()
+        maven { url 'https://jitpack.io' }
     }
 }
 

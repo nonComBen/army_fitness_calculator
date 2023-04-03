@@ -7,7 +7,6 @@ import 'package:pull_down_button/pull_down_button.dart';
 import 'package:rate_my_app/rate_my_app.dart';
 
 import '../../pages/mdl_setup_page.dart';
-import '../../providers/purchases_provider.dart';
 import '../../methods/theme_methods.dart';
 import '../../pages/tabs/acft_page.dart';
 import '../../pages/tabs/bodyfat_page.dart';
@@ -184,7 +183,6 @@ class _IOSHomePageState extends ConsumerState<IOSHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    ref.watch(purchasesProvider);
     final tabs = [
       AcftPage(),
       BodyfatPage(),

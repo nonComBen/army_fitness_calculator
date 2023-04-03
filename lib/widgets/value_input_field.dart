@@ -37,11 +37,13 @@ class ValueInputField extends StatelessWidget {
           FilteringTextInputFormatter.allow(RegExp(r"[0-9.]")),
         ],
         textInputAction: textInputAction,
-        onEditingComplete: onEditingComplete as void Function()?,
-        textAlign: TextAlign.start,
-        style: const TextStyle(fontSize: 18, fontWeight: FontWeight.normal),
+        onEditingComplete: () => onEditingComplete,
+        textAlign: TextAlign.center,
+        style: const TextStyle(fontSize: 16, fontWeight: FontWeight.normal),
         decoration: InputDecoration(
-          border: OutlineInputBorder(),
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12.0),
+          ),
           errorText: errorText,
         ),
         onChanged: onChanged,

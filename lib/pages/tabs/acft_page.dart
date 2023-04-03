@@ -45,7 +45,8 @@ class AcftPage extends ConsumerStatefulWidget {
   AcftPageState createState() => AcftPageState();
 }
 
-class AcftPageState extends ConsumerState<AcftPage> {
+class AcftPageState extends ConsumerState<AcftPage>
+    with WidgetsBindingObserver {
   int age = 22,
       mdlRaw = 300,
       hrpRaw = 50,
@@ -144,7 +145,10 @@ class AcftPageState extends ConsumerState<AcftPage> {
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
+    prefs = ref.read(sharedPreferencesProvider);
     purchasesService = ref.read(purchasesProvider);
+
     myBanner = BannerAd(
       adUnitId: Platform.isAndroid
           ? 'ca-app-pub-2431077176117105/8950325543'
@@ -155,6 +159,18 @@ class AcftPageState extends ConsumerState<AcftPage> {
     );
 
     myBanner.load();
+
+    mdlRaw = prefs.getInt('mdlRaw') ?? 300;
+    sptRaw = prefs.getDouble('sptRaw') ?? 11.0;
+    hrpRaw = prefs.getInt('hrpRaw') ?? 50;
+    sdcMins = prefs.getInt('sdcMins') ?? 1;
+    sdcSecs = prefs.getInt('sdcSecs') ?? 50;
+    plankMins = prefs.getInt('plkMins') ?? 3;
+    plankSecs = prefs.getInt('plkSecs') ?? 48;
+    runMins = prefs.getInt('runMins') ?? 15;
+    runSecs = prefs.getInt('runSecs') ?? 0;
+
+    print('MDL Raw: ${prefs.getInt('mdlRaw')}');
 
     _mdlController.text = mdlRaw.toString();
     _sptController.text = sptRaw.toString();
@@ -227,8 +243,6 @@ class AcftPageState extends ConsumerState<AcftPage> {
       }
     });
 
-    prefs = ref.read(sharedPreferencesProvider);
-
     if (prefs.getString('acft_event') != null) {
       aerobicEvent = prefs.getString('acft_event');
     } else {
@@ -248,8 +262,27 @@ class AcftPageState extends ConsumerState<AcftPage> {
   }
 
   @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.paused) {
+      print('MDL Raw: $mdlRaw');
+      prefs.setInt('mdlRaw', mdlRaw);
+      prefs.setDouble('sptRaw', sptRaw);
+      prefs.setInt('hrpRaw', hrpRaw);
+      prefs.setInt('sdcMins', sdcMins);
+      prefs.setInt('sdcSecs', sdcSecs);
+      prefs.setInt('plkMins', plankMins);
+      prefs.setInt('plkSecs', plankSecs);
+      prefs.setInt('runMins', runMins);
+      prefs.setInt('runSecs', runSecs);
+    }
+    super.didChangeAppLifecycleState(state);
+  }
+
+  @override
   void dispose() {
     super.dispose();
+    WidgetsBinding.instance.addObserver(this);
+
     _ageController.dispose();
     _mdlController.dispose();
     _sptController.dispose();
@@ -529,7 +562,7 @@ class AcftPageState extends ConsumerState<AcftPage> {
     final failColor = Theme.of(context).colorScheme.error;
     final onPrimary = getOnPrimaryColor(context);
     return Container(
-      padding: EdgeInsets.all(16.0),
+      padding: const EdgeInsets.all(16.0),
       child: Column(
         children: [
           Expanded(
@@ -633,27 +666,7 @@ class AcftPageState extends ConsumerState<AcftPage> {
                     ],
                   ),
                 ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 8.0),
-                  child: PlatformItemPicker(
-                    label: Text(
-                      'Aerobic Event',
-                      style: headerStyle,
-                    ),
-                    value: aerobicEvent!,
-                    items: acftAerobicEvents,
-                    onChanged: (value) {
-                      setState(() {
-                        FocusScope.of(context).unfocus();
-                        aerobicEvent = value;
-                      });
-                      setBenchmarks();
-                      calcRunScore();
-                      calcTotal();
-                    },
-                  ),
-                ),
-                Divider(
+                const Divider(
                   color: Colors.yellow,
                 ),
                 Row(
@@ -661,54 +674,45 @@ class AcftPageState extends ConsumerState<AcftPage> {
                   children: <Widget>[
                     Text(
                       'MDL',
-                      style: TextStyle(
-                          fontSize: 22.0, fontWeight: FontWeight.bold),
+                      style: headerStyle,
                     ),
-                    Row(
-                      children: [
-                        ValueInputField(
-                          width: 60,
-                          controller: _mdlController,
-                          focusNode: _mdlFocus,
-                          onEditingComplete: () => _sptFocus.requestFocus(),
-                          errorText: isMdlValid ? null : '0-400',
-                          onChanged: (value) {
-                            int raw = int.tryParse(value) ?? 0;
-                            if (raw > 400) {
-                              hasMdlProfile = false;
-                              isMdlValid = false;
-                              mdlRaw = 400;
-                            } else if (raw < 0) {
-                              isMdlValid = false;
-                              mdlRaw = 0;
-                            } else {
-                              hasMdlProfile = false;
-                              mdlRaw = raw;
-                              isMdlValid = true;
-                            }
-                            mdlScore = getMdlScore(
-                                mdlRaw,
-                                ptAgeGroups.indexOf(ageGroup) + 1,
-                                gender == 'Male');
-                            calcTotal();
-                          },
-                        ),
-                        SizedBox(
-                          width: 8,
-                        ),
-                        GridBox(
-                          title: mdlScore.toString(),
-                          background: mdlPass ? backgroundColor : failColor,
-                          textColor:
-                              mdlPass ? getTextColor(context) : Colors.white,
-                          width: 60,
-                          height: 40,
-                          borderBottomLeft: 8,
-                          borderBottomRight: 8,
-                          borderTopLeft: 8,
-                          borderTopRight: 8,
-                        ),
-                      ],
+                    ValueInputField(
+                      width: 60,
+                      controller: _mdlController,
+                      focusNode: _mdlFocus,
+                      onEditingComplete: () => _sptFocus.requestFocus(),
+                      errorText: isMdlValid ? null : '0-400',
+                      onChanged: (value) {
+                        int raw = int.tryParse(value) ?? 0;
+                        if (raw > 400) {
+                          hasMdlProfile = false;
+                          isMdlValid = false;
+                          mdlRaw = 400;
+                        } else if (raw < 0) {
+                          isMdlValid = false;
+                          mdlRaw = 0;
+                        } else {
+                          hasMdlProfile = false;
+                          mdlRaw = raw;
+                          isMdlValid = true;
+                        }
+                        mdlScore = getMdlScore(
+                            mdlRaw,
+                            ptAgeGroups.indexOf(ageGroup) + 1,
+                            gender == 'Male');
+                        calcTotal();
+                      },
+                    ),
+                    GridBox(
+                      title: mdlScore.toString(),
+                      background: mdlPass ? backgroundColor : failColor,
+                      textColor: mdlPass ? getTextColor(context) : Colors.white,
+                      width: 60,
+                      height: 40,
+                      borderBottomLeft: 8,
+                      borderBottomRight: 8,
+                      borderTopLeft: 8,
+                      borderTopRight: 8,
                     ),
                   ],
                 ),
@@ -831,7 +835,7 @@ class AcftPageState extends ConsumerState<AcftPage> {
                     ],
                   ),
                 ),
-                Divider(
+                const Divider(
                   color: Colors.yellow,
                 ),
                 Row(
@@ -841,51 +845,43 @@ class AcftPageState extends ConsumerState<AcftPage> {
                       'SPT',
                       style: headerStyle,
                     ),
-                    Row(
-                      children: [
-                        ValueInputField(
-                          width: 60,
-                          controller: _sptController,
-                          focusNode: _sptFocus,
-                          onEditingComplete: () => _hrpFocus.requestFocus(),
-                          errorText: isSptValid ? null : '0-14.0',
-                          onChanged: (value) {
-                            double raw = double.tryParse(value) ?? 0;
-                            if (raw > 14.0) {
-                              hasSptProfile = false;
-                              isSptValid = false;
-                              sptRaw = 14.0;
-                            } else if (raw < 0.0) {
-                              isSptValid = false;
-                              sptRaw = 0.0;
-                            } else {
-                              hasSptProfile = false;
-                              sptRaw = raw;
-                              isSptValid = true;
-                            }
-                            sptScore = getSptScore(
-                                sptRaw,
-                                ptAgeGroups.indexOf(ageGroup) + 1,
-                                gender == 'Male');
-                            calcTotal();
-                          },
-                        ),
-                        SizedBox(
-                          width: 8,
-                        ),
-                        GridBox(
-                          title: sptScore.toString(),
-                          background: sptPass ? backgroundColor : failColor,
-                          textColor:
-                              sptPass ? getTextColor(context) : Colors.white,
-                          width: 60,
-                          height: 40,
-                          borderBottomLeft: 8,
-                          borderBottomRight: 8,
-                          borderTopLeft: 8,
-                          borderTopRight: 8,
-                        ),
-                      ],
+                    ValueInputField(
+                      width: 60,
+                      controller: _sptController,
+                      focusNode: _sptFocus,
+                      onEditingComplete: () => _hrpFocus.requestFocus(),
+                      errorText: isSptValid ? null : '0-14.0',
+                      onChanged: (value) {
+                        double raw = double.tryParse(value) ?? 0;
+                        if (raw > 14.0) {
+                          hasSptProfile = false;
+                          isSptValid = false;
+                          sptRaw = 14.0;
+                        } else if (raw < 0.0) {
+                          isSptValid = false;
+                          sptRaw = 0.0;
+                        } else {
+                          hasSptProfile = false;
+                          sptRaw = raw;
+                          isSptValid = true;
+                        }
+                        sptScore = getSptScore(
+                            sptRaw,
+                            ptAgeGroups.indexOf(ageGroup) + 1,
+                            gender == 'Male');
+                        calcTotal();
+                      },
+                    ),
+                    GridBox(
+                      title: sptScore.toString(),
+                      background: sptPass ? backgroundColor : failColor,
+                      textColor: sptPass ? getTextColor(context) : Colors.white,
+                      width: 60,
+                      height: 40,
+                      borderBottomLeft: 8,
+                      borderBottomRight: 8,
+                      borderTopLeft: 8,
+                      borderTopRight: 8,
                     ),
                   ],
                 ),
@@ -1011,7 +1007,7 @@ class AcftPageState extends ConsumerState<AcftPage> {
                     ],
                   ),
                 ),
-                Divider(
+                const Divider(
                   color: Colors.yellow,
                 ),
                 Row(
@@ -1021,50 +1017,42 @@ class AcftPageState extends ConsumerState<AcftPage> {
                       'HRP',
                       style: headerStyle,
                     ),
-                    Row(
-                      children: [
-                        ValueInputField(
-                          controller: _hrpController,
-                          focusNode: _hrpFocus,
-                          onEditingComplete: () => _sdcMinsFocus.requestFocus(),
-                          errorText: isHrpValid ? null : '0-80',
-                          onChanged: (value) {
-                            int raw = int.tryParse(value) ?? -1;
-                            if (raw > 80) {
-                              hasHrpProfile = false;
-                              isHrpValid = false;
-                              hrpRaw = 80;
-                            } else if (raw < 0) {
-                              isHrpValid = false;
-                              hrpRaw = 0;
-                            } else {
-                              hasHrpProfile = false;
-                              hrpRaw = raw;
-                              isHrpValid = true;
-                            }
-                            hrpScore = getHrpScore(
-                                hrpRaw,
-                                ptAgeGroups.indexOf(ageGroup) + 1,
-                                gender == 'Male');
-                            calcTotal();
-                          },
-                        ),
-                        SizedBox(
-                          width: 8,
-                        ),
-                        GridBox(
-                          title: hrpScore.toString(),
-                          background: hrpPass ? backgroundColor : failColor,
-                          textColor:
-                              hrpPass ? getTextColor(context) : Colors.white,
-                          width: 60,
-                          height: 40,
-                          borderBottomLeft: 8,
-                          borderBottomRight: 8,
-                          borderTopLeft: 8,
-                          borderTopRight: 8,
-                        ),
-                      ],
+                    ValueInputField(
+                      controller: _hrpController,
+                      focusNode: _hrpFocus,
+                      onEditingComplete: () => _sdcMinsFocus.requestFocus(),
+                      errorText: isHrpValid ? null : '0-80',
+                      onChanged: (value) {
+                        int raw = int.tryParse(value) ?? -1;
+                        if (raw > 80) {
+                          hasHrpProfile = false;
+                          isHrpValid = false;
+                          hrpRaw = 80;
+                        } else if (raw < 0) {
+                          isHrpValid = false;
+                          hrpRaw = 0;
+                        } else {
+                          hasHrpProfile = false;
+                          hrpRaw = raw;
+                          isHrpValid = true;
+                        }
+                        hrpScore = getHrpScore(
+                            hrpRaw,
+                            ptAgeGroups.indexOf(ageGroup) + 1,
+                            gender == 'Male');
+                        calcTotal();
+                      },
+                    ),
+                    GridBox(
+                      title: hrpScore.toString(),
+                      background: hrpPass ? backgroundColor : failColor,
+                      textColor: hrpPass ? getTextColor(context) : Colors.white,
+                      width: 60,
+                      height: 40,
+                      borderBottomLeft: 8,
+                      borderBottomRight: 8,
+                      borderTopLeft: 8,
+                      borderTopRight: 8,
                     ),
                   ],
                 ),
@@ -1186,7 +1174,7 @@ class AcftPageState extends ConsumerState<AcftPage> {
                     ],
                   ),
                 ),
-                Divider(
+                const Divider(
                   color: Colors.yellow,
                 ),
                 Row(
@@ -1260,22 +1248,18 @@ class AcftPageState extends ConsumerState<AcftPage> {
                             calcTotal();
                           },
                         ),
-                        SizedBox(
-                          width: 8,
-                        ),
-                        GridBox(
-                          title: sdcScore.toString(),
-                          background: sdcPass ? backgroundColor : failColor,
-                          textColor:
-                              sdcPass ? getTextColor(context) : Colors.white,
-                          width: 60,
-                          height: 40,
-                          borderBottomLeft: 8,
-                          borderBottomRight: 8,
-                          borderTopLeft: 8,
-                          borderTopRight: 8,
-                        ),
                       ],
+                    ),
+                    GridBox(
+                      title: sdcScore.toString(),
+                      background: sdcPass ? backgroundColor : failColor,
+                      textColor: sdcPass ? getTextColor(context) : Colors.white,
+                      width: 60,
+                      height: 40,
+                      borderBottomLeft: 8,
+                      borderBottomRight: 8,
+                      borderTopLeft: 8,
+                      borderTopRight: 8,
                     ),
                   ],
                 ),
@@ -1475,7 +1459,7 @@ class AcftPageState extends ConsumerState<AcftPage> {
                     ],
                   ),
                 ),
-                Divider(
+                const Divider(
                   color: Colors.yellow,
                 ),
                 Row(
@@ -1549,22 +1533,18 @@ class AcftPageState extends ConsumerState<AcftPage> {
                             calcTotal();
                           },
                         ),
-                        SizedBox(
-                          width: 8,
-                        ),
-                        GridBox(
-                          title: plankScore.toString(),
-                          background: plkPass ? backgroundColor : failColor,
-                          textColor:
-                              plkPass ? getTextColor(context) : Colors.white,
-                          width: 60,
-                          height: 40,
-                          borderBottomLeft: 8,
-                          borderBottomRight: 8,
-                          borderTopLeft: 8,
-                          borderTopRight: 8,
-                        ),
                       ],
+                    ),
+                    GridBox(
+                      title: plankScore.toString(),
+                      background: plkPass ? backgroundColor : failColor,
+                      textColor: plkPass ? getTextColor(context) : Colors.white,
+                      width: 60,
+                      height: 40,
+                      borderBottomLeft: 8,
+                      borderBottomRight: 8,
+                      borderTopLeft: 8,
+                      borderTopRight: 8,
                     ),
                   ],
                 ),
@@ -1767,6 +1747,26 @@ class AcftPageState extends ConsumerState<AcftPage> {
                 Divider(
                   color: Colors.yellow,
                 ),
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 12.0),
+                  child: PlatformItemPicker(
+                    label: Text(
+                      'Aerobic Event',
+                      style: headerStyle,
+                    ),
+                    value: aerobicEvent!,
+                    items: acftAerobicEvents,
+                    onChanged: (value) {
+                      setState(() {
+                        FocusScope.of(context).unfocus();
+                        aerobicEvent = value;
+                      });
+                      setBenchmarks();
+                      calcRunScore();
+                      calcTotal();
+                    },
+                  ),
+                ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
@@ -1827,22 +1827,18 @@ class AcftPageState extends ConsumerState<AcftPage> {
                             calcTotal();
                           },
                         ),
-                        SizedBox(
-                          width: 8,
-                        ),
-                        GridBox(
-                          title: runScore.toString(),
-                          background: runPass ? backgroundColor : failColor,
-                          textColor:
-                              runPass ? getTextColor(context) : Colors.white,
-                          width: 60,
-                          height: 40,
-                          borderBottomLeft: 8,
-                          borderBottomRight: 8,
-                          borderTopLeft: 8,
-                          borderTopRight: 8,
-                        ),
                       ],
+                    ),
+                    GridBox(
+                      title: runScore.toString(),
+                      background: runPass ? backgroundColor : failColor,
+                      textColor: runPass ? getTextColor(context) : Colors.white,
+                      width: 60,
+                      height: 40,
+                      borderBottomLeft: 8,
+                      borderBottomRight: 8,
+                      borderTopLeft: 8,
+                      borderTopRight: 8,
                     ),
                   ],
                 ),
@@ -1967,7 +1963,7 @@ class AcftPageState extends ConsumerState<AcftPage> {
                     ],
                   ),
                 ),
-                Divider(
+                const Divider(
                   color: Colors.yellow,
                 ),
                 Padding(
@@ -1999,7 +1995,7 @@ class AcftPageState extends ConsumerState<AcftPage> {
                   ),
                 ),
                 Padding(
-                  padding: EdgeInsets.all(8.0),
+                  padding: const EdgeInsets.all(8.0),
                   child: PlatformButton(
                     child: const Text('Save ACFT Score'),
                     onPressed: () {
@@ -2048,7 +2044,7 @@ class AcftPageState extends ConsumerState<AcftPage> {
           ),
           if (!isPremium)
             Container(
-              constraints: BoxConstraints(maxHeight: 90),
+              constraints: const BoxConstraints(maxHeight: 90),
               alignment: Alignment.center,
               child: AdWidget(
                 ad: myBanner,
