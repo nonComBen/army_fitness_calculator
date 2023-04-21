@@ -631,7 +631,8 @@ class _PromotionPointPageState extends ConsumerState<PromotionPointPage> {
 
   @override
   Widget build(BuildContext context) {
-    final isPremium = ref.read(premiumStateProvider);
+    final isPremium =
+        ref.read(premiumStateProvider) || (prefs.getBool('isPremium') ?? false);
     primaryColor = getPrimaryColor(context);
     onPrimaryColor = getOnPrimaryColor(context);
     final width = MediaQuery.of(context).size.width -

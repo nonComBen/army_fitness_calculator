@@ -4,6 +4,7 @@ import 'package:acft_calculator/methods/platform_show_modal_bottom_sheet.dart';
 import 'package:flutter/material.dart';
 import 'package:in_app_purchase/in_app_purchase.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../methods/theme_methods.dart';
 import '../methods/verify_purchase.dart';
@@ -14,8 +15,9 @@ import '../widgets/my_toast.dart';
 import '../widgets/bullet_item.dart';
 
 class PurchasesService {
-  PurchasesService({required this.premiumState});
+  PurchasesService({required this.premiumState, required this.prefs});
   final PremiumState premiumState;
+  final SharedPreferences prefs;
   List<ProductDetails> _products = [];
 
   initialize() async {
@@ -30,9 +32,13 @@ class PurchasesService {
       final Stream purchaseUpdates = InAppPurchase.instance.purchaseStream;
       purchaseUpdates.listen((purchases) async {
         print('Purchases: $purchases');
+        bool isPremium = await listenToPurchaseUpdated(purchases);
+        if (isPremium) {
+          prefs.setBool('isPremium', true);
+        }
 
-        premiumState.setState(await listenToPurchaseUpdated(purchases));
-      }) as StreamSubscription<List<PurchaseDetails>>;
+        premiumState.setState(isPremium);
+      });
       InAppPurchase.instance.restorePurchases();
     }
   }

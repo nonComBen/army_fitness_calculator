@@ -73,10 +73,6 @@ class AndroidApp extends StatelessWidget implements PlatformApp {
       navigatorObservers: [
         FirebaseAnalyticsObserver(analytics: FirebaseAnalytics.instance)
       ],
-      // builder: ((context, child) => MediaQuery(
-      //       data: MediaQuery.of(context).copyWith(alwaysUse24HourFormat: true),
-      //       child: child!,
-      //     )),
       home: home,
       debugShowCheckedModeBanner: false,
     );
@@ -109,10 +105,6 @@ class IOSApp extends StatelessWidget implements PlatformApp {
       navigatorObservers: [
         FirebaseAnalyticsObserver(analytics: FirebaseAnalytics.instance)
       ],
-      // builder: ((context, child) => MediaQuery(
-      //       data: MediaQuery.of(context).copyWith(alwaysUse24HourFormat: true),
-      //       child: child!,
-      //     )),
     );
   }
 }

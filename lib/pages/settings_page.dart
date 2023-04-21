@@ -131,7 +131,8 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
 
   @override
   Widget build(BuildContext context) {
-    final isPremium = ref.read(premiumStateProvider);
+    final isPremium =
+        ref.read(premiumStateProvider) || (prefs.getBool('isPremium') ?? false);
     if (!isPremium) {
       myBanner.load();
     }

@@ -316,7 +316,8 @@ class _BodyfatPageState extends ConsumerState<BodyfatPage> {
 
   @override
   Widget build(BuildContext context) {
-    final isPremium = ref.read(premiumStateProvider);
+    final isPremium =
+        ref.read(premiumStateProvider) || (prefs.getBool('isPremium') ?? false);
     final primaryColor = getPrimaryColor(context);
     return Container(
       padding: const EdgeInsets.all(16.0),

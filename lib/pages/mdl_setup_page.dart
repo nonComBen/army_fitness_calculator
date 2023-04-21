@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 
 import '../constants/mdl_setup_table.dart';
+import '../providers/shared_preferences_provider.dart';
 import '../widgets/mdl_setup_card.dart';
 import '../../widgets/platform_widgets/platform_scaffold.dart';
 import '../../providers/premium_state_provider.dart';
@@ -16,7 +17,9 @@ class MdlSetupPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final isPremium = ref.read(premiumStateProvider);
+    final prefs = ref.read(sharedPreferencesProvider);
+    final isPremium =
+        ref.read(premiumStateProvider) || (prefs.getBool('isPremium') ?? false);
     late BannerAd myBanner;
     myBanner = BannerAd(
       adUnitId: Platform.isAndroid

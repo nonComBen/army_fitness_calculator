@@ -7,6 +7,7 @@ import 'package:google_mobile_ads/google_mobile_ads.dart';
 
 import '../../methods/theme_methods.dart';
 import '../../providers/premium_state_provider.dart';
+import '../../providers/shared_preferences_provider.dart';
 import '../../widgets/platform_widgets/platform_expansion_list_tile.dart';
 import '../../widgets/platform_widgets/platform_scaffold.dart';
 
@@ -155,7 +156,9 @@ class _BodyfatVerbiagePageState extends ConsumerState<BodyfatVerbiagePage> {
 
   @override
   Widget build(BuildContext context) {
-    final isPremium = ref.read(premiumStateProvider);
+    final prefs = ref.read(sharedPreferencesProvider);
+    final isPremium =
+        ref.read(premiumStateProvider) || (prefs.getBool('isPremium') ?? false);
     if (!isPremium) {
       myBanner!.load();
     }

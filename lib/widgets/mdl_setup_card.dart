@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../methods/theme_methods.dart';
 import 'bullet_item.dart';
 
 class MdlSetupCard extends StatelessWidget {
@@ -14,6 +15,7 @@ class MdlSetupCard extends StatelessWidget {
     return Container(
       padding: EdgeInsets.all(8),
       child: Card(
+        color: getContrastingBackgroundColor(context),
         child: Padding(
           padding: EdgeInsets.all(8),
           child: Column(

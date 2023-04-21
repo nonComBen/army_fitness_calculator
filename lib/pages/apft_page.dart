@@ -401,7 +401,8 @@ class _ApftPageState extends ConsumerState<ApftPage> {
 
   @override
   Widget build(BuildContext context) {
-    final isPremium = ref.read(premiumStateProvider);
+    final isPremium =
+        ref.read(premiumStateProvider) || (prefs.getBool('isPremium') ?? false);
     final primaryColor = getPrimaryColor(context);
     final onPrimary = getOnPrimaryColor(context);
     final failColor = Theme.of(context).colorScheme.error;

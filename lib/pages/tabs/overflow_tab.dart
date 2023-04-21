@@ -9,6 +9,7 @@ import 'package:url_launcher/url_launcher_string.dart';
 
 import '../../methods/theme_methods.dart';
 import '../../providers/premium_state_provider.dart';
+import '../../providers/shared_preferences_provider.dart';
 import '../../widgets/my_toast.dart';
 import '../../pages/apft_page.dart';
 import '../../widgets/header_text.dart';
@@ -35,7 +36,9 @@ class OverflowTab extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final purchasesService = ref.read(purchasesProvider);
-    final isPremium = ref.read(premiumStateProvider);
+    final prefs = ref.read(sharedPreferencesProvider);
+    final isPremium =
+        ref.read(premiumStateProvider) || (prefs.getBool('isPremium') ?? false);
     BannerAd myBanner = BannerAd(
       adUnitId: Platform.isAndroid
           ? 'ca-app-pub-2431077176117105/6231071083'

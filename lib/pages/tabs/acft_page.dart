@@ -1,6 +1,5 @@
 import 'dart:io';
 
-import 'package:acft_calculator/providers/premium_state_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -8,6 +7,7 @@ import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:intl/intl.dart';
 
+import '../../providers/premium_state_provider.dart';
 import '../../methods/platform_show_modal_bottom_sheet.dart';
 import '../../methods/theme_methods.dart';
 import '../../providers/purchases_provider.dart';
@@ -170,8 +170,6 @@ class AcftPageState extends ConsumerState<AcftPage>
     runMins = prefs.getInt('runMins') ?? 15;
     runSecs = prefs.getInt('runSecs') ?? 0;
 
-    print('MDL Raw: ${prefs.getInt('mdlRaw')}');
-
     _mdlController.text = mdlRaw.toString();
     _sptController.text = sptRaw.toString();
     _hrpController.text = hrpRaw.toString();
@@ -264,7 +262,6 @@ class AcftPageState extends ConsumerState<AcftPage>
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.paused) {
-      print('MDL Raw: $mdlRaw');
       prefs.setInt('mdlRaw', mdlRaw);
       prefs.setDouble('sptRaw', sptRaw);
       prefs.setInt('hrpRaw', hrpRaw);
@@ -556,7 +553,11 @@ class AcftPageState extends ConsumerState<AcftPage>
 
   @override
   Widget build(BuildContext context) {
-    final isPremium = ref.watch(premiumStateProvider);
+    final isPremium = ref.watch(premiumStateProvider) ||
+        (prefs.getBool('isPremium') ?? false);
+
+    print('isPremium: $isPremium');
+    print('Prefs isPremium: ${prefs.getBool('isPremium')}');
     final backgroundColor = getBackgroundColor(context);
     final primaryColor = getPrimaryColor(context);
     final failColor = Theme.of(context).colorScheme.error;
