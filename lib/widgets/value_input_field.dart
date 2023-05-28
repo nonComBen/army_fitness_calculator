@@ -19,7 +19,7 @@ class ValueInputField extends StatelessWidget {
   final TextEditingController? controller;
   final FocusNode? focusNode;
   final TextInputAction textInputAction;
-  final Function? onEditingComplete;
+  final void Function()? onEditingComplete;
   final String? errorText;
   final ValueChanged<String>? onChanged;
 
@@ -37,7 +37,7 @@ class ValueInputField extends StatelessWidget {
           FilteringTextInputFormatter.allow(RegExp(r"[0-9.]")),
         ],
         textInputAction: textInputAction,
-        onEditingComplete: () => onEditingComplete,
+        onEditingComplete: onEditingComplete,
         textAlign: TextAlign.center,
         style: const TextStyle(fontSize: 16, fontWeight: FontWeight.normal),
         decoration: InputDecoration(

@@ -242,7 +242,7 @@ class _AcftVerbiagePageState extends ConsumerState<AcftVerbiagePage> {
         ),
         child: Column(
           children: [
-            Flexible(
+            Expanded(
               child: ListView(
                 children: <Widget>[
                   ..._verbiages.map(

@@ -30,7 +30,6 @@ import '../../widgets/platform_widgets/platform_selection_widget.dart';
 import '../../widgets/badge_card.dart';
 import '../../widgets/decoration_card.dart';
 import '../../classes/award_decoration.dart';
-import '../../widgets/formatted_text_field.dart';
 
 class PromotionPointPage extends ConsumerStatefulWidget {
   PromotionPointPage();
@@ -725,18 +724,23 @@ class _PromotionPointPageState extends ConsumerState<PromotionPointPage> {
                         shrinkWrap: true,
                         primary: false,
                         children: <Widget>[
-                          FormattedTextField(
-                            contoller: _apftController,
+                          PlatformTextField(
+                            controller: _apftController,
                             focusNode: _apftFocus,
                             textInputAction: TextInputAction.next,
+                            keyboardType: TextInputType.numberWithOptions(
+                                signed: true, decimal: true),
+                            inputFormatters: [
+                              FilteringTextInputFormatter.allow(
+                                  RegExp(r"[0-9.]")),
+                            ],
                             onEditingComplete: () =>
                                 _weaponFocus.requestFocus(),
                             label: (isNewVersion ? 'ACFT' : 'APFT') + ' Score',
-                            errorText: isPtValid
-                                ? null
-                                : isNewVersion
-                                    ? '0-600'
-                                    : '0-300',
+                            decoration: InputDecoration(
+                              label: Text(
+                                  (isNewVersion ? 'ACFT' : 'APFT') + ' Score'),
+                            ),
                             onChanged: (value) {
                               int raw = int.tryParse(value) ?? 0;
                               setState(() {
@@ -756,14 +760,21 @@ class _PromotionPointPageState extends ConsumerState<PromotionPointPage> {
                               });
                             },
                           ),
-                          FormattedTextField(
-                            contoller: _weaponController,
+                          PlatformTextField(
+                            controller: _weaponController,
                             focusNode: _weaponFocus,
-                            textInputAction: TextInputAction.done,
                             onEditingComplete: () =>
                                 FocusScope.of(context).unfocus(),
+                            keyboardType: TextInputType.numberWithOptions(
+                                signed: true, decimal: true),
+                            inputFormatters: [
+                              FilteringTextInputFormatter.allow(
+                                  RegExp(r"[0-9.]")),
+                            ],
                             label: 'Weapons Hits',
-                            errorText: isWeaponValid ? null : '0-300',
+                            decoration: InputDecoration(
+                              label: const Text('Weapons Hits'),
+                            ),
                             onChanged: (value) {
                               int raw = int.tryParse(value) ?? 0;
                               setState(() {
@@ -874,16 +885,17 @@ class _PromotionPointPageState extends ConsumerState<PromotionPointPage> {
                               style: TextStyle(fontSize: 18),
                             ),
                             PlatformIconButton(
-                                onPressed: () {
-                                  FocusScope.of(context).unfocus();
-                                  setState(() {
-                                    _badges.add({'name': 'None'});
-                                  });
-                                },
-                                icon: Icon(
-                                  Icons.add,
-                                  size: 35,
-                                ))
+                              onPressed: () {
+                                FocusScope.of(context).unfocus();
+                                setState(() {
+                                  _badges.add({'name': 'None'});
+                                });
+                              },
+                              icon: Icon(
+                                Icons.add,
+                                size: 35,
+                              ),
+                            )
                           ],
                         ),
                       ),
@@ -966,12 +978,21 @@ class _PromotionPointPageState extends ConsumerState<PromotionPointPage> {
                       shrinkWrap: true,
                       primary: false,
                       children: [
-                        FormattedTextField(
-                          contoller: _resCourseController,
+                        PlatformTextField(
+                          controller: _resCourseController,
                           focusNode: _resFocus,
                           textInputAction: TextInputAction.next,
+                          keyboardType: TextInputType.numberWithOptions(
+                              signed: true, decimal: true),
+                          inputFormatters: [
+                            FilteringTextInputFormatter.allow(
+                                RegExp(r"[0-9.]")),
+                          ],
                           onEditingComplete: () => _wbcFocus.requestFocus(),
                           label: 'Resident Course Hours',
+                          decoration: InputDecoration(
+                            label: const Text('Resident Course Hours'),
+                          ),
                           onChanged: (value) {
                             int raw = int.tryParse(value) ?? 0;
                             setState(() {
@@ -985,13 +1006,21 @@ class _PromotionPointPageState extends ConsumerState<PromotionPointPage> {
                             });
                           },
                         ),
-                        FormattedTextField(
-                          contoller: _wbcController,
+                        PlatformTextField(
+                          controller: _wbcController,
                           focusNode: _wbcFocus,
-                          textInputAction: TextInputAction.done,
+                          keyboardType: TextInputType.numberWithOptions(
+                              signed: true, decimal: true),
+                          inputFormatters: [
+                            FilteringTextInputFormatter.allow(
+                                RegExp(r"[0-9.]")),
+                          ],
                           onEditingComplete: () =>
                               FocusScope.of(context).unfocus(),
                           label: 'Web-Based Course Hours',
+                          decoration: InputDecoration(
+                            label: const Text('Web-Based Course Hours'),
+                          ),
                           onChanged: (value) {
                             int raw = int.tryParse(value) ?? 0;
                             setState(() {
@@ -1122,13 +1151,21 @@ class _PromotionPointPageState extends ConsumerState<PromotionPointPage> {
                       shrinkWrap: true,
                       primary: false,
                       children: <Widget>[
-                        FormattedTextField(
-                          contoller: _semHrsController,
+                        PlatformTextField(
+                          controller: _semHrsController,
                           focusNode: _semHrsFocus,
-                          textInputAction: TextInputAction.done,
+                          keyboardType: TextInputType.numberWithOptions(
+                              signed: true, decimal: true),
+                          inputFormatters: [
+                            FilteringTextInputFormatter.allow(
+                                RegExp(r"[0-9.]")),
+                          ],
                           onEditingComplete: () =>
                               FocusScope.of(context).unfocus(),
                           label: 'Semester Hours',
+                          decoration: InputDecoration(
+                            label: const Text('Semester Hours'),
+                          ),
                           onChanged: (value) {
                             int raw = int.tryParse(value) ?? 0;
                             setState(() {
@@ -1171,18 +1208,29 @@ class _PromotionPointPageState extends ConsumerState<PromotionPointPage> {
                             },
                           ),
                         ),
-                        FormattedTextField(
-                          contoller: _mosCertsController,
+                        PlatformTextField(
+                          controller: _mosCertsController,
                           focusNode: _mosCertsFocus,
                           textInputAction: isNewVersion
                               ? TextInputAction.next
                               : TextInputAction.done,
+                          keyboardType: TextInputType.numberWithOptions(
+                              signed: true, decimal: true),
+                          inputFormatters: [
+                            FilteringTextInputFormatter.allow(
+                                RegExp(r"[0-9.]")),
+                          ],
                           onEditingComplete: () => isNewVersion
                               ? _crossCertsFocus.requestFocus()
                               : FocusScope.of(context).unfocus(),
                           label: isNewVersion
                               ? 'MOS Enhancing Credentials'
                               : 'Tech/Pro Certifications',
+                          decoration: InputDecoration(
+                            label: Text(isNewVersion
+                                ? 'MOS Enhancing Credentials'
+                                : 'Tech/Pro Certifications'),
+                          ),
                           onChanged: (value) {
                             int raw = int.tryParse(value) ?? 0;
                             setState(() {
@@ -1197,13 +1245,22 @@ class _PromotionPointPageState extends ConsumerState<PromotionPointPage> {
                           },
                         ),
                         if (isNewVersion)
-                          FormattedTextField(
-                            contoller: _crossCertsController,
+                          PlatformTextField(
+                            controller: _crossCertsController,
                             focusNode: _crossCertsFocus,
                             textInputAction: TextInputAction.next,
+                            keyboardType: TextInputType.numberWithOptions(
+                                signed: true, decimal: true),
+                            inputFormatters: [
+                              FilteringTextInputFormatter.allow(
+                                  RegExp(r"[0-9.]")),
+                            ],
                             onEditingComplete: () =>
                                 _personalCertsFocus.requestFocus(),
                             label: 'Cross-Functional Credentials',
+                            decoration: InputDecoration(
+                              label: const Text('Cross-Functional Credentials'),
+                            ),
                             onChanged: (value) {
                               int raw = int.tryParse(value) ?? 0;
                               setState(() {
@@ -1218,13 +1275,22 @@ class _PromotionPointPageState extends ConsumerState<PromotionPointPage> {
                             },
                           ),
                         if (isNewVersion)
-                          FormattedTextField(
-                            contoller: _personalCertsController,
+                          PlatformTextField(
+                            controller: _personalCertsController,
                             focusNode: _personalCertsFocus,
                             textInputAction: TextInputAction.done,
+                            keyboardType: TextInputType.numberWithOptions(
+                                signed: true, decimal: true),
+                            inputFormatters: [
+                              FilteringTextInputFormatter.allow(
+                                  RegExp(r"[0-9.]")),
+                            ],
                             onEditingComplete: () =>
                                 FocusScope.of(context).unfocus(),
                             label: 'Personal Credentials',
+                            decoration: InputDecoration(
+                              label: const Text('Personal Credentials'),
+                            ),
                             onChanged: (value) {
                               int raw = int.tryParse(value) ?? 0;
                               setState(() {
