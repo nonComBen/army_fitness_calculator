@@ -50,7 +50,8 @@ class _BodyfatPageState extends ConsumerState<BodyfatPage> {
       isWeightValid = true,
       isNeckValid = true,
       isWaistValid = true,
-      isHipValid = true;
+      isHipValid = true,
+      isNewVersion = false;
   late SharedPreferences prefs;
   RegExp regExp = RegExp(r'^\d{4}(0[1-9]|1[012])(0[1-9]|[12][0-9]|3[01])$');
   DBHelper dbHelper = DBHelper();
@@ -204,13 +205,23 @@ class _BodyfatPageState extends ConsumerState<BodyfatPage> {
 
   void calcBf() {
     double cirValue;
-    if (gender == 'Male') {
-      cirValue = waist - neck;
+    if (!isNewVersion) {
+      if (gender == 'Male') {
+        cirValue = waist - neck;
+      } else {
+        cirValue = waist + hip - neck;
+      }
     } else {
-      cirValue = waist + hip - neck;
+      cirValue = waist;
     }
     setState(() {
-      bfPercent = getBfPercent(gender == 'Male', heightDouble, cirValue);
+      bfPercent = getBfPercent(
+        male: gender == 'Male',
+        height: heightDouble,
+        cirValue: cirValue,
+        isNewVersion: isNewVersion,
+        weight: weight,
+      );
       overUnder = bfPercent! - percentMax!;
       if (overUnder! <= 0) {
         bfPass = true;
@@ -564,7 +575,9 @@ class _BodyfatPageState extends ConsumerState<BodyfatPage> {
                             isWeightValid = true;
                           }
                           calcBmi();
-                          calcBf();
+                          if (isNewVersion) {
+                            calcBf();
+                          }
                         });
                       },
                     ),
@@ -582,7 +595,9 @@ class _BodyfatPageState extends ConsumerState<BodyfatPage> {
                             weight--;
                             _weightController.text = weight.toString();
                             calcBmi();
-                            calcBf();
+                            if (isNewVersion) {
+                              calcBf();
+                            }
                           }
                         },
                       ),
@@ -600,7 +615,9 @@ class _BodyfatPageState extends ConsumerState<BodyfatPage> {
                               weight = value.floor();
                               _weightController.text = weight.toString();
                               calcBmi();
-                              calcBf();
+                              if (isNewVersion) {
+                                calcBf();
+                              }
                             });
                           },
                         ),
@@ -614,7 +631,9 @@ class _BodyfatPageState extends ConsumerState<BodyfatPage> {
                               weight++;
                               _weightController.text = weight.toString();
                               calcBmi();
-                              calcBf();
+                              if (isNewVersion) {
+                                calcBf();
+                              }
                             });
                           }
                         },
@@ -649,6 +668,21 @@ class _BodyfatPageState extends ConsumerState<BodyfatPage> {
                     children: <Widget>[
                       Divider(
                         color: Colors.yellow,
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: PlatformSelectionWidget(
+                          titles: [Text('Old Version'), Text('New Version')],
+                          values: [false, true],
+                          groupValue: isNewVersion,
+                          onChanged: (value) {
+                            FocusScope.of(context).unfocus();
+                            setState(() {
+                              isNewVersion = value! as bool;
+                              calcBf();
+                            });
+                          },
+                        ),
                       ),
                       const Text(
                         'Height to nearest 1/2 in.',
@@ -707,92 +741,96 @@ class _BodyfatPageState extends ConsumerState<BodyfatPage> {
                           ],
                         ),
                       ),
-                      Divider(
-                        color: Colors.yellow,
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: <Widget>[
-                          const Text(
-                            'Neck',
-                            style: TextStyle(
-                                fontSize: 22.0, fontWeight: FontWeight.bold),
-                          ),
-                          ValueInputField(
-                            width: 60,
-                            controller: _neckController,
-                            focusNode: _neckFocus,
-                            textInputAction: TextInputAction.next,
-                            onEditingComplete: () => _waistFocus.requestFocus(),
-                            errorText: isNeckValid ? null : '10-30',
-                            onChanged: (value) {
-                              double raw = double.tryParse(value) ?? 10.0;
-                              setState(() {
-                                if (raw < 10) {
-                                  neck = 10;
-                                  isNeckValid = false;
-                                } else if (raw > 30) {
-                                  neck = 30;
-                                  isNeckValid = false;
-                                } else {
-                                  neck = (raw * 2).round() / 2;
-                                  isNeckValid = true;
-                                }
-                                calcBf();
-                              });
-                            },
-                          ),
-                        ],
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Row(
+                      if (!isNewVersion)
+                        Divider(
+                          color: Colors.yellow,
+                        ),
+                      if (!isNewVersion)
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: <Widget>[
-                            IncrementDecrementButton(
-                              child: '-',
-                              onPressed: () {
-                                FocusScope.of(context).unfocus();
-                                if (neck > 10) {
-                                  neck = neck - 0.5;
-                                  _neckController.text = neck.toString();
+                            const Text(
+                              'Neck',
+                              style: TextStyle(
+                                  fontSize: 22.0, fontWeight: FontWeight.bold),
+                            ),
+                            ValueInputField(
+                              width: 60,
+                              controller: _neckController,
+                              focusNode: _neckFocus,
+                              textInputAction: TextInputAction.next,
+                              onEditingComplete: () =>
+                                  _waistFocus.requestFocus(),
+                              errorText: isNeckValid ? null : '10-30',
+                              onChanged: (value) {
+                                double raw = double.tryParse(value) ?? 10.0;
+                                setState(() {
+                                  if (raw < 10) {
+                                    neck = 10;
+                                    isNeckValid = false;
+                                  } else if (raw > 30) {
+                                    neck = 30;
+                                    isNeckValid = false;
+                                  } else {
+                                    neck = (raw * 2).round() / 2;
+                                    isNeckValid = true;
+                                  }
                                   calcBf();
-                                }
-                              },
-                            ),
-                            Expanded(
-                              flex: 1,
-                              child: PlatformSlider(
-                                activeColor: primaryColor,
-                                value: neck,
-                                min: 10,
-                                max: 30,
-                                divisions: 40,
-                                onChanged: (value) {
-                                  FocusScope.of(context).unfocus();
-                                  setState(() {
-                                    neck = value;
-                                    _neckController.text = neck.toString();
-                                    calcBf();
-                                  });
-                                },
-                              ),
-                            ),
-                            IncrementDecrementButton(
-                              child: '+',
-                              onPressed: () {
-                                FocusScope.of(context).unfocus();
-                                if (neck < 30) {
-                                  setState(() {
-                                    neck = neck + 0.5;
-                                    _neckController.text = neck.toString();
-                                    calcBf();
-                                  });
-                                }
+                                });
                               },
                             ),
                           ],
                         ),
-                      ),
+                      if (!isNewVersion)
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Row(
+                            children: <Widget>[
+                              IncrementDecrementButton(
+                                child: '-',
+                                onPressed: () {
+                                  FocusScope.of(context).unfocus();
+                                  if (neck > 10) {
+                                    neck = neck - 0.5;
+                                    _neckController.text = neck.toString();
+                                    calcBf();
+                                  }
+                                },
+                              ),
+                              Expanded(
+                                flex: 1,
+                                child: PlatformSlider(
+                                  activeColor: primaryColor,
+                                  value: neck,
+                                  min: 10,
+                                  max: 30,
+                                  divisions: 40,
+                                  onChanged: (value) {
+                                    FocusScope.of(context).unfocus();
+                                    setState(() {
+                                      neck = value;
+                                      _neckController.text = neck.toString();
+                                      calcBf();
+                                    });
+                                  },
+                                ),
+                              ),
+                              IncrementDecrementButton(
+                                child: '+',
+                                onPressed: () {
+                                  FocusScope.of(context).unfocus();
+                                  if (neck < 30) {
+                                    setState(() {
+                                      neck = neck + 0.5;
+                                      _neckController.text = neck.toString();
+                                      calcBf();
+                                    });
+                                  }
+                                },
+                              ),
+                            ],
+                          ),
+                        ),
                       Divider(
                         color: Colors.yellow,
                       ),
@@ -883,10 +921,11 @@ class _BodyfatPageState extends ConsumerState<BodyfatPage> {
                           ],
                         ),
                       ),
-                      Divider(
-                        color: Colors.yellow,
-                      ),
-                      if (gender == 'Female')
+                      if (gender == 'Female' && !isNewVersion)
+                        Divider(
+                          color: Colors.yellow,
+                        ),
+                      if (gender == 'Female' && !isNewVersion)
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: <Widget>[
@@ -922,7 +961,7 @@ class _BodyfatPageState extends ConsumerState<BodyfatPage> {
                             ),
                           ],
                         ),
-                      if (gender == 'Female')
+                      if (gender == 'Female' && !isNewVersion)
                         Padding(
                           padding: const EdgeInsets.all(8.0),
                           child: Row(

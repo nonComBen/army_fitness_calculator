@@ -41,7 +41,7 @@ android {
         applicationId "com.armynoncomtools.acft_calculator"
         minSdkVersion 19
         targetSdkVersion 33
-        versionCode 49
+        versionCode 50
         versionName flutterVersionName
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
@@ -59,10 +59,7 @@ android {
         release {
             signingConfig signingConfigs.release
 
-            minifyEnabled true
-            useProguard true
-
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            shrinkResources true
         }
     }
 }
