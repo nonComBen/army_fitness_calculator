@@ -1,16 +1,16 @@
 import 'dart:io';
 
-import 'package:acft_calculator/methods/theme_methods.dart';
-import 'package:acft_calculator/widgets/platform_widgets/platform_text_button.dart';
-import 'package:acft_calculator/widgets/my_toast.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:open_file/open_file.dart';
+import 'package:open_file_plus/open_file_plus.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:syncfusion_flutter_pdf/pdf.dart';
 
+import '../../methods/theme_methods.dart';
+import '../../widgets/my_toast.dart';
+import '../../widgets/platform_widgets/platform_text_button.dart';
 import '../sqlite/apft.dart';
 
 class DownloadApft {
