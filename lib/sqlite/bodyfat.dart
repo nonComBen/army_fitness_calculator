@@ -17,6 +17,8 @@ class Bodyfat {
   String maxPercent;
   String overUnder;
   int bfPass;
+  int isNewVersion;
+  int is540Exempt;
 
   Bodyfat({
     this.id,
@@ -37,6 +39,8 @@ class Bodyfat {
     required this.maxPercent,
     required this.overUnder,
     required this.bfPass,
+    this.isNewVersion = 0,
+    this.is540Exempt = 0,
   });
 
   Map<String, dynamic> toMap() {
@@ -59,16 +63,21 @@ class Bodyfat {
       'maxPercent': maxPercent,
       'overUnder': overUnder,
       'bfPass': bfPass,
+      'isNewVersion': isNewVersion,
+      'is540Exempt': is540Exempt,
     };
     return map;
   }
 
   factory Bodyfat.fromMap(Map<String, dynamic> map) {
     String? newRank = '', newAge = '22', newHeightDouble = map['height'];
+    int newVersion = 0, isExempt = 0;
     try {
       newRank = map['rank'] ?? '';
       newAge = map['age'] ?? '22';
       newHeightDouble = map['heightDouble'] ?? map['height'];
+      newVersion = map['isNewVersion'];
+      isExempt = map['is540Exempt'];
     } catch (e) {
       print('Error: $e');
     }
@@ -91,6 +100,8 @@ class Bodyfat {
       maxPercent: map['maxPercent'],
       overUnder: map['overUnder'],
       bfPass: map['bfPass'],
+      isNewVersion: newVersion,
+      is540Exempt: isExempt,
     );
   }
 }

@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:acft_calculator/methods/platform_show_modal_bottom_sheet.dart';
 import 'package:acft_calculator/methods/theme_methods.dart';
+import 'package:acft_calculator/widgets/header_text.dart';
 import 'package:acft_calculator/widgets/my_toast.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -36,9 +37,9 @@ class _BodyfatDetailsPageState extends State<BodyfatDetailsPage> {
   TextEditingController _mainDateController = TextEditingController();
 
   _updateBf(BuildContext context, Bodyfat bf) {
-    final _dateController = new TextEditingController(text: bf.date);
+    final _dateController = TextEditingController(text: bf.date);
     final _rankController = TextEditingController(text: bf.rank ?? '');
-    final _nameController = new TextEditingController(text: bf.name);
+    final _nameController = TextEditingController(text: bf.name);
     showPlatformModalBottomSheet(
       context: context,
       builder: (ctx) => Container(
@@ -173,6 +174,19 @@ class _BodyfatDetailsPageState extends State<BodyfatDetailsPage> {
   // }
 
   Widget measurements(double width) {
+    if (widget.bf.is540Exempt == 1) {
+      return Column(
+        children: [
+          Divider(
+            color: Colors.blue,
+          ),
+          Padding(
+            padding: EdgeInsets.all(8.0),
+            child: HeaderText(text: 'Meets 540 ACFT Exemption'),
+          ),
+        ],
+      );
+    }
     return Column(
       children: <Widget>[
         Divider(
@@ -184,16 +198,17 @@ class _BodyfatDetailsPageState extends State<BodyfatDetailsPage> {
           primary: false,
           shrinkWrap: true,
           children: <Widget>[
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: 8.0),
-              child: PlatformTextField(
-                label: 'Neck',
-                enabled: false,
-                controller:
-                    TextEditingController(text: widget.bf.neck + ' in.'),
-                decoration: const InputDecoration(labelText: 'Neck'),
+            if (widget.bf.isNewVersion == 0)
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 8.0),
+                child: PlatformTextField(
+                  label: 'Neck',
+                  enabled: false,
+                  controller:
+                      TextEditingController(text: widget.bf.neck + ' in.'),
+                  decoration: const InputDecoration(labelText: 'Neck'),
+                ),
               ),
-            ),
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 8.0),
               child: PlatformTextField(
@@ -204,7 +219,7 @@ class _BodyfatDetailsPageState extends State<BodyfatDetailsPage> {
                 decoration: const InputDecoration(labelText: 'Waist'),
               ),
             ),
-            if (widget.bf.gender == 'Female')
+            if (widget.bf.gender == 'Female' && widget.bf.isNewVersion == 0)
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: 8.0),
                 child: PlatformTextField(

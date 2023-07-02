@@ -51,7 +51,8 @@ class _BodyfatPageState extends ConsumerState<BodyfatPage> {
       isNeckValid = true,
       isWaistValid = true,
       isHipValid = true,
-      isNewVersion = false;
+      isNewVersion = false,
+      is540Exempt = false;
   late SharedPreferences prefs;
   RegExp regExp = RegExp(r'^\d{4}(0[1-9]|1[012])(0[1-9]|[12][0-9]|3[01])$');
   DBHelper dbHelper = DBHelper();
@@ -672,6 +673,21 @@ class _BodyfatPageState extends ConsumerState<BodyfatPage> {
                       Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: PlatformSelectionWidget(
+                          titles: [Text('Not Exempt'), Text('540 ACFT Exempt')],
+                          values: [false, true],
+                          groupValue: is540Exempt,
+                          onChanged: (value) {
+                            FocusScope.of(context).unfocus();
+                            setState(() {
+                              is540Exempt = value! as bool;
+                              calcBf();
+                            });
+                          },
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: PlatformSelectionWidget(
                           titles: [Text('Old Version'), Text('New Version')],
                           values: [false, true],
                           groupValue: isNewVersion,
@@ -684,344 +700,370 @@ class _BodyfatPageState extends ConsumerState<BodyfatPage> {
                           },
                         ),
                       ),
-                      const Text(
-                        'Height to nearest 1/2 in.',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                            fontSize: 18.0, fontWeight: FontWeight.bold),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: <Widget>[
-                            IncrementDecrementButton(
-                              child: '- 0.5',
-                              width: 72,
-                              fontSize: 16,
-                              onPressed: () {
-                                FocusScope.of(context).unfocus();
-                                if (heightDouble! > 58.0) {
-                                  if (!(heightDouble ==
-                                      (height.toDouble() - 0.5))) {
-                                    setState(() {
-                                      heightDouble = heightDouble! - 0.5;
-                                    });
-                                    calcBf();
-                                  }
-                                }
-                              },
-                            ),
-                            GridBox(
-                              borderBottomLeft: 12.0,
-                              borderBottomRight: 12.0,
-                              borderTopLeft: 12.0,
-                              borderTopRight: 12.0,
-                              title: heightDouble.toString(),
-                              width: 60,
-                              height: 40,
-                            ),
-                            IncrementDecrementButton(
-                              child: '+ 0.5',
-                              width: 72,
-                              fontSize: 16,
-                              onPressed: () {
-                                FocusScope.of(context).unfocus();
-                                if (heightDouble! < 80.0) {
-                                  if (!(heightDouble ==
-                                      (height.toDouble() + 0.5))) {
-                                    setState(() {
-                                      heightDouble = heightDouble! + 0.5;
-                                    });
-                                    calcBf();
-                                  }
-                                }
-                              },
-                            ),
-                          ],
-                        ),
-                      ),
-                      if (!isNewVersion)
-                        Divider(
-                          color: Colors.yellow,
-                        ),
-                      if (!isNewVersion)
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: <Widget>[
-                            const Text(
-                              'Neck',
-                              style: TextStyle(
-                                  fontSize: 22.0, fontWeight: FontWeight.bold),
-                            ),
-                            ValueInputField(
-                              width: 60,
-                              controller: _neckController,
-                              focusNode: _neckFocus,
-                              textInputAction: TextInputAction.next,
-                              onEditingComplete: () =>
-                                  _waistFocus.requestFocus(),
-                              errorText: isNeckValid ? null : '10-30',
-                              onChanged: (value) {
-                                double raw = double.tryParse(value) ?? 10.0;
-                                setState(() {
-                                  if (raw < 10) {
-                                    neck = 10;
-                                    isNeckValid = false;
-                                  } else if (raw > 30) {
-                                    neck = 30;
-                                    isNeckValid = false;
-                                  } else {
-                                    neck = (raw * 2).round() / 2;
-                                    isNeckValid = true;
-                                  }
-                                  calcBf();
-                                });
-                              },
-                            ),
-                          ],
-                        ),
-                      if (!isNewVersion)
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Row(
-                            children: <Widget>[
-                              IncrementDecrementButton(
-                                child: '-',
-                                onPressed: () {
-                                  FocusScope.of(context).unfocus();
-                                  if (neck > 10) {
-                                    neck = neck - 0.5;
-                                    _neckController.text = neck.toString();
-                                    calcBf();
-                                  }
-                                },
+                      if (!is540Exempt)
+                        Column(
+                          children: [
+                            if (!isNewVersion)
+                              const Text(
+                                'Height to nearest 1/2 in.',
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                    fontSize: 18.0,
+                                    fontWeight: FontWeight.bold),
                               ),
-                              Expanded(
-                                flex: 1,
-                                child: PlatformSlider(
-                                  activeColor: primaryColor,
-                                  value: neck,
-                                  min: 10,
-                                  max: 30,
-                                  divisions: 40,
+                            if (!isNewVersion)
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: <Widget>[
+                                    IncrementDecrementButton(
+                                      child: '- 0.5',
+                                      width: 72,
+                                      fontSize: 16,
+                                      onPressed: () {
+                                        FocusScope.of(context).unfocus();
+                                        if (heightDouble! > 58.0) {
+                                          if (!(heightDouble ==
+                                              (height.toDouble() - 0.5))) {
+                                            setState(() {
+                                              heightDouble =
+                                                  heightDouble! - 0.5;
+                                            });
+                                            calcBf();
+                                          }
+                                        }
+                                      },
+                                    ),
+                                    GridBox(
+                                      borderBottomLeft: 12.0,
+                                      borderBottomRight: 12.0,
+                                      borderTopLeft: 12.0,
+                                      borderTopRight: 12.0,
+                                      title: heightDouble.toString(),
+                                      width: 60,
+                                      height: 40,
+                                    ),
+                                    IncrementDecrementButton(
+                                      child: '+ 0.5',
+                                      width: 72,
+                                      fontSize: 16,
+                                      onPressed: () {
+                                        FocusScope.of(context).unfocus();
+                                        if (heightDouble! < 80.0) {
+                                          if (!(heightDouble ==
+                                              (height.toDouble() + 0.5))) {
+                                            setState(() {
+                                              heightDouble =
+                                                  heightDouble! + 0.5;
+                                            });
+                                            calcBf();
+                                          }
+                                        }
+                                      },
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            if (!isNewVersion)
+                              Divider(
+                                color: Colors.yellow,
+                              ),
+                            if (!isNewVersion)
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: <Widget>[
+                                  const Text(
+                                    'Neck',
+                                    style: TextStyle(
+                                        fontSize: 22.0,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                  ValueInputField(
+                                    width: 60,
+                                    controller: _neckController,
+                                    focusNode: _neckFocus,
+                                    textInputAction: TextInputAction.next,
+                                    onEditingComplete: () =>
+                                        _waistFocus.requestFocus(),
+                                    errorText: isNeckValid ? null : '10-30',
+                                    onChanged: (value) {
+                                      double raw =
+                                          double.tryParse(value) ?? 10.0;
+                                      setState(() {
+                                        if (raw < 10) {
+                                          neck = 10;
+                                          isNeckValid = false;
+                                        } else if (raw > 30) {
+                                          neck = 30;
+                                          isNeckValid = false;
+                                        } else {
+                                          neck = (raw * 2).round() / 2;
+                                          isNeckValid = true;
+                                        }
+                                        calcBf();
+                                      });
+                                    },
+                                  ),
+                                ],
+                              ),
+                            if (!isNewVersion)
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Row(
+                                  children: <Widget>[
+                                    IncrementDecrementButton(
+                                      child: '-',
+                                      onPressed: () {
+                                        FocusScope.of(context).unfocus();
+                                        if (neck > 10) {
+                                          neck = neck - 0.5;
+                                          _neckController.text =
+                                              neck.toString();
+                                          calcBf();
+                                        }
+                                      },
+                                    ),
+                                    Expanded(
+                                      flex: 1,
+                                      child: PlatformSlider(
+                                        activeColor: primaryColor,
+                                        value: neck,
+                                        min: 10,
+                                        max: 30,
+                                        divisions: 40,
+                                        onChanged: (value) {
+                                          FocusScope.of(context).unfocus();
+                                          setState(() {
+                                            neck = value;
+                                            _neckController.text =
+                                                neck.toString();
+                                            calcBf();
+                                          });
+                                        },
+                                      ),
+                                    ),
+                                    IncrementDecrementButton(
+                                      child: '+',
+                                      onPressed: () {
+                                        FocusScope.of(context).unfocus();
+                                        if (neck < 30) {
+                                          setState(() {
+                                            neck = neck + 0.5;
+                                            _neckController.text =
+                                                neck.toString();
+                                            calcBf();
+                                          });
+                                        }
+                                      },
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            Divider(
+                              color: Colors.yellow,
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: <Widget>[
+                                const Text(
+                                  'Waist',
+                                  style: TextStyle(
+                                      fontSize: 22.0,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                                ValueInputField(
+                                  width: 60,
+                                  controller: _waistController,
+                                  focusNode: _waistFocus,
+                                  textInputAction: gender == 'Female'
+                                      ? TextInputAction.next
+                                      : TextInputAction.done,
+                                  onEditingComplete: () => gender == 'Female'
+                                      ? _hipFocus.requestFocus()
+                                      : FocusScope.of(context).unfocus(),
+                                  errorText: isWaistValid ? null : '20-50',
                                   onChanged: (value) {
-                                    FocusScope.of(context).unfocus();
+                                    double raw = double.tryParse(value) ?? 0.0;
                                     setState(() {
-                                      neck = value;
-                                      _neckController.text = neck.toString();
+                                      if (raw < 20) {
+                                        waist = 20;
+                                        isWaistValid = false;
+                                      } else if (raw > 50) {
+                                        waist = 50;
+                                        isWaistValid = false;
+                                      } else {
+                                        waist = (raw * 2).round() / 2;
+                                        isWaistValid = true;
+                                      }
                                       calcBf();
                                     });
                                   },
                                 ),
-                              ),
-                              IncrementDecrementButton(
-                                child: '+',
-                                onPressed: () {
-                                  FocusScope.of(context).unfocus();
-                                  if (neck < 30) {
-                                    setState(() {
-                                      neck = neck + 0.5;
-                                      _neckController.text = neck.toString();
-                                      calcBf();
-                                    });
-                                  }
-                                },
-                              ),
-                            ],
-                          ),
-                        ),
-                      Divider(
-                        color: Colors.yellow,
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: <Widget>[
-                          const Text(
-                            'Waist',
-                            style: TextStyle(
-                                fontSize: 22.0, fontWeight: FontWeight.bold),
-                          ),
-                          ValueInputField(
-                            width: 60,
-                            controller: _waistController,
-                            focusNode: _waistFocus,
-                            textInputAction: gender == 'Female'
-                                ? TextInputAction.next
-                                : TextInputAction.done,
-                            onEditingComplete: () => gender == 'Female'
-                                ? _hipFocus.requestFocus()
-                                : FocusScope.of(context).unfocus(),
-                            errorText: isWaistValid ? null : '20-50',
-                            onChanged: (value) {
-                              double raw = double.tryParse(value) ?? 0.0;
-                              setState(() {
-                                if (raw < 20) {
-                                  waist = 20;
-                                  isWaistValid = false;
-                                } else if (raw > 50) {
-                                  waist = 50;
-                                  isWaistValid = false;
-                                } else {
-                                  waist = (raw * 2).round() / 2;
-                                  isWaistValid = true;
-                                }
-                                calcBf();
-                              });
-                            },
-                          ),
-                        ],
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Row(
-                          children: <Widget>[
-                            IncrementDecrementButton(
-                              child: '-',
-                              onPressed: () {
-                                FocusScope.of(context).unfocus();
-                                if (waist > 20) {
-                                  waist = waist - 0.5;
-                                  _waistController.text = waist.toString();
-                                  calcBf();
-                                }
-                              },
+                              ],
                             ),
-                            Expanded(
-                              flex: 1,
-                              child: PlatformSlider(
-                                activeColor: primaryColor,
-                                value: waist,
-                                min: 20,
-                                max: 50,
-                                divisions: 60,
-                                onChanged: (value) {
-                                  FocusScope.of(context).unfocus();
-                                  setState(() {
-                                    waist = value;
-                                    _waistController.text = waist.toString();
-                                    calcBf();
-                                  });
-                                },
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Row(
+                                children: <Widget>[
+                                  IncrementDecrementButton(
+                                    child: '-',
+                                    onPressed: () {
+                                      FocusScope.of(context).unfocus();
+                                      if (waist > 20) {
+                                        waist = waist - 0.5;
+                                        _waistController.text =
+                                            waist.toString();
+                                        calcBf();
+                                      }
+                                    },
+                                  ),
+                                  Expanded(
+                                    flex: 1,
+                                    child: PlatformSlider(
+                                      activeColor: primaryColor,
+                                      value: waist,
+                                      min: 20,
+                                      max: 50,
+                                      divisions: 60,
+                                      onChanged: (value) {
+                                        FocusScope.of(context).unfocus();
+                                        setState(() {
+                                          waist = value;
+                                          _waistController.text =
+                                              waist.toString();
+                                          calcBf();
+                                        });
+                                      },
+                                    ),
+                                  ),
+                                  IncrementDecrementButton(
+                                    child: '+',
+                                    onPressed: () {
+                                      FocusScope.of(context).unfocus();
+                                      if (waist < 50) {
+                                        setState(() {
+                                          waist = waist + 0.5;
+                                          _waistController.text =
+                                              waist.toString();
+                                          calcBf();
+                                        });
+                                      }
+                                    },
+                                  ),
+                                ],
                               ),
                             ),
-                            IncrementDecrementButton(
-                              child: '+',
-                              onPressed: () {
-                                FocusScope.of(context).unfocus();
-                                if (waist < 50) {
-                                  setState(() {
-                                    waist = waist + 0.5;
-                                    _waistController.text = waist.toString();
-                                    calcBf();
-                                  });
-                                }
-                              },
-                            ),
-                          ],
-                        ),
-                      ),
-                      if (gender == 'Female' && !isNewVersion)
-                        Divider(
-                          color: Colors.yellow,
-                        ),
-                      if (gender == 'Female' && !isNewVersion)
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: <Widget>[
-                            const Text(
-                              'Hip',
-                              style: TextStyle(
-                                  fontSize: 22.0, fontWeight: FontWeight.bold),
-                            ),
-                            ValueInputField(
-                              width: 60,
-                              controller: _hipController,
-                              focusNode: _hipFocus,
-                              textInputAction: TextInputAction.done,
-                              onEditingComplete: () =>
-                                  FocusScope.of(context).unfocus(),
-                              errorText: isHipValid ? null : '20-50',
-                              onChanged: (value) {
-                                double raw = double.tryParse(value) ?? 0.0;
-                                setState(() {
-                                  if (raw < 20) {
-                                    hip = 20;
-                                    isHipValid = false;
-                                  } else if (raw > 50) {
-                                    hip = 50;
-                                    isHipValid = false;
-                                  } else {
-                                    hip = (raw * 2).round() / 2;
-                                    isHipValid = true;
-                                  }
-                                  calcBf();
-                                });
-                              },
-                            ),
-                          ],
-                        ),
-                      if (gender == 'Female' && !isNewVersion)
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Row(
-                            children: <Widget>[
-                              IncrementDecrementButton(
-                                child: '-',
-                                onPressed: () {
-                                  FocusScope.of(context).unfocus();
-                                  if (hip > 20) {
-                                    hip = hip - 0.5;
-                                    _hipController.text = hip.toString();
-                                    calcBf();
-                                  }
-                                },
+                            if (gender == 'Female' && !isNewVersion)
+                              Divider(
+                                color: Colors.yellow,
                               ),
-                              Expanded(
-                                flex: 1,
-                                child: PlatformSlider(
-                                  activeColor: primaryColor,
-                                  value: hip,
-                                  min: 20,
-                                  max: 50,
-                                  divisions: 60,
-                                  onChanged: (value) {
-                                    FocusScope.of(context).unfocus();
-                                    setState(() {
-                                      hip = value;
-                                      _hipController.text = hip.toString();
-                                      calcBf();
-                                    });
-                                  },
+                            if (gender == 'Female' && !isNewVersion)
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: <Widget>[
+                                  const Text(
+                                    'Hip',
+                                    style: TextStyle(
+                                        fontSize: 22.0,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                  ValueInputField(
+                                    width: 60,
+                                    controller: _hipController,
+                                    focusNode: _hipFocus,
+                                    textInputAction: TextInputAction.done,
+                                    onEditingComplete: () =>
+                                        FocusScope.of(context).unfocus(),
+                                    errorText: isHipValid ? null : '20-50',
+                                    onChanged: (value) {
+                                      double raw =
+                                          double.tryParse(value) ?? 0.0;
+                                      setState(() {
+                                        if (raw < 20) {
+                                          hip = 20;
+                                          isHipValid = false;
+                                        } else if (raw > 50) {
+                                          hip = 50;
+                                          isHipValid = false;
+                                        } else {
+                                          hip = (raw * 2).round() / 2;
+                                          isHipValid = true;
+                                        }
+                                        calcBf();
+                                      });
+                                    },
+                                  ),
+                                ],
+                              ),
+                            if (gender == 'Female' && !isNewVersion)
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Row(
+                                  children: <Widget>[
+                                    IncrementDecrementButton(
+                                      child: '-',
+                                      onPressed: () {
+                                        FocusScope.of(context).unfocus();
+                                        if (hip > 20) {
+                                          hip = hip - 0.5;
+                                          _hipController.text = hip.toString();
+                                          calcBf();
+                                        }
+                                      },
+                                    ),
+                                    Expanded(
+                                      flex: 1,
+                                      child: PlatformSlider(
+                                        activeColor: primaryColor,
+                                        value: hip,
+                                        min: 20,
+                                        max: 50,
+                                        divisions: 60,
+                                        onChanged: (value) {
+                                          FocusScope.of(context).unfocus();
+                                          setState(() {
+                                            hip = value;
+                                            _hipController.text =
+                                                hip.toString();
+                                            calcBf();
+                                          });
+                                        },
+                                      ),
+                                    ),
+                                    IncrementDecrementButton(
+                                      child: '+',
+                                      onPressed: () {
+                                        FocusScope.of(context).unfocus();
+                                        if (hip < 50) {
+                                          setState(() {
+                                            hip = hip + 0.5;
+                                            _hipController.text =
+                                                hip.toString();
+                                            calcBf();
+                                          });
+                                        }
+                                      },
+                                    ),
+                                  ],
                                 ),
                               ),
-                              IncrementDecrementButton(
-                                child: '+',
-                                onPressed: () {
-                                  FocusScope.of(context).unfocus();
-                                  if (hip < 50) {
-                                    setState(() {
-                                      hip = hip + 0.5;
-                                      _hipController.text = hip.toString();
-                                      calcBf();
-                                    });
-                                  }
-                                },
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: MinMaxTable(
+                                headers: ['BF %', 'Max %', 'Pass/Fail'],
+                                values: [
+                                  bfPercent.toString(),
+                                  percentMax.toString(),
+                                  bfPass ? 'Pass' : 'Fail',
+                                ],
                               ),
-                            ],
-                          ),
-                        ),
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: MinMaxTable(
-                          headers: ['BF %', 'Max %', 'Pass/Fail'],
-                          values: [
-                            bfPercent.toString(),
-                            percentMax.toString(),
-                            bfPass ? 'Pass' : 'Fail',
+                            ),
                           ],
                         ),
-                      ),
                     ],
                   ),
                 Padding(
@@ -1031,24 +1073,40 @@ class _BodyfatPageState extends ConsumerState<BodyfatPage> {
                     onPressed: () {
                       if (isPremium) {
                         Bodyfat bf = new Bodyfat(
-                            id: null,
-                            date: null,
-                            rank: null,
-                            name: null,
-                            gender: gender.toString(),
-                            age: age.toString(),
-                            height: height.toString(),
-                            weight: weight.toString(),
-                            maxWeight: weightMax.toString(),
-                            bmiPass: bmiPass ? 1 : 0,
-                            heightDouble: heightDouble.toString(),
-                            neck: neck.toString(),
-                            waist: waist.toString(),
-                            hip: hip.toString(),
-                            bfPercent: bfPercent.toString(),
-                            maxPercent: percentMax.toString(),
-                            overUnder: overUnder.toString(),
-                            bfPass: bfPass ? 1 : 0);
+                          id: null,
+                          date: null,
+                          rank: null,
+                          name: null,
+                          gender: gender.toString(),
+                          age: age.toString(),
+                          height: height.toString(),
+                          weight: weight.toString(),
+                          maxWeight: weightMax.toString(),
+                          bmiPass: bmiPass ? 1 : 0,
+                          heightDouble: heightDouble.toString(),
+                          neck: (bmiPass || is540Exempt || isNewVersion)
+                              ? 'N/A'
+                              : neck.toString(),
+                          waist: (bmiPass || is540Exempt)
+                              ? 'N/A'
+                              : waist.toString(),
+                          hip: (gender == 'Male' ||
+                                  bmiPass ||
+                                  is540Exempt ||
+                                  isNewVersion)
+                              ? 'N/A'
+                              : hip.toString(),
+                          bfPercent: (bmiPass || is540Exempt)
+                              ? 'N/A'
+                              : bfPercent.toString(),
+                          maxPercent: percentMax.toString(),
+                          overUnder: (bmiPass || is540Exempt)
+                              ? 'N/A'
+                              : overUnder.toString(),
+                          bfPass: (bfPass || is540Exempt) ? 1 : 0,
+                          isNewVersion: isNewVersion ? 1 : 0,
+                          is540Exempt: is540Exempt ? 1 : 0,
+                        );
                         _saveBf(context, bf);
                       } else {
                         purchasesService.upgradeNeeded(context);

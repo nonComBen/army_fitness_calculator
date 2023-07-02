@@ -59,6 +59,8 @@ class DBHelper {
   static const String MAX_PERCENT = 'maxPercent';
   static const String OVER_UNDER = 'overUnder';
   static const String BF_PASS = 'bfPass';
+  static const String IS_NEW_VERSION = 'isNewVersion';
+  static const String IS_540_EXEMPT = 'is540Exempt';
 
   static const String PPW_TABLE = 'ppwTable';
   static const String RANK = 'rank';
@@ -96,7 +98,7 @@ class DBHelper {
     String path = join(documentsDirectory.path, DB_NAME);
     var db = await openDatabase(
       path,
-      version: 4,
+      version: 5,
       onCreate: _onCreate,
       onUpgrade: _onUpgrade,
     );
@@ -117,7 +119,7 @@ class DBHelper {
     await db.execute(
         "CREATE TABLE IF NOT EXISTS $BF_TABLE ($ID INTEGER PRIMARY KEY, $DATE TEXT, $RANK TEXT, $NAME TEXT, $GENDER TEXT, $AGE TEXT, "
         "$HEIGHT TEXT, $WEIGHT TEXT, $MAX_WEIGHT TEXT, $BMI_PASS INTEGER, $HEIGHT_DOUBLE TEXT, $NECK TEXT, $WAIST TEXT, $HIP TEXT, $BF_PERCENT TEXT, "
-        "$MAX_PERCENT TEXT, $OVER_UNDER TEXT, $BF_PASS INTEGER)");
+        "$MAX_PERCENT TEXT, $OVER_UNDER TEXT, $BF_PASS INTEGER, $IS_NEW_VERSION INTEGER, $IS_540_EXEMPT INTEGER)");
 
     await db.execute(
         "CREATE TABLE IF NOT EXISTS $PPW_TABLE ($ID INTEGER PRIMARY KEY, $DATE TEXT, $NAME TEXT, $RANK TEXT, $VERSION INTEGER, $PT_TEST INTEGER, $WEAPONS INTEGER, "
@@ -194,6 +196,18 @@ class DBHelper {
         print('SQLite Error: $e');
       }
     }
+    if (oldVersion < 5) {
+      try {
+        await db.execute("ALTER TABLE $BF_TABLE ADD $IS_NEW_VERSION INTEGER");
+      } on Exception catch (e) {
+        print('SQLite Error: $e');
+      }
+      try {
+        await db.execute("ALTER TABLE $BF_TABLE ADD $IS_540_EXEMPT INTEGER");
+      } on Exception catch (e) {
+        print('SQLite Error: $e');
+      }
+    }
   }
 
   //ACFT functions
@@ -208,11 +222,6 @@ class DBHelper {
         .rawQuery("SELECT * FROM $ACFT_TABLE ORDER BY $NAME, $DATE ASC");
     List<Acft> acfts =
         maps.map((e) => Acft.fromMap(e as Map<String, dynamic>)).toList();
-    // if (maps.length > 0) {
-    //   for (int i = 0; i < maps.length; i++) {
-    //     acfts.add(Acft.fromMap(maps[i]));
-    //   }
-    // }
     return acfts;
   }
 
@@ -241,11 +250,6 @@ class DBHelper {
         .rawQuery("SELECT * FROM $APFT_TABLE ORDER BY $NAME, $DATE ASC");
     List<Apft> apfts =
         maps.map((e) => Apft.fromMap(e as Map<String, dynamic>)).toList();
-    // if (maps.length > 0) {
-    //   for (int i = 0; i < maps.length; i++) {
-    //     apfts.add(Apft.fromMap(maps[i]));
-    //   }
-    // }
     return apfts;
   }
 
@@ -274,11 +278,6 @@ class DBHelper {
         .rawQuery("SELECT * FROM $BF_TABLE ORDER BY $NAME, $DATE ASC");
     List<Bodyfat> bodyfats =
         maps.map((e) => Bodyfat.fromMap(e as Map<String, dynamic>)).toList();
-    // if (maps.length > 0) {
-    //   for (int i = 0; i < maps.length; i++) {
-    //     bodyfats.add(Bodyfat.fromMap(maps[i]));
-    //   }
-    // }
     return bodyfats;
   }
 
@@ -306,11 +305,6 @@ class DBHelper {
         .rawQuery("SELECT * FROM $PPW_TABLE ORDER BY $NAME, $DATE ASC");
     List<PPW> ppws =
         maps.map((e) => PPW.fromMap(e as Map<String, dynamic>)).toList();
-    // if (maps.length > 0) {
-    //   for (int i = 0; i < maps.length; i++) {
-    //     ppws.add(PPW.fromMap(maps[i]));
-    //   }
-    // }
     return ppws;
   }
 
