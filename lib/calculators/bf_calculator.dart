@@ -1,5 +1,3 @@
-import 'package:flutter/material.dart';
-
 List<int> setBfBenchmarks(bool male, int ageGroupIndex, int height) {
   int min, max, percentMax;
 
@@ -18,7 +16,6 @@ int getNewBfPercent({
 }) {
   double weightSolution = (male ? 0.12 : 0.015) * weight;
   double circSolution = (male ? 1.99 : 1.27) * cirValue;
-  debugPrint('Weight Solution: $weightSolution, Circ Solution: $circSolution');
   return ((male ? -26.97 : -9.15) - weightSolution + circSolution).round();
 }
 
@@ -29,8 +26,6 @@ int getBfPercent({
   required bool isNewVersion,
   required int weight,
 }) {
-  debugPrint('Weight: $weight');
-  debugPrint('CirValue: $cirValue');
   if (male) {
     if (isNewVersion) {
       return getNewBfPercent(male: male, weight: weight, cirValue: cirValue);

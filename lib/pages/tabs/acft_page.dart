@@ -556,8 +556,6 @@ class AcftPageState extends ConsumerState<AcftPage>
     final isPremium = ref.watch(premiumStateProvider) ||
         (prefs.getBool('isPremium') ?? false);
 
-    print('isPremium: $isPremium');
-    print('Prefs isPremium: ${prefs.getBool('isPremium')}');
     final backgroundColor = getBackgroundColor(context);
     final primaryColor = getPrimaryColor(context);
     final failColor = Theme.of(context).colorScheme.error;

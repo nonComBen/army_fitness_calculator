@@ -239,7 +239,6 @@ class _BodyfatPageState extends ConsumerState<BodyfatPage> {
   }
 
   _saveBf(BuildContext context, Bodyfat bf) {
-    print('Height Double: ${bf.heightDouble}');
     final f = DateFormat('yyyyMMdd');
     final date = f.format(DateTime.now());
     final _dateController = TextEditingController(text: date);
