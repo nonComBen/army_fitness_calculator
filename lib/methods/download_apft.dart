@@ -5,7 +5,6 @@ import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:open_file_plus/open_file_plus.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:permission_handler/permission_handler.dart';
 import 'package:syncfusion_flutter_pdf/pdf.dart';
 
 import '../../methods/theme_methods.dart';
@@ -41,11 +40,6 @@ class DownloadApft {
       print('Error: $e');
     }
     var form = document.form;
-    // print(form.fields.count);
-    // String string = '';
-    // for (int i = 0; i < form.fields.count; i++) {
-    //   string = string + '$i, ${form.fields[i].name}, ${form.fields[i]}\n';
-    // }
 
     PdfTextBoxField name = form.fields[49] as PdfTextBoxField;
     PdfTextBoxField unit = form.fields[90] as PdfTextBoxField;
@@ -128,14 +122,8 @@ class DownloadApft {
     oicSigDate.text = apft.date!;
     commentsField.text = comments;
 
-    var status = await Permission.storage.status;
-    if (status != PermissionStatus.granted) {
-      status = await Permission.storage.request();
-    }
-    if (status == PermissionStatus.granted) {
-      try {
-        final dir = await getTemporaryDirectory();
-        // final fileName = '${dir.path}/705_fields.txt';
+    try {
+      getApplicationDocumentsDirectory().then((dir) {
         final fileName = '${dir.path}/${apft.rank}_${apft.name}_705.pdf';
         var file = File(fileName);
         file.writeAsBytesSync(document.saveSync());
@@ -171,10 +159,11 @@ class DownloadApft {
             ),
           ]),
         );
-      } on Exception catch (e) {
-        print('Error: $e');
-      }
+      });
+    } on Exception catch (e) {
+      print('Error: $e');
     }
+
     document.dispose();
   }
 }

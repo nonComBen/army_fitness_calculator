@@ -183,44 +183,44 @@ class Download5500 {
     superDate2.text = bf.date!;
 
     try {
-      final dir = await getTemporaryDirectory();
-      // final fileName = '${dir.path}/5500_fields.txt';
-      final fileName = '${dir.path}/${bf.rank}_${bf.name}_5500.pdf';
-      var file = File(fileName);
-      file.writeAsBytesSync(document.saveSync());
-      FToast toast = FToast();
-      toast.context = context;
-      toast.showToast(
-        toastDuration: Duration(seconds: 5),
-        child: MyToast(
-          contents: [
-            Expanded(
-              flex: 3,
-              child: Text(
-                'DA Form 5500 has been downloaded to a temporary folder. Open and save to a permanent folder.',
-                style: TextStyle(
-                  color: getOnPrimaryColor(context!),
-                ),
-              ),
-            ),
-            Expanded(
-              flex: 1,
-              child: PlatformTextButton(
-                child: FittedBox(
-                  fit: BoxFit.contain,
-                  child: Text(
-                    'Open',
-                    style: TextStyle(
-                      color: getOnPrimaryColor(context),
-                    ),
+      getApplicationDocumentsDirectory().then((dir) {
+        final fileName = '${dir.path}/${bf.rank}_${bf.name}_5500.pdf';
+        var file = File(fileName);
+        file.writeAsBytesSync(document.saveSync());
+        FToast toast = FToast();
+        toast.context = context;
+        toast.showToast(
+          toastDuration: Duration(seconds: 5),
+          child: MyToast(
+            contents: [
+              Expanded(
+                flex: 3,
+                child: Text(
+                  'DA Form 5500 has been downloaded to a temporary folder. Open and save to a permanent folder.',
+                  style: TextStyle(
+                    color: getOnPrimaryColor(context!),
                   ),
                 ),
-                onPressed: () => OpenFile.open(fileName),
               ),
-            ),
-          ],
-        ),
-      );
+              Expanded(
+                flex: 1,
+                child: PlatformTextButton(
+                  child: FittedBox(
+                    fit: BoxFit.contain,
+                    child: Text(
+                      'Open',
+                      style: TextStyle(
+                        color: getOnPrimaryColor(context),
+                      ),
+                    ),
+                  ),
+                  onPressed: () => OpenFile.open(fileName),
+                ),
+              ),
+            ],
+          ),
+        );
+      });
     } on Exception catch (e) {
       print('Error: $e');
     }

@@ -52,12 +52,6 @@ class Download5501 {
     }
     var form = document.form;
 
-    // String string = '';
-    // for (int i = 0; i < form.fields.count; i++) {
-    //   string = string + '$i, ${form.fields[i].name}, ${form.fields[i]}\n';
-    //   debugPrint(string);
-    // }
-
     PdfTextBoxField name = form.fields[34] as PdfTextBoxField;
     PdfTextBoxField rank = form.fields[12] as PdfTextBoxField;
     PdfTextBoxField height = form.fields[11] as PdfTextBoxField;
@@ -201,44 +195,45 @@ class Download5501 {
     approvedDate2.text = bf.date!;
 
     try {
-      final dir = await getTemporaryDirectory();
-      final fileName = '${dir.path}/${bf.rank}_${bf.name}_5501.pdf';
-      var file = File(fileName);
-      file.writeAsBytesSync(document.saveSync());
-      FToast toast = FToast();
-      toast.context = context;
+      getApplicationDocumentsDirectory().then((dir) {
+        final fileName = '${dir.path}/${bf.rank}_${bf.name}_5501.pdf';
+        var file = File(fileName);
+        file.writeAsBytesSync(document.saveSync());
+        FToast toast = FToast();
+        toast.context = context;
 
-      toast.showToast(
-        toastDuration: Duration(seconds: 5),
-        child: MyToast(
-          contents: [
-            Expanded(
-              flex: 3,
-              child: Text(
-                'DA Form 5501 has been downloaded to a temporary folder. Open and save to a permanent folder.',
-                style: TextStyle(
-                  color: getOnPrimaryColor(context!),
-                ),
-              ),
-            ),
-            Expanded(
-              flex: 1,
-              child: PlatformTextButton(
-                child: FittedBox(
-                  fit: BoxFit.contain,
-                  child: Text(
-                    'Open',
-                    style: TextStyle(
-                      color: getOnPrimaryColor(context),
-                    ),
+        toast.showToast(
+          toastDuration: Duration(seconds: 5),
+          child: MyToast(
+            contents: [
+              Expanded(
+                flex: 3,
+                child: Text(
+                  'DA Form 5501 has been downloaded to a temporary folder. Open and save to a permanent folder.',
+                  style: TextStyle(
+                    color: getOnPrimaryColor(context!),
                   ),
                 ),
-                onPressed: () => OpenFile.open(fileName),
               ),
-            ),
-          ],
-        ),
-      );
+              Expanded(
+                flex: 1,
+                child: PlatformTextButton(
+                  child: FittedBox(
+                    fit: BoxFit.contain,
+                    child: Text(
+                      'Open',
+                      style: TextStyle(
+                        color: getOnPrimaryColor(context),
+                      ),
+                    ),
+                  ),
+                  onPressed: () => OpenFile.open(fileName),
+                ),
+              ),
+            ],
+          ),
+        );
+      });
     } on Exception catch (e) {
       print('Error: $e');
     }
