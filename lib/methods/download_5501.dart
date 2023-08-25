@@ -5,7 +5,6 @@ import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:open_file_plus/open_file_plus.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:permission_handler/permission_handler.dart';
 import 'package:syncfusion_flutter_pdf/pdf.dart';
 
 import '../../methods/theme_methods.dart';
@@ -32,14 +31,6 @@ class Download5501 {
     required String approvedByGrade,
   }) async {
     late PdfDocument document;
-
-    var status = await Permission.storage.status;
-    if (status != PermissionStatus.granted) {
-      status = await Permission.storage.request();
-    }
-    if (status != PermissionStatus.granted) {
-      return;
-    }
 
     try {
       final byteData =
