@@ -1,5 +1,6 @@
+import 'package:acft_calculator/widgets/line_chart.dart';
+import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
-import 'package:charts_flutter/flutter.dart' as charts;
 
 import '../../methods/theme_methods.dart';
 import '../../sqlite/bodyfat.dart';
@@ -17,101 +18,14 @@ class BodyfatChartPage extends StatefulWidget {
 
 class _BodyfatChartPageState extends State<BodyfatChartPage> {
   bool bf = false;
-  static const secondaryMeasureAxisId = 'secondaryMeasureAxisId';
-  List<charts.Series<Bodyfat, DateTime>> _seriesBarData = [];
-  List<Bodyfat>? myData;
-
-  _generateData(List<Bodyfat> myData) {
-    _seriesBarData.clear();
-    _seriesBarData = [
-      charts.Series(
-          domainFn: (bf, _) => DateTime.parse(bf.date!),
-          measureFn: (bf, _) => int.tryParse(bf.weight),
-          data: myData,
-          id: 'Total',
-          colorFn: (bf, _) => charts.MaterialPalette.black),
-    ];
-    if (bf) {
-      _seriesBarData.add(
-        charts.Series(
-          domainFn: (bf, _) => DateTime.parse(bf.date!),
-          measureFn: (bf, _) => int.tryParse(bf.bfPercent),
-          data: myData,
-          id: 'Bodyfat',
-          colorFn: (bf, _) => charts.MaterialPalette.blue.shadeDefault,
-        )..setAttribute(charts.measureAxisIdKey, secondaryMeasureAxisId),
-      );
-    }
-  }
-
-  Widget _buildChart() {
-    final width = MediaQuery.of(context).size.width;
-    _generateData(myData!);
-    return SizedBox(
-      width: width - 32,
-      height: MediaQuery.of(context).size.height / 2,
-      child: charts.TimeSeriesChart(
-        _seriesBarData,
-        defaultRenderer: new charts.LineRendererConfig(),
-        dateTimeFactory: const charts.LocalDateTimeFactory(),
-        behaviors: [
-          new charts.SeriesLegend(
-            entryTextStyle: charts.TextStyleSpec(
-              color: charts.Color(r: 0, g: 0, b: 0),
-            ),
-          ),
-        ],
-        primaryMeasureAxis: new charts.NumericAxisSpec(
-            tickProviderSpec: new charts.BasicNumericTickProviderSpec(
-                zeroBound: false, desiredTickCount: 3)),
-        secondaryMeasureAxis: bf
-            ? new charts.NumericAxisSpec(
-                tickProviderSpec: new charts.BasicNumericTickProviderSpec(
-                    zeroBound: false, desiredTickCount: 3))
-            : null,
-      ),
-    );
-  }
-
-  // takeScreenshot() async {
-  //   bool permissionGranted;
-  //   if (Platform.isAndroid) {
-  //     permissionGranted = await Permission.storage.request().isGranted;
-  //   } else {
-  //     permissionGranted = await Permission.photos.request().isGranted;
-  //   }
-
-  //   if (permissionGranted) {
-  //     try {
-  //       RenderRepaintBoundary boundary =
-  //           previewContainer.currentContext.findRenderObject();
-  //       ui.Image image = await boundary.toImage();
-  //       ByteData byteData =
-  //           await image.toByteData(format: ui.ImageByteFormat.png);
-  //       Uint8List pngBytes = byteData.buffer.asUint8List();
-  //       await PhotosSaver.saveFile(fileData: pngBytes);
-  //       String location =
-  //           Platform.isAndroid ? 'Gallery Album "Pictures"' : 'Photos';
-  //       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-  //         content: Text('Image saved to $location'),
-  //       ));
-  //     } catch (e) {
-  //       print('Error: $e');
-  //       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-  //         content: Text('Failed to save image'),
-  //       ));
-  //     }
-  //   } else {
-  //     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-  //       content: Text('You must allow permission to save screenshot'),
-  //     ));
-  //   }
-  // }
+  late List<double> dates;
 
   @override
   void initState() {
-    myData = widget.bodyfats;
     super.initState();
+    dates = widget.bodyfats!
+        .map((e) => MyLineChart.convertDateToDouble(e.date!))
+        .toList();
   }
 
   @override
@@ -147,7 +61,30 @@ class _BodyfatChartPageState extends State<BodyfatChartPage> {
                     const SizedBox(
                       height: 15.0,
                     ),
-                    _buildChart(),
+                    MyLineChart(
+                      minY: bf ? 0 : 50,
+                      maxY: 300,
+                      dates: dates,
+                      lineBarData: [
+                        LineChartBarData(
+                          color: getTextColor(context),
+                          spots: widget.bodyfats!
+                              .map((e) => FlSpot(
+                                  MyLineChart.convertDateToDouble(e.date!),
+                                  double.parse(e.weight)))
+                              .toList(),
+                        ),
+                        LineChartBarData(
+                          color: Colors.blue,
+                          show: bf,
+                          spots: widget.bodyfats!
+                              .map((e) => FlSpot(
+                                  MyLineChart.convertDateToDouble(e.date!),
+                                  double.parse(e.bfPercent)))
+                              .toList(),
+                        ),
+                      ],
+                    ),
                   ],
                 ),
               ),
@@ -157,7 +94,10 @@ class _BodyfatChartPageState extends State<BodyfatChartPage> {
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 24.0),
                 child: PlatformCheckboxListTile(
-                  title: const Text('Bodyfat'),
+                  title: const Text(
+                    'Bodyfat',
+                    style: TextStyle(color: Colors.blue),
+                  ),
                   value: bf,
                   activeColor: getOnPrimaryColor(context),
                   onChanged: (value) {

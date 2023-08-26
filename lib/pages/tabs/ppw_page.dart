@@ -75,13 +75,13 @@ class _PromotionPointPageState extends ConsumerState<PromotionPointPage> {
   String weapons = '(M16/M4) DA 3595-R / 5790-R / 5789-R / 7801',
       airborneLvl = 'None',
       ncoes = 'None';
-  Object rank = 'SGT', version = 'oldVersion';
+  Object rank = 'SGT', version = 'newVersion';
   bool isRanger = false,
       isSf = false,
       isSapper = false,
       degreeCompleted = false,
       hasFornLang = false,
-      isNewVersion = false,
+      isNewVersion = true,
       isPtValid = true,
       isWeaponValid = true,
       isCoaValid = true,

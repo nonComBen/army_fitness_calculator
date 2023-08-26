@@ -1,8 +1,9 @@
 import 'package:acft_calculator/methods/theme_methods.dart';
+import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
-import 'package:charts_flutter/flutter.dart' as charts;
 
 import '../../sqlite/acft.dart';
+import '../../widgets/line_chart.dart';
 import '../../widgets/platform_widgets/platform_checkbox_list_tile.dart';
 import '../../widgets/platform_widgets/platform_scaffold.dart';
 
@@ -22,112 +23,14 @@ class _AcftChartPageState extends State<AcftChartPage> {
       sdc = false,
       plk = false,
       run = false;
-  List<charts.Series<Acft, DateTime>> _seriesBarData = [];
-  List<Acft>? myData;
-
-  _generateData(List<Acft> myData) {
-    _seriesBarData.clear();
-    _seriesBarData.add(
-      charts.Series(
-        domainFn: (acft, _) => DateTime.parse(acft.date!),
-        measureFn: (acft, _) => int.tryParse(acft.total),
-        data: myData,
-        id: 'Total',
-        colorFn: (acft, _) => charts.MaterialPalette.black,
-      ),
-    );
-    if (mdl) {
-      _seriesBarData.add(
-        charts.Series(
-            domainFn: (acft, _) => DateTime.parse(acft.date!),
-            measureFn: (acft, _) => int.tryParse(acft.mdlScore),
-            data: myData,
-            id: 'MDL',
-            colorFn: (acft, _) => charts.MaterialPalette.blue.shadeDefault),
-      );
-    }
-    if (spt) {
-      _seriesBarData.add(
-        charts.Series(
-            domainFn: (acft, _) => DateTime.parse(acft.date!),
-            measureFn: (acft, _) => int.tryParse(acft.sptScore),
-            data: myData,
-            id: 'SPT',
-            colorFn: (acft, _) => charts.MaterialPalette.green.shadeDefault),
-      );
-    }
-    if (hrp) {
-      _seriesBarData.add(
-        charts.Series(
-            domainFn: (acft, _) => DateTime.parse(acft.date!),
-            measureFn: (acft, _) => int.tryParse(acft.hrpScore),
-            data: myData,
-            id: 'HRP',
-            colorFn: (acft, _) => charts.MaterialPalette.yellow.shadeDefault),
-      );
-    }
-    if (sdc) {
-      _seriesBarData.add(
-        charts.Series(
-            domainFn: (acft, _) => DateTime.parse(acft.date!),
-            measureFn: (acft, _) => int.tryParse(acft.sdcScore),
-            data: myData,
-            id: 'SDC',
-            colorFn: (acft, _) =>
-                charts.MaterialPalette.deepOrange.shadeDefault),
-      );
-    }
-    if (plk) {
-      _seriesBarData.add(
-        charts.Series(
-            domainFn: (acft, _) => DateTime.parse(acft.date!),
-            measureFn: (acft, _) => int.tryParse(acft.plkScore),
-            data: myData,
-            id: 'PLK',
-            colorFn: (acft, _) => charts.MaterialPalette.red.shadeDefault),
-      );
-    }
-    if (run) {
-      _seriesBarData.add(
-        charts.Series(
-            domainFn: (acft, _) => DateTime.parse(acft.date!),
-            measureFn: (acft, _) => int.tryParse(acft.runScore),
-            data: myData,
-            id: 'Run',
-            colorFn: (acft, _) => charts.MaterialPalette.purple.shadeDefault),
-      );
-    }
-  }
-
-  Widget _buildChart() {
-    double width = MediaQuery.of(context).size.width;
-    _generateData(myData!);
-    return SizedBox(
-      width: width - 32,
-      height: MediaQuery.of(context).size.height / 2,
-      child: charts.TimeSeriesChart(
-        _seriesBarData,
-        defaultRenderer: new charts.LineRendererConfig(),
-        dateTimeFactory: const charts.LocalDateTimeFactory(),
-        behaviors: [
-          new charts.SeriesLegend(
-            desiredMaxRows: 2,
-            desiredMaxColumns: width < 600 ? 4 : 7,
-            entryTextStyle: charts.TextStyleSpec(
-              color: charts.Color(r: 0, g: 0, b: 0),
-            ),
-          )
-        ],
-        primaryMeasureAxis: new charts.NumericAxisSpec(
-            tickProviderSpec:
-                new charts.BasicNumericTickProviderSpec(zeroBound: false)),
-      ),
-    );
-  }
+  late List<double> dates;
 
   @override
   void initState() {
-    myData = widget.acfts;
+    dates = widget.acfts!
+        .map((e) => MyLineChart.convertDateToDouble(e.date!))
+        .toList();
+    dates.sort(((a, b) => a.compareTo(b)));
     super.initState();
   }
 
@@ -165,138 +68,227 @@ class _AcftChartPageState extends State<AcftChartPage> {
                     const SizedBox(
                       height: 15.0,
                     ),
-                    _buildChart(),
+                    MyLineChart(
+                      minY: mdl || spt || hrp || sdc || plk || run ? 0 : 200,
+                      maxY: 600,
+                      dates: dates,
+                      lineBarData: [
+                        LineChartBarData(
+                          color: getTextColor(context),
+                          spots: widget.acfts!
+                              .map((e) => FlSpot(
+                                  MyLineChart.convertDateToDouble(e.date!),
+                                  double.parse(e.total)))
+                              .toList(),
+                        ),
+                        LineChartBarData(
+                          color: Colors.blue,
+                          show: mdl,
+                          spots: widget.acfts!
+                              .map((e) => FlSpot(
+                                  MyLineChart.convertDateToDouble(e.date!),
+                                  double.parse(e.mdlScore)))
+                              .toList(),
+                        ),
+                        LineChartBarData(
+                          color: Colors.green,
+                          show: spt,
+                          spots: widget.acfts!
+                              .map((e) => FlSpot(
+                                  MyLineChart.convertDateToDouble(e.date!),
+                                  double.parse(e.sptScore)))
+                              .toList(),
+                        ),
+                        LineChartBarData(
+                          color: Colors.yellow,
+                          show: hrp,
+                          spots: widget.acfts!
+                              .map((e) => FlSpot(
+                                  MyLineChart.convertDateToDouble(e.date!),
+                                  double.parse(e.hrpScore)))
+                              .toList(),
+                        ),
+                        LineChartBarData(
+                          color: Colors.orange,
+                          show: sdc,
+                          spots: widget.acfts!
+                              .map((e) => FlSpot(
+                                  MyLineChart.convertDateToDouble(e.date!),
+                                  double.parse(e.sdcScore)))
+                              .toList(),
+                        ),
+                        LineChartBarData(
+                          color: Colors.red,
+                          show: plk,
+                          spots: widget.acfts!
+                              .map((e) => FlSpot(
+                                  MyLineChart.convertDateToDouble(e.date!),
+                                  double.parse(e.plkScore)))
+                              .toList(),
+                        ),
+                        LineChartBarData(
+                          color: Colors.purple,
+                          show: run,
+                          spots: widget.acfts!
+                              .map((e) => FlSpot(
+                                  MyLineChart.convertDateToDouble(e.date!),
+                                  double.parse(e.runScore)))
+                              .toList(),
+                        )
+                      ],
+                    ),
                   ],
                 ),
               ),
               const SizedBox(
                 height: 15.0,
               ),
-              GridView.count(
-                crossAxisCount: width > 700
-                    ? 3
-                    : width > 400
-                        ? 2
-                        : 1,
-                primary: false,
-                shrinkWrap: true,
-                childAspectRatio: width > 700
-                    ? width / 300
-                    : width > 400
-                        ? width / 200
-                        : width / 100,
-                mainAxisSpacing: 1.0,
-                crossAxisSpacing: 1.0,
-                children: <Widget>[
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 24.0),
-                    child: PlatformCheckboxListTile(
-                      title: Text('MDL'),
-                      value: mdl,
-                      activeColor: getOnPrimaryColor(context),
-                      onChanged: (value) {
-                        setState(() {
-                          mdl = value!;
-                        });
-                      },
-                      onIosTap: () {
-                        setState(() {
-                          mdl = !mdl;
-                        });
-                      },
+              Card(
+                color: getContrastingBackgroundColor(context),
+                child: GridView.count(
+                  crossAxisCount: width > 700
+                      ? 3
+                      : width > 400
+                          ? 2
+                          : 1,
+                  primary: false,
+                  shrinkWrap: true,
+                  childAspectRatio: width > 700
+                      ? width / 300
+                      : width > 400
+                          ? width / 200
+                          : width / 100,
+                  mainAxisSpacing: 1.0,
+                  crossAxisSpacing: 1.0,
+                  children: <Widget>[
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 24.0),
+                      child: PlatformCheckboxListTile(
+                        title: Text(
+                          'MDL',
+                          style: TextStyle(color: Colors.blue),
+                        ),
+                        value: mdl,
+                        activeColor: getOnPrimaryColor(context),
+                        onChanged: (value) {
+                          setState(() {
+                            mdl = value!;
+                          });
+                        },
+                        onIosTap: () {
+                          setState(() {
+                            mdl = !mdl;
+                          });
+                        },
+                      ),
                     ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 24.0),
-                    child: PlatformCheckboxListTile(
-                      title: const Text('SPT'),
-                      value: spt,
-                      activeColor: getOnPrimaryColor(context),
-                      onChanged: (value) {
-                        setState(() {
-                          spt = value!;
-                        });
-                      },
-                      onIosTap: () {
-                        setState(() {
-                          spt = !spt;
-                        });
-                      },
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 24.0),
+                      child: PlatformCheckboxListTile(
+                        title: const Text(
+                          'SPT',
+                          style: TextStyle(color: Colors.green),
+                        ),
+                        value: spt,
+                        activeColor: getOnPrimaryColor(context),
+                        onChanged: (value) {
+                          setState(() {
+                            spt = value!;
+                          });
+                        },
+                        onIosTap: () {
+                          setState(() {
+                            spt = !spt;
+                          });
+                        },
+                      ),
                     ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 24.0),
-                    child: PlatformCheckboxListTile(
-                      title: const Text('HRP'),
-                      value: hrp,
-                      activeColor: getOnPrimaryColor(context),
-                      onChanged: (value) {
-                        setState(() {
-                          hrp = value!;
-                        });
-                      },
-                      onIosTap: () {
-                        setState(() {
-                          hrp = !hrp;
-                        });
-                      },
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 24.0),
+                      child: PlatformCheckboxListTile(
+                        title: const Text(
+                          'HRP',
+                          style: TextStyle(color: Colors.yellow),
+                        ),
+                        value: hrp,
+                        activeColor: getOnPrimaryColor(context),
+                        onChanged: (value) {
+                          setState(() {
+                            hrp = value!;
+                          });
+                        },
+                        onIosTap: () {
+                          setState(() {
+                            hrp = !hrp;
+                          });
+                        },
+                      ),
                     ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 24.0),
-                    child: PlatformCheckboxListTile(
-                      title: const Text('SDC'),
-                      value: sdc,
-                      activeColor: getOnPrimaryColor(context),
-                      onChanged: (value) {
-                        setState(() {
-                          sdc = value!;
-                        });
-                      },
-                      onIosTap: () {
-                        setState(() {
-                          sdc = !sdc;
-                        });
-                      },
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 24.0),
+                      child: PlatformCheckboxListTile(
+                        title: const Text(
+                          'SDC',
+                          style: TextStyle(color: Colors.orange),
+                        ),
+                        value: sdc,
+                        activeColor: getOnPrimaryColor(context),
+                        onChanged: (value) {
+                          setState(() {
+                            sdc = value!;
+                          });
+                        },
+                        onIosTap: () {
+                          setState(() {
+                            sdc = !sdc;
+                          });
+                        },
+                      ),
                     ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 24.0),
-                    child: PlatformCheckboxListTile(
-                      title: const Text('PLK'),
-                      value: plk,
-                      activeColor: getOnPrimaryColor(context),
-                      onChanged: (value) {
-                        setState(() {
-                          plk = value!;
-                        });
-                      },
-                      onIosTap: () {
-                        setState(() {
-                          plk = !plk;
-                        });
-                      },
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 24.0),
+                      child: PlatformCheckboxListTile(
+                        title: const Text(
+                          'PLK',
+                          style: TextStyle(color: Colors.red),
+                        ),
+                        value: plk,
+                        activeColor: getOnPrimaryColor(context),
+                        onChanged: (value) {
+                          setState(() {
+                            plk = value!;
+                          });
+                        },
+                        onIosTap: () {
+                          setState(() {
+                            plk = !plk;
+                          });
+                        },
+                      ),
                     ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 24.0),
-                    child: PlatformCheckboxListTile(
-                      title: const Text('Run'),
-                      value: run,
-                      activeColor: getOnPrimaryColor(context),
-                      onChanged: (value) {
-                        setState(() {
-                          run = value!;
-                        });
-                      },
-                      onIosTap: () {
-                        setState(() {
-                          run = !run;
-                        });
-                      },
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 24.0),
+                      child: PlatformCheckboxListTile(
+                        title: const Text(
+                          'Run',
+                          style: TextStyle(color: Colors.purple),
+                        ),
+                        value: run,
+                        activeColor: getOnPrimaryColor(context),
+                        onChanged: (value) {
+                          setState(() {
+                            run = value!;
+                          });
+                        },
+                        onIosTap: () {
+                          setState(() {
+                            run = !run;
+                          });
+                        },
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               )
             ],
           ),
