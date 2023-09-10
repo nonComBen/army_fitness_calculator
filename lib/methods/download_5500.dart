@@ -40,14 +40,6 @@ class Download5500 {
     }
     var form = document.form;
 
-    // print(form.fields.count);
-    // String string = '';
-    // for (int i = 0; i < form.fields.count; i++) {
-    //   string = string + '$i, ${form.fields[i].name}, ${form.fields[i]}\n';
-
-    //   debugPrint(string);
-    // }
-
     PdfTextBoxField name = form.fields[20] as PdfTextBoxField;
     PdfTextBoxField rank = form.fields[21] as PdfTextBoxField;
     PdfTextBoxField height = form.fields[22] as PdfTextBoxField;
@@ -98,7 +90,6 @@ class Download5500 {
       weightAve.text = bf.weight;
 
       final overWeight = int.parse(bf.weight) - int.parse(bf.maxWeight);
-      //String overUnder = bf.bfPass == 1 ? 'Under' : 'Over';
       final remarks =
           'Weight: ${bf.weight} lbs.\nMax Weight: ${bf.maxWeight} lbs.\nOver: ${overWeight.toString()} lbs.\n'
           'Bodyfat Percentage: ${bf.bfPercent}%\nAllowed Percentage: ${bf.maxPercent}%\nOver/Under: ${bf.overUnder}%';
@@ -173,48 +164,49 @@ class Download5500 {
     superRank2.text = superGrade;
     superDate2.text = bf.date!;
 
-    try {
-      getApplicationDocumentsDirectory().then((dir) {
-        final fileName = '${dir.path}/${bf.rank}_${bf.name}_5500.pdf';
-        var file = File(fileName);
-        file.writeAsBytesSync(document.saveSync());
-        FToast toast = FToast();
-        toast.context = context;
-        toast.showToast(
-          toastDuration: Duration(seconds: 5),
-          child: MyToast(
-            contents: [
-              Expanded(
-                flex: 3,
-                child: Text(
-                  'DA Form 5500 has been downloaded to a temporary folder. Open and save to a permanent folder.',
-                  style: TextStyle(
-                    color: getOnPrimaryColor(context!),
-                  ),
+    getApplicationDocumentsDirectory().then((dir) {
+      final fileName = '${dir.path}/${bf.rank}_${bf.name}_5500.pdf';
+      var file = File(fileName);
+      try {
+        final List<int> bytes = document.saveSync();
+        file.writeAsBytesSync(bytes);
+      } on Exception catch (e) {
+        debugPrint('Error: $e');
+      }
+      FToast toast = FToast();
+      toast.context = context;
+      toast.showToast(
+        toastDuration: Duration(seconds: 5),
+        child: MyToast(
+          contents: [
+            Expanded(
+              flex: 3,
+              child: Text(
+                'DA Form 5500 has been downloaded to a temporary folder. Open and save to a permanent folder.',
+                style: TextStyle(
+                  color: getOnPrimaryColor(context!),
                 ),
               ),
-              Expanded(
-                flex: 1,
-                child: PlatformTextButton(
-                  child: FittedBox(
-                    fit: BoxFit.contain,
-                    child: Text(
-                      'Open',
-                      style: TextStyle(
-                        color: getOnPrimaryColor(context),
-                      ),
+            ),
+            Expanded(
+              flex: 1,
+              child: PlatformTextButton(
+                child: FittedBox(
+                  fit: BoxFit.contain,
+                  child: Text(
+                    'Open',
+                    style: TextStyle(
+                      color: getOnPrimaryColor(context),
                     ),
                   ),
-                  onPressed: () => OpenFile.open(fileName),
                 ),
+                onPressed: () => OpenFile.open(fileName),
               ),
-            ],
-          ),
-        );
-      });
-    } on Exception catch (e) {
-      print('Error: $e');
-    }
+            ),
+          ],
+        ),
+      );
+    });
 
     document.dispose();
   }

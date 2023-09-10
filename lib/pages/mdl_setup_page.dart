@@ -17,20 +17,26 @@ class MdlSetupPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final prefs = ref.read(sharedPreferencesProvider);
-    final isPremium =
-        ref.read(premiumStateProvider) || (prefs.getBool('isPremium') ?? false);
+    bool isPremium = false;
     late BannerAd myBanner;
-    myBanner = BannerAd(
-      adUnitId: Platform.isAndroid
-          ? 'ca-app-pub-2431077176117105/2476540786'
-          : 'ca-app-pub-2431077176117105/7916569725',
-      size: AdSize.banner,
-      listener: BannerAdListener(),
-      request: AdRequest(nonPersonalizedAds: true),
-    );
+    if (Platform.environment.containsKey('FLUTTER_TEST')) {
+      isPremium = true;
+    } else {
+      final prefs = ref.read(sharedPreferencesProvider);
+      isPremium = ref.read(premiumStateProvider) ||
+          (prefs.getBool('isPremium') ?? false);
 
-    myBanner.load();
+      myBanner = BannerAd(
+        adUnitId: Platform.isAndroid
+            ? 'ca-app-pub-2431077176117105/2476540786'
+            : 'ca-app-pub-2431077176117105/7916569725',
+        size: AdSize.banner,
+        listener: BannerAdListener(),
+        request: AdRequest(nonPersonalizedAds: true),
+      );
+
+      myBanner.load();
+    }
 
     final width = MediaQuery.of(context).size.width;
     return PlatformScaffold(

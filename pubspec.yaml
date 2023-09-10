@@ -8,7 +8,6 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  # charts_flutter: ^0.12.0
   cloud_functions: ^4.3.4
   cupertino_icons: ^1.0.5
   device_info_plus: ^9.0.3
@@ -29,7 +28,7 @@ dependencies:
   rate_my_app: ^2.0.0
   shared_preferences: ^2.2.0
   sqflite: ^2.3.0
-  syncfusion_flutter_pdf: ^21.2.10
+  syncfusion_flutter_pdf: ^22.2.10
   url_launcher: ^6.1.12
 
 dev_dependencies:
