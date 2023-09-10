@@ -24,6 +24,7 @@ dependencies:
   launch_review: ^3.0.1
   open_file_plus: ^3.4.1
   path_provider: ^2.1.0
+  permission_handler: ^10.4.3
   pull_down_button: ^0.9.3
   rate_my_app: ^2.0.0
   shared_preferences: ^2.2.0

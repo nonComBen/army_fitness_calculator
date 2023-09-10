@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:acft_calculator/providers/tracking_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -80,13 +81,14 @@ class _BodyfatPageState extends ConsumerState<BodyfatPage> {
     super.initState();
 
     purchasesService = ref.read(purchasesProvider);
+    bool trackingAllowed = ref.read(trackingProvider).trackingAllowed;
     myBanner = BannerAd(
       adUnitId: Platform.isAndroid
           ? 'ca-app-pub-2431077176117105/8950325543'
           : 'ca-app-pub-2431077176117105/5634775918',
       size: AdSize.banner,
       listener: BannerAdListener(),
-      request: AdRequest(nonPersonalizedAds: true),
+      request: AdRequest(nonPersonalizedAds: !trackingAllowed),
     );
 
     myBanner.load();

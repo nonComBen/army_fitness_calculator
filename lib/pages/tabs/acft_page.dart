@@ -11,6 +11,7 @@ import '../../providers/premium_state_provider.dart';
 import '../../methods/platform_show_modal_bottom_sheet.dart';
 import '../../methods/theme_methods.dart';
 import '../../providers/purchases_provider.dart';
+import '../../providers/tracking_provider.dart';
 import '../../services/purchases_service.dart';
 import '../../widgets/min_max_table.dart';
 import '../../widgets/platform_widgets/platform_button.dart';
@@ -148,6 +149,7 @@ class AcftPageState extends ConsumerState<AcftPage>
     WidgetsBinding.instance.addObserver(this);
     prefs = ref.read(sharedPreferencesProvider);
     purchasesService = ref.read(purchasesProvider);
+    bool trackingAllowed = ref.read(trackingProvider).trackingAllowed;
 
     myBanner = BannerAd(
       adUnitId: Platform.isAndroid
@@ -155,7 +157,7 @@ class AcftPageState extends ConsumerState<AcftPage>
           : 'ca-app-pub-2431077176117105/4488336359',
       size: AdSize.banner,
       listener: BannerAdListener(),
-      request: AdRequest(nonPersonalizedAds: true),
+      request: AdRequest(nonPersonalizedAds: !trackingAllowed),
     );
 
     myBanner.load();

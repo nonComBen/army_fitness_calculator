@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:acft_calculator/providers/tracking_provider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -175,6 +176,7 @@ class _PromotionPointPageState extends ConsumerState<PromotionPointPage> {
     prefs = ref.read(sharedPreferencesProvider);
 
     purchasesService = ref.read(purchasesProvider);
+    bool trackingAllowed = ref.read(trackingProvider).trackingAllowed;
 
     myBanner = BannerAd(
       adUnitId: Platform.isAndroid
@@ -182,7 +184,7 @@ class _PromotionPointPageState extends ConsumerState<PromotionPointPage> {
           : 'ca-app-pub-2431077176117105/7432472116',
       size: AdSize.banner,
       listener: BannerAdListener(),
-      request: AdRequest(nonPersonalizedAds: true),
+      request: AdRequest(nonPersonalizedAds: !trackingAllowed),
     );
     myBanner.load();
 

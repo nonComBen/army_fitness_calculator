@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:acft_calculator/methods/theme_methods.dart';
 import 'package:acft_calculator/providers/premium_state_provider.dart';
+import 'package:acft_calculator/providers/tracking_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -116,13 +117,14 @@ class _ApftPageState extends ConsumerState<ApftPage> {
     super.initState();
     dbHelper = new DBHelper();
     purchasesService = ref.read(purchasesProvider);
+    bool trackingAllowed = ref.read(trackingProvider).trackingAllowed;
     myBanner = BannerAd(
       adUnitId: Platform.isAndroid
           ? 'ca-app-pub-2431077176117105/9048806118'
           : 'ca-app-pub-2431077176117105/4321694244',
       size: AdSize.banner,
       listener: BannerAdListener(),
-      request: AdRequest(nonPersonalizedAds: true),
+      request: AdRequest(nonPersonalizedAds: !trackingAllowed),
     );
 
     myBanner.load();

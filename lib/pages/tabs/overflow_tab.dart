@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:acft_calculator/providers/tracking_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -37,6 +38,7 @@ class OverflowTab extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final purchasesService = ref.read(purchasesProvider);
     final prefs = ref.read(sharedPreferencesProvider);
+    bool trackingAllowed = ref.read(trackingProvider).trackingAllowed;
     final isPremium =
         ref.read(premiumStateProvider) || (prefs.getBool('isPremium') ?? false);
     BannerAd myBanner = BannerAd(
@@ -45,7 +47,7 @@ class OverflowTab extends ConsumerWidget {
           : 'ca-app-pub-2431077176117105/7676014691',
       size: AdSize.banner,
       listener: BannerAdListener(),
-      request: AdRequest(nonPersonalizedAds: true),
+      request: AdRequest(nonPersonalizedAds: !trackingAllowed),
     );
     myBanner.load();
 

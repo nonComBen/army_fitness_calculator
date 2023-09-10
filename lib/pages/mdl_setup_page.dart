@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:acft_calculator/providers/tracking_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
@@ -23,6 +24,7 @@ class MdlSetupPage extends ConsumerWidget {
       isPremium = true;
     } else {
       final prefs = ref.read(sharedPreferencesProvider);
+      bool trackingAllowed = ref.read(trackingProvider).trackingAllowed;
       isPremium = ref.read(premiumStateProvider) ||
           (prefs.getBool('isPremium') ?? false);
 
@@ -32,7 +34,7 @@ class MdlSetupPage extends ConsumerWidget {
             : 'ca-app-pub-2431077176117105/7916569725',
         size: AdSize.banner,
         listener: BannerAdListener(),
-        request: AdRequest(nonPersonalizedAds: true),
+        request: AdRequest(nonPersonalizedAds: !trackingAllowed),
       );
 
       myBanner.load();

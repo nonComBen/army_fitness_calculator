@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:acft_calculator/providers/tracking_provider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -198,6 +199,7 @@ class _ApftVerbiagePageState extends ConsumerState<ApftVerbiagePage> {
   void initState() {
     super.initState();
     if (!Platform.environment.containsKey('FLUTTER_TEST')) {
+      bool trackingAllowed = ref.read(trackingProvider).trackingAllowed;
       myBanner = BannerAd(
         adUnitId: Platform.isAndroid
             ? 'ca-app-pub-2431077176117105/2976785389'
@@ -205,7 +207,7 @@ class _ApftVerbiagePageState extends ConsumerState<ApftVerbiagePage> {
         size: AdSize.banner,
         listener: BannerAdListener(),
         request: AdRequest(
-          nonPersonalizedAds: true,
+          nonPersonalizedAds: !trackingAllowed,
         ),
       );
 
