@@ -3,24 +3,6 @@ import 'package:acft_calculator/constants/plk_table.dart';
 import 'package:acft_calculator/constants/pt_age_group_table.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-List<List<int>> times = [
-  [120],
-  [130],
-  [140],
-  [150],
-  [200],
-  [210],
-  [220],
-  [230],
-  [240],
-  [250],
-  [300],
-  [310],
-  [320],
-  [330],
-  [340],
-];
-
 void main() {
   group('test PLK Calculator functions', () {
     test(
@@ -42,7 +24,24 @@ void main() {
 
     test(
       "test non-max getPlkScore function",
-      () async {},
+      () async {
+        for (int i = 0; i < plkTable.length; i++) {
+          for (int n = 0; n < ptAgeGroups.length; n++) {
+            int maleTime = plkTable[i][(n + 1) * 2 - 1];
+            int femaleTime = plkTable[i][(n + 1) * 2];
+            int maleScore = getPlkScore(maleTime, n + 1, true);
+            int femaleScore = getPlkScore(femaleTime, n + 1, false);
+            print(
+                'Male Time: $maleTime - Male Score: $maleScore, Female Time: $femaleTime, Score: $femaleScore');
+            int maleExpected = plkTable
+                .firstWhere((row) => maleTime >= row[(n + 1) * 2 - 1])[0];
+            int femaleExpected =
+                plkTable.firstWhere((row) => femaleTime >= row[(n + 1) * 2])[0];
+            expect(maleScore, maleExpected);
+            expect(femaleScore, femaleExpected);
+          }
+        }
+      },
     );
   });
 }

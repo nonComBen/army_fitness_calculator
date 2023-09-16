@@ -3,33 +3,6 @@ import 'package:acft_calculator/constants/pt_age_group_table.dart';
 import 'package:acft_calculator/constants/spt_table.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-List<List<dynamic>> distances = [
-  [4.0],
-  [4.5],
-  [5.0],
-  [5.5],
-  [6.0],
-  [6.5],
-  [7.0],
-  [7.5],
-  [8.0],
-  [8.5],
-  [9.0],
-  [9.5],
-  [10.0],
-  [10.5],
-  [11.0],
-  [11.5],
-  [12.0],
-  [12.5],
-  [13.0],
-  [13.5],
-  [14.0],
-  [14.5],
-  [15.0],
-  [15.5],
-];
-
 void main() {
   group('test SPT Calculator functions', () {
     test(
@@ -51,7 +24,25 @@ void main() {
 
     test(
       "test non-max getSptScore function",
-      () async {},
+      () async {
+        for (int i = 0; i < sptTable.length; i++) {
+          for (int n = 0; n < ptAgeGroups.length; n++) {
+            double maleDist = sptTable[i][(n + 1) * 2 - 1];
+            double femaleDist = sptTable[i][(n + 1) * 2];
+            double maleScore = getSptScore(maleDist, n + 1, true).toDouble();
+            double femaleScore =
+                getSptScore(femaleDist, n + 1, false).toDouble();
+            print(
+                'Male Dist: $maleDist - Male Score: $maleScore, Female Dist: $femaleDist, Score: $femaleScore');
+            double maleExpected = sptTable
+                .firstWhere((row) => maleDist >= row[(n + 1) * 2 - 1])[0];
+            double femaleExpected =
+                sptTable.firstWhere((row) => femaleDist >= row[(n + 1) * 2])[0];
+            expect(maleScore, maleExpected);
+            expect(femaleScore, femaleExpected);
+          }
+        }
+      },
     );
   });
 }

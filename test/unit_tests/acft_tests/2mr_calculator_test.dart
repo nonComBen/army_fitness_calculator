@@ -3,61 +3,6 @@ import 'package:acft_calculator/constants/2mr_table.dart';
 import 'package:acft_calculator/constants/pt_age_group_table.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-List<List<int>> runTimes = [
-  [1300],
-  [1315],
-  [1330],
-  [1345],
-  [1400],
-  [1415],
-  [1430],
-  [1445],
-  [1500],
-  [1515],
-  [1530],
-  [1545],
-  [1600],
-  [1615],
-  [1630],
-  [1645],
-  [1700],
-  [1715],
-  [1730],
-  [1745],
-  [1800],
-  [1815],
-  [1830],
-  [1845],
-  [1900],
-  [1915],
-  [1930],
-  [1945],
-  [2000],
-  [2015],
-  [2030],
-  [2045],
-  [2100],
-  [2115],
-  [2130],
-  [2145],
-  [2200],
-  [2215],
-  [2230],
-  [2245],
-  [2300],
-  [2315],
-  [2330],
-  [2345],
-  [2400],
-  [2415],
-  [2430],
-  [2445],
-  [2500],
-  [2515],
-  [2530],
-  [2545],
-];
-
 void main() {
   group('test 2MR Calculator functions', () {
     test(
@@ -79,7 +24,24 @@ void main() {
 
     test(
       "test non-max get2mrScore function",
-      () async {},
+      () async {
+        for (int i = 0; i < runTable.length; i++) {
+          for (int n = 0; n < ptAgeGroups.length; n++) {
+            int maleTime = runTable[i][(n + 1) * 2 - 1];
+            int femaleTime = runTable[i][(n + 1) * 2];
+            int maleScore = get2mrScore(maleTime, n + 1, true);
+            int femaleScore = get2mrScore(femaleTime, n + 1, false);
+            print(
+                'Male Time: $maleTime - Male Score: $maleScore, Female Time: $femaleTime, Score: $femaleScore');
+            int maleExpected = runTable
+                .firstWhere((row) => maleTime <= row[(n + 1) * 2 - 1])[0];
+            int femaleExpected =
+                runTable.firstWhere((row) => femaleTime <= row[(n + 1) * 2])[0];
+            expect(maleScore, maleExpected);
+            expect(femaleScore, femaleExpected);
+          }
+        }
+      },
     );
   });
 }

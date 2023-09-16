@@ -3,26 +3,6 @@ import 'package:acft_calculator/constants/mdl_table.dart';
 import 'package:acft_calculator/constants/pt_age_group_table.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-List<List<int>> weights = [
-  [170],
-  [180],
-  [190],
-  [200],
-  [210],
-  [220],
-  [230],
-  [240],
-  [250],
-  [260],
-  [270],
-  [280],
-  [290],
-  [300],
-  [310],
-  [320],
-  [330],
-];
-
 void main() {
   group('test MDL Calculator functions', () {
     test(
@@ -43,8 +23,25 @@ void main() {
     );
 
     test(
-      "test non-max getMDLScore function",
-      () async {},
+      "test non-max getMdlScore function",
+      () async {
+        for (int i = 0; i < mdlTable.length; i++) {
+          for (int n = 0; n < ptAgeGroups.length; n++) {
+            int maleWeight = mdlTable[i][(n + 1) * 2 - 1];
+            int femaleWeight = mdlTable[i][(n + 1) * 2];
+            int maleScore = getMdlScore(maleWeight, n + 1, true);
+            int femaleScore = getMdlScore(femaleWeight, n + 1, false);
+            print(
+                'Male Weight: $maleWeight - Male Score: $maleScore, Female Weight: $femaleWeight, Score: $femaleScore');
+            int maleExpected = mdlTable
+                .firstWhere((row) => maleWeight >= row[(n + 1) * 2 - 1])[0];
+            int femaleExpected = mdlTable
+                .firstWhere((row) => femaleWeight >= row[(n + 1) * 2])[0];
+            expect(maleScore, maleExpected);
+            expect(femaleScore, femaleExpected);
+          }
+        }
+      },
     );
   });
 }

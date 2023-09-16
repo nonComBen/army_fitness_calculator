@@ -3,23 +3,6 @@ import 'package:acft_calculator/constants/hrp_table.dart';
 import 'package:acft_calculator/constants/pt_age_group_table.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-List<List<int>> reps = [
-  [10],
-  [15],
-  [20],
-  [25],
-  [30],
-  [35],
-  [40],
-  [45],
-  [50],
-  [55],
-  [60],
-  [65],
-  [70],
-  [75],
-];
-
 void main() {
   group('test HRP Calculator functions', () {
     test(
@@ -41,7 +24,24 @@ void main() {
 
     test(
       "test non-max getHrpScore function",
-      () async {},
+      () async {
+        for (int i = 0; i < hrpTable.length; i++) {
+          for (int n = 0; n < ptAgeGroups.length; n++) {
+            int maleReps = hrpTable[i][(n + 1) * 2 - 1];
+            int femaleReps = hrpTable[i][(n + 1) * 2];
+            int maleScore = getHrpScore(maleReps, n + 1, true);
+            int femaleScore = getHrpScore(femaleReps, n + 1, false);
+            print(
+                'Male Reps: $maleReps - Male Score: $maleScore, Female Reps: $femaleReps, Score: $femaleScore');
+            int maleExpected = hrpTable
+                .firstWhere((row) => maleReps >= row[(n + 1) * 2 - 1])[0];
+            int femaleExpected =
+                hrpTable.firstWhere((row) => femaleReps >= row[(n + 1) * 2])[0];
+            expect(maleScore, maleExpected);
+            expect(femaleScore, femaleExpected);
+          }
+        }
+      },
     );
   });
 }

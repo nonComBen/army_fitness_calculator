@@ -3,30 +3,6 @@ import 'package:acft_calculator/constants/pt_age_group_table.dart';
 import 'package:acft_calculator/constants/sdc_table.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-List<List<int>> times = [
-  [130],
-  [140],
-  [150],
-  [200],
-  [210],
-  [220],
-  [230],
-  [240],
-  [250],
-  [300],
-  [310],
-  [320],
-  [330],
-  [340],
-  [350],
-  [400],
-  [410],
-  [420],
-  [430],
-  [440],
-  [450],
-];
-
 void main() {
   group('test SDC Calculator functions', () {
     test(
@@ -48,7 +24,24 @@ void main() {
 
     test(
       "test non-max getSdcScore function",
-      () async {},
+      () async {
+        for (int i = 0; i < sdcTable.length; i++) {
+          for (int n = 0; n < ptAgeGroups.length; n++) {
+            int maleTime = sdcTable[i][(n + 1) * 2 - 1];
+            int femaleTime = sdcTable[i][(n + 1) * 2];
+            int maleScore = getSdcScore(maleTime, n + 1, true);
+            int femaleScore = getSdcScore(femaleTime, n + 1, false);
+            print(
+                'Male Time: $maleTime - Male Score: $maleScore, Female Time: $femaleTime, Score: $femaleScore');
+            int maleExpected = sdcTable
+                .firstWhere((row) => maleTime <= row[(n + 1) * 2 - 1])[0];
+            int femaleExpected =
+                sdcTable.firstWhere((row) => femaleTime <= row[(n + 1) * 2])[0];
+            expect(maleScore, maleExpected);
+            expect(femaleScore, femaleExpected);
+          }
+        }
+      },
     );
   });
 }
