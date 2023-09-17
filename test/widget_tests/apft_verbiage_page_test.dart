@@ -1,3 +1,4 @@
+import 'package:acft_calculator/classes/verbiage.dart';
 import 'package:acft_calculator/pages/verbiage_pages/apft_verbiage_page.dart';
 import 'package:flutter_test/flutter_test.dart';
 

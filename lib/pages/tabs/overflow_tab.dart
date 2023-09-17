@@ -1,6 +1,5 @@
 import 'dart:io';
 
-import 'package:acft_calculator/providers/tracking_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -9,23 +8,25 @@ import 'package:rate_my_app/rate_my_app.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
 import '../../methods/theme_methods.dart';
-import '../../providers/premium_state_provider.dart';
-import '../../providers/shared_preferences_provider.dart';
-import '../../widgets/my_toast.dart';
 import '../../pages/apft_page.dart';
+import '../../pages/verbiage_pages/prt_drills_page.dart';
+import '../../providers/premium_state_provider.dart';
+import '../../providers/purchases_provider.dart';
+import '../../providers/shared_preferences_provider.dart';
+import '../../providers/tracking_provider.dart';
 import '../../widgets/header_text.dart';
+import '../../widgets/my_toast.dart';
 import '../../widgets/platform_widgets/platform_list_tile.dart';
-import '../verbiage_pages/apft_verbiage_page.dart';
-import '../verbiage_pages/acft_verbiage_page.dart';
-import '../verbiage_pages/bodyfat_verbiage_page.dart';
+import '../mdl_setup_page.dart';
 import '../privacy_policy_page.dart';
 import '../saved_pages/saved_acfts_page.dart';
 import '../saved_pages/saved_apfts_page.dart';
 import '../saved_pages/saved_bodyfats_page.dart';
 import '../saved_pages/saved_ppw_page.dart';
 import '../settings_page.dart';
-import '../mdl_setup_page.dart';
-import '../../providers/purchases_provider.dart';
+import '../verbiage_pages/acft_verbiage_page.dart';
+import '../verbiage_pages/apft_verbiage_page.dart';
+import '../verbiage_pages/bodyfat_verbiage_page.dart';
 
 class OverflowTab extends ConsumerWidget {
   const OverflowTab({
@@ -169,6 +170,17 @@ class OverflowTab extends ConsumerWidget {
                   onTap: () {
                     Navigator.of(context, rootNavigator: true)
                         .pushNamed(BodyfatVerbiagePage.routeName);
+                  },
+                ),
+                PlatformListTile(
+                  title: const Text('PRT Drills'),
+                  leading: Icon(
+                    Icons.accessibility,
+                    color: getTextColor(context),
+                  ),
+                  onTap: () {
+                    Navigator.of(context, rootNavigator: true)
+                        .pushNamed(PrtDrillsPage.routeName);
                   },
                 ),
                 const Divider(),

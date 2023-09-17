@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 
+import '../../classes/verbiage.dart';
 import '../../methods/theme_methods.dart';
 import '../../providers/premium_state_provider.dart';
 import '../../providers/shared_preferences_provider.dart';
@@ -16,13 +17,6 @@ class ApftVerbiagePage extends ConsumerStatefulWidget {
   static const String routeName = 'apftVerbiageRoute';
   @override
   _ApftVerbiagePageState createState() => _ApftVerbiagePageState();
-}
-
-class Verbiage {
-  Verbiage(this.isExpanded, this.header, this.body);
-  bool isExpanded;
-  final String header;
-  final Widget body;
 }
 
 List<Verbiage> verbiages = <Verbiage>[

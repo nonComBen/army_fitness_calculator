@@ -1,14 +1,15 @@
 import 'dart:io';
 
-import 'package:acft_calculator/providers/tracking_provider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 
+import '../../classes/verbiage.dart';
 import '../../methods/theme_methods.dart';
 import '../../providers/premium_state_provider.dart';
 import '../../providers/shared_preferences_provider.dart';
+import '../../providers/tracking_provider.dart';
 import '../../widgets/platform_widgets/platform_expansion_list_tile.dart';
 import '../../widgets/platform_widgets/platform_scaffold.dart';
 
@@ -16,13 +17,6 @@ class AcftVerbiagePage extends ConsumerStatefulWidget {
   static const String routeName = 'acftVerbiageRoute';
   @override
   _AcftVerbiagePageState createState() => _AcftVerbiagePageState();
-}
-
-class Verbiage {
-  Verbiage(this.isExpanded, this.header, this.body);
-  bool isExpanded;
-  final String header;
-  final Widget body;
 }
 
 List<Verbiage> verbiages = <Verbiage>[

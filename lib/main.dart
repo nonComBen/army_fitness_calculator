@@ -5,10 +5,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../providers/shared_preferences_provider.dart';
-import '../widgets/platform_widgets/platform_app.dart';
-import '../widgets/platform_widgets/platform_home_page.dart';
-import '../providers/theme_provider.dart';
 import '../../pages/apft_page.dart';
 import '../../pages/mdl_setup_page.dart';
 import '../../pages/privacy_policy_page.dart';
@@ -21,6 +17,11 @@ import '../../pages/verbiage_pages/acft_verbiage_page.dart';
 import '../../pages/verbiage_pages/apft_verbiage_page.dart';
 import '../../pages/verbiage_pages/bodyfat_verbiage_page.dart';
 import '../../providers/purchases_provider.dart';
+import '../pages/verbiage_pages/prt_drills_page.dart';
+import '../providers/shared_preferences_provider.dart';
+import '../providers/theme_provider.dart';
+import '../widgets/platform_widgets/platform_app.dart';
+import '../widgets/platform_widgets/platform_home_page.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -61,6 +62,7 @@ class MyApp extends ConsumerWidget {
           AcftVerbiagePage.routeName: (ctx) => AcftVerbiagePage(),
           ApftVerbiagePage.routeName: (ctx) => ApftVerbiagePage(),
           BodyfatVerbiagePage.routeName: (ctx) => BodyfatVerbiagePage(),
+          PrtDrillsPage.routeName: (ctx) => PrtDrillsPage(),
         },
         home: Builder(builder: (BuildContext context) {
           return Padding(
