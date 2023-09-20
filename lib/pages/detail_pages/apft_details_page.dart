@@ -1,21 +1,22 @@
 import 'dart:io';
 
-import 'package:acft_calculator/methods/platform_show_modal_bottom_sheet.dart';
-import 'package:acft_calculator/methods/theme_methods.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:pull_down_button/pull_down_button.dart';
 
 import '../../methods/delete_record.dart';
-import '../../widgets/download_apft_widget.dart';
+import '../../methods/platform_show_modal_bottom_sheet.dart';
+import '../../methods/theme_methods.dart';
+import '../../sqlite/apft.dart';
+import '../../sqlite/db_helper.dart';
+import '../../widgets/my_toast.dart';
+import '../../widgets/platform_widgets/platform_button.dart';
 import '../../widgets/platform_widgets/platform_icon_button.dart';
+import '../../widgets/platform_widgets/platform_scaffold.dart';
 import '../../widgets/platform_widgets/platform_text_field.dart';
 import '../saved_pages/saved_apfts_page.dart';
-import '../../sqlite/db_helper.dart';
-import '../../sqlite/apft.dart';
-import '../../widgets/platform_widgets/platform_button.dart';
-import '../../widgets/platform_widgets/platform_scaffold.dart';
 
 class ApftDetailsPage extends StatefulWidget {
   ApftDetailsPage({required this.apft});
@@ -135,10 +136,22 @@ class _ApftDetailsPageState extends State<ApftDetailsPage> {
   }
 
   void _downloadPdf() {
-    showPlatformModalBottomSheet(
-      context: context,
-      builder: (ctx) => DownloadApftWidget(widget.apft),
+    FToast toast = FToast();
+    toast.context = context;
+    toast.showToast(
+      child: MyToast(
+        contents: [
+          Text(
+            'PDF Download is temporarily unavailable. Sorry for the inconcenience.',
+            style: TextStyle(color: getOnPrimaryColor(context)),
+          )
+        ],
+      ),
     );
+    // showPlatformModalBottomSheet(
+    //   context: context,
+    //   builder: (ctx) => DownloadApftWidget(widget.apft),
+    // );
   }
 
   @override

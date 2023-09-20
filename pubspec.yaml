@@ -1,6 +1,6 @@
 name: acft_calculator
 description: A new Flutter application.
-version: 2.2.2
+version: 2.2.3
 
 environment:
   sdk: '>=2.17.0 <3.0.0'
@@ -24,12 +24,12 @@ dependencies:
   launch_review: ^3.0.1
   open_file_plus: ^3.4.1
   path_provider: ^2.1.1
-  permission_handler: ^10.4.3
+  permission_handler: ^11.0.0
   pull_down_button: ^0.9.3
   rate_my_app: ^2.0.0
   shared_preferences: ^2.2.1
   sqflite: ^2.3.0
-  syncfusion_flutter_pdf: ^22.2.10
+  syncfusion_flutter_pdf: ^23.1.36
   url_launcher: ^6.1.14
 
 dev_dependencies:
