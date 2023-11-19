@@ -39,9 +39,9 @@ android {
 
     defaultConfig {
         applicationId "com.armynoncomtools.acft_calculator"
-        minSdkVersion 19
+        minSdkVersion 21
         targetSdkVersion 33
-        versionCode 56
+        versionCode 57
         versionName flutterVersionName
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         multiDexEnabled true

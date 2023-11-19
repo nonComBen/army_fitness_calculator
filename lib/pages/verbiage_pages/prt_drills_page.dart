@@ -33,7 +33,7 @@ List<Verbiage> verbiages = <Verbiage>[
         children: [
           PlatformTextButton(
             onPressed: () => launchUrlString(
-                'https://www.youtube.com/watch?v=s6HlWmhyHy4&t=24s'),
+                'https://www.youtube.com/playlist?list=PLr_5M5FiwX8j-dBwX1MiXoj_rwqk-Jm_3'),
             child: Text(
               'Demonstration Video',
               style: TextStyle(
@@ -63,8 +63,8 @@ List<Verbiage> verbiages = <Verbiage>[
       child: Column(
         children: [
           PlatformTextButton(
-            onPressed: () =>
-                launchUrlString('https://www.youtube.com/watch?v=znURygmJ3eQ'),
+            onPressed: () => launchUrlString(
+                'https://www.youtube.com/playlist?list=PLr_5M5FiwX8ghIqLP8h6u7uhaRECVAa-p'),
             child: Text(
               'Demonstration Video',
               style: TextStyle(
@@ -89,8 +89,8 @@ List<Verbiage> verbiages = <Verbiage>[
       child: Column(
         children: [
           PlatformTextButton(
-            onPressed: () =>
-                launchUrlString('https://www.youtube.com/watch?v=mHMcNbZ5eRU'),
+            onPressed: () => launchUrlString(
+                'https://www.youtube.com/playlist?list=PLr_5M5FiwX8gKWOyESbH0gOByN4YrmYCB'),
             child: Text(
               'Demonstration Video',
               style: TextStyle(
@@ -115,8 +115,8 @@ List<Verbiage> verbiages = <Verbiage>[
       child: Column(
         children: [
           PlatformTextButton(
-            onPressed: () =>
-                launchUrlString('https://www.youtube.com/watch?v=BtJmWNmqKdQ'),
+            onPressed: () => launchUrlString(
+                'https://www.youtube.com/playlist?list=PLr_5M5FiwX8iAf1EyXLwKVcJqzaFk9d8j'),
             child: Text(
               'Demonstration Video',
               style: TextStyle(
@@ -146,8 +146,8 @@ List<Verbiage> verbiages = <Verbiage>[
       child: Column(
         children: [
           PlatformTextButton(
-            onPressed: () =>
-                launchUrlString('https://www.youtube.com/watch?v=ipaam59FoL8'),
+            onPressed: () => launchUrlString(
+                'https://www.youtube.com/playlist?list=PLr_5M5FiwX8ipRWIg6jaeMLi1W_u53Jrn'),
             child: Text(
               'Demonstration Video',
               style: TextStyle(
@@ -172,23 +172,15 @@ List<Verbiage> verbiages = <Verbiage>[
       child: Column(
         children: [
           PlatformTextButton(
-            onPressed: () =>
-                launchUrlString('https://www.youtube.com/watch?v=_O_EKmVx7hk'),
+            onPressed: () => launchUrlString(
+                'https://www.youtube.com/playlist?list=PLr_5M5FiwX8iqhV1vT1KYyfvydI5tpIjs'),
             child: Text(
               'Demonstration Video',
               style: TextStyle(
                   color: Colors.blue, decoration: TextDecoration.underline),
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.only(bottom: 4.0),
-            child: Text(
-              'Performed in a full fighting load.',
-              textAlign: TextAlign.center,
-              style: TextStyle(fontWeight: FontWeight.bold),
-            ),
-          ),
-          const BulletItem(text: 'Straight-Arm Pull (Moderate)'),
+          const BulletItem(text: 'Flexed Arm Hang (5+ Seconds)'),
           const BulletItem(text: 'Heel Hook (Slow)'),
           const BulletItem(text: 'Pull-Up (Moderate)'),
           const BulletItem(text: 'Leg Tuck (Slow)'),
@@ -206,8 +198,8 @@ List<Verbiage> verbiages = <Verbiage>[
       child: Column(
         children: [
           PlatformTextButton(
-            onPressed: () =>
-                launchUrlString('https://www.youtube.com/watch?v=B3U8hnXRwvU'),
+            onPressed: () => launchUrlString(
+                'https://www.youtube.com/playlist?list=PLr_5M5FiwX8j-PFwTbjCR6zQVJbnY6K6T'),
             child: Text(
               'Demonstration Video',
               style: TextStyle(
@@ -230,8 +222,8 @@ List<Verbiage> verbiages = <Verbiage>[
       child: Column(
         children: [
           PlatformTextButton(
-            onPressed: () =>
-                launchUrlString('https://www.youtube.com/watch?v=3kBc-e1_7jk'),
+            onPressed: () => launchUrlString(
+                'https://www.youtube.com/playlist?list=PLr_5M5FiwX8g6c2CALt0XrtES9pvA9HlO'),
             child: Text(
               'Demonstration Video',
               style: TextStyle(
@@ -254,8 +246,8 @@ List<Verbiage> verbiages = <Verbiage>[
       child: Column(
         children: [
           PlatformTextButton(
-            onPressed: () =>
-                launchUrlString('https://www.youtube.com/watch?v=PNNFF3YdIMs'),
+            onPressed: () => launchUrlString(
+                'https://www.youtube.com/playlist?list=PLr_5M5FiwX8hTuj98GybWZRy-8Oj4Peje'),
             child: Text(
               'Demonstration Video',
               style: TextStyle(
@@ -280,8 +272,8 @@ List<Verbiage> verbiages = <Verbiage>[
       child: Column(
         children: [
           PlatformTextButton(
-            onPressed: () =>
-                launchUrlString('https://www.youtube.com/watch?v=23H5aUgsTGg'),
+            onPressed: () => launchUrlString(
+                'https://www.youtube.com/playlist?list=PLr_5M5FiwX8h7UwBmsp49mo26D9U10Qca'),
             child: Text(
               'Demonstration Video',
               style: TextStyle(
@@ -299,6 +291,193 @@ List<Verbiage> verbiages = <Verbiage>[
   ),
   Verbiage(
     false,
+    'Strength Traingin Circuit (STC)',
+    Container(
+      padding: const EdgeInsets.all(16.0),
+      alignment: Alignment.centerLeft,
+      child: Column(
+        children: [
+          PlatformTextButton(
+            onPressed: () => launchUrlString(
+                'https://www.youtube.com/playlist?list=PLr_5M5FiwX8gMBDEwi2DEyPXlwQnd4rYh'),
+            child: Text(
+              'Demonstration Video',
+              style: TextStyle(
+                  color: Colors.blue, decoration: TextDecoration.underline),
+            ),
+          ),
+          const BulletItem(text: 'Sumo Squat'),
+          const BulletItem(text: 'Straight Leg Deadlift'),
+          const BulletItem(text: 'Forward Lunge'),
+          const BulletItem(text: 'Step Up'),
+          const BulletItem(text: 'Pull Up (Alt. Straight Arm Pull)'),
+          const BulletItem(text: 'Supine Chest Press'),
+          const BulletItem(text: 'Bent Over Row'),
+          const BulletItem(text: 'Overhead Push Press'),
+          const BulletItem(text: 'Supine Body Twist'),
+          const BulletItem(text: 'Leg Tuck'),
+        ],
+      ),
+    ),
+  ),
+  Verbiage(
+    false,
+    'Landmine Drill 1 (LD1)',
+    Container(
+      padding: const EdgeInsets.all(16.0),
+      alignment: Alignment.centerLeft,
+      child: Column(
+        children: [
+          PlatformTextButton(
+            onPressed: () => launchUrlString(
+                'https://www.youtube.com/playlist?list=PLr_5M5FiwX8iU3H_w4f3aYFvd8nYmVVz7'),
+            child: Text(
+              'Demonstration Video',
+              style: TextStyle(
+                  color: Colors.blue, decoration: TextDecoration.underline),
+            ),
+          ),
+          const BulletItem(text: 'Straight Leg Deadlift'),
+          const BulletItem(text: 'Diagonal Press'),
+          const BulletItem(text: 'Rear Lunge'),
+          const BulletItem(text: '180 Degree Landmine'),
+          const BulletItem(text: 'Lateral Lunge'),
+        ],
+      ),
+    ),
+  ),
+  Verbiage(
+    false,
+    'Landmine Drill 2 (LD2)',
+    Container(
+      padding: const EdgeInsets.all(16.0),
+      alignment: Alignment.centerLeft,
+      child: Column(
+        children: [
+          PlatformTextButton(
+            onPressed: () => launchUrlString(
+                'https://www.youtube.com/playlist?list=PLr_5M5FiwX8g4jXBNXrW9n42Pjpz1tL84'),
+            child: Text(
+              'Demonstration Video',
+              style: TextStyle(
+                  color: Colors.blue, decoration: TextDecoration.underline),
+            ),
+          ),
+          const BulletItem(text: 'Diagonal Lift Press'),
+          const BulletItem(text: 'Single Arm Chest Press'),
+          const BulletItem(text: 'Kneeling 180 Landmine'),
+          const BulletItem(text: 'Bent Over Row'),
+          const BulletItem(text: 'Rear Lunge to Press'),
+        ],
+      ),
+    ),
+  ),
+  Verbiage(
+    false,
+    'Suspension Training Drill 1 (STD1)',
+    Container(
+      padding: const EdgeInsets.all(16.0),
+      alignment: Alignment.centerLeft,
+      child: Column(
+        children: [
+          PlatformTextButton(
+            onPressed: () => launchUrlString(
+                'https://www.youtube.com/playlist?list=PLr_5M5FiwX8jxW7MnBbEQDyUC9Vlk2sWD'),
+            child: Text(
+              'Demonstration Video',
+              style: TextStyle(
+                  color: Colors.blue, decoration: TextDecoration.underline),
+            ),
+          ),
+          const BulletItem(text: 'Suspension Push Up'),
+          const BulletItem(text: 'Incline Calf Raise'),
+          const BulletItem(text: 'Decline I T Y Raise'),
+          const BulletItem(text: 'Assisted Squat'),
+          const BulletItem(text: 'Decline Bicep Curl'),
+        ],
+      ),
+    ),
+  ),
+  Verbiage(
+    false,
+    'Suspension Training Drill 2 (STD2)',
+    Container(
+      padding: const EdgeInsets.all(16.0),
+      alignment: Alignment.centerLeft,
+      child: Column(
+        children: [
+          PlatformTextButton(
+            onPressed: () => launchUrlString(
+                'https://www.youtube.com/playlist?list=PLr_5M5FiwX8i5VUJj3ArKrv3Pjkh5aAjY'),
+            child: Text(
+              'Demonstration Video',
+              style: TextStyle(
+                  color: Colors.blue, decoration: TextDecoration.underline),
+            ),
+          ),
+          const BulletItem(text: 'Assisted Lateral Lunge'),
+          const BulletItem(text: 'Leg Tuck and Pike'),
+          const BulletItem(text: 'Decline Pull Up'),
+          const BulletItem(text: 'Suspended Hamstring Curl'),
+          const BulletItem(text: 'Assisted Single Leg Squat'),
+        ],
+      ),
+    ),
+  ),
+  Verbiage(
+    false,
+    'Medicine Ball Drill 1 (MBD1)',
+    Container(
+      padding: const EdgeInsets.all(16.0),
+      alignment: Alignment.centerLeft,
+      child: Column(
+        children: [
+          PlatformTextButton(
+            onPressed: () => launchUrlString(
+                'https://www.youtube.com/playlist?list=PLr_5M5FiwX8iCO6d2olRRLg6LsiQ3FSJY'),
+            child: Text(
+              'Demonstration Video',
+              style: TextStyle(
+                  color: Colors.blue, decoration: TextDecoration.underline),
+            ),
+          ),
+          const BulletItem(text: 'Chest Pass Lateral'),
+          const BulletItem(text: 'Alternate Side Arm Wall Throw'),
+          const BulletItem(text: 'Diagonal Chop'),
+          const BulletItem(text: 'Slam'),
+          const BulletItem(text: 'Underhand Wall Throw'),
+        ],
+      ),
+    ),
+  ),
+  Verbiage(
+    false,
+    'Medicine Ball Drill 2 (MBD2)',
+    Container(
+      padding: const EdgeInsets.all(16.0),
+      alignment: Alignment.centerLeft,
+      child: Column(
+        children: [
+          PlatformTextButton(
+            onPressed: () => launchUrlString(
+                'https://www.youtube.com/playlist?list=PLr_5M5FiwX8inLm_vj7_BWBDJWI7y3_DC'),
+            child: Text(
+              'Demonstration Video',
+              style: TextStyle(
+                  color: Colors.blue, decoration: TextDecoration.underline),
+            ),
+          ),
+          const BulletItem(text: 'Diagonal Chop Throw'),
+          const BulletItem(text: 'Kneeling Side Arm Throw'),
+          const BulletItem(text: 'Sumo Wall Throw'),
+          const BulletItem(text: 'Sit Up Throw'),
+          const BulletItem(text: 'Rainbow Slam'),
+        ],
+      ),
+    ),
+  ),
+  Verbiage(
+    false,
     'Four for the Core (4C)',
     Container(
       padding: const EdgeInsets.all(16.0),
@@ -306,8 +485,8 @@ List<Verbiage> verbiages = <Verbiage>[
       child: Column(
         children: [
           PlatformTextButton(
-            onPressed: () =>
-                launchUrlString('https://www.youtube.com/watch?v=-Td3JecGhIg'),
+            onPressed: () => launchUrlString(
+                'https://www.youtube.com/playlist?list=PLr_5M5FiwX8jAG6xces1w_wbrJNNQj8c2'),
             child: Text(
               'Demonstration Video',
               style: TextStyle(
@@ -331,8 +510,8 @@ List<Verbiage> verbiages = <Verbiage>[
       child: Column(
         children: [
           PlatformTextButton(
-            onPressed: () =>
-                launchUrlString('https://www.youtube.com/watch?v=JhaGLeLJ7Zc'),
+            onPressed: () => launchUrlString(
+                'https://www.youtube.com/playlist?list=PLr_5M5FiwX8jub6LJleYSEa3wJqmlby1f'),
             child: Text(
               'Demonstration Video',
               style: TextStyle(
@@ -355,8 +534,8 @@ List<Verbiage> verbiages = <Verbiage>[
       child: Column(
         children: [
           PlatformTextButton(
-            onPressed: () =>
-                launchUrlString('https://www.youtube.com/watch?v=Fm9-lRXBxGY'),
+            onPressed: () => launchUrlString(
+                'https://www.youtube.com/playlist?list=PLr_5M5FiwX8jOY18VazLbrvCMU9jbulM4'),
             child: Text(
               'Demonstration Video',
               style: TextStyle(
@@ -368,6 +547,9 @@ List<Verbiage> verbiages = <Verbiage>[
           const BulletItem(text: 'Extend and Flex (20-30 Seconds)'),
           const BulletItem(text: 'Thigh Stretch (20-30 Seconds)'),
           const BulletItem(text: 'Single-Leg Over (20-30 Seconds)'),
+          const BulletItem(text: 'Groin Stretch (20-30 Seconds)'),
+          const BulletItem(text: 'Calf Stretch (20-30 Seconds)'),
+          const BulletItem(text: 'Hamstring Stretch (20-30 Seconds)'),
         ],
       ),
     ),
