@@ -39,7 +39,7 @@ class OverflowTab extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final purchasesService = ref.read(purchasesProvider);
     final prefs = ref.read(sharedPreferencesProvider);
-    bool trackingAllowed = ref.read(trackingProvider).trackingAllowed;
+    bool trackingAllowed = ref.read(trackingProvider);
     final isPremium =
         ref.read(premiumStateProvider) || (prefs.getBool('isPremium') ?? false);
     BannerAd myBanner = BannerAd(

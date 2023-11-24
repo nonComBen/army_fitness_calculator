@@ -81,7 +81,7 @@ class _BodyfatPageState extends ConsumerState<BodyfatPage> {
     super.initState();
 
     purchasesService = ref.read(purchasesProvider);
-    bool trackingAllowed = ref.read(trackingProvider).trackingAllowed;
+    bool trackingAllowed = ref.read(trackingProvider);
     myBanner = BannerAd(
       adUnitId: Platform.isAndroid
           ? 'ca-app-pub-2431077176117105/8950325543'

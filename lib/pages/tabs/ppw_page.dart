@@ -176,7 +176,7 @@ class _PromotionPointPageState extends ConsumerState<PromotionPointPage> {
     prefs = ref.read(sharedPreferencesProvider);
 
     purchasesService = ref.read(purchasesProvider);
-    bool trackingAllowed = ref.read(trackingProvider).trackingAllowed;
+    bool trackingAllowed = ref.read(trackingProvider);
 
     myBanner = BannerAd(
       adUnitId: Platform.isAndroid

@@ -149,7 +149,6 @@ class AcftPageState extends ConsumerState<AcftPage>
     WidgetsBinding.instance.addObserver(this);
     prefs = ref.read(sharedPreferencesProvider);
     purchasesService = ref.read(purchasesProvider);
-    bool trackingAllowed = ref.read(trackingProvider).trackingAllowed;
 
     myBanner = BannerAd(
       adUnitId: Platform.isAndroid
@@ -157,7 +156,7 @@ class AcftPageState extends ConsumerState<AcftPage>
           : 'ca-app-pub-2431077176117105/4488336359',
       size: AdSize.banner,
       listener: BannerAdListener(),
-      request: AdRequest(nonPersonalizedAds: !trackingAllowed),
+      request: AdRequest(nonPersonalizedAds: true),
     );
 
     myBanner.load();
@@ -557,6 +556,20 @@ class AcftPageState extends ConsumerState<AcftPage>
   Widget build(BuildContext context) {
     final isPremium = ref.watch(premiumStateProvider) ||
         (prefs.getBool('isPremium') ?? false);
+    final trackingAllowed = ref.watch(trackingProvider);
+    if (!isPremium) {
+      ref.read(trackingProvider.notifier).init();
+      myBanner = BannerAd(
+        adUnitId: Platform.isAndroid
+            ? 'ca-app-pub-2431077176117105/8950325543'
+            : 'ca-app-pub-2431077176117105/4488336359',
+        size: AdSize.banner,
+        listener: BannerAdListener(),
+        request: AdRequest(nonPersonalizedAds: !trackingAllowed),
+      );
+
+      myBanner.load();
+    }
 
     final backgroundColor = getBackgroundColor(context);
     final primaryColor = getPrimaryColor(context);

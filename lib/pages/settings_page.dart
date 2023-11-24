@@ -62,7 +62,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
     super.initState();
 
     prefs = ref.read(sharedPreferencesProvider);
-    bool trackingAllowed = ref.read(trackingProvider).trackingAllowed;
+    bool trackingAllowed = ref.read(trackingProvider);
 
     myBanner = BannerAd(
       adUnitId: Platform.isAndroid

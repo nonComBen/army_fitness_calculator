@@ -24,7 +24,7 @@ class MdlSetupPage extends ConsumerWidget {
       isPremium = true;
     } else {
       final prefs = ref.read(sharedPreferencesProvider);
-      bool trackingAllowed = ref.read(trackingProvider).trackingAllowed;
+      bool trackingAllowed = ref.read(trackingProvider);
       isPremium = ref.read(premiumStateProvider) ||
           (prefs.getBool('isPremium') ?? false);
 

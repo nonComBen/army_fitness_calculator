@@ -3,40 +3,35 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-final trackingProvider = Provider<TrackingService>((ref) {
-  return TrackingService(ref.read(sharedPreferencesProvider));
-});
+final trackingProvider = StateNotifierProvider<TrackingService, bool>(
+    (ref) => TrackingService(ref.read(sharedPreferencesProvider)));
 
-class TrackingService {
-  bool _trackingAllowed = false;
+class TrackingService extends StateNotifier<bool> {
   final SharedPreferences prefs;
-  TrackingService(this.prefs) {
-    bool? trackingAllowed = prefs.getBool('trackingAllowed');
-    if (trackingAllowed != null) {
-      _trackingAllowed = trackingAllowed;
+  TrackingService(this.prefs) : super(false);
+
+  Future<void> init() async {
+    if (this.prefs.getBool('trackingAllowed') == null) {
+      PermissionStatus status = await Permission.appTrackingTransparency.status;
+      if (status.isDenied) {
+        status = await Permission.appTrackingTransparency.request();
+      }
+      state = status.isGranted;
+      prefs.setBool('trackingAllowed', state);
     } else {
-      getTrackingFromPermission();
+      state = this.prefs.getBool('trackingAllowed') ?? false;
     }
   }
 
   bool get trackingAllowed {
-    return _trackingAllowed;
+    return state;
   }
 
   void allowTracking() {
-    _trackingAllowed = true;
+    state = true;
   }
 
   void disallowTracking() {
-    _trackingAllowed = false;
-  }
-
-  Future<void> getTrackingFromPermission() async {
-    PermissionStatus status = await Permission.appTrackingTransparency.status;
-    if (status.isDenied) {
-      status = await Permission.appTrackingTransparency.request();
-    }
-    _trackingAllowed = status.isGranted;
-    prefs.setBool('trackingAllowed', status.isGranted);
+    state = false;
   }
 }

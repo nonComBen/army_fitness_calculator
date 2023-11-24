@@ -569,7 +569,7 @@ class _PrtDrillsPageState extends ConsumerState<PrtDrillsPage> {
   void initState() {
     super.initState();
     if (!Platform.environment.containsKey('FLUTTER_TEST')) {
-      bool trackingAllowed = ref.read(trackingProvider).trackingAllowed;
+      bool trackingAllowed = ref.read(trackingProvider);
       myBanner = BannerAd(
         adUnitId: Platform.isAndroid
             ? 'ca-app-pub-2431077176117105/6684002506'
