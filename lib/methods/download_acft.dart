@@ -147,6 +147,8 @@ class DownloadAcft {
         String fileName = '${dir.path}/${acft.rank}_${acft.name}_705.pdf';
         var file = File(fileName);
         file.writeAsBytesSync(document.saveSync());
+        document.dispose();
+
         FToast toast = FToast();
         toast.context = context;
 
@@ -183,7 +185,5 @@ class DownloadAcft {
     } on Exception catch (e) {
       print('Error: $e');
     }
-
-    document.dispose();
   }
 }

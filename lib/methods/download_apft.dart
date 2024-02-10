@@ -127,6 +127,8 @@ class DownloadApft {
         final fileName = '${dir.path}/${apft.rank}_${apft.name}_705.pdf';
         var file = File(fileName);
         file.writeAsBytesSync(document.saveSync());
+        document.dispose();
+
         FToast toast = FToast();
         toast.context = context;
 
@@ -163,7 +165,5 @@ class DownloadApft {
     } on Exception catch (e) {
       print('Error: $e');
     }
-
-    document.dispose();
   }
 }

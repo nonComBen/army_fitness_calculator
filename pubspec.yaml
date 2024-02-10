@@ -8,17 +8,17 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  cloud_functions: ^4.4.4
+  cloud_functions: ^4.4.8
   cupertino_icons: ^1.0.6
-  device_info_plus: ^9.1.0
-  firebase_analytics: ^10.7.0
-  firebase_core: ^2.22.0
-  firebase_crashlytics: ^3.4.4
-  firebase_performance: ^0.9.3+4
-  fl_chart: ^0.64.0
-  flutter_riverpod: ^2.4.6
+  device_info_plus: ^9.1.1
+  firebase_analytics: ^10.7.4
+  firebase_core: ^2.24.2
+  firebase_crashlytics: ^3.4.8
+  firebase_performance: ^0.9.3+8
+  fl_chart: ^0.65.0
+  flutter_riverpod: ^2.4.9
   fluttertoast: ^8.2.4
-  google_mobile_ads: ^3.1.0
+  google_mobile_ads: ^4.0.0
   in_app_purchase: ^3.1.11
   intl: ^0.18.0
   launch_review: ^3.0.1
@@ -29,8 +29,8 @@ dependencies:
   rate_my_app: ^2.0.0
   shared_preferences: ^2.2.2
   sqflite: ^2.3.0
-  syncfusion_flutter_pdf: ^23.1.44
-  url_launcher: ^6.2.1
+  syncfusion_flutter_pdf: ^23.2.7
+  url_launcher: ^6.2.2
 
 dev_dependencies:
   flutter_test:

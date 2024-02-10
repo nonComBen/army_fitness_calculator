@@ -167,12 +167,10 @@ class Download5500 {
     getApplicationDocumentsDirectory().then((dir) {
       final fileName = '${dir.path}/${bf.rank}_${bf.name}_5500.pdf';
       var file = File(fileName);
-      try {
-        final List<int> bytes = document.saveSync();
-        file.writeAsBytesSync(bytes);
-      } on Exception catch (e) {
-        debugPrint('Error: $e');
-      }
+      final List<int> bytes = document.saveSync();
+      file.writeAsBytesSync(bytes);
+      document.dispose();
+
       FToast toast = FToast();
       toast.context = context;
       toast.showToast(
@@ -207,7 +205,5 @@ class Download5500 {
         ),
       );
     });
-
-    document.dispose();
   }
 }

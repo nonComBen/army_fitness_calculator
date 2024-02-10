@@ -190,6 +190,8 @@ class Download5501 {
         final fileName = '${dir.path}/${bf.rank}_${bf.name}_5501.pdf';
         var file = File(fileName);
         file.writeAsBytesSync(document.saveSync());
+        document.dispose();
+
         FToast toast = FToast();
         toast.context = context;
 
@@ -228,7 +230,5 @@ class Download5501 {
     } on Exception catch (e) {
       print('Error: $e');
     }
-
-    document.dispose();
   }
 }

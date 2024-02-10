@@ -33,10 +33,7 @@ class PurchasesService {
       purchaseUpdates.listen((purchases) async {
         print('Purchases: $purchases');
         bool isPremium = await listenToPurchaseUpdated(purchases);
-        if (isPremium) {
-          prefs.setBool('isPremium', true);
-        }
-
+        prefs.setBool('isPremium', isPremium);
         premiumState.setState(isPremium);
       });
       InAppPurchase.instance.restorePurchases();
@@ -56,16 +53,19 @@ class PurchasesService {
         color: getBackgroundColor(context),
         child: Column(
           mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
+          crossAxisAlignment: CrossAxisAlignment.end,
           children: <Widget>[
             Padding(
               padding: const EdgeInsets.all(8.0),
-              child: const Text(
-                'Premium Upgrade',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 18,
+              child: SizedBox(
+                width: double.infinity,
+                child: const Text(
+                  'Premium Upgrade',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 18,
+                  ),
                 ),
               ),
             ),
@@ -74,62 +74,80 @@ class PurchasesService {
             ),
             const BulletItem(
               text:
-                  'Allows you to save scores, print DA Forms, and chart progress for you and your Soldiers',
+                  'Allows you to save scores and chart progress for you and your Soldiers',
             ),
             const BulletItem(
               text: 'Removes ads',
             ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: PlatformButton(
-                    child: const Text(
-                      'Cancel',
+            ConstrainedBox(
+              constraints: BoxConstraints(maxWidth: 500),
+              child: FittedBox(
+                fit: BoxFit.contain,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: PlatformButton(
+                        child: const Text(
+                          'Cancel',
+                        ),
+                        onPressed: () {
+                          Navigator.pop(ctx);
+                        },
+                      ),
                     ),
-                    onPressed: () {
-                      Navigator.pop(ctx);
-                    },
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: PlatformButton(
-                    child: const Text(
-                      'Upgrade',
-                    ),
-                    onPressed: () {
-                      if (_products.isEmpty) {
-                        Navigator.pop(ctx);
-                        FToast toast = FToast();
-                        toast.context = context;
-                        toast.showToast(
-                          child: MyToast(
-                            contents: [
-                              Text(
-                                'Upgrading is not available at this time',
-                                style: TextStyle(
-                                  color: getOnPrimaryColor(context),
-                                ),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: PlatformButton(
+                        child: const Text(
+                          'Upgrade',
+                        ),
+                        onPressed: () {
+                          if (_products.isEmpty) {
+                            Navigator.pop(ctx);
+                            FToast toast = FToast();
+                            toast.context = context;
+                            toast.showToast(
+                              child: MyToast(
+                                contents: [
+                                  Text(
+                                    'Upgrading is not available at this time',
+                                    style: TextStyle(
+                                      color: getOnPrimaryColor(context),
+                                    ),
+                                  ),
+                                ],
                               ),
-                            ],
-                          ),
-                        );
-                      } else {
-                        Navigator.pop(ctx);
-                        ProductDetails product = _products.firstWhere(
-                            (product) => product.id == 'premium_upgrade');
+                            );
+                          } else {
+                            Navigator.pop(ctx);
+                            ProductDetails product = _products.firstWhere(
+                                (product) => product.id == 'premium_upgrade');
 
-                        final PurchaseParam purchaseParam =
-                            PurchaseParam(productDetails: product);
-                        InAppPurchase.instance
-                            .buyNonConsumable(purchaseParam: purchaseParam);
-                      }
-                    },
-                  ),
-                )
-              ],
+                            final PurchaseParam purchaseParam =
+                                PurchaseParam(productDetails: product);
+                            InAppPurchase.instance
+                                .buyNonConsumable(purchaseParam: purchaseParam);
+                          }
+                        },
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: PlatformButton(
+                        child: const Text(
+                          'Restore Purchases',
+                        ),
+                        onPressed: () {
+                          InAppPurchase.instance.restorePurchases();
+                          Navigator.pop(ctx);
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+              ),
             ),
           ],
         ),

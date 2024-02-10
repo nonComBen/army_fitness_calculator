@@ -11,6 +11,8 @@ import '../../methods/platform_show_modal_bottom_sheet.dart';
 import '../../methods/theme_methods.dart';
 import '../../sqlite/bodyfat.dart';
 import '../../sqlite/db_helper.dart';
+import '../../widgets/download_5500_widget.dart';
+import '../../widgets/download_5501_widget.dart';
 import '../../widgets/header_text.dart';
 import '../../widgets/my_toast.dart';
 import '../../widgets/platform_widgets/platform_button.dart';
@@ -265,45 +267,33 @@ class _BodyfatDetailsPageState extends State<BodyfatDetailsPage> {
   }
 
   void _downloadPdf() {
-    FToast toast = FToast();
-    toast.context = context;
-    toast.showToast(
-      child: MyToast(
-        contents: [
-          Text(
-            'PDF Download is temporarily unavailable. Sorry for the inconcenience.',
-            style: TextStyle(color: getOnPrimaryColor(context)),
-          )
-        ],
-      ),
-    );
-    // if (widget.bf.bmiPass == 1) {
-    //   FToast toast = FToast();
-    //   toast.context = context;
-    //   toast.showToast(
-    //     child: MyToast(
-    //       contents: [
-    //         Text(
-    //           'Soldier passed Height / Weight',
-    //           style: TextStyle(color: getOnPrimaryColor(context)),
-    //         ),
-    //       ],
-    //     ),
-    //   );
-    //   return;
-    // } else {
-    //   if (widget.bf.gender == 'Male') {
-    //     showPlatformModalBottomSheet(
-    //       context: context,
-    //       builder: (ctx) => Download5500Widget(widget.bf),
-    //     );
-    //   } else {
-    //     showPlatformModalBottomSheet(
-    //       context: context,
-    //       builder: (ctx) => Download5501Widget(widget.bf),
-    //     );
-    //   }
-    // }
+    if (widget.bf.bmiPass == 1) {
+      FToast toast = FToast();
+      toast.context = context;
+      toast.showToast(
+        child: MyToast(
+          contents: [
+            Text(
+              'Soldier passed Height / Weight',
+              style: TextStyle(color: getOnPrimaryColor(context)),
+            ),
+          ],
+        ),
+      );
+      return;
+    } else {
+      if (widget.bf.gender == 'Male') {
+        showPlatformModalBottomSheet(
+          context: context,
+          builder: (ctx) => Download5500Widget(widget.bf),
+        );
+      } else {
+        showPlatformModalBottomSheet(
+          context: context,
+          builder: (ctx) => Download5501Widget(widget.bf),
+        );
+      }
+    }
   }
 
   @override
