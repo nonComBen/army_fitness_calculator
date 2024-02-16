@@ -13,6 +13,7 @@ import '../../methods/platform_show_modal_bottom_sheet.dart';
 import '../../methods/theme_methods.dart';
 import '../../providers/purchases_provider.dart';
 import '../../services/purchases_service.dart';
+import '../../widgets/button_text.dart';
 import '../../widgets/grid_box.dart';
 import '../../widgets/min_max_table.dart';
 import '../../widgets/platform_widgets/platform_button.dart';
@@ -306,7 +307,7 @@ class _BodyfatPageState extends ConsumerState<BodyfatPage> {
               Padding(
                 padding: EdgeInsets.all(8),
                 child: PlatformButton(
-                  child: Text('Save Body Composition'),
+                  child: ButtonText(text: 'Save Body Composition'),
                   onPressed: () {
                     bf.date = _dateController.text;
                     bf.rank = _rankController.text;
@@ -450,6 +451,9 @@ class _BodyfatPageState extends ConsumerState<BodyfatPage> {
                       ),
                     ],
                   ),
+                ),
+                Divider(
+                  color: Colors.yellow,
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -642,9 +646,6 @@ class _BodyfatPageState extends ConsumerState<BodyfatPage> {
                       ),
                     ],
                   ),
-                ),
-                Divider(
-                  color: Colors.yellow,
                 ),
                 Padding(
                   padding: const EdgeInsets.all(8.0),
@@ -1070,7 +1071,7 @@ class _BodyfatPageState extends ConsumerState<BodyfatPage> {
                 Padding(
                   padding: EdgeInsets.all(8.0),
                   child: PlatformButton(
-                    child: const Text('Save Body Comp Score'),
+                    child: ButtonText(text: 'Save Body Comp Score'),
                     onPressed: () {
                       if (isPremium) {
                         Bodyfat bf = new Bodyfat(

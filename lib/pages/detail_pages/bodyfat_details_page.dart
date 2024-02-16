@@ -11,6 +11,7 @@ import '../../methods/platform_show_modal_bottom_sheet.dart';
 import '../../methods/theme_methods.dart';
 import '../../sqlite/bodyfat.dart';
 import '../../sqlite/db_helper.dart';
+import '../../widgets/button_text.dart';
 import '../../widgets/download_5500_widget.dart';
 import '../../widgets/download_5501_widget.dart';
 import '../../widgets/header_text.dart';
@@ -117,7 +118,7 @@ class _BodyfatDetailsPageState extends State<BodyfatDetailsPage> {
             Padding(
               padding: EdgeInsets.all(8),
               child: PlatformButton(
-                child: Text('Update Body Comp'),
+                child: ButtonText(text: 'Update Body Comp'),
                 onPressed: () {
                   setState(() {
                     _mainDateController.text = _dateController.text;

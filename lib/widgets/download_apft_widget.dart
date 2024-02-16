@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import '../methods/download_apft.dart';
 import '../sqlite/apft.dart';
 import '../../widgets/platform_widgets/platform_button.dart';
+import 'button_text.dart';
 import 'platform_widgets/platform_checkbox_list_tile.dart';
 import 'platform_widgets/platform_text_field.dart';
 
@@ -335,7 +336,7 @@ class _DownloadApftWidgetState extends State<DownloadApftWidget> {
         Padding(
           padding: EdgeInsets.all(8),
           child: PlatformButton(
-            child: Text('Download PDF'),
+            child: ButtonText(text: 'Download PDF'),
             onPressed: () {
               Navigator.of(context).pop();
               DownloadApft.downloadPdf(

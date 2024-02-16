@@ -3,6 +3,7 @@ import 'package:acft_calculator/methods/theme_methods.dart';
 import 'package:flutter/material.dart';
 
 import '../../widgets/platform_widgets/platform_button.dart';
+import '../widgets/button_text.dart';
 
 class DeleteRecord {
   static void deleteRecord({BuildContext? context, Function? onConfirm}) {
@@ -41,7 +42,7 @@ class DeleteRecord {
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: PlatformButton(
-                    child: Text('Cancel'),
+                    child: ButtonText(text: 'Cancel'),
                     onPressed: () {
                       Navigator.pop(ctx);
                     },
@@ -50,7 +51,7 @@ class DeleteRecord {
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: PlatformButton(
-                    child: Text('Yes'),
+                    child: ButtonText(text: 'Yes'),
                     onPressed: onConfirm as void Function(),
                   ),
                 ),

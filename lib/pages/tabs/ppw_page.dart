@@ -11,6 +11,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../methods/theme_methods.dart';
 import '../../providers/premium_state_provider.dart';
+import '../../widgets/button_text.dart';
 import '../../widgets/platform_widgets/platform_item_picker.dart';
 import '../../methods/platform_show_modal_bottom_sheet.dart';
 import '../../providers/purchases_provider.dart';
@@ -478,7 +479,7 @@ class _PromotionPointPageState extends ConsumerState<PromotionPointPage> {
               Padding(
                 padding: EdgeInsets.all(8),
                 child: PlatformButton(
-                  child: Text('Save'),
+                  child: ButtonText(text: 'Save'),
                   onPressed: () {
                     ppw.name = _nameController.text;
                     ppw.date = _dateController.text;
@@ -1359,7 +1360,7 @@ class _PromotionPointPageState extends ConsumerState<PromotionPointPage> {
                 Padding(
                   padding: const EdgeInsets.symmetric(vertical: 16.0),
                   child: PlatformButton(
-                    child: const Text('Save Promotion Point Score'),
+                    child: ButtonText(text: 'Save Promotion Point Score'),
                     onPressed: () {
                       if (isPremium) {
                         PPW ppw = PPW(

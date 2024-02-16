@@ -13,6 +13,7 @@ import 'package:intl/intl.dart';
 import '../methods/platform_show_modal_bottom_sheet.dart';
 import '../providers/shared_preferences_provider.dart';
 import '../sqlite/db_helper.dart';
+import '../widgets/button_text.dart';
 import '../widgets/min_max_table.dart';
 import '../widgets/platform_widgets/platform_item_picker.dart';
 import '../widgets/platform_widgets/platform_selection_widget.dart';
@@ -383,7 +384,7 @@ class _ApftPageState extends ConsumerState<ApftPage> {
             Padding(
               padding: EdgeInsets.all(8),
               child: PlatformButton(
-                child: Text('Save APFT'),
+                child: ButtonText(text: 'Save APFT'),
                 onPressed: () {
                   apft.date = _dateController.text;
                   apft.rank = _rankController.text;
@@ -1124,7 +1125,7 @@ class _ApftPageState extends ConsumerState<ApftPage> {
                   Padding(
                     padding: EdgeInsets.all(8.0),
                     child: PlatformButton(
-                      child: const Text('Save APFT Score'),
+                      child: ButtonText(text: 'Save APFT Score'),
                       onPressed: () {
                         String runSeconds = runSecs.toString().length == 1
                             ? '0$runSecs'

@@ -9,6 +9,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../methods/theme_methods.dart';
 import '../methods/verify_purchase.dart';
 import '../providers/premium_state_provider.dart';
+import '../widgets/button_text.dart';
 import '../widgets/platform_widgets/platform_text_button.dart';
 import '../../widgets/platform_widgets/platform_button.dart';
 import '../widgets/my_toast.dart';
@@ -24,11 +25,11 @@ class PurchasesService {
     bool available = await InAppPurchase.instance.isAvailable();
     print('In App Purchases Available: $available');
     if (available) {
-      InAppPurchase.instance
-          .queryProductDetails({'premium_upgrade'}).then((response) {
-        if (response.productDetails.isNotEmpty) {}
+      final response =
+          await InAppPurchase.instance.queryProductDetails({'premium_upgrade'});
+      if (response.productDetails.isNotEmpty) {
         _products = response.productDetails;
-      });
+      }
       final Stream purchaseUpdates = InAppPurchase.instance.purchaseStream;
       purchaseUpdates.listen((purchases) async {
         print('Purchases: $purchases');
@@ -77,6 +78,9 @@ class PurchasesService {
                   'Allows you to save scores and chart progress for you and your Soldiers',
             ),
             const BulletItem(
+              text: 'Allows you download saved scores to the official DA Form',
+            ),
+            const BulletItem(
               text: 'Removes ads',
             ),
             ConstrainedBox(
@@ -89,9 +93,7 @@ class PurchasesService {
                     Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: PlatformButton(
-                        child: const Text(
-                          'Cancel',
-                        ),
+                        child: ButtonText(text: 'Cancel'),
                         onPressed: () {
                           Navigator.pop(ctx);
                         },
@@ -100,8 +102,8 @@ class PurchasesService {
                     Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: PlatformButton(
-                        child: const Text(
-                          'Upgrade',
+                        child: ButtonText(
+                          text: 'Upgrade',
                         ),
                         onPressed: () {
                           if (_products.isEmpty) {
@@ -136,8 +138,8 @@ class PurchasesService {
                     Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: PlatformButton(
-                        child: const Text(
-                          'Restore Purchases',
+                        child: ButtonText(
+                          text: 'Restore Purchases',
                         ),
                         onPressed: () {
                           InAppPurchase.instance.restorePurchases();

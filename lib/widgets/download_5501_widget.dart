@@ -6,6 +6,7 @@ import 'package:flutter/services.dart';
 import '../methods/download_5501.dart';
 import '../sqlite/bodyfat.dart';
 import '../../widgets/platform_widgets/platform_button.dart';
+import 'button_text.dart';
 
 class Download5501Widget extends StatelessWidget {
   final Bodyfat? bf;
@@ -279,7 +280,7 @@ class Download5501Widget extends StatelessWidget {
           Padding(
             padding: EdgeInsets.all(8),
             child: PlatformButton(
-              child: Text('Download PDF'),
+              child: ButtonText(text: 'Download PDF'),
               onPressed: () {
                 Navigator.of(context).pop();
                 Download5501.downloadPdf(

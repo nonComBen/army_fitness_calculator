@@ -10,6 +10,7 @@ import '../../methods/platform_show_modal_bottom_sheet.dart';
 import '../../methods/theme_methods.dart';
 import '../../sqlite/apft.dart';
 import '../../sqlite/db_helper.dart';
+import '../../widgets/button_text.dart';
 import '../../widgets/download_apft_widget.dart';
 import '../../widgets/platform_widgets/platform_button.dart';
 import '../../widgets/platform_widgets/platform_icon_button.dart';
@@ -113,7 +114,7 @@ class _ApftDetailsPageState extends State<ApftDetailsPage> {
             Padding(
               padding: EdgeInsets.all(8.0),
               child: PlatformButton(
-                child: Text('Update APFT'),
+                child: ButtonText(text: 'Update APFT'),
                 onPressed: () {
                   setState(() {
                     _mainDateController.text = _dateController.text;

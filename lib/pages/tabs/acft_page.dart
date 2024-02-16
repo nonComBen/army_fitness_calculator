@@ -13,6 +13,7 @@ import '../../methods/theme_methods.dart';
 import '../../providers/purchases_provider.dart';
 import '../../providers/tracking_provider.dart';
 import '../../services/purchases_service.dart';
+import '../../widgets/button_text.dart';
 import '../../widgets/min_max_table.dart';
 import '../../widgets/platform_widgets/platform_button.dart';
 import '../../sqlite/db_helper.dart';
@@ -533,7 +534,7 @@ class AcftPageState extends ConsumerState<AcftPage>
               Padding(
                 padding: EdgeInsets.all(8),
                 child: PlatformButton(
-                  child: Text('Save'),
+                  child: ButtonText(text: 'Save'),
                   onPressed: (() {
                     acft.date = _dateController.text;
                     acft.rank = _rankController.text;
@@ -2011,7 +2012,9 @@ class AcftPageState extends ConsumerState<AcftPage>
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: PlatformButton(
-                    child: const Text('Save ACFT Score'),
+                    child: ButtonText(
+                      text: 'Save ACFT Score',
+                    ),
                     onPressed: () {
                       String sdcSeconds = sdcSecs.toString().length == 1
                           ? '0$sdcSecs'

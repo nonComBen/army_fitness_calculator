@@ -5,7 +5,7 @@ import 'package:in_app_purchase/in_app_purchase.dart';
 
 Future<bool> listenToPurchaseUpdated(
     List<PurchaseDetails> purchaseDetailsList) async {
-  bool isSubscribed = true;
+  bool isSubscribed = false;
   print('Listen to Purchase got called.');
   for (PurchaseDetails purchaseDetails in purchaseDetailsList) {
     print(purchaseDetails.status);
@@ -17,6 +17,7 @@ Future<bool> listenToPurchaseUpdated(
       } else if (purchaseDetails.status == PurchaseStatus.purchased ||
           purchaseDetails.status == PurchaseStatus.restored) {
         bool valid = await verifyPurchase(purchaseDetails);
+        print(purchaseDetails.purchaseID);
         if (valid) {
           print('purchase is valid');
           isSubscribed = true;

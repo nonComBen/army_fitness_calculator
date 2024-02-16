@@ -10,6 +10,7 @@ import '../../methods/platform_show_modal_bottom_sheet.dart';
 import '../../methods/theme_methods.dart';
 import '../../sqlite/acft.dart';
 import '../../sqlite/db_helper.dart';
+import '../../widgets/button_text.dart';
 import '../../widgets/download_acft_widget.dart';
 import '../../widgets/platform_widgets/platform_button.dart';
 import '../../widgets/platform_widgets/platform_icon_button.dart';
@@ -112,7 +113,7 @@ class _AcftDetailsPageState extends State<AcftDetailsPage> {
             Padding(
               padding: EdgeInsets.all(8),
               child: PlatformButton(
-                child: Text('Update'),
+                child: ButtonText(text: 'Update'),
                 onPressed: () {
                   acft.date = _dateController.text;
                   acft.rank = _rankController.text;
