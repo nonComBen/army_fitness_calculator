@@ -24,7 +24,7 @@ abstract class PlatformItemPicker extends Widget {
                 value: event,
                 child: Text(
                   event,
-                  style: TextStyle(fontSize: 22),
+                  style: TextStyle(fontSize: 18),
                   overflow: TextOverflow.ellipsis,
                 ),
               ),
