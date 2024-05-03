@@ -48,14 +48,14 @@ class _SavedPpwsPageState extends State<SavedPpwsPage> {
             ),
             onPressed: () {
               Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => PpwChartPage(
-                            ppws: ppwList
-                                .where((ppw) => ppw.name == name)
-                                .toList(),
-                            soldier: name,
-                          )));
+                context,
+                MaterialPageRoute(
+                  builder: (context) => PpwChartPage(
+                    ppws: ppwList.where((ppw) => ppw.name == name).toList(),
+                    soldier: name,
+                  ),
+                ),
+              );
             },
           )
         ],

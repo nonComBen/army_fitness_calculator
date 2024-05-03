@@ -1,57 +1,27 @@
-int newWeaponsPts(int cardIndex, String? rank, int hits, bool newVersion) {
+int newWeaponsPts(int cardIndex, String? rank, int hits) {
   int rankIndex = rank == 'SGT' ? 1 : 2;
-  if (newVersion) {
-    switch (cardIndex) {
-      case 0:
-        return m4Table.firstWhere((element) => hits >= element[0])[rankIndex];
-      case 1:
-        return form85Pts(rank, hits);
-      case 2:
-        return form88Table
-            .firstWhere((element) => hits >= element[0])[rankIndex];
-      case 3:
-        return form7814Table
-            .firstWhere((element) => hits >= element[0])[rankIndex];
-      case 4:
-        return form5704Table
-            .firstWhere((element) => hits >= element[0])[rankIndex];
-      case 5:
-        return form7304Pts(rank, hits);
-      case 6:
-        return formCidPts(rank, hits);
-      case 7:
-        return form7820Table
-            .firstWhere((element) => hits >= element[0])[rankIndex];
-      default:
-        return 0;
-    }
-  } else {
-    switch (cardIndex) {
-      case 0:
-        return oldM4Table
-            .firstWhere((element) => hits >= element[0])[rankIndex];
-      case 1:
-        return oldForm85Table
-            .firstWhere((element) => hits >= element[0])[rankIndex];
-      case 2:
-        return oldForm88Table
-            .firstWhere((element) => hits >= element[0])[rankIndex];
-      case 3:
-        return form7814Table
-            .firstWhere((element) => hits >= element[0])[rankIndex];
-      case 4:
-        return oldForm5704Table
-            .firstWhere((element) => hits >= element[0])[rankIndex];
-      case 5:
-        return form7304Pts(rank, hits);
-      case 6:
-        return formCidPts(rank, hits);
-      case 7:
-        return oldForm7820Table
-            .firstWhere((element) => hits >= element[0])[rankIndex];
-      default:
-        return 0;
-    }
+  switch (cardIndex) {
+    case 0:
+      return m4Table.firstWhere((element) => hits >= element[0])[rankIndex];
+    case 1:
+      return form85Pts(rank, hits);
+    case 2:
+      return form88Table.firstWhere((element) => hits >= element[0])[rankIndex];
+    case 3:
+      return form7814Table
+          .firstWhere((element) => hits >= element[0])[rankIndex];
+    case 4:
+      return form5704Table
+          .firstWhere((element) => hits >= element[0])[rankIndex];
+    case 5:
+      return form7304Pts(rank, hits);
+    case 6:
+      return formCidPts(rank, hits);
+    case 7:
+      return form7820Table
+          .firstWhere((element) => hits >= element[0])[rankIndex];
+    default:
+      return 0;
   }
 }
 

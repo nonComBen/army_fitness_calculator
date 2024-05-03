@@ -27,35 +27,11 @@ void main() {
         for (var i = 1; i < badgeTypes.length; i++) {
           int points = newBadgePts([
             {'name': badgeTypes[i], 'number': 1}
-          ], true);
+          ]);
           print('Badge: ${badgeTypes[i]}, points: $points');
           int expected = 0;
           if (i == 1) {
             expected = 60;
-          } else if (i <= 2) {
-            expected = 30;
-          } else if (i <= 9) {
-            expected = 20;
-          } else if (i <= 21) {
-            expected = 15;
-          } else {
-            expected = 10;
-          }
-          expect(points, expected);
-        }
-      },
-    );
-    test(
-      "test badge old calculation",
-      () async {
-        for (var i = 1; i < badgeTypes.length; i++) {
-          int points = newBadgePts([
-            {'name': badgeTypes[i], 'number': 1}
-          ], false);
-          print('Badge: ${badgeTypes[i]}, points: $points');
-          int expected = 0;
-          if (i == 1) {
-            expected = 30;
           } else if (i <= 2) {
             expected = 30;
           } else if (i <= 9) {

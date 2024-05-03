@@ -83,7 +83,6 @@ class _PromotionPointPageState extends ConsumerState<PromotionPointPage> {
       isSapper = false,
       degreeCompleted = false,
       hasFornLang = false,
-      isNewVersion = true,
       isPtValid = true,
       isWeaponValid = true,
       isCoaValid = true,
@@ -256,43 +255,25 @@ class _PromotionPointPageState extends ConsumerState<PromotionPointPage> {
 
   void _resetMaximums() {
     if (rank == 'SGT') {
-      if (isNewVersion) {
-        milTrainMax = 280;
-        awardsMax = 145;
-        milEdMax = 240;
-        civEdMax = 135;
-      } else {
-        milTrainMax = 340;
-        awardsMax = 125;
-        milEdMax = 200;
-        civEdMax = 135;
-      }
+      milTrainMax = 280;
+      awardsMax = 145;
+      milEdMax = 240;
+      civEdMax = 135;
     } else {
-      if (isNewVersion) {
-        milTrainMax = 230;
-        awardsMax = 165;
-        milEdMax = 245;
-        civEdMax = 160;
-      } else {
-        milTrainMax = 255;
-        awardsMax = 165;
-        milEdMax = 220;
-        civEdMax = 160;
-      }
+      milTrainMax = 230;
+      awardsMax = 165;
+      milEdMax = 245;
+      civEdMax = 160;
     }
   }
 
   void _calcPtPts() {
-    if (isNewVersion) {
-      ptPts = acftPts(ptScore);
-    } else {
-      ptPts = apftPts(ptScore, rank.toString());
-    }
+    ptPts = acftPts(ptScore);
   }
 
   void _calcWeaponPts() {
-    weaponPts = newWeaponsPts(weaponCards.indexOf(weapons), rank.toString(),
-        weaponHits, isNewVersion);
+    weaponPts = newWeaponsPts(
+        weaponCards.indexOf(weapons), rank.toString(), weaponHits);
   }
 
   void _calcAwardPts() {
@@ -300,29 +281,17 @@ class _PromotionPointPageState extends ConsumerState<PromotionPointPage> {
   }
 
   void _calcBadgePts() {
-    badgePts = newBadgePts(_badges, isNewVersion);
+    badgePts = newBadgePts(_badges);
   }
 
   void _calcAirbornePts() {
     int index = airborne.indexOf(airborneLvl);
-    if (isNewVersion) {
-      if (index == 0) {
-        airbornePts = 0;
-      } else if (index == 1) {
-        airbornePts = 20;
-      } else {
-        airbornePts = 15;
-      }
+    if (index == 0) {
+      airbornePts = 0;
+    } else if (index == 1) {
+      airbornePts = 20;
     } else {
-      if (index == 0) {
-        airbornePts = 0;
-      } else if (index == 1) {
-        airbornePts = 20;
-      } else if (index == 2) {
-        airbornePts = 25;
-      } else if (index == 3) {
-        airbornePts = 30;
-      }
+      airbornePts = 15;
     }
   }
 
@@ -353,26 +322,16 @@ class _PromotionPointPageState extends ConsumerState<PromotionPointPage> {
 
   void _calcResPts() {
     resPts = (resHrs / 10).floor() + tabPts;
-    if (isNewVersion) {
-      if (rank == 'SGT' && resPts > 110) {
-        resPts = 110;
-      } else if (rank == 'SSG' && resPts > 115) {
-        resPts = 115;
-      }
-    } else {
-      if (rank == 'SGT' && resPts > 80) {
-        resPts = 80;
-      } else if (rank == 'SSG' && resPts > 90) {
-        resPts = 90;
-      }
+    if (rank == 'SGT' && resPts > 110) {
+      resPts = 110;
+    } else if (rank == 'SSG' && resPts > 115) {
+      resPts = 115;
     }
   }
 
   void _calcWbcPts() {
     wbcPts = (wbcHrs / 5).floor();
-    if (!isNewVersion && rank == 'SGT' && wbcPts > 80) {
-      wbcPts = 80;
-    } else if (wbcPts > 90) {
+    if (wbcPts > 90) {
       wbcPts = 90;
     }
   }
@@ -398,11 +357,7 @@ class _PromotionPointPageState extends ConsumerState<PromotionPointPage> {
   }
 
   void _calcCertPts() {
-    if (isNewVersion) {
-      certPts = (mosCerts * 15) + (crossCerts * 10) + (personalCerts * 5);
-    } else {
-      certPts = mosCerts * 10;
-    }
+    certPts = (mosCerts * 15) + (crossCerts * 10) + (personalCerts * 5);
     if (certPts > 50) {
       certPts = 50;
     }
@@ -678,33 +633,6 @@ class _PromotionPointPageState extends ConsumerState<PromotionPointPage> {
                               });
                             }),
                       ),
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: PlatformSelectionWidget(
-                          titles: [
-                            Text('Before 1 Apr 23'),
-                            Text('After 1 Apr 23')
-                          ],
-                          values: ['oldVersion', 'newVersion'],
-                          groupValue: version,
-                          onChanged: (value) {
-                            setState(() {
-                              version = value!;
-                              isNewVersion = version == 'newVersion';
-                              _resetMaximums();
-                              _calcPtPts();
-                              _calcWeaponPts();
-                              _calcAwardPts();
-                              _calcBadgePts();
-                              _calcAirbornePts();
-                              _calcResPts();
-                              _calcWbcPts();
-                              _calcCertPts();
-                              _calcTotalPts();
-                            });
-                          },
-                        ),
-                      ),
                     ]),
                 PlatformExpansionTile(
                   title: Text(
@@ -739,10 +667,9 @@ class _PromotionPointPageState extends ConsumerState<PromotionPointPage> {
                             ],
                             onEditingComplete: () =>
                                 _weaponFocus.requestFocus(),
-                            label: (isNewVersion ? 'ACFT' : 'APFT') + ' Score',
+                            label: 'ACFT Score',
                             decoration: InputDecoration(
-                              label: Text(
-                                  (isNewVersion ? 'ACFT' : 'APFT') + ' Score'),
+                              label: Text('ACFT Score'),
                             ),
                             onChanged: (value) {
                               int raw = int.tryParse(value) ?? 0;
@@ -750,9 +677,8 @@ class _PromotionPointPageState extends ConsumerState<PromotionPointPage> {
                                 if (raw < 0) {
                                   ptScore = 0;
                                   isPtValid = false;
-                                } else if ((isNewVersion && raw > 600) ||
-                                    (!isNewVersion && raw > 300)) {
-                                  ptScore = isNewVersion ? 600 : 300;
+                                } else if (raw > 600) {
+                                  ptScore = 600;
                                   isPtValid = false;
                                 } else {
                                   ptScore = raw;
@@ -1214,25 +1140,18 @@ class _PromotionPointPageState extends ConsumerState<PromotionPointPage> {
                         PlatformTextField(
                           controller: _mosCertsController,
                           focusNode: _mosCertsFocus,
-                          textInputAction: isNewVersion
-                              ? TextInputAction.next
-                              : TextInputAction.done,
+                          textInputAction: TextInputAction.next,
                           keyboardType: TextInputType.numberWithOptions(
                               signed: true, decimal: true),
                           inputFormatters: [
                             FilteringTextInputFormatter.allow(
                                 RegExp(r"[0-9.]")),
                           ],
-                          onEditingComplete: () => isNewVersion
-                              ? _crossCertsFocus.requestFocus()
-                              : FocusScope.of(context).unfocus(),
-                          label: isNewVersion
-                              ? 'MOS Enhancing Credentials'
-                              : 'Tech/Pro Certifications',
+                          onEditingComplete: () =>
+                              _crossCertsFocus.requestFocus(),
+                          label: 'MOS Enhancing Credentials',
                           decoration: InputDecoration(
-                            label: Text(isNewVersion
-                                ? 'MOS Enhancing Credentials'
-                                : 'Tech/Pro Certifications'),
+                            label: Text('MOS Enhancing Credentials'),
                           ),
                           onChanged: (value) {
                             int raw = int.tryParse(value) ?? 0;
@@ -1247,66 +1166,64 @@ class _PromotionPointPageState extends ConsumerState<PromotionPointPage> {
                             });
                           },
                         ),
-                        if (isNewVersion)
-                          PlatformTextField(
-                            controller: _crossCertsController,
-                            focusNode: _crossCertsFocus,
-                            textInputAction: TextInputAction.next,
-                            keyboardType: TextInputType.numberWithOptions(
-                                signed: true, decimal: true),
-                            inputFormatters: [
-                              FilteringTextInputFormatter.allow(
-                                  RegExp(r"[0-9.]")),
-                            ],
-                            onEditingComplete: () =>
-                                _personalCertsFocus.requestFocus(),
-                            label: 'Cross-Functional Credentials',
-                            decoration: InputDecoration(
-                              label: const Text('Cross-Functional Credentials'),
-                            ),
-                            onChanged: (value) {
-                              int raw = int.tryParse(value) ?? 0;
-                              setState(() {
-                                if (raw < 0) {
-                                  crossCerts = 0;
-                                } else {
-                                  crossCerts = raw;
-                                }
-                                _calcCertPts();
-                                _calcTotalPts();
-                              });
-                            },
+                        PlatformTextField(
+                          controller: _crossCertsController,
+                          focusNode: _crossCertsFocus,
+                          textInputAction: TextInputAction.next,
+                          keyboardType: TextInputType.numberWithOptions(
+                              signed: true, decimal: true),
+                          inputFormatters: [
+                            FilteringTextInputFormatter.allow(
+                                RegExp(r"[0-9.]")),
+                          ],
+                          onEditingComplete: () =>
+                              _personalCertsFocus.requestFocus(),
+                          label: 'Cross-Functional Credentials',
+                          decoration: InputDecoration(
+                            label: const Text('Cross-Functional Credentials'),
                           ),
-                        if (isNewVersion)
-                          PlatformTextField(
-                            controller: _personalCertsController,
-                            focusNode: _personalCertsFocus,
-                            textInputAction: TextInputAction.done,
-                            keyboardType: TextInputType.numberWithOptions(
-                                signed: true, decimal: true),
-                            inputFormatters: [
-                              FilteringTextInputFormatter.allow(
-                                  RegExp(r"[0-9.]")),
-                            ],
-                            onEditingComplete: () =>
-                                FocusScope.of(context).unfocus(),
-                            label: 'Personal Credentials',
-                            decoration: InputDecoration(
-                              label: const Text('Personal Credentials'),
-                            ),
-                            onChanged: (value) {
-                              int raw = int.tryParse(value) ?? 0;
-                              setState(() {
-                                if (raw < 0) {
-                                  personalCerts = 0;
-                                } else {
-                                  personalCerts = raw;
-                                }
-                                _calcCertPts();
-                                _calcTotalPts();
-                              });
-                            },
+                          onChanged: (value) {
+                            int raw = int.tryParse(value) ?? 0;
+                            setState(() {
+                              if (raw < 0) {
+                                crossCerts = 0;
+                              } else {
+                                crossCerts = raw;
+                              }
+                              _calcCertPts();
+                              _calcTotalPts();
+                            });
+                          },
+                        ),
+                        PlatformTextField(
+                          controller: _personalCertsController,
+                          focusNode: _personalCertsFocus,
+                          textInputAction: TextInputAction.done,
+                          keyboardType: TextInputType.numberWithOptions(
+                              signed: true, decimal: true),
+                          inputFormatters: [
+                            FilteringTextInputFormatter.allow(
+                                RegExp(r"[0-9.]")),
+                          ],
+                          onEditingComplete: () =>
+                              FocusScope.of(context).unfocus(),
+                          label: 'Personal Credentials',
+                          decoration: InputDecoration(
+                            label: const Text('Personal Credentials'),
                           ),
+                          onChanged: (value) {
+                            int raw = int.tryParse(value) ?? 0;
+                            setState(() {
+                              if (raw < 0) {
+                                personalCerts = 0;
+                              } else {
+                                personalCerts = raw;
+                              }
+                              _calcCertPts();
+                              _calcTotalPts();
+                            });
+                          },
+                        ),
                         Padding(
                           padding: const EdgeInsets.symmetric(vertical: 24.0),
                           child: PlatformCheckboxListTile(
@@ -1368,7 +1285,7 @@ class _PromotionPointPageState extends ConsumerState<PromotionPointPage> {
                           date: null,
                           name: null,
                           rank: rank.toString(),
-                          version: isNewVersion ? 1 : 0,
+                          version: 1,
                           ptTest: ptPts,
                           weapons: weaponPts,
                           awards: awardPts,

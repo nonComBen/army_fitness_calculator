@@ -190,7 +190,7 @@ class OverflowTab extends ConsumerWidget {
                   ),
                 ),
                 PlatformListTile(
-                  title: const Text('AFPT Calculator'),
+                  title: const Text('APFT Calculator'),
                   leading: Icon(
                     Icons.directions_run,
                     color: getTextColor(context),

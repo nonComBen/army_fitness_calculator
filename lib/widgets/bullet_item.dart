@@ -6,19 +6,21 @@ class BulletItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.all(4),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: [
-          Text('- '),
-          Expanded(
-            child: Text(
-              text!,
-              textAlign: TextAlign.left,
+    return Expanded(
+      child: Padding(
+        padding: const EdgeInsets.only(left: 4.0),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            Text('- '),
+            Expanded(
+              child: Text(
+                text!,
+                textAlign: TextAlign.left,
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

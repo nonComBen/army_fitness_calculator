@@ -12,14 +12,11 @@ int calcAwardpts(List<AwardDecoration> awards) {
   return points;
 }
 
-int newBadgePts(List<dynamic> badges, bool? newVersion) {
+int newBadgePts(List<dynamic> badges) {
   int points = 0;
   for (Map<String, dynamic> badge in badges) {
     int pts = badgeTable.firstWhere(
         (element) => badgeTypes.indexOf(badge['name']) <= element[0])[1];
-    if (!newVersion! && badgeTypes.indexOf(badge['name']) == 1) {
-      pts = 30;
-    }
 
     points += pts;
   }
