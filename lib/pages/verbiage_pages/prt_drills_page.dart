@@ -609,6 +609,7 @@ class _PrtDrillsPageState extends ConsumerState<PrtDrillsPage> {
         child: Column(
           children: [
             Flexible(
+              fit: FlexFit.tight,
               child: ListView(
                 children: <Widget>[
                   ...verbiages.map(

@@ -70,6 +70,7 @@ class DBHelper {
   static const String AWARDS = 'awards';
   static const String BADGES = 'badges';
   static const String AIRBORNE = 'airborne';
+  static const String PME_COMPLETION_PTS = 'pmeCompletePts';
   static const String NCOES = 'ncoes';
   static const String WBC = 'wbc';
   static const String RESIDENT = 'resident';
@@ -98,7 +99,7 @@ class DBHelper {
     String path = join(documentsDirectory.path, DB_NAME);
     var db = await openDatabase(
       path,
-      version: 5,
+      version: 6,
       onCreate: _onCreate,
       onUpgrade: _onUpgrade,
     );
@@ -123,7 +124,7 @@ class DBHelper {
 
     await db.execute(
         "CREATE TABLE IF NOT EXISTS $PPW_TABLE ($ID INTEGER PRIMARY KEY, $DATE TEXT, $NAME TEXT, $RANK TEXT, $VERSION INTEGER, $PT_TEST INTEGER, $WEAPONS INTEGER, "
-        "$AWARDS INTEGER, $BADGES INTEGER, $AIRBORNE INTEGER, $NCOES INTEGER, $WBC INTEGER, $RESIDENT INTEGER, $TABS INTEGER, $AR_350 INTEGER, "
+        "$AWARDS INTEGER, $BADGES INTEGER, $AIRBORNE INTEGER, $PME_COMPLETION_PTS INTEGER, $NCOES INTEGER, $WBC INTEGER, $RESIDENT INTEGER, $TABS INTEGER, $AR_350 INTEGER, "
         "$SEM_HOURS INTEGER, $DEGREE INTEGER, $CERTS INTEGER, $LANGUAGE INTEGER, $MIL_TRAIN INTEGER, $AWARDS_TOTAL INTEGER, "
         "$MIL_ED INTEGER, $CIV_ED INTEGER, $TOTAL INTEGER)");
   }
@@ -204,6 +205,14 @@ class DBHelper {
       }
       try {
         await db.execute("ALTER TABLE $BF_TABLE ADD $IS_540_EXEMPT INTEGER");
+      } on Exception catch (e) {
+        print('SQLite Error: $e');
+      }
+    }
+    if (oldVersion < 6) {
+      try {
+        await db
+            .execute("ALTER TABLE $PPW_TABLE ADD $PME_COMPLETION_PTS INTEGER");
       } on Exception catch (e) {
         print('SQLite Error: $e');
       }

@@ -29,9 +29,9 @@ Future<bool> listenToPurchaseUpdated(
       if (purchaseDetails.pendingCompletePurchase) {
         await InAppPurchase.instance.completePurchase(purchaseDetails);
       }
-      if (isSubscribed) {
-        break;
-      }
+    }
+    if (isSubscribed) {
+      break;
     }
   }
   return isSubscribed;

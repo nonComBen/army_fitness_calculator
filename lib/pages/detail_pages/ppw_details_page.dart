@@ -59,6 +59,7 @@ class _PpwDetailsPageState extends State<PpwDetailsPage> {
     if (milEd > widget.ppw.milEdMax) {
       milEd = widget.ppw.milEdMax;
     }
+    milEd += widget.ppw.pmeCompletePts;
     if (civEd > widget.ppw.civEdMax) {
       civEd = widget.ppw.civEdMax;
     }
@@ -399,6 +400,20 @@ class _PpwDetailsPageState extends State<PpwDetailsPage> {
                 primary: false,
                 shrinkWrap: true,
                 children: <Widget>[
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: PlatformTextField(
+                      label: 'NCOES Completion Points',
+                      decoration: const InputDecoration(
+                        label: Text('NCOES Completion Points'),
+                      ),
+                      enabled: false,
+                      controller: TextEditingController(
+                        text: widget.ppw.pmeCompletePts.toString(),
+                      ),
+                      textAlign: TextAlign.right,
+                    ),
+                  ),
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: PlatformTextField(

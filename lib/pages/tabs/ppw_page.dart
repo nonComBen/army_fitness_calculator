@@ -73,7 +73,8 @@ class _PromotionPointPageState extends ConsumerState<PromotionPointPage> {
       milTrainMax = 340,
       awardsMax = 125,
       milEdMax = 200,
-      civEdMax = 135;
+      civEdMax = 135,
+      pmePts = 0;
   String weapons = '(M16/M4) DA 3595-R / 5790-R / 5789-R / 7801',
       airborneLvl = 'None',
       ncoes = 'None';
@@ -89,7 +90,8 @@ class _PromotionPointPageState extends ConsumerState<PromotionPointPage> {
       isWbcValid = true,
       isResValid = true,
       isSemValid = true,
-      isCertValid = true;
+      isCertValid = true,
+      isPmeComplete = false;
   late SharedPreferences prefs;
   RegExp regExp = RegExp(r'^\d{4}(0[1-9]|1[012])(0[1-9]|[12][0-9]|3[01])$');
   DBHelper dbHelper = DBHelper();
@@ -364,6 +366,11 @@ class _PromotionPointPageState extends ConsumerState<PromotionPointPage> {
   }
 
   _calcTotalPts() {
+    if (isPmeComplete) {
+      pmePts = 150;
+    } else {
+      pmePts = 0;
+    }
     milTrainPts = ptPts + weaponPts;
     if (milTrainPts > milTrainMax) {
       milTrainPts = milTrainMax;
@@ -377,6 +384,7 @@ class _PromotionPointPageState extends ConsumerState<PromotionPointPage> {
     if (milEdPts > milEdMax) {
       milEdPts = milEdMax;
     }
+    milEdPts += pmePts;
     civEdPts = semHrPts + certPts + degreePts + langPts;
     if (civEdPts > civEdMax) {
       civEdPts = civEdMax;
@@ -880,6 +888,28 @@ class _PromotionPointPageState extends ConsumerState<PromotionPointPage> {
                   collapsedBackgroundColor: primaryColor,
                   children: [
                     Padding(
+                      padding: EdgeInsets.symmetric(
+                          vertical: Platform.isIOS ? 20.0 : 8),
+                      child: PlatformCheckboxListTile(
+                        title: Text(
+                            rank == 'SGT' ? 'BLC Complete' : 'ALC Complete'),
+                        activeColor: onPrimaryColor,
+                        value: isPmeComplete,
+                        onChanged: (value) {
+                          setState(() {
+                            isPmeComplete = value!;
+                            _calcTotalPts();
+                          });
+                        },
+                        onIosTap: () {
+                          setState(() {
+                            isPmeComplete = !isPmeComplete;
+                            _calcTotalPts();
+                          });
+                        },
+                      ),
+                    ),
+                    Padding(
                       padding: const EdgeInsets.fromLTRB(8.0, 0.0, 8.0, 0.0),
                       child: PlatformItemPicker(
                         value: ncoes,
@@ -1291,6 +1321,7 @@ class _PromotionPointPageState extends ConsumerState<PromotionPointPage> {
                           awards: awardPts,
                           badges: badgePts,
                           airborne: airbornePts,
+                          pmeCompletePts: pmePts,
                           ncoes: ncoesPts,
                           wbc: wbcPts,
                           resident: resPts,

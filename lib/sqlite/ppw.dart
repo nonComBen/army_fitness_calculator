@@ -1,3 +1,5 @@
+import 'package:flutter/cupertino.dart';
+
 class PPW {
   int? id;
   String? date;
@@ -9,6 +11,7 @@ class PPW {
   int awards;
   int badges;
   int airborne;
+  int pmeCompletePts;
   int ncoes;
   int wbc;
   int resident;
@@ -35,6 +38,7 @@ class PPW {
     required this.awards,
     required this.badges,
     required this.airborne,
+    required this.pmeCompletePts,
     required this.ncoes,
     required this.wbc,
     required this.resident,
@@ -63,6 +67,7 @@ class PPW {
       'awards': awards,
       'badges': badges,
       'airborne': airborne,
+      'pmeCompletePts': pmeCompletePts,
       'ncoes': ncoes,
       'wbc': wbc,
       'resident': resident,
@@ -82,6 +87,12 @@ class PPW {
   }
 
   factory PPW.fromMap(Map<String, dynamic> map) {
+    int pmeComplete = 0;
+    try {
+      pmeComplete = map['pmeCompletePts'];
+    } catch (e) {
+      debugPrint('Error: $e');
+    }
     return PPW(
       id: map['id'],
       date: map['date'],
@@ -93,6 +104,7 @@ class PPW {
       awards: map['awards'],
       badges: map['badges'],
       airborne: map['airborne'],
+      pmeCompletePts: pmeComplete,
       ncoes: map['ncoes'],
       wbc: map['wbc'],
       resident: map['resident'],

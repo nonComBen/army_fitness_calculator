@@ -86,6 +86,7 @@ class _SavedPpwsPageState extends State<SavedPpwsPage> {
       if (milEd > ppwList[i].milEdMax) {
         milEd = ppwList[i].milEdMax;
       }
+      milEd += ppwList[i].pmeCompletePts;
       if (civEd > ppwList[i].civEdMax) {
         civEd = ppwList[i].civEdMax;
       }
