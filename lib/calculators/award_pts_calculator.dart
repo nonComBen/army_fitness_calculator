@@ -12,7 +12,7 @@ int calcAwardpts(List<AwardDecoration> awards) {
   return points;
 }
 
-int newBadgePts(List<dynamic> badges) {
+int newBadgePts(List<Map<String, String?>> badges) {
   int points = 0;
   for (Map<String, dynamic> badge in badges) {
     int pts = badgeTable.firstWhere(

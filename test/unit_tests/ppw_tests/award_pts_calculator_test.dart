@@ -26,7 +26,7 @@ void main() {
       () async {
         for (var i = 1; i < badgeTypes.length; i++) {
           int points = newBadgePts([
-            {'name': badgeTypes[i], 'number': 1}
+            {'name': badgeTypes[i]}
           ]);
           print('Badge: ${badgeTypes[i]}, points: $points');
           int expected = 0;

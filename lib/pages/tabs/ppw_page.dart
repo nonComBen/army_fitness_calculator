@@ -1,6 +1,7 @@
 import 'dart:io';
 
-import 'package:acft_calculator/providers/tracking_provider.dart';
+import '/methods/is_valid_date.dart';
+import '/providers/tracking_provider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -15,7 +16,6 @@ import '../../widgets/button_text.dart';
 import '../../widgets/platform_widgets/platform_item_picker.dart';
 import '../../methods/platform_show_modal_bottom_sheet.dart';
 import '../../providers/purchases_provider.dart';
-import '../../services/purchases_service.dart';
 import '../../widgets/platform_widgets/platform_button.dart';
 import '../../calculators/award_pts_calculator.dart';
 import '../../calculators/pt_pts_calculator.dart';
@@ -44,30 +44,18 @@ class PromotionPointPage extends ConsumerStatefulWidget {
 
 class _PromotionPointPageState extends ConsumerState<PromotionPointPage> {
   int ptScore = 0,
-      ptPts = 0,
       weaponHits = 0,
       weaponPts = 0,
       milTrainPts = 0,
-      awardPts = 0,
-      badgePts = 0,
-      airbornePts = 0,
       awardsTotal = 0,
-      ncoesPts = 0,
       wbcHrs = 0,
-      wbcPts = 0,
       resHrs = 0,
-      resPts = 0,
       tabPts = 0,
-      ar350Pts = 0,
       milEdPts = 0,
       semHrs = 0,
-      semHrPts = 0,
       mosCerts = 0,
       crossCerts = 0,
       personalCerts = 0,
-      certPts = 0,
-      degreePts = 0,
-      langPts = 0,
       civEdPts = 0,
       totalPts = 0,
       milTrainMax = 340,
@@ -78,7 +66,7 @@ class _PromotionPointPageState extends ConsumerState<PromotionPointPage> {
   String weapons = '(M16/M4) DA 3595-R / 5790-R / 5789-R / 7801',
       airborneLvl = 'None',
       ncoes = 'None';
-  Object rank = 'SGT', version = 'newVersion';
+  Object rank = 'SGT';
   bool isRanger = false,
       isSf = false,
       isSapper = false,
@@ -86,24 +74,15 @@ class _PromotionPointPageState extends ConsumerState<PromotionPointPage> {
       hasFornLang = false,
       isPtValid = true,
       isWeaponValid = true,
-      isCoaValid = true,
-      isWbcValid = true,
-      isResValid = true,
-      isSemValid = true,
-      isCertValid = true,
       isPmeComplete = false;
   late SharedPreferences prefs;
-  RegExp regExp = RegExp(r'^\d{4}(0[1-9]|1[012])(0[1-9]|[12][0-9]|3[01])$');
-  DBHelper dbHelper = DBHelper();
-  late PurchasesService purchasesService;
   late TextStyle expansionTextStyle;
   late Color primaryColor;
   late Color onPrimaryColor;
   late BannerAd myBanner;
 
   List<AwardDecoration> decorations = [];
-  List<dynamic> _badges = [];
-  final List<String> versions = ['Before 1 Apr 23', 'After 1 Apr 23'];
+  List<Map<String, String?>> _badges = [];
   final List<String> proRanks = ['SGT', 'SSG'];
   final List<String> weaponCards = [
     '(M16/M4) DA 3595-R / 5790-R / 5789-R / 7801',
@@ -176,8 +155,6 @@ class _PromotionPointPageState extends ConsumerState<PromotionPointPage> {
     super.initState();
 
     prefs = ref.read(sharedPreferencesProvider);
-
-    purchasesService = ref.read(purchasesProvider);
     bool trackingAllowed = ref.read(trackingProvider);
 
     myBanner = BannerAd(
@@ -269,47 +246,30 @@ class _PromotionPointPageState extends ConsumerState<PromotionPointPage> {
     }
   }
 
-  void _calcPtPts() {
-    ptPts = acftPts(ptScore);
-  }
-
-  void _calcWeaponPts() {
-    weaponPts = newWeaponsPts(
-        weaponCards.indexOf(weapons), rank.toString(), weaponHits);
-  }
-
-  void _calcAwardPts() {
-    awardPts = calcAwardpts(decorations);
-  }
-
-  void _calcBadgePts() {
-    badgePts = newBadgePts(_badges);
-  }
-
-  void _calcAirbornePts() {
+  int _airbornePts() {
     int index = airborne.indexOf(airborneLvl);
     if (index == 0) {
-      airbornePts = 0;
+      return 0;
     } else if (index == 1) {
-      airbornePts = 20;
+      return 20;
     } else {
-      airbornePts = 15;
+      return 15;
     }
   }
 
-  void _calcNcoesPts() {
+  int _ncoesPts() {
     int index = ncoesHonors.indexOf(ncoes);
     if (index == 0) {
-      ncoesPts = 0;
+      return 0;
     } else if (index == 1) {
-      ncoesPts = 20;
+      return 20;
     } else {
-      ncoesPts = 40;
+      return 40;
     }
   }
 
-  void _calcTabPts() {
-    tabPts = 0;
+  int _tabPts() {
+    int tabPts = 0;
     if (isRanger) {
       tabPts += 40;
     }
@@ -319,50 +279,53 @@ class _PromotionPointPageState extends ConsumerState<PromotionPointPage> {
     if (isSapper) {
       tabPts += 40;
     }
-    _calcResPts();
+    return tabPts;
   }
 
-  void _calcResPts() {
-    resPts = (resHrs / 10).floor() + tabPts;
+  int _resPts() {
+    int resPts = (resHrs / 10).floor() + tabPts;
     if (rank == 'SGT' && resPts > 110) {
       resPts = 110;
     } else if (rank == 'SSG' && resPts > 115) {
       resPts = 115;
     }
+    return resPts + _tabPts();
   }
 
-  void _calcWbcPts() {
-    wbcPts = (wbcHrs / 5).floor();
+  int _wbcPts() {
+    int wbcPts = (wbcHrs / 5).floor();
     if (wbcPts > 90) {
       wbcPts = 90;
     }
+    return wbcPts;
   }
 
-  void _calcSemPts() {
-    semHrPts = semHrs * 2;
+  int _semHrsPts() {
+    return semHrs * 2;
   }
 
-  void _calcDegreePts() {
+  int _degreePts() {
     if (degreeCompleted) {
-      degreePts = 20;
+      return 20;
     } else {
-      degreePts = 0;
+      return 0;
     }
   }
 
-  void _calcLangPts() {
+  int _langPts() {
     if (hasFornLang) {
-      langPts = 25;
+      return 25;
     } else {
-      langPts = 0;
+      return 0;
     }
   }
 
-  void _calcCertPts() {
-    certPts = (mosCerts * 15) + (crossCerts * 10) + (personalCerts * 5);
+  int _certPts() {
+    int certPts = (mosCerts * 15) + (crossCerts * 10) + (personalCerts * 5);
     if (certPts > 50) {
       certPts = 50;
     }
+    return certPts;
   }
 
   _calcTotalPts() {
@@ -371,21 +334,26 @@ class _PromotionPointPageState extends ConsumerState<PromotionPointPage> {
     } else {
       pmePts = 0;
     }
-    milTrainPts = ptPts + weaponPts;
+    milTrainPts = acftPts(ptScore) +
+        newWeaponsPts(
+          weaponCards.indexOf(weapons),
+          rank.toString(),
+          weaponHits,
+        );
     if (milTrainPts > milTrainMax) {
       milTrainPts = milTrainMax;
     }
-    awardsTotal = awardPts + badgePts;
+    awardsTotal = calcAwardpts(decorations) + newBadgePts(_badges);
     if (awardsTotal > awardsMax) {
       awardsTotal = awardsMax;
     }
-    awardsTotal += airbornePts;
-    milEdPts = ncoesPts + resPts + wbcPts;
+    awardsTotal += _airbornePts();
+    milEdPts = _ncoesPts() + _resPts() + _wbcPts();
     if (milEdPts > milEdMax) {
       milEdPts = milEdMax;
     }
     milEdPts += pmePts;
-    civEdPts = semHrPts + certPts + degreePts + langPts;
+    civEdPts = _semHrsPts() + _certPts() + _degreePts() + _langPts();
     if (civEdPts > civEdMax) {
       civEdPts = civEdMax;
     }
@@ -393,6 +361,7 @@ class _PromotionPointPageState extends ConsumerState<PromotionPointPage> {
   }
 
   _savePpw(BuildContext context, PPW ppw) {
+    final DBHelper dbHelper = DBHelper();
     final f = new DateFormat('yyyyMMdd');
     final date = f.format(DateTime.now());
     final _dateController = TextEditingController(text: date);
@@ -425,7 +394,7 @@ class _PromotionPointPageState extends ConsumerState<PromotionPointPage> {
                   ),
                   autovalidateMode: AutovalidateMode.onUserInteraction,
                   validator: (value) =>
-                      regExp.hasMatch(value!) ? null : 'Use yyyyMMdd Format',
+                      isValidDate(value!) ? null : 'Use yyyyMMdd Format',
                 ),
               ),
               Padding(
@@ -517,13 +486,6 @@ class _PromotionPointPageState extends ConsumerState<PromotionPointPage> {
 
   void _deleteAward(int index, String type) {
     setState(() {
-      if (type == 'Decoration') {
-        decorations.removeAt(index);
-        _calcAwardPts();
-      } else {
-        _badges.removeAt(index);
-        _calcBadgePts();
-      }
       _calcTotalPts();
     });
   }
@@ -540,14 +502,12 @@ class _PromotionPointPageState extends ConsumerState<PromotionPointPage> {
             onAwardChosen: (value) {
               setState(() {
                 decorations[i].name = value;
-                _calcAwardPts();
                 _calcTotalPts();
               });
             },
             onSelectedItemChanged: (index) {
               setState(() {
                 decorations[i].name = DecorationCard.awards[index];
-                _calcAwardPts();
                 _calcTotalPts();
               });
             },
@@ -555,7 +515,6 @@ class _PromotionPointPageState extends ConsumerState<PromotionPointPage> {
               int raw = int.tryParse(value) ?? 0;
               setState(() {
                 decorations[i].number = raw;
-                _calcAwardPts();
                 _calcTotalPts();
               });
             },
@@ -577,14 +536,12 @@ class _PromotionPointPageState extends ConsumerState<PromotionPointPage> {
           onBadgeChosen: (value) {
             setState(() {
               _badges[i]['name'] = value;
-              _calcBadgePts();
               _calcTotalPts();
             });
           },
           onSelectedItemChanged: (index) {
             setState(() {
               _badges[i]['name'] = BadgeCard.badges[index];
-              _calcBadgePts();
               _calcTotalPts();
             });
           },
@@ -629,14 +586,10 @@ class _PromotionPointPageState extends ConsumerState<PromotionPointPage> {
                               setState(() {
                                 rank = value!;
                                 _resetMaximums();
-                                _calcPtPts();
-                                _calcWeaponPts();
-                                _calcAwardPts();
-                                _calcBadgePts();
-                                _calcAirbornePts();
-                                _calcResPts();
-                                _calcWbcPts();
-                                _calcCertPts();
+                                _airbornePts();
+                                _resPts();
+                                _wbcPts();
+                                _certPts();
                                 _calcTotalPts();
                               });
                             }),
@@ -692,7 +645,6 @@ class _PromotionPointPageState extends ConsumerState<PromotionPointPage> {
                                   ptScore = raw;
                                   isPtValid = true;
                                 }
-                                _calcPtPts();
                                 _calcTotalPts();
                               });
                             },
@@ -725,7 +677,6 @@ class _PromotionPointPageState extends ConsumerState<PromotionPointPage> {
                                   weaponHits = raw;
                                   isWeaponValid = true;
                                 }
-                                _calcWeaponPts();
                                 _calcTotalPts();
                               });
                             },
@@ -746,7 +697,6 @@ class _PromotionPointPageState extends ConsumerState<PromotionPointPage> {
                           FocusScope.of(context).unfocus();
                           setState(() {
                             weapons = value;
-                            _calcWeaponPts();
                             _calcTotalPts();
                           });
                         },
@@ -863,7 +813,6 @@ class _PromotionPointPageState extends ConsumerState<PromotionPointPage> {
                           FocusScope.of(context).unfocus();
                           setState(() {
                             airborneLvl = value;
-                            _calcAirbornePts();
                             _calcTotalPts();
                           });
                         },
@@ -923,7 +872,6 @@ class _PromotionPointPageState extends ConsumerState<PromotionPointPage> {
                         onChanged: (value) {
                           setState(() {
                             ncoes = value;
-                            _calcNcoesPts();
                             _calcTotalPts();
                           });
                         },
@@ -960,7 +908,6 @@ class _PromotionPointPageState extends ConsumerState<PromotionPointPage> {
                               } else {
                                 resHrs = raw;
                               }
-                              _calcResPts();
                               _calcTotalPts();
                             });
                           },
@@ -988,7 +935,6 @@ class _PromotionPointPageState extends ConsumerState<PromotionPointPage> {
                               } else {
                                 wbcHrs = raw;
                               }
-                              _calcWbcPts();
                               _calcTotalPts();
                             });
                           },
@@ -1023,14 +969,12 @@ class _PromotionPointPageState extends ConsumerState<PromotionPointPage> {
                                 onChanged: (value) {
                                   setState(() {
                                     isRanger = value!;
-                                    _calcTabPts();
                                     _calcTotalPts();
                                   });
                                 },
                                 onIosTap: () {
                                   setState(() {
                                     isRanger = !isRanger;
-                                    _calcTabPts();
                                     _calcTotalPts();
                                   });
                                 },
@@ -1046,14 +990,12 @@ class _PromotionPointPageState extends ConsumerState<PromotionPointPage> {
                                 onChanged: (value) {
                                   setState(() {
                                     isSf = value!;
-                                    _calcTabPts();
                                     _calcTotalPts();
                                   });
                                 },
                                 onIosTap: () {
                                   setState(() {
                                     isSf = !isSf;
-                                    _calcTabPts();
                                     _calcTotalPts();
                                   });
                                 },
@@ -1069,14 +1011,12 @@ class _PromotionPointPageState extends ConsumerState<PromotionPointPage> {
                                 onChanged: (value) {
                                   setState(() {
                                     isSapper = value!;
-                                    _calcTabPts();
                                     _calcTotalPts();
                                   });
                                 },
                                 onIosTap: () {
                                   setState(() {
                                     isSapper = !isSapper;
-                                    _calcTabPts();
                                     _calcTotalPts();
                                   });
                                 },
@@ -1133,7 +1073,6 @@ class _PromotionPointPageState extends ConsumerState<PromotionPointPage> {
                               } else {
                                 semHrs = raw;
                               }
-                              _calcSemPts();
                               _calcTotalPts();
                             });
                           },
@@ -1154,14 +1093,12 @@ class _PromotionPointPageState extends ConsumerState<PromotionPointPage> {
                             onChanged: (value) {
                               setState(() {
                                 degreeCompleted = value!;
-                                _calcDegreePts();
                                 _calcTotalPts();
                               });
                             },
                             onIosTap: () {
                               setState(() {
                                 degreeCompleted = !degreeCompleted;
-                                _calcDegreePts();
                                 _calcTotalPts();
                               });
                             },
@@ -1191,7 +1128,6 @@ class _PromotionPointPageState extends ConsumerState<PromotionPointPage> {
                               } else {
                                 mosCerts = raw;
                               }
-                              _calcCertPts();
                               _calcTotalPts();
                             });
                           },
@@ -1220,7 +1156,6 @@ class _PromotionPointPageState extends ConsumerState<PromotionPointPage> {
                               } else {
                                 crossCerts = raw;
                               }
-                              _calcCertPts();
                               _calcTotalPts();
                             });
                           },
@@ -1249,7 +1184,6 @@ class _PromotionPointPageState extends ConsumerState<PromotionPointPage> {
                               } else {
                                 personalCerts = raw;
                               }
-                              _calcCertPts();
                               _calcTotalPts();
                             });
                           },
@@ -1267,14 +1201,12 @@ class _PromotionPointPageState extends ConsumerState<PromotionPointPage> {
                             onChanged: (value) {
                               setState(() {
                                 hasFornLang = value!;
-                                _calcLangPts();
                                 _calcTotalPts();
                               });
                             },
                             onIosTap: () {
                               setState(() {
                                 hasFornLang = !hasFornLang;
-                                _calcLangPts();
                                 _calcTotalPts();
                               });
                             },
@@ -1316,21 +1248,25 @@ class _PromotionPointPageState extends ConsumerState<PromotionPointPage> {
                           name: null,
                           rank: rank.toString(),
                           version: 1,
-                          ptTest: ptPts,
-                          weapons: weaponPts,
-                          awards: awardPts,
-                          badges: badgePts,
-                          airborne: airbornePts,
+                          ptTest: acftPts(ptScore),
+                          weapons: newWeaponsPts(
+                            weaponCards.indexOf(weapons),
+                            rank.toString(),
+                            weaponHits,
+                          ),
+                          awards: calcAwardpts(decorations),
+                          badges: newBadgePts(_badges),
+                          airborne: _airbornePts(),
                           pmeCompletePts: pmePts,
-                          ncoes: ncoesPts,
-                          wbc: wbcPts,
-                          resident: resPts,
-                          tabs: tabPts,
-                          ar350: ar350Pts,
-                          semesterHours: semHrPts,
-                          degree: degreePts,
-                          certs: certPts,
-                          language: langPts,
+                          ncoes: _ncoesPts(),
+                          wbc: _wbcPts(),
+                          resident: _resPts(),
+                          tabs: _tabPts(),
+                          ar350: 0,
+                          semesterHours: _semHrsPts(),
+                          degree: _degreePts(),
+                          certs: _certPts(),
+                          language: _langPts(),
                           milTrainMax: milTrainMax,
                           awardsMax: awardsMax,
                           milEdMax: milEdMax,
@@ -1339,6 +1275,7 @@ class _PromotionPointPageState extends ConsumerState<PromotionPointPage> {
                         );
                         _savePpw(context, ppw);
                       } else {
+                        final purchasesService = ref.read(purchasesProvider);
                         purchasesService.upgradeNeeded(context);
                       }
                     },

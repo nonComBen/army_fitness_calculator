@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:acft_calculator/methods/is_valid_date.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -7,6 +8,7 @@ import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:intl/intl.dart';
 
+import '../../methods/acft_age_group.dart';
 import '../../providers/premium_state_provider.dart';
 import '../../methods/platform_show_modal_bottom_sheet.dart';
 import '../../methods/theme_methods.dart';
@@ -49,8 +51,8 @@ class AcftPage extends ConsumerStatefulWidget {
 
 class AcftPageState extends ConsumerState<AcftPage>
     with WidgetsBindingObserver {
-  int age = 22,
-      mdlRaw = 300,
+  static int age = 22;
+  int mdlRaw = 300,
       hrpRaw = 50,
       sdcMins = 1,
       sdcSecs = 50,
@@ -73,52 +75,17 @@ class AcftPageState extends ConsumerState<AcftPage>
       hasSptProfile = false,
       hasHrpProfile = false,
       hasSdcProfile = false,
-      hasPlkProfile = false,
-      mdlPass = true,
-      sptPass = true,
-      hrpPass = true,
-      sdcPass = true,
-      plkPass = true,
-      runPass = true,
-      totalPass = true;
+      hasPlkProfile = false;
   double sptRaw = 11.0;
-  static String ageGroup = '17-21';
-  static Object gender = 'Male';
-  String? mdlMinimum,
-      mdl80,
-      mdlMax,
-      sptMinimum,
-      spt80,
-      sptMax,
-      hrpMinimum,
-      hrp80,
-      hrpMax,
-      sdcMinimum,
-      sdc80,
-      sdcMax,
-      plkMinimum,
-      plk80,
-      plkMax,
-      runMinimum,
-      run80,
-      runMax,
-      aerobicEvent;
-  List<String>? mdlBenchmarks,
-      sptBenchmarks,
-      hrpBenchmarks,
-      sdcBenchmarks,
-      plkBenchmarks,
-      runBenchmarks,
-      altBenchmarks;
+  static String gender = 'Male';
+  String aerobicEvent = 'Run';
   List<String> tableHeaders = ['Min', '80%', 'Max'];
   late SharedPreferences prefs;
-  DBHelper dbHelper = DBHelper();
-  TextStyle headerStyle = TextStyle(
+  final headerStyle = TextStyle(
     fontSize: 22.0,
     fontWeight: FontWeight.bold,
   );
   late BannerAd myBanner;
-  RegExp regExp = RegExp(r'^\d{4}(0[1-9]|1[012])(0[1-9]|[12][0-9]|3[01])$');
 
   final _ageController = TextEditingController();
   final _mdlController = TextEditingController();
@@ -149,18 +116,17 @@ class AcftPageState extends ConsumerState<AcftPage>
     super.initState();
     WidgetsBinding.instance.addObserver(this);
     prefs = ref.read(sharedPreferencesProvider);
-    purchasesService = ref.read(purchasesProvider);
 
-    myBanner = BannerAd(
-      adUnitId: Platform.isAndroid
-          ? 'ca-app-pub-2431077176117105/8950325543'
-          : 'ca-app-pub-2431077176117105/4488336359',
-      size: AdSize.banner,
-      listener: BannerAdListener(),
-      request: AdRequest(nonPersonalizedAds: true),
-    );
+    // myBanner = BannerAd(
+    //   adUnitId: Platform.isAndroid
+    //       ? 'ca-app-pub-2431077176117105/8950325543'
+    //       : 'ca-app-pub-2431077176117105/4488336359',
+    //   size: AdSize.banner,
+    //   listener: BannerAdListener(),
+    //   request: AdRequest(nonPersonalizedAds: true),
+    // );
 
-    myBanner.load();
+    // myBanner.load();
 
     mdlRaw = prefs.getInt('mdlRaw') ?? 300;
     sptRaw = prefs.getDouble('sptRaw') ?? 11.0;
@@ -244,9 +210,7 @@ class AcftPageState extends ConsumerState<AcftPage>
     });
 
     if (prefs.getString('acft_event') != null) {
-      aerobicEvent = prefs.getString('acft_event');
-    } else {
-      aerobicEvent = 'Run';
+      aerobicEvent = prefs.getString('acft_event')!;
     }
     if (prefs.getString('gender') != null) {
       gender = prefs.getString('gender')!;
@@ -254,7 +218,6 @@ class AcftPageState extends ConsumerState<AcftPage>
     if (prefs.getInt('age') != null) {
       age = prefs.getInt('age')!;
     }
-    setAgeGroup();
 
     _ageController.text = age.toString();
 
@@ -307,122 +270,62 @@ class AcftPageState extends ConsumerState<AcftPage>
     myBanner.dispose();
   }
 
-  void setAgeGroup() {
-    if (age < 22) {
-      ageGroup = '17-21';
-      return;
-    }
-    if (age < 27) {
-      ageGroup = '22-26';
-      return;
-    }
-    if (age < 32) {
-      ageGroup = '27-31';
-      return;
-    }
-    if (age < 37) {
-      ageGroup = '32-36';
-      return;
-    }
-    if (age < 42) {
-      ageGroup = '37-41';
-      return;
-    }
-    if (age < 47) {
-      ageGroup = '42-46';
-      return;
-    }
-    if (age < 52) {
-      ageGroup = '47-51';
-      return;
-    }
-    if (age < 57) {
-      ageGroup = '52-56';
-      return;
-    }
-    if (age < 62) {
-      ageGroup = '57-61';
-      return;
-    }
-    ageGroup = '62+';
-  }
-
   void calcAll() {
-    setBenchmarks();
     mdlScore = getMdlScore(
-        mdlRaw, ptAgeGroups.indexOf(ageGroup) + 1, gender == 'Male');
+        mdlRaw, ptAgeGroups.indexOf(getAgeGroup(age)) + 1, gender == 'Male');
     sptScore = getSptScore(
-        sptRaw, ptAgeGroups.indexOf(ageGroup) + 1, gender == 'Male');
+        sptRaw, ptAgeGroups.indexOf(getAgeGroup(age)) + 1, gender == 'Male');
     hrpScore = getHrpScore(
-        hrpRaw, ptAgeGroups.indexOf(ageGroup) + 1, gender == 'Male');
+        hrpRaw, ptAgeGroups.indexOf(getAgeGroup(age)) + 1, gender == 'Male');
     sdcScore = getSdcScore(getTimeAsInt(sdcMins, sdcSecs),
-        ptAgeGroups.indexOf(ageGroup) + 1, gender == 'Male');
+        ptAgeGroups.indexOf(getAgeGroup(age)) + 1, gender == 'Male');
     plankScore = getPlkScore(getTimeAsInt(plankMins, plankSecs),
-        ptAgeGroups.indexOf(ageGroup) + 1, gender == 'Male');
+        ptAgeGroups.indexOf(getAgeGroup(age)) + 1, gender == 'Male');
     calcRunScore();
     calcTotal();
   }
 
-  void setBenchmarks() {
-    mdlBenchmarks =
-        getMdlBenchmarks(ptAgeGroups.indexOf(ageGroup), gender == "Male");
-    sptBenchmarks =
-        getSptBenchmarks(ptAgeGroups.indexOf(ageGroup), gender == "Male");
-    hrpBenchmarks =
-        getHrpBenchmarks(ptAgeGroups.indexOf(ageGroup), gender == "Male");
-    sdcBenchmarks =
-        getSdcBenchmarks(ptAgeGroups.indexOf(ageGroup), gender == "Male");
-    plkBenchmarks =
-        getPlkBenchmarks(ptAgeGroups.indexOf(ageGroup), gender == "Male");
-    runBenchmarks =
-        get2mrBenchmarks(ptAgeGroups.indexOf(ageGroup), gender == "Male");
-    altBenchmarks =
-        getAltBenchmarks(ptAgeGroups.indexOf(ageGroup), gender == "Male");
-
-    mdlMinimum = mdlBenchmarks![0];
-    mdl80 = mdlBenchmarks![1];
-    mdlMax = mdlBenchmarks![2];
-    sptMinimum = sptBenchmarks![0];
-    spt80 = sptBenchmarks![1];
-    sptMax = sptBenchmarks![2];
-    hrpMinimum = hrpBenchmarks![0];
-    hrp80 = hrpBenchmarks![1];
-    hrpMax = hrpBenchmarks![2];
-    sdcMinimum = sdcBenchmarks![0];
-    sdc80 = sdcBenchmarks![1];
-    sdcMax = sdcBenchmarks![2];
-    plkMinimum = plkBenchmarks![0];
-    plk80 = plkBenchmarks![1];
-    plkMax = plkBenchmarks![2];
-
+  List<String> getAerobicBenchmarks() {
+    final altBenchmarks = getAltBenchmarks(
+      ptAgeGroups.indexOf(getAgeGroup(age)),
+      gender == "Male",
+    );
     switch (aerobicEvent) {
       case "Run":
-        runMinimum = runBenchmarks![0];
-        run80 = runBenchmarks![1];
-        runMax = runBenchmarks![2];
-        break;
+        return get2mrBenchmarks(
+          ptAgeGroups.indexOf(getAgeGroup(age)),
+          gender == "Male",
+        );
       case "Walk":
-        runMinimum = altBenchmarks![0];
-        run80 = '-';
-        runMax = '-';
-        break;
+        return [
+          altBenchmarks[0],
+          '-',
+          '-',
+        ];
       case "Bike":
-        runMinimum = altBenchmarks![1];
-        run80 = '-';
-        runMax = '-';
-        break;
+        return [
+          altBenchmarks[1],
+          '-',
+          '-',
+        ];
       case "Swim":
-        runMinimum = altBenchmarks![2];
-        run80 = '-';
-        runMax = '-';
-        break;
+        return [
+          altBenchmarks[2],
+          '-',
+          '-',
+        ];
       case "Row":
-        runMinimum = altBenchmarks![2];
-        run80 = '-';
-        runMax = '-';
-        break;
+        return [
+          altBenchmarks[2],
+          '-',
+          '-',
+        ];
+      default:
+        return get2mrBenchmarks(
+          ptAgeGroups.indexOf(getAgeGroup(age)),
+          gender == "Male",
+        );
     }
-    setState(() {});
   }
 
   int getTimeAsInt(int? mins, int? secs) {
@@ -435,9 +338,10 @@ class AcftPageState extends ConsumerState<AcftPage>
     int time = getTimeAsInt(runMins, runSecs);
     if (aerobicEvent == 'Run') {
       runScore = get2mrScore(
-          time, ptAgeGroups.indexOf(ageGroup) + 1, gender == 'Male');
+          time, ptAgeGroups.indexOf(getAgeGroup(age)) + 1, gender == 'Male');
     } else {
-      int min = int.tryParse(runMinimum!.replaceRange(2, 3, "")) ?? 0;
+      final runMinimum = getAerobicBenchmarks()[0];
+      int min = int.tryParse(runMinimum.replaceRange(2, 3, "")) ?? 0;
       if (time <= min) {
         runScore = 60;
       } else {
@@ -454,22 +358,44 @@ class AcftPageState extends ConsumerState<AcftPage>
           sdcScore! +
           plankScore! +
           runScore!;
-      mdlPass = mdlScore! >= 60 || hasMdlProfile;
-      sptPass = sptScore! >= 60 || hasSptProfile;
-      hrpPass = hrpScore! >= 60 || hasHrpProfile;
-      sdcPass = sdcScore! >= 60 || hasSdcProfile;
-      plkPass = plankScore! >= 60 || hasPlkProfile;
-      runPass = runScore! >= 60;
-
-      if (aerobicEvent != 'Run') {
-        runPass = runScore == 60;
-      }
-      totalPass =
-          mdlPass && sptPass && hrpPass && sdcPass && plkPass && runPass;
     });
   }
 
+  bool didPassMdl() {
+    return mdlScore! >= 60 || hasMdlProfile;
+  }
+
+  bool didPassSpt() {
+    return sptScore! >= 60 || hasSptProfile;
+  }
+
+  bool didPassHrp() {
+    return hrpScore! >= 60 || hasHrpProfile;
+  }
+
+  bool didPassSdc() {
+    return sdcScore! >= 60 || hasSdcProfile;
+  }
+
+  bool didPassPlk() {
+    return plankScore! >= 60 || hasPlkProfile;
+  }
+
+  bool didPassAerobic() {
+    return runScore! >= 60;
+  }
+
+  bool didPassAcft() {
+    return didPassMdl() &&
+        didPassSpt() &&
+        didPassHrp() &&
+        didPassSdc() &&
+        didPassPlk() &&
+        didPassAerobic();
+  }
+
   _saveAcft(BuildContext context, Acft acft) {
+    DBHelper dbHelper = DBHelper();
     final f = DateFormat('yyyyMMdd');
     final date = f.format(DateTime.now());
     final _dateController = TextEditingController(text: date);
@@ -498,7 +424,7 @@ class AcftPageState extends ConsumerState<AcftPage>
                   ),
                   autovalidateMode: AutovalidateMode.onUserInteraction,
                   validator: (value) =>
-                      regExp.hasMatch(value!) ? null : 'Use yyyyMMdd Format',
+                      isValidDate(value!) ? null : 'Use yyyyMMdd Format',
                   keyboardType: TextInputType.numberWithOptions(signed: true),
                   inputFormatters: [
                     FilteringTextInputFormatter.digitsOnly,
@@ -592,7 +518,7 @@ class AcftPageState extends ConsumerState<AcftPage>
                       onChanged: (value) {
                         setState(() {
                           FocusScope.of(context).unfocus();
-                          gender = value!;
+                          gender = value!.toString();
                           calcAll();
                         });
                       }),
@@ -621,7 +547,6 @@ class AcftPageState extends ConsumerState<AcftPage>
                           age = raw;
                           isAgeValid = true;
                         }
-                        setAgeGroup();
                         calcAll();
                       },
                     ),
@@ -641,7 +566,6 @@ class AcftPageState extends ConsumerState<AcftPage>
                             age = 17;
                           }
                           isAgeValid = true;
-                          setAgeGroup();
                           _ageController.text = age.toString();
                           calcAll();
                         },
@@ -657,7 +581,6 @@ class AcftPageState extends ConsumerState<AcftPage>
                             FocusScope.of(context).unfocus();
                             isAgeValid = true;
                             age = value.floor();
-                            setAgeGroup();
                             _ageController.text = age.toString();
                             calcAll();
                           },
@@ -673,7 +596,6 @@ class AcftPageState extends ConsumerState<AcftPage>
                             age = 80;
                           }
                           isAgeValid = true;
-                          setAgeGroup();
                           _ageController.text = age.toString();
                           calcAll();
                         },
@@ -713,15 +635,16 @@ class AcftPageState extends ConsumerState<AcftPage>
                         }
                         mdlScore = getMdlScore(
                             mdlRaw,
-                            ptAgeGroups.indexOf(ageGroup) + 1,
+                            ptAgeGroups.indexOf(getAgeGroup(age)) + 1,
                             gender == 'Male');
                         calcTotal();
                       },
                     ),
                     GridBox(
                       title: mdlScore.toString(),
-                      background: mdlPass ? backgroundColor : failColor,
-                      textColor: mdlPass ? getTextColor(context) : Colors.white,
+                      background: didPassMdl() ? backgroundColor : failColor,
+                      textColor:
+                          didPassMdl() ? getTextColor(context) : Colors.white,
                       width: 60,
                       height: 40,
                       borderBottomLeft: 8,
@@ -749,7 +672,7 @@ class AcftPageState extends ConsumerState<AcftPage>
                           isMdlValid = true;
                           mdlScore = getMdlScore(
                               mdlRaw,
-                              ptAgeGroups.indexOf(ageGroup) + 1,
+                              ptAgeGroups.indexOf(getAgeGroup(age)) + 1,
                               gender == 'Male');
                           calcTotal();
                         },
@@ -773,7 +696,7 @@ class AcftPageState extends ConsumerState<AcftPage>
                             isMdlValid = true;
                             mdlScore = getMdlScore(
                                 mdlRaw,
-                                ptAgeGroups.indexOf(ageGroup) + 1,
+                                ptAgeGroups.indexOf(getAgeGroup(age)) + 1,
                                 gender == 'Male');
                             calcTotal();
                           },
@@ -795,7 +718,7 @@ class AcftPageState extends ConsumerState<AcftPage>
                           _mdlController.text = mdlRaw.toString();
                           mdlScore = getMdlScore(
                               mdlRaw,
-                              ptAgeGroups.indexOf(ageGroup) + 1,
+                              ptAgeGroups.indexOf(getAgeGroup(age)) + 1,
                               gender == 'Male');
                           isMdlValid = true;
                           calcTotal();
@@ -843,11 +766,10 @@ class AcftPageState extends ConsumerState<AcftPage>
                   padding: const EdgeInsets.all(8.0),
                   child: MinMaxTable(
                     headers: tableHeaders,
-                    values: [
-                      mdlMinimum.toString(),
-                      mdl80.toString(),
-                      mdlMax.toString()
-                    ],
+                    values: getMdlBenchmarks(
+                      ptAgeGroups.indexOf(getAgeGroup(age)),
+                      gender == "Male",
+                    ),
                   ),
                 ),
                 const Divider(
@@ -882,15 +804,16 @@ class AcftPageState extends ConsumerState<AcftPage>
                         }
                         sptScore = getSptScore(
                             sptRaw,
-                            ptAgeGroups.indexOf(ageGroup) + 1,
+                            ptAgeGroups.indexOf(getAgeGroup(age)) + 1,
                             gender == 'Male');
                         calcTotal();
                       },
                     ),
                     GridBox(
                       title: sptScore.toString(),
-                      background: sptPass ? backgroundColor : failColor,
-                      textColor: sptPass ? getTextColor(context) : Colors.white,
+                      background: didPassSpt() ? backgroundColor : failColor,
+                      textColor:
+                          didPassSpt() ? getTextColor(context) : Colors.white,
                       width: 60,
                       height: 40,
                       borderBottomLeft: 8,
@@ -919,7 +842,7 @@ class AcftPageState extends ConsumerState<AcftPage>
                           isSptValid = true;
                           sptScore = getSptScore(
                               sptRaw,
-                              ptAgeGroups.indexOf(ageGroup) + 1,
+                              ptAgeGroups.indexOf(getAgeGroup(age)) + 1,
                               gender == 'Male');
                           calcTotal();
                         },
@@ -943,7 +866,7 @@ class AcftPageState extends ConsumerState<AcftPage>
                             isSptValid = true;
                             sptScore = getSptScore(
                                 sptRaw,
-                                ptAgeGroups.indexOf(ageGroup) + 1,
+                                ptAgeGroups.indexOf(getAgeGroup(age)) + 1,
                                 gender == 'Male');
                             calcTotal();
                           },
@@ -968,7 +891,7 @@ class AcftPageState extends ConsumerState<AcftPage>
                           isSptValid = true;
                           sptScore = getSptScore(
                               sptRaw,
-                              ptAgeGroups.indexOf(ageGroup) + 1,
+                              ptAgeGroups.indexOf(getAgeGroup(age)) + 1,
                               gender == 'Male');
                           calcTotal();
                         },
@@ -1015,11 +938,10 @@ class AcftPageState extends ConsumerState<AcftPage>
                   padding: const EdgeInsets.all(8.0),
                   child: MinMaxTable(
                     headers: tableHeaders,
-                    values: [
-                      sptMinimum.toString(),
-                      spt80.toString(),
-                      sptMax.toString()
-                    ],
+                    values: getSptBenchmarks(
+                      ptAgeGroups.indexOf(getAgeGroup(age)),
+                      gender == "Male",
+                    ),
                   ),
                 ),
                 const Divider(
@@ -1053,15 +975,16 @@ class AcftPageState extends ConsumerState<AcftPage>
                         }
                         hrpScore = getHrpScore(
                             hrpRaw,
-                            ptAgeGroups.indexOf(ageGroup) + 1,
+                            ptAgeGroups.indexOf(getAgeGroup(age)) + 1,
                             gender == 'Male');
                         calcTotal();
                       },
                     ),
                     GridBox(
                       title: hrpScore.toString(),
-                      background: hrpPass ? backgroundColor : failColor,
-                      textColor: hrpPass ? getTextColor(context) : Colors.white,
+                      background: didPassHrp() ? backgroundColor : failColor,
+                      textColor:
+                          didPassHrp() ? getTextColor(context) : Colors.white,
                       width: 60,
                       height: 40,
                       borderBottomLeft: 8,
@@ -1088,7 +1011,7 @@ class AcftPageState extends ConsumerState<AcftPage>
                           isHrpValid = true;
                           hrpScore = getHrpScore(
                               hrpRaw,
-                              ptAgeGroups.indexOf(ageGroup) + 1,
+                              ptAgeGroups.indexOf(getAgeGroup(age)) + 1,
                               gender == 'Male');
                           calcTotal();
                         },
@@ -1112,7 +1035,7 @@ class AcftPageState extends ConsumerState<AcftPage>
                             isHrpValid = true;
                             hrpScore = getHrpScore(
                                 hrpRaw,
-                                ptAgeGroups.indexOf(ageGroup) + 1,
+                                ptAgeGroups.indexOf(getAgeGroup(age)) + 1,
                                 gender == 'Male');
                             calcTotal();
                           },
@@ -1135,7 +1058,7 @@ class AcftPageState extends ConsumerState<AcftPage>
                           isHrpValid = true;
                           hrpScore = getHrpScore(
                               hrpRaw,
-                              ptAgeGroups.indexOf(ageGroup) + 1,
+                              ptAgeGroups.indexOf(getAgeGroup(age)) + 1,
                               gender == 'Male');
                           calcTotal();
                         },
@@ -1182,11 +1105,10 @@ class AcftPageState extends ConsumerState<AcftPage>
                   padding: const EdgeInsets.all(8.0),
                   child: MinMaxTable(
                     headers: tableHeaders,
-                    values: [
-                      hrpMinimum.toString(),
-                      hrp80.toString(),
-                      hrpMax.toString()
-                    ],
+                    values: getHrpBenchmarks(
+                      ptAgeGroups.indexOf(getAgeGroup(age)),
+                      gender == "Male",
+                    ),
                   ),
                 ),
                 const Divider(
@@ -1224,7 +1146,7 @@ class AcftPageState extends ConsumerState<AcftPage>
                             }
                             sdcScore = getSdcScore(
                                 getTimeAsInt(sdcMins, sdcSecs),
-                                ptAgeGroups.indexOf(ageGroup) + 1,
+                                ptAgeGroups.indexOf(getAgeGroup(age)) + 1,
                                 gender == 'Male');
                             calcTotal();
                           },
@@ -1258,7 +1180,7 @@ class AcftPageState extends ConsumerState<AcftPage>
                             }
                             sdcScore = getSdcScore(
                                 getTimeAsInt(sdcMins, sdcSecs),
-                                ptAgeGroups.indexOf(ageGroup) + 1,
+                                ptAgeGroups.indexOf(getAgeGroup(age)) + 1,
                                 gender == 'Male');
                             calcTotal();
                           },
@@ -1267,8 +1189,9 @@ class AcftPageState extends ConsumerState<AcftPage>
                     ),
                     GridBox(
                       title: sdcScore.toString(),
-                      background: sdcPass ? backgroundColor : failColor,
-                      textColor: sdcPass ? getTextColor(context) : Colors.white,
+                      background: didPassSdc() ? backgroundColor : failColor,
+                      textColor:
+                          didPassSdc() ? getTextColor(context) : Colors.white,
                       width: 60,
                       height: 40,
                       borderBottomLeft: 8,
@@ -1295,7 +1218,7 @@ class AcftPageState extends ConsumerState<AcftPage>
                           isSdcMinsValid = true;
                           sdcScore = getSdcScore(
                               getTimeAsInt(sdcMins, sdcSecs),
-                              ptAgeGroups.indexOf(ageGroup) + 1,
+                              ptAgeGroups.indexOf(getAgeGroup(age)) + 1,
                               gender == 'Male');
                           calcTotal();
                         },
@@ -1319,7 +1242,7 @@ class AcftPageState extends ConsumerState<AcftPage>
                             isSdcMinsValid = true;
                             sdcScore = getSdcScore(
                                 getTimeAsInt(sdcMins, sdcSecs),
-                                ptAgeGroups.indexOf(ageGroup) + 1,
+                                ptAgeGroups.indexOf(getAgeGroup(age)) + 1,
                                 gender == 'Male');
                             calcTotal();
                           },
@@ -1342,7 +1265,7 @@ class AcftPageState extends ConsumerState<AcftPage>
                           isSdcMinsValid = true;
                           sdcScore = getSdcScore(
                               getTimeAsInt(sdcMins, sdcSecs),
-                              ptAgeGroups.indexOf(ageGroup) + 1,
+                              ptAgeGroups.indexOf(getAgeGroup(age)) + 1,
                               gender == 'Male');
                           calcTotal();
                         },
@@ -1367,7 +1290,7 @@ class AcftPageState extends ConsumerState<AcftPage>
                           isSdcSecsValid = true;
                           sdcScore = getSdcScore(
                               getTimeAsInt(sdcMins, sdcSecs),
-                              ptAgeGroups.indexOf(ageGroup) + 1,
+                              ptAgeGroups.indexOf(getAgeGroup(age)) + 1,
                               gender == 'Male');
                           calcTotal();
                         },
@@ -1391,7 +1314,7 @@ class AcftPageState extends ConsumerState<AcftPage>
                             isSdcSecsValid = true;
                             sdcScore = getSdcScore(
                                 getTimeAsInt(sdcMins, sdcSecs),
-                                ptAgeGroups.indexOf(ageGroup) + 1,
+                                ptAgeGroups.indexOf(getAgeGroup(age)) + 1,
                                 gender == 'Male');
                             calcTotal();
                           },
@@ -1414,7 +1337,7 @@ class AcftPageState extends ConsumerState<AcftPage>
                           isSdcSecsValid = true;
                           sdcScore = getSdcScore(
                               getTimeAsInt(sdcMins, sdcSecs),
-                              ptAgeGroups.indexOf(ageGroup) + 1,
+                              ptAgeGroups.indexOf(getAgeGroup(age)) + 1,
                               gender == 'Male');
                           calcTotal();
                         },
@@ -1467,11 +1390,10 @@ class AcftPageState extends ConsumerState<AcftPage>
                   padding: const EdgeInsets.all(8.0),
                   child: MinMaxTable(
                     headers: tableHeaders,
-                    values: [
-                      sdcMinimum.toString(),
-                      sdc80.toString(),
-                      sdcMax.toString()
-                    ],
+                    values: getSdcBenchmarks(
+                      ptAgeGroups.indexOf(getAgeGroup(age)),
+                      gender == "Male",
+                    ),
                   ),
                 ),
                 const Divider(
@@ -1509,7 +1431,7 @@ class AcftPageState extends ConsumerState<AcftPage>
                             }
                             plankScore = getPlkScore(
                                 getTimeAsInt(plankMins, plankSecs),
-                                ptAgeGroups.indexOf(ageGroup) + 1,
+                                ptAgeGroups.indexOf(getAgeGroup(age)) + 1,
                                 gender == 'Male');
                             calcTotal();
                           },
@@ -1543,7 +1465,7 @@ class AcftPageState extends ConsumerState<AcftPage>
                             }
                             plankScore = getPlkScore(
                                 getTimeAsInt(plankMins, plankSecs),
-                                ptAgeGroups.indexOf(ageGroup) + 1,
+                                ptAgeGroups.indexOf(getAgeGroup(age)) + 1,
                                 gender == 'Male');
                             calcTotal();
                           },
@@ -1552,8 +1474,9 @@ class AcftPageState extends ConsumerState<AcftPage>
                     ),
                     GridBox(
                       title: plankScore.toString(),
-                      background: plkPass ? backgroundColor : failColor,
-                      textColor: plkPass ? getTextColor(context) : Colors.white,
+                      background: didPassPlk() ? backgroundColor : failColor,
+                      textColor:
+                          didPassPlk() ? getTextColor(context) : Colors.white,
                       width: 60,
                       height: 40,
                       borderBottomLeft: 8,
@@ -1580,7 +1503,7 @@ class AcftPageState extends ConsumerState<AcftPage>
                           isPlankMinsValid = true;
                           plankScore = getPlkScore(
                               getTimeAsInt(plankMins, plankSecs),
-                              ptAgeGroups.indexOf(ageGroup) + 1,
+                              ptAgeGroups.indexOf(getAgeGroup(age)) + 1,
                               gender == 'Male');
                           calcTotal();
                         },
@@ -1604,7 +1527,7 @@ class AcftPageState extends ConsumerState<AcftPage>
                             isPlankMinsValid = true;
                             plankScore = getPlkScore(
                                 getTimeAsInt(plankMins, plankSecs),
-                                ptAgeGroups.indexOf(ageGroup) + 1,
+                                ptAgeGroups.indexOf(getAgeGroup(age)) + 1,
                                 gender == 'Male');
                             calcTotal();
                           },
@@ -1627,7 +1550,7 @@ class AcftPageState extends ConsumerState<AcftPage>
                           isPlankMinsValid = true;
                           plankScore = getPlkScore(
                               getTimeAsInt(plankMins, plankSecs),
-                              ptAgeGroups.indexOf(ageGroup) + 1,
+                              ptAgeGroups.indexOf(getAgeGroup(age)) + 1,
                               gender == 'Male');
                           calcTotal();
                         },
@@ -1652,7 +1575,7 @@ class AcftPageState extends ConsumerState<AcftPage>
                           isPlankSecsValid = true;
                           plankScore = getPlkScore(
                               getTimeAsInt(plankMins, plankSecs),
-                              ptAgeGroups.indexOf(ageGroup) + 1,
+                              ptAgeGroups.indexOf(getAgeGroup(age)) + 1,
                               gender == 'Male');
                           calcTotal();
                         },
@@ -1676,7 +1599,7 @@ class AcftPageState extends ConsumerState<AcftPage>
                             isPlankSecsValid = true;
                             plankScore = getPlkScore(
                                 getTimeAsInt(plankMins, plankSecs),
-                                ptAgeGroups.indexOf(ageGroup) + 1,
+                                ptAgeGroups.indexOf(getAgeGroup(age)) + 1,
                                 gender == 'Male');
                             calcTotal();
                           },
@@ -1699,7 +1622,7 @@ class AcftPageState extends ConsumerState<AcftPage>
                           isPlankSecsValid = true;
                           plankScore = getPlkScore(
                               getTimeAsInt(plankMins, plankSecs),
-                              ptAgeGroups.indexOf(ageGroup) + 1,
+                              ptAgeGroups.indexOf(getAgeGroup(age)) + 1,
                               gender == 'Male');
                           calcTotal();
                         },
@@ -1752,11 +1675,10 @@ class AcftPageState extends ConsumerState<AcftPage>
                   padding: const EdgeInsets.all(8.0),
                   child: MinMaxTable(
                     headers: tableHeaders,
-                    values: [
-                      plkMinimum.toString(),
-                      plk80.toString(),
-                      plkMax.toString()
-                    ],
+                    values: getPlkBenchmarks(
+                      ptAgeGroups.indexOf(getAgeGroup(age)),
+                      gender == "Male",
+                    ),
                   ),
                 ),
                 Divider(
@@ -1769,14 +1691,13 @@ class AcftPageState extends ConsumerState<AcftPage>
                       'Aerobic Event',
                       style: headerStyle,
                     ),
-                    value: aerobicEvent!,
+                    value: aerobicEvent,
                     items: acftAerobicEvents,
                     onChanged: (value) {
                       setState(() {
                         FocusScope.of(context).unfocus();
                         aerobicEvent = value;
                       });
-                      setBenchmarks();
                       calcRunScore();
                       calcTotal();
                     },
@@ -1786,7 +1707,7 @@ class AcftPageState extends ConsumerState<AcftPage>
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
                     Text(
-                      aerobicEvent!,
+                      aerobicEvent,
                       style: headerStyle,
                     ),
                     Row(
@@ -1846,8 +1767,11 @@ class AcftPageState extends ConsumerState<AcftPage>
                     ),
                     GridBox(
                       title: runScore.toString(),
-                      background: runPass ? backgroundColor : failColor,
-                      textColor: runPass ? getTextColor(context) : Colors.white,
+                      background:
+                          didPassAerobic() ? backgroundColor : failColor,
+                      textColor: didPassAerobic()
+                          ? getTextColor(context)
+                          : Colors.white,
                       width: 60,
                       height: 40,
                       borderBottomLeft: 8,
@@ -1971,11 +1895,7 @@ class AcftPageState extends ConsumerState<AcftPage>
                   padding: const EdgeInsets.all(8.0),
                   child: MinMaxTable(
                     headers: tableHeaders,
-                    values: [
-                      runMinimum.toString(),
-                      run80.toString(),
-                      runMax.toString()
-                    ],
+                    values: getAerobicBenchmarks(),
                   ),
                 ),
                 const Divider(
@@ -1999,9 +1919,10 @@ class AcftPageState extends ConsumerState<AcftPage>
                       ),
                       GridBox(
                         title: total.toString(),
-                        background: totalPass ? backgroundColor : failColor,
-                        textColor:
-                            totalPass ? getTextColor(context) : Colors.white,
+                        background: didPassAcft() ? backgroundColor : failColor,
+                        textColor: didPassAcft()
+                            ? getTextColor(context)
+                            : Colors.white,
                         isTotal: true,
                         borderBottomLeft: 12.0,
                         borderBottomRight: 12.0,
@@ -2045,12 +1966,13 @@ class AcftPageState extends ConsumerState<AcftPage>
                             plkScore: plankScore.toString(),
                             runRaw: '${runMins.toString()}:$runSeconds',
                             runScore: runScore.toString(),
-                            runEvent: aerobicEvent!,
+                            runEvent: aerobicEvent,
                             total: total.toString(),
-                            altPass: runPass ? 1 : 0,
-                            pass: totalPass ? 1 : 0);
+                            altPass: didPassAerobic() ? 1 : 0,
+                            pass: didPassAcft() ? 1 : 0);
                         _saveAcft(context, acft);
                       } else {
+                        purchasesService = ref.read(purchasesProvider);
                         purchasesService.upgradeNeeded(context);
                       }
                     },

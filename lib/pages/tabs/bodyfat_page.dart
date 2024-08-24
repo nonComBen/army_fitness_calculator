@@ -1,6 +1,7 @@
 import 'dart:io';
 
-import 'package:acft_calculator/providers/tracking_provider.dart';
+import '/methods/is_valid_date.dart';
+import '/providers/tracking_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -42,8 +43,7 @@ class _BodyfatPageState extends ConsumerState<BodyfatPage> {
   int? bfPercent, weightMin, weightMax, percentMax, overUnder;
   double? heightDouble;
   double neck = 16.0, waist = 34.0, hip = 34.0;
-  String ageGroup = '17-20';
-  Object gender = 'Male';
+  String gender = 'Male';
   bool bmiPass = true,
       bfPass = true,
       isUnderWeight = false,
@@ -56,8 +56,6 @@ class _BodyfatPageState extends ConsumerState<BodyfatPage> {
       isNewVersion = false,
       is540Exempt = false;
   late SharedPreferences prefs;
-  RegExp regExp = RegExp(r'^\d{4}(0[1-9]|1[012])(0[1-9]|[12][0-9]|3[01])$');
-  DBHelper dbHelper = DBHelper();
   late PurchasesService purchasesService;
   late BannerAd myBanner;
 
@@ -80,8 +78,6 @@ class _BodyfatPageState extends ConsumerState<BodyfatPage> {
   @override
   void initState() {
     super.initState();
-
-    purchasesService = ref.read(purchasesProvider);
     bool trackingAllowed = ref.read(trackingProvider);
     myBanner = BannerAd(
       adUnitId: Platform.isAndroid
@@ -149,7 +145,6 @@ class _BodyfatPageState extends ConsumerState<BodyfatPage> {
     }
 
     _ageController.text = age.toString();
-    ageGroup = getAgeGroup(age);
     heightDouble = height.toDouble();
     _heightController.text = height.toString();
 
@@ -180,8 +175,8 @@ class _BodyfatPageState extends ConsumerState<BodyfatPage> {
   }
 
   void setBenchmarks() {
-    List<int> benchmarks =
-        setBfBenchmarks(gender == 'Male', ageGroups.indexOf(ageGroup), height);
+    List<int> benchmarks = setBfBenchmarks(
+        gender == 'Male', ageGroups.indexOf(getAgeGroup(age)), height);
     setState(() {
       weightMin = benchmarks[0];
       weightMax = benchmarks[1];
@@ -242,6 +237,7 @@ class _BodyfatPageState extends ConsumerState<BodyfatPage> {
   }
 
   _saveBf(BuildContext context, Bodyfat bf) {
+    DBHelper dbHelper = DBHelper();
     final f = DateFormat('yyyyMMdd');
     final date = f.format(DateTime.now());
     final _dateController = TextEditingController(text: date);
@@ -271,7 +267,7 @@ class _BodyfatPageState extends ConsumerState<BodyfatPage> {
                   ),
                   autovalidateMode: AutovalidateMode.onUserInteraction,
                   validator: (value) =>
-                      regExp.hasMatch(value!) ? null : 'Use yyyyMMdd Format',
+                      isValidDate(value!) ? null : 'Use yyyyMMdd Format',
                   keyboardType: TextInputType.numberWithOptions(signed: true),
                   inputFormatters: [
                     FilteringTextInputFormatter.digitsOnly,
@@ -349,7 +345,7 @@ class _BodyfatPageState extends ConsumerState<BodyfatPage> {
                     onChanged: (value) {
                       FocusScope.of(context).unfocus();
                       setState(() {
-                        gender = value!;
+                        gender = value!.toString();
                         setBenchmarks();
                         calcBmi();
                         calcBf();
@@ -384,7 +380,6 @@ class _BodyfatPageState extends ConsumerState<BodyfatPage> {
                           age = raw;
                           isAgeValid = true;
                         }
-                        ageGroup = getAgeGroup(age);
                         setBenchmarks();
                         calcBmi();
                         calcBf();
@@ -406,7 +401,6 @@ class _BodyfatPageState extends ConsumerState<BodyfatPage> {
                             age = 17;
                           }
                           isAgeValid = true;
-                          ageGroup = getAgeGroup(age);
                           _ageController.text = age.toString();
                           setBenchmarks();
                           calcBmi();
@@ -424,7 +418,6 @@ class _BodyfatPageState extends ConsumerState<BodyfatPage> {
                             FocusScope.of(context).unfocus();
                             isAgeValid = true;
                             age = value.floor();
-                            ageGroup = getAgeGroup(age);
                             _ageController.text = age.toString();
                             setBenchmarks();
                             calcBmi();
@@ -442,7 +435,6 @@ class _BodyfatPageState extends ConsumerState<BodyfatPage> {
                             age = 80;
                           }
                           isAgeValid = true;
-                          ageGroup = getAgeGroup(age);
                           _ageController.text = age.toString();
                           setBenchmarks();
                           calcBmi();
@@ -1111,6 +1103,7 @@ class _BodyfatPageState extends ConsumerState<BodyfatPage> {
                         );
                         _saveBf(context, bf);
                       } else {
+                        purchasesService = ref.read(purchasesProvider);
                         purchasesService.upgradeNeeded(context);
                       }
                     },

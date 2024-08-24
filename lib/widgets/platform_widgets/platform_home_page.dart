@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:acft_calculator/methods/acft_age_group.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -96,7 +97,7 @@ class _AndroidHomePageState extends ConsumerState<AndroidHomePage> {
                 Navigator.of(context).push(
                   MaterialPageRoute(
                     builder: (ctx) => AcftTablePage(
-                      ageGroup: AcftPageState.ageGroup,
+                      ageGroup: getAgeGroup(AcftPageState.age),
                       gender: AcftPageState.gender.toString(),
                     ),
                   ),
@@ -236,7 +237,7 @@ class _IOSHomePageState extends ConsumerState<IOSHomePage> {
                           onTap: () => Navigator.of(context).push(
                             MaterialPageRoute(
                               builder: (ctx) => AcftTablePage(
-                                ageGroup: AcftPageState.ageGroup,
+                                ageGroup: getAgeGroup(AcftPageState.age),
                                 gender: AcftPageState.gender.toString(),
                               ),
                             ),

@@ -130,18 +130,6 @@ class _AcftDetailsPageState extends State<AcftDetailsPage> {
   }
 
   void _downloadPdf() {
-    // FToast toast = FToast();
-    // toast.context = context;
-    // toast.showToast(
-    //   child: MyToast(
-    //     contents: [
-    //       Text(
-    //         'PDF Download is temporarily unavailable. Sorry for the inconcenience.',
-    //         style: TextStyle(color: getOnPrimaryColor(context)),
-    //       )
-    //     ],
-    //   ),
-    // );
     showPlatformModalBottomSheet(
       context: context,
       builder: (ctx) => DownloadAcftWidget(widget.acft),
