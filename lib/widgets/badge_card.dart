@@ -1,16 +1,19 @@
 import 'package:acft_calculator/methods/theme_methods.dart';
 import 'package:flutter/material.dart';
 
-import 'platform_widgets/platform_item_picker.dart';
+import '../methods/platform_show_modal_bottom_sheet.dart';
+import 'platform_widgets/platform_outlined_button.dart';
 
 class BadgeCard extends StatelessWidget {
   const BadgeCard({
     Key? key,
+    required this.context,
     this.onLongPressed,
     this.badgeName,
     this.onBadgeChosen,
     this.onSelectedItemChanged,
   }) : super(key: key);
+  final BuildContext context;
   final Function? onLongPressed;
   final String? badgeName;
   final void Function(dynamic)? onBadgeChosen;
@@ -58,6 +61,44 @@ class BadgeCard extends StatelessWidget {
     'Driver/Mech Badge',
   ];
 
+  _showBadges() {
+    showPlatformModalBottomSheet(
+      context: context,
+      builder: (context) {
+        return Container(
+          height: MediaQuery.of(context).size.height * 2 / 3,
+          padding: EdgeInsets.only(
+              left: 8,
+              right: 8,
+              bottom: MediaQuery.of(context).viewInsets.bottom == 0
+                  ? MediaQuery.of(context).padding.bottom
+                  : MediaQuery.of(context).viewInsets.bottom),
+          color: getBackgroundColor(context),
+          child: ListView.builder(
+            controller: ScrollController(),
+            itemCount: BadgeCard.badges.length,
+            itemBuilder: ((context, index) {
+              return Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: PlatformOutlinedButton(
+                    child: Text(
+                      BadgeCard.badges[index],
+                      style: TextStyle(
+                        color: Colors.white,
+                      ),
+                    ),
+                    onPressed: () {
+                      onBadgeChosen!(BadgeCard.badges[index]);
+                      Navigator.pop(context);
+                    }),
+              );
+            }),
+          ),
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -65,17 +106,16 @@ class BadgeCard extends StatelessWidget {
       child: Card(
         color: getContrastingBackgroundColor(context),
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 8.0),
-          child: PlatformItemPicker(
-            value: badgeName!,
-            label: Text(
-              'Badge',
+          padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 22.0),
+          child: PlatformOutlinedButton(
+            child: Text(
+              badgeName!,
               style: TextStyle(
-                color: getTextColor(context),
+                color: Colors.white,
               ),
+              overflow: TextOverflow.ellipsis,
             ),
-            items: badges,
-            onChanged: onBadgeChosen!,
+            onPressed: _showBadges,
           ),
         ),
       ),

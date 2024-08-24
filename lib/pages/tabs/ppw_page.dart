@@ -75,6 +75,7 @@ class _PromotionPointPageState extends ConsumerState<PromotionPointPage> {
       isPtValid = true,
       isWeaponValid = true,
       isPmeComplete = false;
+  final scrollCrontroller = ScrollController();
   late SharedPreferences prefs;
   late TextStyle expansionTextStyle;
   late Color primaryColor;
@@ -497,6 +498,7 @@ class _PromotionPointPageState extends ConsumerState<PromotionPointPage> {
         Padding(
           padding: const EdgeInsets.all(4.0),
           child: DecorationCard(
+            context: context,
             onLongPressed: () => _deleteAwardWarning(i, 'Decoration'),
             decoration: decorations[i],
             onAwardChosen: (value) {
@@ -531,6 +533,7 @@ class _PromotionPointPageState extends ConsumerState<PromotionPointPage> {
       badgeWidgets.add(Padding(
         padding: const EdgeInsets.all(4.0),
         child: BadgeCard(
+          context: context,
           onLongPressed: () => _deleteAwardWarning(i, 'Badge'),
           badgeName: _badges[i]['name'],
           onBadgeChosen: (value) {
@@ -567,6 +570,7 @@ class _PromotionPointPageState extends ConsumerState<PromotionPointPage> {
         children: [
           Expanded(
             child: ListView(
+              controller: scrollCrontroller,
               children: <Widget>[
                 GridView.count(
                     crossAxisCount: width > 700 ? 2 : 1,
