@@ -83,7 +83,7 @@ class _DecorationCardState extends State<DecorationCard> {
                     child: Text(
                       DecorationCard.awards[index],
                       style: TextStyle(
-                        color: Colors.white,
+                        color: getTextColor(context),
                       ),
                     ),
                     onPressed: () {
@@ -107,6 +107,7 @@ class _DecorationCardState extends State<DecorationCard> {
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 8.0),
           child: Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Expanded(
                 flex: 3,
@@ -114,37 +115,38 @@ class _DecorationCardState extends State<DecorationCard> {
                   child: Text(
                     widget.decoration!.name!,
                     style: TextStyle(
-                      color: Colors.white,
+                      color: getTextColor(context),
                     ),
                     overflow: TextOverflow.ellipsis,
                   ),
                   onPressed: _showDecorations,
                 ),
               ),
+              SizedBox(
+                width: 8.0,
+              ),
               Expanded(
                 flex: 1,
-                child: Container(
-                  padding: EdgeInsets.symmetric(vertical: 24.0, horizontal: 8),
-                  child: Center(
-                    child: PlatformTextField(
-                      controller: _awardNumberController,
-                      keyboardType:
-                          TextInputType.numberWithOptions(signed: true),
-                      inputFormatters: [
-                        FilteringTextInputFormatter.digitsOnly,
-                      ],
-                      textInputAction: TextInputAction.done,
-                      textAlign: TextAlign.start,
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.normal,
-                        color: getTextColor(context),
-                      ),
-                      decoration: const InputDecoration(
-                        border: OutlineInputBorder(),
-                      ),
-                      onChanged: widget.onAwardNumberChanged,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 25.0),
+                  child: PlatformTextField(
+                    label: "",
+                    controller: _awardNumberController,
+                    keyboardType: TextInputType.numberWithOptions(signed: true),
+                    inputFormatters: [
+                      FilteringTextInputFormatter.digitsOnly,
+                    ],
+                    textInputAction: TextInputAction.done,
+                    textAlign: TextAlign.start,
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.normal,
+                      color: getTextColor(context),
                     ),
+                    decoration: const InputDecoration(
+                      border: OutlineInputBorder(),
+                    ),
+                    onChanged: widget.onAwardNumberChanged,
                   ),
                 ),
               ),

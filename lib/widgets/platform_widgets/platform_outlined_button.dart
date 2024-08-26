@@ -33,7 +33,7 @@ class AndroidButton extends StatelessWidget implements PlatformOutlinedButton {
           RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(5),
             side: BorderSide(
-              color: Colors.white,
+              color: getTextColor(context),
             ),
           ),
         ),
@@ -56,7 +56,7 @@ class IOSButton extends StatelessWidget implements PlatformOutlinedButton {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        border: Border.all(color: Colors.white),
+        border: Border.all(color: getTextColor(context)),
         borderRadius: BorderRadius.circular(10),
       ),
       child: CupertinoButton(

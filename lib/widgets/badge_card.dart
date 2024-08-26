@@ -84,7 +84,7 @@ class BadgeCard extends StatelessWidget {
                     child: Text(
                       BadgeCard.badges[index],
                       style: TextStyle(
-                        color: Colors.white,
+                        color: getTextColor(context),
                       ),
                     ),
                     onPressed: () {
@@ -111,7 +111,7 @@ class BadgeCard extends StatelessWidget {
             child: Text(
               badgeName!,
               style: TextStyle(
-                color: Colors.white,
+                color: getTextColor(context),
               ),
               overflow: TextOverflow.ellipsis,
             ),

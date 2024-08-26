@@ -1,32 +1,32 @@
-buildscript {
-    ext {
-        kotlinVersion = "1.8.0"
-        androidXVersion = "1.5.+"
-    }
-    repositories {
-        mavenCentral()
-        google()
-        jcenter()
-    }
+// buildscript {
+//     ext {
+//         kotlinVersion = "1.8.0"
+//         androidXVersion = "1.5.+"
+//     }
+//     repositories {
+//         mavenCentral()
+//         google()
+//         jcenter()
+//     }
 
-    dependencies {
-        classpath 'com.android.tools.build:gradle:7.2.0'
-        classpath 'com.google.gms:google-services:4.3.5'
-        classpath 'com.google.firebase:perf-plugin:1.4.1'
-        classpath 'com.google.firebase:firebase-crashlytics-gradle:2.8.1'
-    }
-}
+//     dependencies {
+//         classpath 'com.android.tools.build:gradle:7.2.0'
+//         classpath 'com.google.gms:google-services:4.3.5'
+//         classpath 'com.google.firebase:perf-plugin:1.4.1'
+//         classpath 'com.google.firebase:firebase-crashlytics-gradle:2.8.1'
+//     }
+// }
 
-plugins {
-    id 'org.jetbrains.kotlin.android' version '1.8.0' apply false
-}
+// plugins {
+//     id 'org.jetbrains.kotlin.android' version '1.8.0' apply false
+// }
 
 allprojects {
     repositories {
         google()
         mavenCentral()
-        jcenter()
-        maven { url 'https://jitpack.io' }
+        // jcenter()
+        // maven { url 'https://jitpack.io' }
     }
 }
 

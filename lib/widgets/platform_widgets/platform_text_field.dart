@@ -136,6 +136,7 @@ class IOSTextField extends StatelessWidget implements PlatformTextField {
   @override
   Widget build(BuildContext context) {
     return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
       children: [
         if (label != null)
           SizedBox(

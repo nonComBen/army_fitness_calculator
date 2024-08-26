@@ -42,6 +42,8 @@ class PromotionPointPage extends ConsumerStatefulWidget {
   _PromotionPointPageState createState() => _PromotionPointPageState();
 }
 
+enum AwardType { Decoration, Badge }
+
 class _PromotionPointPageState extends ConsumerState<PromotionPointPage> {
   int ptScore = 0,
       weaponHits = 0,
@@ -430,7 +432,7 @@ class _PromotionPointPageState extends ConsumerState<PromotionPointPage> {
     );
   }
 
-  void _deleteAwardWarning(int index, String awardType) {
+  void _deleteAwardWarning(int index, AwardType awardType) {
     final title = Text('Delete $awardType?');
     final content = Text('Are you sure you want to delete this $awardType?');
     final textStyle = TextStyle(color: onPrimaryColor);
@@ -485,7 +487,12 @@ class _PromotionPointPageState extends ConsumerState<PromotionPointPage> {
     }
   }
 
-  void _deleteAward(int index, String type) {
+  void _deleteAward(int index, AwardType type) {
+    if (type == AwardType.Decoration) {
+      decorations.removeAt(index);
+    } else {
+      _badges.removeAt(index);
+    }
     setState(() {
       _calcTotalPts();
     });
@@ -499,7 +506,7 @@ class _PromotionPointPageState extends ConsumerState<PromotionPointPage> {
           padding: const EdgeInsets.all(4.0),
           child: DecorationCard(
             context: context,
-            onLongPressed: () => _deleteAwardWarning(i, 'Decoration'),
+            onLongPressed: () => _deleteAwardWarning(i, AwardType.Decoration),
             decoration: decorations[i],
             onAwardChosen: (value) {
               setState(() {
@@ -534,7 +541,7 @@ class _PromotionPointPageState extends ConsumerState<PromotionPointPage> {
         padding: const EdgeInsets.all(4.0),
         child: BadgeCard(
           context: context,
-          onLongPressed: () => _deleteAwardWarning(i, 'Badge'),
+          onLongPressed: () => _deleteAwardWarning(i, AwardType.Badge),
           badgeName: _badges[i]['name'],
           onBadgeChosen: (value) {
             setState(() {
