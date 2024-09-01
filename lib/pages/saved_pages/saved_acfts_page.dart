@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 import '../../methods/delete_record.dart';
 import '../../methods/theme_methods.dart';
+import '../../widgets/my_toast.dart';
 import '../../widgets/platform_widgets/platform_icon_button.dart';
 import '../../widgets/platform_widgets/platform_list_tile.dart';
 import '../../widgets/platform_widgets/platform_scaffold.dart';
@@ -43,15 +45,37 @@ class _SavedAcftsPageState extends State<SavedAcftsPage> {
               color: getTextColor(context),
             ),
             onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => AcftChartPage(
-                    acfts: acftList.where((acft) => acft.name == name).toList(),
-                    soldier: rank == '' ? name : '$rank $name',
+              if (acftList.where((acft) => acft.name == name).toList().length >
+                  1) {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => AcftChartPage(
+                      acfts:
+                          acftList.where((acft) => acft.name == name).toList(),
+                      soldier: rank == '' ? name : '$rank $name',
+                    ),
                   ),
-                ),
-              );
+                );
+              } else {
+                FToast toast = FToast();
+                toast.context = context;
+                toast.showToast(
+                  child: MyToast(
+                    contents: [
+                      Expanded(
+                        child: Text(
+                          'Must have more than one data point to chart progress.',
+                          style: TextStyle(
+                            color: getOnPrimaryColor(context),
+                          ),
+                          textAlign: TextAlign.left,
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+              }
             },
           )
         ],

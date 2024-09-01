@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 import '../../methods/theme_methods.dart';
+import '../../widgets/my_toast.dart';
 import '../../widgets/platform_widgets/platform_icon_button.dart';
 import '../../widgets/platform_widgets/platform_list_tile.dart';
 import '../chart_pages/ppw_charts_page.dart';
@@ -47,15 +49,36 @@ class _SavedPpwsPageState extends State<SavedPpwsPage> {
               color: getTextColor(context),
             ),
             onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => PpwChartPage(
-                    ppws: ppwList.where((ppw) => ppw.name == name).toList(),
-                    soldier: name,
+              if (ppwList.where((ppw) => ppw.name == name).toList().length >
+                  1) {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => PpwChartPage(
+                      ppws: ppwList.where((ppw) => ppw.name == name).toList(),
+                      soldier: name,
+                    ),
                   ),
-                ),
-              );
+                );
+              } else {
+                FToast toast = FToast();
+                toast.context = context;
+                toast.showToast(
+                  child: MyToast(
+                    contents: [
+                      Expanded(
+                        child: Text(
+                          'Must have more than one data point to chart progress.',
+                          style: TextStyle(
+                            color: getOnPrimaryColor(context),
+                          ),
+                          textAlign: TextAlign.left,
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+              }
             },
           )
         ],

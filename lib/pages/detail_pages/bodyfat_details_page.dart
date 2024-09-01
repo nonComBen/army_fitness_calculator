@@ -139,41 +139,6 @@ class _BodyfatDetailsPageState extends State<BodyfatDetailsPage> {
     );
   }
 
-  // takeScreenshot() async {
-  //   bool permissionGranted;
-  //   if (Platform.isAndroid) {
-  //     permissionGranted = await Permission.storage.request().isGranted;
-  //   } else {
-  //     permissionGranted = await Permission.photos.request().isGranted;
-  //   }
-
-  //   if (permissionGranted) {
-  //     try {
-  //       RenderRepaintBoundary boundary =
-  //           previewContainer.currentContext.findRenderObject();
-  //       ui.Image image = await boundary.toImage();
-  //       ByteData byteData =
-  //           await image.toByteData(format: ui.ImageByteFormat.png);
-  //       Uint8List pngBytes = byteData.buffer.asUint8List();
-  //       await PhotosSaver.saveFile(fileData: pngBytes);
-  //       String location =
-  //           Platform.isAndroid ? 'Gallery Album "Pictures"' : 'Photos';
-  //       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-  //         content: Text('Image saved to $location'),
-  //       ));
-  //     } catch (e) {
-  //       print('Error: $e');
-  //       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-  //         content: Text('Failed to save image'),
-  //       ));
-  //     }
-  //   } else {
-  //     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-  //       content: Text('You must allow permission to save screenshot'),
-  //     ));
-  //   }
-  // }
-
   Widget measurements(double width) {
     if (widget.bf.is540Exempt == 1) {
       return Column(

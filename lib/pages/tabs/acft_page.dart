@@ -85,7 +85,7 @@ class AcftPageState extends ConsumerState<AcftPage>
     fontSize: 22.0,
     fontWeight: FontWeight.bold,
   );
-  late BannerAd myBanner;
+  BannerAd? myBanner;
 
   final _ageController = TextEditingController();
   final _mdlController = TextEditingController();
@@ -267,7 +267,9 @@ class AcftPageState extends ConsumerState<AcftPage>
     _runMinsFocus.dispose();
     _runSecsFocus.dispose();
 
-    myBanner.dispose();
+    if (myBanner != null) {
+      myBanner!.dispose();
+    }
   }
 
   void calcAll() {
@@ -495,7 +497,7 @@ class AcftPageState extends ConsumerState<AcftPage>
         request: AdRequest(nonPersonalizedAds: !trackingAllowed),
       );
 
-      myBanner.load();
+      myBanner!.load();
     }
 
     final backgroundColor = getBackgroundColor(context);
@@ -1986,10 +1988,10 @@ class AcftPageState extends ConsumerState<AcftPage>
               constraints: const BoxConstraints(maxHeight: 90),
               alignment: Alignment.center,
               child: AdWidget(
-                ad: myBanner,
+                ad: myBanner!,
               ),
-              width: myBanner.size.width.toDouble(),
-              height: myBanner.size.height.toDouble(),
+              width: myBanner!.size.width.toDouble(),
+              height: myBanner!.size.height.toDouble(),
             ),
         ],
       ),

@@ -283,43 +283,6 @@ class _AcftDetailsPageState extends State<AcftDetailsPage> {
     return PlatformScaffold(
       title: 'ACFT Details',
       actions: actions(width),
-      // <Widget>[
-      //   if (Platform.isIOS)
-      //     PlatformIconButton(
-      //       onPressed: () {
-      //         _updateAcft(context, widget.acft);
-      //       },
-      //       icon: Icon(
-      //         Icons.edit,
-      //         color: getOnPrimaryColor(context),
-      //       ),
-      //     ),
-      //   PlatformIconButton(
-      //     onPressed: _downloadPdf,
-      //     icon: Icon(
-      //       Icons.picture_as_pdf,
-      //       color: getOnPrimaryColor(context),
-      //     ),
-      //   ),
-      //   PlatformIconButton(
-      //     icon: Icon(
-      //       Icons.delete,
-      //       color: getOnPrimaryColor(context),
-      //     ),
-      //     onPressed: () {
-      //       DeleteRecord.deleteRecord(
-      //           context: context,
-      //           onConfirm: () {
-      //             Navigator.pop(context);
-      //             dbHelper.deleteAcft(widget.acft.id);
-      //             Navigator.pushReplacement(
-      //               context,
-      //               MaterialPageRoute(builder: (context) => SavedAcftsPage()),
-      //             );
-      //           });
-      //     },
-      //   ),
-      // ],
       floatingActionButton: FloatingActionButton(
         child: const Icon(Icons.edit),
         onPressed: () {
