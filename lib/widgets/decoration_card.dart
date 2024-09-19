@@ -130,7 +130,6 @@ class _DecorationCardState extends State<DecorationCard> {
                 child: Padding(
                   padding: const EdgeInsets.symmetric(vertical: 25.0),
                   child: PlatformTextField(
-                    label: "",
                     controller: _awardNumberController,
                     keyboardType: TextInputType.numberWithOptions(signed: true),
                     inputFormatters: [

@@ -4,9 +4,9 @@ final premiumStateProvider =
     StateNotifierProvider<PremiumState, bool>((ref) => PremiumState());
 
 class PremiumState extends StateNotifier<bool> {
-  PremiumState() : super(true);
+  PremiumState() : super(false);
 
   void setState(bool isPremium) {
-    // state = isPremium;
+    state = isPremium;
   }
 }
