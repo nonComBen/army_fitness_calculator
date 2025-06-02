@@ -17,9 +17,11 @@ import '../../providers/tracking_provider.dart';
 import '../../widgets/header_text.dart';
 import '../../widgets/my_toast.dart';
 import '../../widgets/platform_widgets/platform_list_tile.dart';
+import '../acft_page.dart';
 import '../mdl_setup_page.dart';
 import '../privacy_policy_page.dart';
 import '../saved_pages/saved_acfts_page.dart';
+import '../saved_pages/saved_afts_page.dart';
 import '../saved_pages/saved_apfts_page.dart';
 import '../saved_pages/saved_bodyfats_page.dart';
 import '../saved_pages/saved_ppw_page.dart';
@@ -63,6 +65,21 @@ class OverflowTab extends ConsumerWidget {
                   child: HeaderText(
                     text: 'Premium',
                   ),
+                ),
+                PlatformListTile(
+                  title: const Text('Saved AFT Scores'),
+                  leading: Icon(
+                    Icons.fitness_center,
+                    color: getTextColor(context),
+                  ),
+                  onTap: () {
+                    if (isPremium) {
+                      Navigator.of(context, rootNavigator: true)
+                          .pushNamed(SavedAftsPage.routeName);
+                    } else {
+                      purchasesService.upgradeNeeded(context);
+                    }
+                  },
                 ),
                 PlatformListTile(
                   title: const Text('Saved ACFT Scores'),
@@ -129,7 +146,7 @@ class OverflowTab extends ConsumerWidget {
                   child: HeaderText(text: 'Instructions'),
                 ),
                 PlatformListTile(
-                  title: const Text('ACFT Instructions'),
+                  title: const Text('ACFT/AFT Instructions'),
                   leading: Icon(
                     Icons.fitness_center,
                     color: getTextColor(context),
@@ -188,6 +205,15 @@ class OverflowTab extends ConsumerWidget {
                   child: HeaderText(
                     text: 'Other',
                   ),
+                ),
+                PlatformListTile(
+                  title: const Text('ACFT Calculator'),
+                  leading: Icon(
+                    Icons.fitness_center,
+                    color: getTextColor(context),
+                  ),
+                  onTap: () => Navigator.of(context, rootNavigator: true)
+                      .pushNamed(AcftPage.routeName),
                 ),
                 PlatformListTile(
                   title: const Text('APFT Calculator'),

@@ -9,6 +9,7 @@ import './ppw.dart';
 import './acft.dart';
 import './apft.dart';
 import './bodyfat.dart';
+import 'aft.dart';
 
 class DBHelper {
   static Database? _db;
@@ -24,6 +25,7 @@ class DBHelper {
   static const String PASS = 'pass';
 
   static const String ACFT_TABLE = 'AcftTable';
+  static const String AFT_TABLE = 'AftTable';
   static const String PHYS_CAT = 'physCat';
   static const String MDL_RAW = 'mdlRaw';
   static const String MDL_SCORE = 'mdlScore';
@@ -99,7 +101,7 @@ class DBHelper {
     String path = join(documentsDirectory.path, DB_NAME);
     var db = await openDatabase(
       path,
-      version: 6,
+      version: 7,
       onCreate: _onCreate,
       onUpgrade: _onUpgrade,
     );
@@ -107,6 +109,11 @@ class DBHelper {
   }
 
   _onCreate(Database db, int version) async {
+    await db.execute(
+        "CREATE TABLE IF NOT EXISTS $AFT_TABLE ($ID INTEGER PRIMARY KEY, $DATE TEXT, $RANK TEXT, $NAME TEXT, $GENDER TEXT, $AGE TEXT, $MDL_RAW TEXT,"
+        "$MDL_SCORE TEXT, $HRP_RAW TEXT, $HRP_SCORE TEXT, $SDC_RAW TEXT, $SDC_SCORE TEXT, "
+        "$LTK_RAW TEXT, $LTK_SCORE TEXT, $RUN_RAW TEXT, $RUN_SCORE TEXT, $RUN_EVENT TEXT, $ALT_PASS INTEGER, $TOTAL TEXT, $PASS INTEGER)");
+
     await db.execute(
         "CREATE TABLE IF NOT EXISTS $ACFT_TABLE ($ID INTEGER PRIMARY KEY, $DATE TEXT, $RANK TEXT, $NAME TEXT, $GENDER TEXT, $AGE TEXT, $MDL_RAW TEXT,"
         "$MDL_SCORE TEXT, $SPT_RAW TEXT, $SPT_SCORE TEXT, $HRP_RAW TEXT, $HRP_SCORE TEXT, $SDC_RAW TEXT, $SDC_SCORE TEXT, "
@@ -217,6 +224,42 @@ class DBHelper {
         print('SQLite Error: $e');
       }
     }
+    if (oldVersion < 7) {
+      try {
+        await db.execute(
+            "CREATE TABLE IF NOT EXISTS $AFT_TABLE ($ID INTEGER PRIMARY KEY, $DATE TEXT, $RANK TEXT, $NAME TEXT, $GENDER TEXT, $AGE TEXT, $MDL_RAW TEXT,"
+            "$MDL_SCORE TEXT, $HRP_RAW TEXT, $HRP_SCORE TEXT, $SDC_RAW TEXT, $SDC_SCORE TEXT, "
+            "$LTK_RAW TEXT, $LTK_SCORE TEXT, $RUN_RAW TEXT, $RUN_SCORE TEXT, $RUN_EVENT TEXT, $ALT_PASS INTEGER, $TOTAL TEXT, $PASS INTEGER)");
+      } on Exception catch (e) {
+        print('SQLite Error: $e');
+      }
+    }
+  }
+
+  //AFT functions
+  Future<void> saveAft(Aft aft) async {
+    var dbClient = await db;
+    aft.id = await dbClient!.insert(AFT_TABLE, aft.toMap());
+  }
+
+  Future<List<Aft>> getAfts() async {
+    var dbClient = await db;
+    List<Map> maps = await dbClient!
+        .rawQuery("SELECT * FROM $AFT_TABLE ORDER BY $NAME, $DATE ASC");
+    List<Aft> afts =
+        maps.map((e) => Aft.fromMap(e as Map<String, dynamic>)).toList();
+    return afts;
+  }
+
+  Future<int> deleteAft(int? id) async {
+    var dbClient = await db;
+    return await dbClient!.delete(AFT_TABLE, where: '$ID = ?', whereArgs: [id]);
+  }
+
+  Future<int> updateAft(Aft aft) async {
+    var dbClient = await db;
+    return await dbClient!
+        .update(AFT_TABLE, aft.toMap(), where: '$ID = ?', whereArgs: [aft.id]);
   }
 
   //ACFT functions

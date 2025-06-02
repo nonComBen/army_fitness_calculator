@@ -1,5 +1,5 @@
 import 'package:acft_calculator/methods/theme_methods.dart';
-import 'package:acft_calculator/pages/tabs/acft_page.dart';
+import 'package:acft_calculator/pages/tabs/aft_page.dart';
 import 'package:acft_calculator/pages/tabs/bodyfat_page.dart';
 import 'package:acft_calculator/pages/tabs/overflow_tab.dart';
 import 'package:acft_calculator/pages/tabs/ppw_page.dart';
@@ -9,13 +9,13 @@ import 'package:flutter/material.dart';
 import 'package:pull_down_button/pull_down_button.dart';
 
 List<Widget> pages = [
-  AcftPage(),
+  AftPage(),
   BodyfatPage(),
   PromotionPointPage(),
   OverflowTab(),
 ];
 List<String> titles = const [
-  AcftPage.title,
+  AftPage.title,
   BodyfatPage.title,
   PromotionPointPage.title,
   OverflowTab.title,

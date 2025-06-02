@@ -37,10 +37,11 @@ class MyLineChart extends StatelessWidget {
               sideTitles: SideTitles(showTitles: false),
             ),
             leftTitles: AxisTitles(
+              axisNameSize: 24,
               sideTitles: SideTitles(
                 showTitles: true,
                 interval: 50,
-                reservedSize: 28,
+                reservedSize: 40,
                 getTitlesWidget: (value, meta) => Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 2.0),
                   child: Text(value.toInt().toString()),
@@ -49,7 +50,7 @@ class MyLineChart extends StatelessWidget {
             ),
             rightTitles: AxisTitles(
               sideTitles: SideTitles(
-                showTitles: true,
+                showTitles: false,
                 interval: 50,
                 reservedSize: 28,
                 getTitlesWidget: (value, meta) => Padding(
@@ -62,7 +63,7 @@ class MyLineChart extends StatelessWidget {
               sideTitles: SideTitles(
                 showTitles: true,
                 interval: (dates.last - dates.first) / 4,
-                reservedSize: 82,
+                reservedSize: 100,
                 getTitlesWidget: (value, meta) {
                   if (value != meta.max &&
                       (dates.last - value) < ((dates.last - dates.first) / 8)) {

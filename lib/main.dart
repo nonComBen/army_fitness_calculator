@@ -23,6 +23,8 @@ import '../providers/shared_preferences_provider.dart';
 import '../providers/theme_provider.dart';
 import '../widgets/platform_widgets/platform_app.dart';
 import '../widgets/platform_widgets/platform_home_page.dart';
+import 'pages/acft_page.dart';
+import 'pages/saved_pages/saved_afts_page.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -52,11 +54,13 @@ class MyApp extends ConsumerWidget {
         title: 'Army Fitness Calculator',
         themeData: themeState,
         routes: {
+          AcftPage.routeName: (ctx) => AcftPage(),
           ApftPage.routeName: (ctx) => ApftPage(),
           MdlSetupPage.routeName: (ctx) => MdlSetupPage(),
           PrivacyPolicyPage.routeName: (ctx) => PrivacyPolicyPage(),
           SettingsPage.routeName: (ctx) => SettingsPage(),
           SavedAcftsPage.routeName: (ctx) => SavedAcftsPage(),
+          SavedAftsPage.routeName: (ctx) => SavedAftsPage(),
           SavedApftsPage.routeName: (ctx) => SavedApftsPage(),
           SavedBodyfatsPage.routeName: (ctx) => SavedBodyfatsPage(),
           SavedPpwsPage.routeName: (ctx) => SavedPpwsPage(),

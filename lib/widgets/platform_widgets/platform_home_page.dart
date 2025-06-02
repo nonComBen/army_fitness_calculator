@@ -1,6 +1,5 @@
 import 'dart:io';
 
-import 'package:acft_calculator/methods/acft_age_group.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -9,10 +8,9 @@ import 'package:rate_my_app/rate_my_app.dart';
 
 import '../../pages/mdl_setup_page.dart';
 import '../../methods/theme_methods.dart';
-import '../../pages/tabs/acft_page.dart';
+import '../../pages/tabs/aft_page.dart';
 import '../../pages/tabs/bodyfat_page.dart';
 import '../../pages/tabs/ppw_page.dart';
-import '../../pages/table_pages/acft_table_page.dart';
 import '../../pages/tabs/overflow_tab.dart';
 import 'platform_icon_button.dart';
 
@@ -37,13 +35,13 @@ class AndroidHomePage extends ConsumerStatefulWidget
 class _AndroidHomePageState extends ConsumerState<AndroidHomePage> {
   int index = 0;
   List<Widget> pages = [
-    AcftPage(),
+    AftPage(),
     BodyfatPage(),
     PromotionPointPage(),
     OverflowTab(),
   ];
   List<String> titles = const [
-    AcftPage.title,
+    AftPage.title,
     BodyfatPage.title,
     PromotionPointPage.title,
     OverflowTab.title,
@@ -91,20 +89,20 @@ class _AndroidHomePageState extends ConsumerState<AndroidHomePage> {
                   Navigator.of(context).pushNamed(MdlSetupPage.routeName),
               icon: Icon(Icons.fitness_center),
             ),
-          if (index == 0)
-            PlatformIconButton(
-              onPressed: () {
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (ctx) => AcftTablePage(
-                      ageGroup: getAgeGroup(AcftPageState.age),
-                      gender: AcftPageState.gender.toString(),
-                    ),
-                  ),
-                );
-              },
-              icon: Icon(Icons.table_chart),
-            ),
+          // if (index == 0)
+          //   PlatformIconButton(
+          //     onPressed: () {
+          //       Navigator.of(context).push(
+          //         MaterialPageRoute(
+          //           builder: (ctx) => AcftTablePage(
+          //             ageGroup: getAgeGroup(AftPageState.age),
+          //             gender: AftPageState.gender.toString(),
+          //           ),
+          //         ),
+          //       );
+          //     },
+          //     icon: Icon(Icons.table_chart),
+          //   ),
         ],
       ),
       bottomNavigationBar: NavigationBar(
@@ -185,13 +183,13 @@ class _IOSHomePageState extends ConsumerState<IOSHomePage> {
   @override
   Widget build(BuildContext context) {
     final tabs = [
-      AcftPage(),
+      AftPage(),
       BodyfatPage(),
       PromotionPointPage(),
       OverflowTab(),
     ];
     final titles = [
-      AcftPage.title,
+      AftPage.title,
       BodyfatPage.title,
       PromotionPointPage.title,
       OverflowTab.title,
@@ -233,17 +231,17 @@ class _IOSHomePageState extends ConsumerState<IOSHomePage> {
                                   .pushNamed(MdlSetupPage.routeName),
                           title: 'MDL Setup',
                         ),
-                        PullDownMenuItem(
-                          onTap: () => Navigator.of(context).push(
-                            MaterialPageRoute(
-                              builder: (ctx) => AcftTablePage(
-                                ageGroup: getAgeGroup(AcftPageState.age),
-                                gender: AcftPageState.gender.toString(),
-                              ),
-                            ),
-                          ),
-                          title: 'ACFT Table',
-                        )
+                        // PullDownMenuItem(
+                        //   onTap: () => Navigator.of(context).push(
+                        //     MaterialPageRoute(
+                        //       builder: (ctx) => AcftTablePage(
+                        //         ageGroup: getAgeGroup(AftPageState.age),
+                        //         gender: AftPageState.gender.toString(),
+                        //       ),
+                        //     ),
+                        //   ),
+                        //   title: 'ACFT Table',
+                        // )
                       ],
                       buttonBuilder: (context, showMenu) => PlatformIconButton(
                         icon: Icon(

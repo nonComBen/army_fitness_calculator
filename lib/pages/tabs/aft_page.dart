@@ -8,6 +8,12 @@ import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:intl/intl.dart';
 
+import '../../calculators/aft_calculator.dart';
+import '../../calculators/aft_hrp_calculator.dart';
+import '../../calculators/aft_mdl_calculator.dart';
+import '../../calculators/aft_plk_calculator.dart';
+import '../../calculators/aft_run_calculator.dart';
+import '../../calculators/aft_sdc_calculator.dart';
 import '../../methods/acft_age_group.dart';
 import '../../providers/premium_state_provider.dart';
 import '../../methods/platform_show_modal_bottom_sheet.dart';
@@ -15,23 +21,15 @@ import '../../methods/theme_methods.dart';
 import '../../providers/purchases_provider.dart';
 import '../../providers/tracking_provider.dart';
 import '../../services/purchases_service.dart';
+import '../../sqlite/aft.dart';
 import '../../widgets/button_text.dart';
 import '../../widgets/min_max_table.dart';
 import '../../widgets/platform_widgets/platform_button.dart';
 import '../../sqlite/db_helper.dart';
-import '../../sqlite/acft.dart';
-import '../../calculators/2mr_calculator.dart';
-import '../../calculators/acft_calculator.dart';
-import '../../calculators/spt_calculator.dart';
-import '../../calculators/hrp_calculator.dart';
-import '../../calculators/mdl_calculator.dart';
-import '../../calculators/plk_calculator.dart';
-import '../../calculators/sdc_calculator.dart';
 import '../../providers/shared_preferences_provider.dart';
 import '../../widgets/platform_widgets/platform_checkbox_list_tile.dart';
 import '../../widgets/platform_widgets/platform_slider.dart';
 import '../../widgets/platform_widgets/platform_text_field.dart';
-import '../saved_pages/saved_acfts_page.dart';
 import '../../widgets/platform_widgets/platform_item_picker.dart';
 import '../../widgets/platform_widgets/platform_selection_widget.dart';
 import '../../widgets/grid_box.dart';
@@ -39,18 +37,18 @@ import '../../widgets/increment_decrement_button.dart';
 import '../../constants/pt_age_group_table.dart';
 import '../../constants/acft_aerobic_event_table.dart';
 import '../../widgets/value_input_field.dart';
+import '../saved_pages/saved_afts_page.dart';
 
-class AcftPage extends ConsumerStatefulWidget {
-  AcftPage();
+class AftPage extends ConsumerStatefulWidget {
+  AftPage();
 
-  static const String title = 'ACFT Calculator';
+  static const String title = 'AFT Calculator';
 
   @override
-  AcftPageState createState() => AcftPageState();
+  AftPageState createState() => AftPageState();
 }
 
-class AcftPageState extends ConsumerState<AcftPage>
-    with WidgetsBindingObserver {
+class AftPageState extends ConsumerState<AftPage> with WidgetsBindingObserver {
   static int age = 22;
   int mdlRaw = 300,
       hrpRaw = 50,
@@ -60,10 +58,9 @@ class AcftPageState extends ConsumerState<AcftPage>
       plankSecs = 48,
       runMins = 15,
       runSecs = 0;
-  int? mdlScore, sptScore, hrpScore, sdcScore, plankScore, runScore, total;
+  int? mdlScore, hrpScore, sdcScore, plankScore, runScore, total;
   bool isAgeValid = true,
       isMdlValid = true,
-      isSptValid = true,
       isHrpValid = true,
       isSdcMinsValid = true,
       isSdcSecsValid = true,
@@ -76,7 +73,6 @@ class AcftPageState extends ConsumerState<AcftPage>
       hasHrpProfile = false,
       hasSdcProfile = false,
       hasPlkProfile = false;
-  double sptRaw = 11.0;
   static String gender = 'Male';
   String aerobicEvent = 'Run';
   List<String> tableHeaders = ['Min', '80%', 'Max'];
@@ -89,7 +85,6 @@ class AcftPageState extends ConsumerState<AcftPage>
 
   final _ageController = TextEditingController();
   final _mdlController = TextEditingController();
-  final _sptController = TextEditingController();
   final _hrpController = TextEditingController();
   final _sdcMinsController = TextEditingController();
   final _sdcSecsController = TextEditingController();
@@ -100,7 +95,6 @@ class AcftPageState extends ConsumerState<AcftPage>
 
   final _ageFocus = FocusNode();
   final _mdlFocus = FocusNode();
-  final _sptFocus = FocusNode();
   final _hrpFocus = FocusNode();
   final _sdcMinsFocus = FocusNode();
   final _sdcSecsFocus = FocusNode();
@@ -129,7 +123,6 @@ class AcftPageState extends ConsumerState<AcftPage>
     // myBanner.load();
 
     mdlRaw = prefs.getInt('mdlRaw') ?? 300;
-    sptRaw = prefs.getDouble('sptRaw') ?? 11.0;
     hrpRaw = prefs.getInt('hrpRaw') ?? 50;
     sdcMins = prefs.getInt('sdcMins') ?? 1;
     sdcSecs = prefs.getInt('sdcSecs') ?? 50;
@@ -139,7 +132,6 @@ class AcftPageState extends ConsumerState<AcftPage>
     runSecs = prefs.getInt('runSecs') ?? 0;
 
     _mdlController.text = mdlRaw.toString();
-    _sptController.text = sptRaw.toString();
     _hrpController.text = hrpRaw.toString();
     _sdcMinsController.text = sdcMins.toString();
     _sdcSecsController.text = sdcSecs.toString();
@@ -158,12 +150,6 @@ class AcftPageState extends ConsumerState<AcftPage>
       if (_mdlFocus.hasFocus) {
         _mdlController.selection = TextSelection(
             baseOffset: 0, extentOffset: _mdlController.text.length);
-      }
-    });
-    _sptFocus.addListener(() {
-      if (_sptFocus.hasFocus) {
-        _sptController.selection = TextSelection(
-            baseOffset: 0, extentOffset: _sptController.text.length);
       }
     });
     _hrpFocus.addListener(() {
@@ -228,7 +214,6 @@ class AcftPageState extends ConsumerState<AcftPage>
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.paused) {
       prefs.setInt('mdlRaw', mdlRaw);
-      prefs.setDouble('sptRaw', sptRaw);
       prefs.setInt('hrpRaw', hrpRaw);
       prefs.setInt('sdcMins', sdcMins);
       prefs.setInt('sdcSecs', sdcSecs);
@@ -247,7 +232,6 @@ class AcftPageState extends ConsumerState<AcftPage>
 
     _ageController.dispose();
     _mdlController.dispose();
-    _sptController.dispose();
     _hrpController.dispose();
     _sdcMinsController.dispose();
     _sdcSecsController.dispose();
@@ -258,7 +242,6 @@ class AcftPageState extends ConsumerState<AcftPage>
 
     _ageFocus.dispose();
     _mdlFocus.dispose();
-    _sptFocus.dispose();
     _hrpFocus.dispose();
     _sdcMinsFocus.dispose();
     _sdcSecsFocus.dispose();
@@ -273,16 +256,22 @@ class AcftPageState extends ConsumerState<AcftPage>
   }
 
   void calcAll() {
-    mdlScore = getMdlScore(
-        mdlRaw, ptAgeGroups.indexOf(getAgeGroup(age)) + 1, gender == 'Male');
-    sptScore = getSptScore(
-        sptRaw, ptAgeGroups.indexOf(getAgeGroup(age)) + 1, gender == 'Male');
-    hrpScore = getHrpScore(
-        hrpRaw, ptAgeGroups.indexOf(getAgeGroup(age)) + 1, gender == 'Male');
-    sdcScore = getSdcScore(getTimeAsInt(sdcMins, sdcSecs),
-        ptAgeGroups.indexOf(getAgeGroup(age)) + 1, gender == 'Male');
-    plankScore = getPlkScore(getTimeAsInt(plankMins, plankSecs),
-        ptAgeGroups.indexOf(getAgeGroup(age)) + 1, gender == 'Male');
+    mdlScore = getAftMdlScore(
+        weight: mdlRaw,
+        ageGroup: ptAgeGroups.indexOf(getAgeGroup(age)) + 1,
+        male: gender == 'Male');
+    hrpScore = getAftHrpScore(
+        pushups: hrpRaw,
+        ageGroup: ptAgeGroups.indexOf(getAgeGroup(age)) + 1,
+        male: gender == 'Male');
+    sdcScore = getAftSdcScore(
+        time: getTimeAsInt(sdcMins, sdcSecs),
+        ageGroup: ptAgeGroups.indexOf(getAgeGroup(age)) + 1,
+        male: gender == 'Male');
+    plankScore = getAftPlkScore(
+        time: getTimeAsInt(plankMins, plankSecs),
+        ageGroup: ptAgeGroups.indexOf(getAgeGroup(age)) + 1,
+        male: gender == 'Male');
     calcRunScore();
     calcTotal();
   }
@@ -294,7 +283,7 @@ class AcftPageState extends ConsumerState<AcftPage>
     );
     switch (aerobicEvent) {
       case "Run":
-        return get2mrBenchmarks(
+        return getAft2mrBenchmarks(
           ptAgeGroups.indexOf(getAgeGroup(age)),
           gender == "Male",
         );
@@ -323,7 +312,7 @@ class AcftPageState extends ConsumerState<AcftPage>
           '-',
         ];
       default:
-        return get2mrBenchmarks(
+        return getAft2mrBenchmarks(
           ptAgeGroups.indexOf(getAgeGroup(age)),
           gender == "Male",
         );
@@ -339,8 +328,11 @@ class AcftPageState extends ConsumerState<AcftPage>
   void calcRunScore() {
     int time = getTimeAsInt(runMins, runSecs);
     if (aerobicEvent == 'Run') {
-      runScore = get2mrScore(
-          time, ptAgeGroups.indexOf(getAgeGroup(age)) + 1, gender == 'Male');
+      runScore = getAft2mrScore(
+        time: time,
+        ageGroup: ptAgeGroups.indexOf(getAgeGroup(age)) + 1,
+        male: gender == 'Male',
+      );
     } else {
       final runMinimum = getAerobicBenchmarks()[0];
       int min = int.tryParse(runMinimum.replaceRange(2, 3, "")) ?? 0;
@@ -354,21 +346,12 @@ class AcftPageState extends ConsumerState<AcftPage>
 
   void calcTotal() {
     setState(() {
-      total = mdlScore! +
-          sptScore! +
-          hrpScore! +
-          sdcScore! +
-          plankScore! +
-          runScore!;
+      total = mdlScore! + hrpScore! + sdcScore! + plankScore! + runScore!;
     });
   }
 
   bool didPassMdl() {
     return mdlScore! >= 60 || hasMdlProfile;
-  }
-
-  bool didPassSpt() {
-    return sptScore! >= 60 || hasSptProfile;
   }
 
   bool didPassHrp() {
@@ -389,14 +372,13 @@ class AcftPageState extends ConsumerState<AcftPage>
 
   bool didPassAcft() {
     return didPassMdl() &&
-        didPassSpt() &&
         didPassHrp() &&
         didPassSdc() &&
         didPassPlk() &&
         didPassAerobic();
   }
 
-  _saveAcft(BuildContext context, Acft acft) {
+  _saveAft(BuildContext context, Aft aft) {
     DBHelper dbHelper = DBHelper();
     final f = DateFormat('yyyyMMdd');
     final date = f.format(DateTime.now());
@@ -464,13 +446,13 @@ class AcftPageState extends ConsumerState<AcftPage>
                 child: PlatformButton(
                   child: ButtonText(text: 'Save'),
                   onPressed: (() {
-                    acft.date = _dateController.text;
-                    acft.rank = _rankController.text;
-                    acft.name = _nameController.text;
-                    dbHelper.saveAcft(acft);
+                    aft.date = _dateController.text;
+                    aft.rank = _rankController.text;
+                    aft.name = _nameController.text;
+                    dbHelper.saveAft(aft);
                     Navigator.of(ctx).pop();
                     Navigator.of(context, rootNavigator: true)
-                        .pushNamed(SavedAcftsPage.routeName);
+                        .pushNamed(SavedAftsPage.routeName);
                   }),
                 ),
               )
@@ -619,7 +601,7 @@ class AcftPageState extends ConsumerState<AcftPage>
                       width: 60,
                       controller: _mdlController,
                       focusNode: _mdlFocus,
-                      onEditingComplete: () => _sptFocus.requestFocus(),
+                      onEditingComplete: () => _hrpFocus.requestFocus(),
                       errorText: isMdlValid ? null : '0-400',
                       onChanged: (value) {
                         int raw = int.tryParse(value) ?? 0;
@@ -635,10 +617,10 @@ class AcftPageState extends ConsumerState<AcftPage>
                           mdlRaw = raw;
                           isMdlValid = true;
                         }
-                        mdlScore = getMdlScore(
-                            mdlRaw,
-                            ptAgeGroups.indexOf(getAgeGroup(age)) + 1,
-                            gender == 'Male');
+                        mdlScore = getAftMdlScore(
+                            weight: mdlRaw,
+                            ageGroup: ptAgeGroups.indexOf(getAgeGroup(age)) + 1,
+                            male: gender == 'Male');
                         calcTotal();
                       },
                     ),
@@ -672,10 +654,11 @@ class AcftPageState extends ConsumerState<AcftPage>
                           }
                           _mdlController.text = mdlRaw.toString();
                           isMdlValid = true;
-                          mdlScore = getMdlScore(
-                              mdlRaw,
-                              ptAgeGroups.indexOf(getAgeGroup(age)) + 1,
-                              gender == 'Male');
+                          mdlScore = getAftMdlScore(
+                              weight: mdlRaw,
+                              ageGroup:
+                                  ptAgeGroups.indexOf(getAgeGroup(age)) + 1,
+                              male: gender == 'Male');
                           calcTotal();
                         },
                       ),
@@ -696,10 +679,11 @@ class AcftPageState extends ConsumerState<AcftPage>
                             }
                             _mdlController.text = mdlRaw.toString();
                             isMdlValid = true;
-                            mdlScore = getMdlScore(
-                                mdlRaw,
-                                ptAgeGroups.indexOf(getAgeGroup(age)) + 1,
-                                gender == 'Male');
+                            mdlScore = getAftMdlScore(
+                                weight: mdlRaw,
+                                ageGroup:
+                                    ptAgeGroups.indexOf(getAgeGroup(age)) + 1,
+                                male: gender == 'Male');
                             calcTotal();
                           },
                         ),
@@ -718,10 +702,11 @@ class AcftPageState extends ConsumerState<AcftPage>
                             }
                           }
                           _mdlController.text = mdlRaw.toString();
-                          mdlScore = getMdlScore(
-                              mdlRaw,
-                              ptAgeGroups.indexOf(getAgeGroup(age)) + 1,
-                              gender == 'Male');
+                          mdlScore = getAftMdlScore(
+                              weight: mdlRaw,
+                              ageGroup:
+                                  ptAgeGroups.indexOf(getAgeGroup(age)) + 1,
+                              male: gender == 'Male');
                           isMdlValid = true;
                           calcTotal();
                         },
@@ -768,179 +753,7 @@ class AcftPageState extends ConsumerState<AcftPage>
                   padding: const EdgeInsets.all(8.0),
                   child: MinMaxTable(
                     headers: tableHeaders,
-                    values: getMdlBenchmarks(
-                      ptAgeGroups.indexOf(getAgeGroup(age)),
-                      gender == "Male",
-                    ),
-                  ),
-                ),
-                const Divider(
-                  color: Colors.yellow,
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: <Widget>[
-                    Text(
-                      'SPT',
-                      style: headerStyle,
-                    ),
-                    ValueInputField(
-                      width: 60,
-                      controller: _sptController,
-                      focusNode: _sptFocus,
-                      onEditingComplete: () => _hrpFocus.requestFocus(),
-                      errorText: isSptValid ? null : '0-14.0',
-                      onChanged: (value) {
-                        double raw = double.tryParse(value) ?? 0;
-                        if (raw > 14.0) {
-                          hasSptProfile = false;
-                          isSptValid = false;
-                          sptRaw = 14.0;
-                        } else if (raw < 0.0) {
-                          isSptValid = false;
-                          sptRaw = 0.0;
-                        } else {
-                          hasSptProfile = false;
-                          sptRaw = raw;
-                          isSptValid = true;
-                        }
-                        sptScore = getSptScore(
-                            sptRaw,
-                            ptAgeGroups.indexOf(getAgeGroup(age)) + 1,
-                            gender == 'Male');
-                        calcTotal();
-                      },
-                    ),
-                    GridBox(
-                      title: sptScore.toString(),
-                      background: didPassSpt() ? backgroundColor : failColor,
-                      textColor:
-                          didPassSpt() ? getTextColor(context) : Colors.white,
-                      width: 60,
-                      height: 40,
-                      borderBottomLeft: 8,
-                      borderBottomRight: 8,
-                      borderTopLeft: 8,
-                      borderTopRight: 8,
-                    ),
-                  ],
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Row(
-                    children: <Widget>[
-                      IncrementDecrementButton(
-                        child: '-',
-                        onPressed: () {
-                          FocusScope.of(context).unfocus();
-                          if (sptRaw > 0.0) {
-                            sptRaw = double.tryParse(
-                                    (sptRaw - 0.1).toStringAsFixed(1)) ??
-                                sptRaw - 0.1;
-                          } else {
-                            sptRaw = 0.0;
-                          }
-                          _sptController.text = sptRaw.toString();
-                          isSptValid = true;
-                          sptScore = getSptScore(
-                              sptRaw,
-                              ptAgeGroups.indexOf(getAgeGroup(age)) + 1,
-                              gender == 'Male');
-                          calcTotal();
-                        },
-                      ),
-                      Expanded(
-                        flex: 1,
-                        child: PlatformSlider(
-                          activeColor: getPrimaryColor(context),
-                          value: sptRaw,
-                          min: 0,
-                          max: 14.0,
-                          divisions: 141,
-                          onChanged: (value) {
-                            FocusScope.of(context).unfocus();
-                            if (hasSptProfile) {
-                              sptRaw = 0;
-                            } else {
-                              sptRaw = (value * 10).round() / 10;
-                            }
-                            _sptController.text = sptRaw.toString();
-                            isSptValid = true;
-                            sptScore = getSptScore(
-                                sptRaw,
-                                ptAgeGroups.indexOf(getAgeGroup(age)) + 1,
-                                gender == 'Male');
-                            calcTotal();
-                          },
-                        ),
-                      ),
-                      IncrementDecrementButton(
-                        child: '+',
-                        onPressed: () {
-                          FocusScope.of(context).unfocus();
-                          if (hasSptProfile) {
-                            sptRaw = 0;
-                          } else {
-                            if (sptRaw < 14.0) {
-                              sptRaw = double.tryParse(
-                                      (sptRaw + 0.1).toStringAsFixed(1)) ??
-                                  sptRaw + 0.1;
-                            } else {
-                              sptRaw = 14.0;
-                            }
-                          }
-                          _sptController.text = sptRaw.toString();
-                          isSptValid = true;
-                          sptScore = getSptScore(
-                              sptRaw,
-                              ptAgeGroups.indexOf(getAgeGroup(age)) + 1,
-                              gender == 'Male');
-                          calcTotal();
-                        },
-                      ),
-                    ],
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: PlatformCheckboxListTile(
-                    title: const Text('Profile'),
-                    value: hasSptProfile,
-                    controlAffinity: ListTileControlAffinity.leading,
-                    activeColor: onPrimary,
-                    onChanged: (value) {
-                      FocusScope.of(context).unfocus();
-                      setState(() {
-                        hasSptProfile = value!;
-                        if (value) {
-                          sptRaw = 0;
-                          _sptController.text = sptRaw.toString();
-                        }
-                        sptScore = 0;
-                        isSptValid = true;
-                        calcTotal();
-                      });
-                    },
-                    onIosTap: () {
-                      FocusScope.of(context).unfocus();
-                      setState(() {
-                        hasSptProfile = !hasSptProfile;
-                        if (hasSptProfile) {
-                          sptRaw = 0;
-                          _sptController.text = sptRaw.toString();
-                        }
-                        sptScore = 0;
-                        isSptValid = true;
-                        calcTotal();
-                      });
-                    },
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: MinMaxTable(
-                    headers: tableHeaders,
-                    values: getSptBenchmarks(
+                    values: getAftMdlBenchmarks(
                       ptAgeGroups.indexOf(getAgeGroup(age)),
                       gender == "Male",
                     ),
@@ -975,10 +788,10 @@ class AcftPageState extends ConsumerState<AcftPage>
                           hrpRaw = raw;
                           isHrpValid = true;
                         }
-                        hrpScore = getHrpScore(
-                            hrpRaw,
-                            ptAgeGroups.indexOf(getAgeGroup(age)) + 1,
-                            gender == 'Male');
+                        hrpScore = getAftHrpScore(
+                            pushups: hrpRaw,
+                            ageGroup: ptAgeGroups.indexOf(getAgeGroup(age)) + 1,
+                            male: gender == 'Male');
                         calcTotal();
                       },
                     ),
@@ -1011,10 +824,11 @@ class AcftPageState extends ConsumerState<AcftPage>
                           }
                           _hrpController.text = hrpRaw.toString();
                           isHrpValid = true;
-                          hrpScore = getHrpScore(
-                              hrpRaw,
-                              ptAgeGroups.indexOf(getAgeGroup(age)) + 1,
-                              gender == 'Male');
+                          hrpScore = getAftHrpScore(
+                              pushups: hrpRaw,
+                              ageGroup:
+                                  ptAgeGroups.indexOf(getAgeGroup(age)) + 1,
+                              male: gender == 'Male');
                           calcTotal();
                         },
                       ),
@@ -1035,10 +849,11 @@ class AcftPageState extends ConsumerState<AcftPage>
                             }
                             _hrpController.text = hrpRaw.toString();
                             isHrpValid = true;
-                            hrpScore = getHrpScore(
-                                hrpRaw,
-                                ptAgeGroups.indexOf(getAgeGroup(age)) + 1,
-                                gender == 'Male');
+                            hrpScore = getAftHrpScore(
+                                pushups: hrpRaw,
+                                ageGroup:
+                                    ptAgeGroups.indexOf(getAgeGroup(age)) + 1,
+                                male: gender == 'Male');
                             calcTotal();
                           },
                         ),
@@ -1058,10 +873,11 @@ class AcftPageState extends ConsumerState<AcftPage>
                           }
                           _hrpController.text = hrpRaw.toString();
                           isHrpValid = true;
-                          hrpScore = getHrpScore(
-                              hrpRaw,
-                              ptAgeGroups.indexOf(getAgeGroup(age)) + 1,
-                              gender == 'Male');
+                          hrpScore = getAftHrpScore(
+                              pushups: hrpRaw,
+                              ageGroup:
+                                  ptAgeGroups.indexOf(getAgeGroup(age)) + 1,
+                              male: gender == 'Male');
                           calcTotal();
                         },
                       ),
@@ -1107,7 +923,7 @@ class AcftPageState extends ConsumerState<AcftPage>
                   padding: const EdgeInsets.all(8.0),
                   child: MinMaxTable(
                     headers: tableHeaders,
-                    values: getHrpBenchmarks(
+                    values: getAftHrpBenchmarks(
                       ptAgeGroups.indexOf(getAgeGroup(age)),
                       gender == "Male",
                     ),
@@ -1146,10 +962,11 @@ class AcftPageState extends ConsumerState<AcftPage>
                               isSdcMinsValid = true;
                               sdcMins = raw;
                             }
-                            sdcScore = getSdcScore(
-                                getTimeAsInt(sdcMins, sdcSecs),
-                                ptAgeGroups.indexOf(getAgeGroup(age)) + 1,
-                                gender == 'Male');
+                            sdcScore = getAftSdcScore(
+                                time: getTimeAsInt(sdcMins, sdcSecs),
+                                ageGroup:
+                                    ptAgeGroups.indexOf(getAgeGroup(age)) + 1,
+                                male: gender == 'Male');
                             calcTotal();
                           },
                         ),
@@ -1180,10 +997,11 @@ class AcftPageState extends ConsumerState<AcftPage>
                               isSdcSecsValid = true;
                               sdcSecs = raw;
                             }
-                            sdcScore = getSdcScore(
-                                getTimeAsInt(sdcMins, sdcSecs),
-                                ptAgeGroups.indexOf(getAgeGroup(age)) + 1,
-                                gender == 'Male');
+                            sdcScore = getAftSdcScore(
+                                time: getTimeAsInt(sdcMins, sdcSecs),
+                                ageGroup:
+                                    ptAgeGroups.indexOf(getAgeGroup(age)) + 1,
+                                male: gender == 'Male');
                             calcTotal();
                           },
                         ),
@@ -1218,10 +1036,11 @@ class AcftPageState extends ConsumerState<AcftPage>
                           }
                           _sdcMinsController.text = sdcMins.toString();
                           isSdcMinsValid = true;
-                          sdcScore = getSdcScore(
-                              getTimeAsInt(sdcMins, sdcSecs),
-                              ptAgeGroups.indexOf(getAgeGroup(age)) + 1,
-                              gender == 'Male');
+                          sdcScore = getAftSdcScore(
+                              time: getTimeAsInt(sdcMins, sdcSecs),
+                              ageGroup:
+                                  ptAgeGroups.indexOf(getAgeGroup(age)) + 1,
+                              male: gender == 'Male');
                           calcTotal();
                         },
                       ),
@@ -1242,10 +1061,11 @@ class AcftPageState extends ConsumerState<AcftPage>
                             }
                             _sdcMinsController.text = sdcMins.toString();
                             isSdcMinsValid = true;
-                            sdcScore = getSdcScore(
-                                getTimeAsInt(sdcMins, sdcSecs),
-                                ptAgeGroups.indexOf(getAgeGroup(age)) + 1,
-                                gender == 'Male');
+                            sdcScore = getAftSdcScore(
+                                time: getTimeAsInt(sdcMins, sdcSecs),
+                                ageGroup:
+                                    ptAgeGroups.indexOf(getAgeGroup(age)) + 1,
+                                male: gender == 'Male');
                             calcTotal();
                           },
                         ),
@@ -1265,10 +1085,11 @@ class AcftPageState extends ConsumerState<AcftPage>
                           }
                           _sdcMinsController.text = sdcMins.toString();
                           isSdcMinsValid = true;
-                          sdcScore = getSdcScore(
-                              getTimeAsInt(sdcMins, sdcSecs),
-                              ptAgeGroups.indexOf(getAgeGroup(age)) + 1,
-                              gender == 'Male');
+                          sdcScore = getAftSdcScore(
+                              time: getTimeAsInt(sdcMins, sdcSecs),
+                              ageGroup:
+                                  ptAgeGroups.indexOf(getAgeGroup(age)) + 1,
+                              male: gender == 'Male');
                           calcTotal();
                         },
                       ),
@@ -1290,10 +1111,11 @@ class AcftPageState extends ConsumerState<AcftPage>
                           }
                           _sdcSecsController.text = sdcSecs.toString();
                           isSdcSecsValid = true;
-                          sdcScore = getSdcScore(
-                              getTimeAsInt(sdcMins, sdcSecs),
-                              ptAgeGroups.indexOf(getAgeGroup(age)) + 1,
-                              gender == 'Male');
+                          sdcScore = getAftSdcScore(
+                              time: getTimeAsInt(sdcMins, sdcSecs),
+                              ageGroup:
+                                  ptAgeGroups.indexOf(getAgeGroup(age)) + 1,
+                              male: gender == 'Male');
                           calcTotal();
                         },
                       ),
@@ -1314,10 +1136,11 @@ class AcftPageState extends ConsumerState<AcftPage>
                             }
                             _sdcSecsController.text = sdcSecs.toString();
                             isSdcSecsValid = true;
-                            sdcScore = getSdcScore(
-                                getTimeAsInt(sdcMins, sdcSecs),
-                                ptAgeGroups.indexOf(getAgeGroup(age)) + 1,
-                                gender == 'Male');
+                            sdcScore = getAftSdcScore(
+                                time: getTimeAsInt(sdcMins, sdcSecs),
+                                ageGroup:
+                                    ptAgeGroups.indexOf(getAgeGroup(age)) + 1,
+                                male: gender == 'Male');
                             calcTotal();
                           },
                         ),
@@ -1337,10 +1160,11 @@ class AcftPageState extends ConsumerState<AcftPage>
                           }
                           _sdcSecsController.text = sdcSecs.toString();
                           isSdcSecsValid = true;
-                          sdcScore = getSdcScore(
-                              getTimeAsInt(sdcMins, sdcSecs),
-                              ptAgeGroups.indexOf(getAgeGroup(age)) + 1,
-                              gender == 'Male');
+                          sdcScore = getAftSdcScore(
+                              time: getTimeAsInt(sdcMins, sdcSecs),
+                              ageGroup:
+                                  ptAgeGroups.indexOf(getAgeGroup(age)) + 1,
+                              male: gender == 'Male');
                           calcTotal();
                         },
                       ),
@@ -1392,7 +1216,7 @@ class AcftPageState extends ConsumerState<AcftPage>
                   padding: const EdgeInsets.all(8.0),
                   child: MinMaxTable(
                     headers: tableHeaders,
-                    values: getSdcBenchmarks(
+                    values: getAftSdcBenchmarks(
                       ptAgeGroups.indexOf(getAgeGroup(age)),
                       gender == "Male",
                     ),
@@ -1431,10 +1255,11 @@ class AcftPageState extends ConsumerState<AcftPage>
                               isPlankMinsValid = true;
                               plankMins = raw;
                             }
-                            plankScore = getPlkScore(
-                                getTimeAsInt(plankMins, plankSecs),
-                                ptAgeGroups.indexOf(getAgeGroup(age)) + 1,
-                                gender == 'Male');
+                            plankScore = getAftPlkScore(
+                                time: getTimeAsInt(plankMins, plankSecs),
+                                ageGroup:
+                                    ptAgeGroups.indexOf(getAgeGroup(age)) + 1,
+                                male: gender == 'Male');
                             calcTotal();
                           },
                         ),
@@ -1465,10 +1290,11 @@ class AcftPageState extends ConsumerState<AcftPage>
                               isPlankSecsValid = true;
                               plankSecs = raw;
                             }
-                            plankScore = getPlkScore(
-                                getTimeAsInt(plankMins, plankSecs),
-                                ptAgeGroups.indexOf(getAgeGroup(age)) + 1,
-                                gender == 'Male');
+                            plankScore = getAftPlkScore(
+                                time: getTimeAsInt(plankMins, plankSecs),
+                                ageGroup:
+                                    ptAgeGroups.indexOf(getAgeGroup(age)) + 1,
+                                male: gender == 'Male');
                             calcTotal();
                           },
                         ),
@@ -1503,10 +1329,11 @@ class AcftPageState extends ConsumerState<AcftPage>
                           }
                           _plankMinsController.text = plankMins.toString();
                           isPlankMinsValid = true;
-                          plankScore = getPlkScore(
-                              getTimeAsInt(plankMins, plankSecs),
-                              ptAgeGroups.indexOf(getAgeGroup(age)) + 1,
-                              gender == 'Male');
+                          plankScore = getAftPlkScore(
+                              time: getTimeAsInt(plankMins, plankSecs),
+                              ageGroup:
+                                  ptAgeGroups.indexOf(getAgeGroup(age)) + 1,
+                              male: gender == 'Male');
                           calcTotal();
                         },
                       ),
@@ -1527,10 +1354,11 @@ class AcftPageState extends ConsumerState<AcftPage>
                             }
                             _plankMinsController.text = plankMins.toString();
                             isPlankMinsValid = true;
-                            plankScore = getPlkScore(
-                                getTimeAsInt(plankMins, plankSecs),
-                                ptAgeGroups.indexOf(getAgeGroup(age)) + 1,
-                                gender == 'Male');
+                            plankScore = getAftPlkScore(
+                                time: getTimeAsInt(plankMins, plankSecs),
+                                ageGroup:
+                                    ptAgeGroups.indexOf(getAgeGroup(age)) + 1,
+                                male: gender == 'Male');
                             calcTotal();
                           },
                         ),
@@ -1550,10 +1378,11 @@ class AcftPageState extends ConsumerState<AcftPage>
                           }
                           _plankMinsController.text = plankMins.toString();
                           isPlankMinsValid = true;
-                          plankScore = getPlkScore(
-                              getTimeAsInt(plankMins, plankSecs),
-                              ptAgeGroups.indexOf(getAgeGroup(age)) + 1,
-                              gender == 'Male');
+                          plankScore = getAftPlkScore(
+                              time: getTimeAsInt(plankMins, plankSecs),
+                              ageGroup:
+                                  ptAgeGroups.indexOf(getAgeGroup(age)) + 1,
+                              male: gender == 'Male');
                           calcTotal();
                         },
                       ),
@@ -1575,10 +1404,11 @@ class AcftPageState extends ConsumerState<AcftPage>
                           }
                           _plankSecsController.text = plankSecs.toString();
                           isPlankSecsValid = true;
-                          plankScore = getPlkScore(
-                              getTimeAsInt(plankMins, plankSecs),
-                              ptAgeGroups.indexOf(getAgeGroup(age)) + 1,
-                              gender == 'Male');
+                          plankScore = getAftPlkScore(
+                              time: getTimeAsInt(plankMins, plankSecs),
+                              ageGroup:
+                                  ptAgeGroups.indexOf(getAgeGroup(age)) + 1,
+                              male: gender == 'Male');
                           calcTotal();
                         },
                       ),
@@ -1599,10 +1429,11 @@ class AcftPageState extends ConsumerState<AcftPage>
                             }
                             _plankSecsController.text = plankSecs.toString();
                             isPlankSecsValid = true;
-                            plankScore = getPlkScore(
-                                getTimeAsInt(plankMins, plankSecs),
-                                ptAgeGroups.indexOf(getAgeGroup(age)) + 1,
-                                gender == 'Male');
+                            plankScore = getAftPlkScore(
+                                time: getTimeAsInt(plankMins, plankSecs),
+                                ageGroup:
+                                    ptAgeGroups.indexOf(getAgeGroup(age)) + 1,
+                                male: gender == 'Male');
                             calcTotal();
                           },
                         ),
@@ -1622,10 +1453,11 @@ class AcftPageState extends ConsumerState<AcftPage>
                           }
                           _plankSecsController.text = plankSecs.toString();
                           isPlankSecsValid = true;
-                          plankScore = getPlkScore(
-                              getTimeAsInt(plankMins, plankSecs),
-                              ptAgeGroups.indexOf(getAgeGroup(age)) + 1,
-                              gender == 'Male');
+                          plankScore = getAftPlkScore(
+                              time: getTimeAsInt(plankMins, plankSecs),
+                              ageGroup:
+                                  ptAgeGroups.indexOf(getAgeGroup(age)) + 1,
+                              male: gender == 'Male');
                           calcTotal();
                         },
                       ),
@@ -1677,7 +1509,7 @@ class AcftPageState extends ConsumerState<AcftPage>
                   padding: const EdgeInsets.all(8.0),
                   child: MinMaxTable(
                     headers: tableHeaders,
-                    values: getPlkBenchmarks(
+                    values: getAftPlkBenchmarks(
                       ptAgeGroups.indexOf(getAgeGroup(age)),
                       gender == "Male",
                     ),
@@ -1936,7 +1768,7 @@ class AcftPageState extends ConsumerState<AcftPage>
                   padding: const EdgeInsets.all(8.0),
                   child: PlatformButton(
                     child: ButtonText(
-                      text: 'Save ACFT Score',
+                      text: 'Save AFT Score',
                     ),
                     onPressed: () {
                       String sdcSeconds = sdcSecs.toString().length == 1
@@ -1949,7 +1781,7 @@ class AcftPageState extends ConsumerState<AcftPage>
                           ? '0$runSecs'
                           : runSecs.toString();
                       if (isPremium) {
-                        Acft acft = new Acft(
+                        Aft aft = new Aft(
                             id: null,
                             date: null,
                             rank: null,
@@ -1958,8 +1790,6 @@ class AcftPageState extends ConsumerState<AcftPage>
                             age: age.toString(),
                             mdlRaw: mdlRaw.toString(),
                             mdlScore: mdlScore.toString(),
-                            sptRaw: sptRaw.toString(),
-                            sptScore: sptScore.toString(),
                             hrpRaw: hrpRaw.toString(),
                             hrpScore: hrpScore.toString(),
                             sdcRaw: '${sdcMins.toString()}:$sdcSeconds',
@@ -1972,7 +1802,7 @@ class AcftPageState extends ConsumerState<AcftPage>
                             total: total.toString(),
                             altPass: didPassAerobic() ? 1 : 0,
                             pass: didPassAcft() ? 1 : 0);
-                        _saveAcft(context, acft);
+                        _saveAft(context, aft);
                       } else {
                         purchasesService = ref.read(purchasesProvider);
                         purchasesService.upgradeNeeded(context);
