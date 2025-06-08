@@ -112,7 +112,7 @@ class _AndroidHomePageState extends ConsumerState<AndroidHomePage> {
             icon: Icon(
               Icons.fitness_center,
             ),
-            label: 'ACFT',
+            label: 'AFT',
           ),
           NavigationDestination(
             icon: Icon(
@@ -198,7 +198,7 @@ class _IOSHomePageState extends ConsumerState<IOSHomePage> {
       tabBar: CupertinoTabBar(
         items: [
           BottomNavigationBarItem(
-            label: 'ACFT',
+            label: 'AFT',
             icon: Icon(CupertinoIcons.stopwatch_fill),
           ),
           BottomNavigationBarItem(

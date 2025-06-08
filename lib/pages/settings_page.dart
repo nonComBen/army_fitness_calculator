@@ -200,7 +200,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                     children: <Widget>[
                       PlatformItemPicker(
                         label: Text(
-                          'Default ACFT Aerobic Event',
+                          'Default AFT/ACFT Aerobic Event',
                           style: TextStyle(
                               color: getTextColor(
                             context,

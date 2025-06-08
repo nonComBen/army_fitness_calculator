@@ -29,7 +29,8 @@ if (keystorePropertiesFile.exists()) {
 }
 
 android {
-    compileSdkVersion 34
+    namespace "com.armynoncomtools.acft_calculator"
+    compileSdkVersion 35
 
     lintOptions {
         disable 'InvalidPackage'
@@ -37,9 +38,9 @@ android {
 
     defaultConfig {
         applicationId "com.armynoncomtools.acft_calculator"
-        minSdkVersion 21
-        targetSdkVersion 34
-        versionCode 67
+        minSdkVersion 23
+        targetSdkVersion 35
+        versionCode 70
         versionName flutterVersionName
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
