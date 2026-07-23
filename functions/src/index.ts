@@ -14,7 +14,7 @@ export type IAPSource = "google_play" | "app_store";
 
 // The Firebase Admin SDK to access Cloud Firestore.
 // const admin = require("firebase-admin");
-admin.initializeApp({projectId: "army-leaders-book"});
+admin.initializeApp({projectId: "acft-calculator-4260f"});
 const functions = Functions.region(CLOUD_REGION);
 // Initialize the IAP repository that the purchase handlers depend on
 // Initialize an instance of each purchase handler,

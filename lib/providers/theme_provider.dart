@@ -2,16 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import './shared_preferences_provider.dart';
-
-final themeStateNotifierProvider =
-    StateNotifierProvider<ThemeStateNotifier, ThemeData>(
-  (ref) => ThemeStateNotifier(
-    ref.read(sharedPreferencesProvider),
-  ),
-);
+import 'shared_preferences_provider.dart';
 
 enum ThemeState { lightTheme, darkTheme }
+
+final themeStateNotifierProvider =
+    NotifierProvider<ThemeStateNotifier, ThemeData>(() {
+  return ThemeStateNotifier();
+});
 
 ThemeData darkTheme = ThemeData(
   scaffoldBackgroundColor: Colors.grey[800],
@@ -48,22 +46,25 @@ ThemeData lightTheme = ThemeData(
   ),
 );
 
-class ThemeStateNotifier extends StateNotifier<ThemeData> {
-  ThemeStateNotifier(this.prefs)
-      : super(prefs.getString('brightness') == null
-            ? lightTheme
-            : prefs.getString('brightness') == 'Light'
-                ? lightTheme
-                : darkTheme);
-  final SharedPreferences prefs;
+class ThemeStateNotifier extends Notifier<ThemeData> {
+  ThemeStateNotifier();
+  SharedPreferences? _prefs;
+  @override
+  ThemeData build() {
+    _prefs = ref.read(sharedPreferencesProvider);
+    _prefs!.getString('brightness') == 'Dark'
+        ? state = darkTheme
+        : state = lightTheme;
+    return state;
+  }
 
   void switchTheme(ThemeState newTheme) {
     print('New Theme: $newTheme');
     if (newTheme == ThemeState.lightTheme) {
-      prefs.setString('brightness', 'Light');
+      _prefs!.setString('brightness', 'Light');
       state = lightTheme;
     } else {
-      prefs.setString('brightness', 'Dark');
+      _prefs!.setString('brightness', 'Dark');
       state = darkTheme;
     }
   }

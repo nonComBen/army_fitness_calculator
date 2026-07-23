@@ -14,7 +14,6 @@ import '../../methods/platform_show_modal_bottom_sheet.dart';
 import '../../methods/theme_methods.dart';
 import '../../providers/purchases_provider.dart';
 import '../../providers/tracking_provider.dart';
-import '../../services/purchases_service.dart';
 import '../../widgets/button_text.dart';
 import '../../widgets/min_max_table.dart';
 import '../../widgets/platform_widgets/platform_button.dart';

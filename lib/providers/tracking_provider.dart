@@ -2,10 +2,15 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 final trackingProvider =
-    StateNotifierProvider<TrackingService, bool>((ref) => TrackingService());
+    NotifierProvider<TrackingService, bool>(() => TrackingService());
 
-class TrackingService extends StateNotifier<bool> {
-  TrackingService() : super(false);
+class TrackingService extends Notifier<bool> {
+  TrackingService();
+
+  @override
+  bool build() {
+    return false; // Default to false, assuming tracking is not allowed initially
+  }
 
   Future<void> init() async {
     PermissionStatus status = await Permission.appTrackingTransparency.status;

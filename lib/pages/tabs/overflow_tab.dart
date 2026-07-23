@@ -225,13 +225,13 @@ class OverflowTab extends ConsumerWidget {
                       .pushNamed(ApftPage.routeName),
                 ),
                 PlatformListTile(
-                  title: const Text('www.army.mil/acft'),
+                  title: const Text('www.army.mil/aft'),
                   leading: Icon(
                     Icons.web,
                     color: getTextColor(context),
                   ),
                   onTap: () {
-                    launchUrlString('https://www.army.mil/acft');
+                    launchUrlString('https://www.army.mil/aft/');
                   },
                 ),
                 PlatformListTile(
