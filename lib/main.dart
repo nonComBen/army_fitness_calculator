@@ -24,7 +24,10 @@ import '../providers/theme_provider.dart';
 import '../widgets/platform_widgets/platform_app.dart';
 import '../widgets/platform_widgets/platform_home_page.dart';
 import 'pages/acft_page.dart';
+import 'pages/bmi_abcp_page.dart';
 import 'pages/saved_pages/saved_afts_page.dart';
+import 'pages/saved_pages/saved_whtr_page.dart';
+import 'sqlite/db_helper.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -48,6 +51,10 @@ class MyApp extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     ref.read(purchasesProvider).initialize();
     MobileAds.instance.initialize();
+    final dbHelper = DBHelper();
+    dbHelper.initDb().then((value) {
+      print('Database initialized: ${value.getVersion()}');
+    });
     return Consumer(builder: (context, ref, child) {
       ThemeData themeState = ref.watch(themeStateNotifierProvider);
       return PlatformApp(
@@ -68,6 +75,8 @@ class MyApp extends ConsumerWidget {
           ApftVerbiagePage.routeName: (ctx) => ApftVerbiagePage(),
           BodyfatVerbiagePage.routeName: (ctx) => BodyfatVerbiagePage(),
           PrtDrillsPage.routeName: (ctx) => PrtDrillsPage(),
+          BmiAbcpPage.routeName: (ctx) => BmiAbcpPage(),
+          SavedWHtRsPage.routeName: (ctx) => SavedWHtRsPage(),
         },
         home: Builder(builder: (BuildContext context) {
           return Padding(

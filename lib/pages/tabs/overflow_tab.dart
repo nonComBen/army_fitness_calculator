@@ -18,6 +18,7 @@ import '../../widgets/header_text.dart';
 import '../../widgets/my_toast.dart';
 import '../../widgets/platform_widgets/platform_list_tile.dart';
 import '../acft_page.dart';
+import '../bmi_abcp_page.dart';
 import '../mdl_setup_page.dart';
 import '../privacy_policy_page.dart';
 import '../saved_pages/saved_acfts_page.dart';
@@ -25,6 +26,7 @@ import '../saved_pages/saved_afts_page.dart';
 import '../saved_pages/saved_apfts_page.dart';
 import '../saved_pages/saved_bodyfats_page.dart';
 import '../saved_pages/saved_ppw_page.dart';
+import '../saved_pages/saved_whtr_page.dart';
 import '../settings_page.dart';
 import '../verbiage_pages/acft_verbiage_page.dart';
 import '../verbiage_pages/apft_verbiage_page.dart';
@@ -106,6 +108,21 @@ class OverflowTab extends ConsumerWidget {
                     if (isPremium) {
                       Navigator.of(context, rootNavigator: true)
                           .pushNamed(SavedApftsPage.routeName);
+                    } else {
+                      purchasesService.upgradeNeeded(context);
+                    }
+                  },
+                ),
+                PlatformListTile(
+                  title: const Text('Saved Waist Height Ratio Scores'),
+                  leading: Icon(
+                    Icons.accessibility,
+                    color: getTextColor(context),
+                  ),
+                  onTap: () {
+                    if (isPremium) {
+                      Navigator.of(context, rootNavigator: true)
+                          .pushNamed(SavedWHtRsPage.routeName);
                     } else {
                       purchasesService.upgradeNeeded(context);
                     }
@@ -223,6 +240,15 @@ class OverflowTab extends ConsumerWidget {
                   ),
                   onTap: () => Navigator.of(context, rootNavigator: true)
                       .pushNamed(ApftPage.routeName),
+                ),
+                PlatformListTile(
+                  title: const Text('Legacy ABCP Calculator'),
+                  leading: Icon(
+                    Icons.accessibility,
+                    color: getTextColor(context),
+                  ),
+                  onTap: () => Navigator.of(context, rootNavigator: true)
+                      .pushNamed(BmiAbcpPage.routeName),
                 ),
                 PlatformListTile(
                   title: const Text('www.army.mil/aft'),

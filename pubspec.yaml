@@ -1,6 +1,6 @@
 name: acft_calculator
 description: A new Flutter application.
-version: 2.3.1
+version: 2.4.0
 
 environment:
   sdk: '>=2.17.0 <3.0.0'
@@ -8,29 +8,29 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  cloud_functions: ^6.3.3
+  cloud_functions: ^6.3.5
   cupertino_icons: ^1.0.6
   device_info_plus: ^13.2.0
-  firebase_analytics: ^12.4.3
-  firebase_core: ^4.11.0
-  firebase_crashlytics: ^5.2.4
-  firebase_performance: ^0.11.4+3
+  firebase_analytics: ^12.4.5
+  firebase_core: ^4.12.1
+  firebase_crashlytics: ^5.2.6
+  firebase_performance: ^0.11.4+5
   fl_chart: ^1.0.0
-  flutter_riverpod: ^3.3.2
+  flutter_riverpod: ^3.4.1
   fluttertoast: ^9.1.0
   google_mobile_ads: ^9.0.0
   in_app_purchase: ^3.3.0
-  in_app_purchase_storekit: 0.4.10+1
+  in_app_purchase_storekit: 0.4.11
   intl: ^0.20.2
   # open_file_plus: ^3.4.1+1
   open_file: ^4.0.0
   path_provider: ^2.1.4
   permission_handler: ^12.0.0+1
   pull_down_button: ^0.10.1
-  rate_my_app: ^2.2.0
+  rate_my_app: ^2.4.1
   shared_preferences: ^2.2.3
   sqflite: ^2.3.2
-  syncfusion_flutter_pdf: ^33.2.15
+  syncfusion_flutter_pdf: ^34.1.32
   url_launcher: ^6.3.0
 
 dev_dependencies:

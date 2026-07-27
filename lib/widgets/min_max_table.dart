@@ -30,24 +30,28 @@ class MinMaxTable extends StatelessWidget {
           title: headers[1],
           background: primaryColor,
           textColor: onPrimary,
+          borderTopRight: headers.length == 2 ? 8.0 : 0.0,
         ),
-        GridBox(
-          title: headers[2],
-          background: primaryColor,
-          textColor: onPrimary,
-          borderTopRight: 8.0,
-        ),
+        if (headers.length > 2)
+          GridBox(
+            title: headers[2],
+            background: primaryColor,
+            textColor: onPrimary,
+            borderTopRight: 8.0,
+          ),
         GridBox(
           title: values[0],
           borderBottomLeft: 8.0,
         ),
         GridBox(
           title: values[1],
+          borderBottomRight: values.length == 2 ? 8.0 : 0.0,
         ),
-        GridBox(
-          title: values[2],
-          borderBottomRight: 8.0,
-        ),
+        if (values.length > 2)
+          GridBox(
+            title: values[2],
+            borderBottomRight: 8.0,
+          ),
       ],
     );
   }

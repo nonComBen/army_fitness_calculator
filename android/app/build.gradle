@@ -41,7 +41,7 @@ android {
         applicationId "com.armynoncomtools.acft_calculator"
         minSdkVersion flutter.minSdkVersion
         targetSdkVersion 37
-        versionCode 71
+        versionCode 72
         versionName flutterVersionName
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         multiDexEnabled true

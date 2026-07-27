@@ -10,6 +10,6 @@ class PremiumState extends Notifier<bool> {
 
   @override
   bool build() {
-    return false; // Default to true, assuming the user has premium access initially
+    return true; // Default to true, assuming the user has premium access initially
   }
 }

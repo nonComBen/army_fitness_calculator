@@ -389,17 +389,6 @@ class _AftDetailsPageState extends State<AftDetailsPage> {
                       top: 24.0,
                     ),
                     child: const Text(
-                      'SPT',
-                      style: TextStyle(fontSize: 18.0),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(
-                      left: 8.0,
-                      right: 8.0,
-                      top: 24.0,
-                    ),
-                    child: const Text(
                       'HRP',
                       style: TextStyle(fontSize: 18.0),
                     ),

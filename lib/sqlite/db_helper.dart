@@ -10,6 +10,7 @@ import './acft.dart';
 import './apft.dart';
 import './bodyfat.dart';
 import 'aft.dart';
+import 'w_ht_ratio.dart';
 
 class DBHelper {
   static Database? _db;
@@ -49,6 +50,7 @@ class DBHelper {
   static const String ALT_PASS = 'altPass';
 
   static const String BF_TABLE = 'bfTable';
+  static const String WHtR_TABLE = 'whtTable';
   static const String HEIGHT = 'height';
   static const String WEIGHT = 'weight';
   static const String MAX_WEIGHT = 'maxWeight';
@@ -63,6 +65,8 @@ class DBHelper {
   static const String BF_PASS = 'bfPass';
   static const String IS_NEW_VERSION = 'isNewVersion';
   static const String IS_540_EXEMPT = 'is540Exempt';
+  static const String WHT_RATIO = 'wHtRatio';
+  static const String WHT_PASS = 'whtPass';
 
   static const String PPW_TABLE = 'ppwTable';
   static const String RANK = 'rank';
@@ -101,7 +105,7 @@ class DBHelper {
     String path = join(documentsDirectory.path, DB_NAME);
     var db = await openDatabase(
       path,
-      version: 7,
+      version: 8,
       onCreate: _onCreate,
       onUpgrade: _onUpgrade,
     );
@@ -134,9 +138,14 @@ class DBHelper {
         "$AWARDS INTEGER, $BADGES INTEGER, $AIRBORNE INTEGER, $PME_COMPLETION_PTS INTEGER, $NCOES INTEGER, $WBC INTEGER, $RESIDENT INTEGER, $TABS INTEGER, $AR_350 INTEGER, "
         "$SEM_HOURS INTEGER, $DEGREE INTEGER, $CERTS INTEGER, $LANGUAGE INTEGER, $MIL_TRAIN INTEGER, $AWARDS_TOTAL INTEGER, "
         "$MIL_ED INTEGER, $CIV_ED INTEGER, $TOTAL INTEGER)");
+
+    await db.execute(
+        "CREATE TABLE IF NOT EXISTS $WHtR_TABLE ($ID INTEGER PRIMARY KEY, $DATE TEXT, $RANK TEXT, $NAME TEXT,"
+        "$HEIGHT TEXT, $WAIST TEXT, $WHT_RATIO TEXT, $WHT_PASS INTEGER)");
   }
 
   _onUpgrade(Database db, int oldVersion, int newVersion) async {
+    print('Upgrading database from version $oldVersion to $newVersion');
     if (oldVersion < 4) {
       try {
         await db.execute("ALTER TABLE $ACFT_TABLE ADD $RANK TEXT");
@@ -230,6 +239,16 @@ class DBHelper {
             "CREATE TABLE IF NOT EXISTS $AFT_TABLE ($ID INTEGER PRIMARY KEY, $DATE TEXT, $RANK TEXT, $NAME TEXT, $GENDER TEXT, $AGE TEXT, $MDL_RAW TEXT,"
             "$MDL_SCORE TEXT, $HRP_RAW TEXT, $HRP_SCORE TEXT, $SDC_RAW TEXT, $SDC_SCORE TEXT, "
             "$LTK_RAW TEXT, $LTK_SCORE TEXT, $RUN_RAW TEXT, $RUN_SCORE TEXT, $RUN_EVENT TEXT, $ALT_PASS INTEGER, $TOTAL TEXT, $PASS INTEGER)");
+      } on Exception catch (e) {
+        print('SQLite Error: $e');
+      }
+    }
+    if (oldVersion < 8) {
+      try {
+        print('Creating WHtR table');
+        await db.execute(
+            "CREATE TABLE IF NOT EXISTS $WHtR_TABLE ($ID INTEGER PRIMARY KEY, $DATE TEXT, $RANK TEXT, $NAME TEXT,"
+            "$HEIGHT TEXT, $WAIST TEXT, $WHT_RATIO TEXT, $WHT_PASS INTEGER)");
       } on Exception catch (e) {
         print('SQLite Error: $e');
       }
@@ -342,6 +361,35 @@ class DBHelper {
     var dbClient = await db;
     return await dbClient!
         .update(BF_TABLE, bf.toMap(), where: '$ID = ?', whereArgs: [bf.id]);
+  }
+
+  //WHtR functions
+  Future<WHtR> saveWHtR(WHtR whtr) async {
+    var dbClient = await db;
+    print('Version: ${await dbClient!.getVersion()}');
+    whtr.id = await dbClient.insert(WHtR_TABLE, whtr.toMap());
+    return whtr;
+  }
+
+  Future<List<WHtR>> getWHtR() async {
+    var dbClient = await db;
+    List<Map> maps = await dbClient!
+        .rawQuery("SELECT * FROM $WHtR_TABLE ORDER BY $NAME, $DATE ASC");
+    List<WHtR> whtrs =
+        maps.map((e) => WHtR.fromMap(e as Map<String, dynamic>)).toList();
+    return whtrs;
+  }
+
+  Future<int> deleteWHtR(int? id) async {
+    var dbClient = await db;
+    return await dbClient!
+        .delete(WHtR_TABLE, where: '$ID = ?', whereArgs: [id]);
+  }
+
+  Future<int> updateWHtR(WHtR whtr) async {
+    var dbClient = await db;
+    return await dbClient!.update(WHtR_TABLE, whtr.toMap(),
+        where: '$ID = ?', whereArgs: [whtr.id]);
   }
 
   //PPW functions
