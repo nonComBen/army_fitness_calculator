@@ -118,7 +118,7 @@ class _AndroidHomePageState extends ConsumerState<AndroidHomePage> {
             icon: Icon(
               Icons.accessibility,
             ),
-            label: 'Body Comp',
+            label: 'WHtR',
           ),
           NavigationDestination(
             icon: Icon(
@@ -202,7 +202,7 @@ class _IOSHomePageState extends ConsumerState<IOSHomePage> {
             icon: Icon(CupertinoIcons.stopwatch_fill),
           ),
           BottomNavigationBarItem(
-            label: 'Body Comp',
+            label: 'WHtR',
             icon: Icon(CupertinoIcons.lab_flask),
           ),
           BottomNavigationBarItem(

@@ -30,7 +30,7 @@ import '../../widgets/value_input_field.dart';
 class BodyfatPage extends ConsumerStatefulWidget {
   BodyfatPage();
 
-  static const String title = 'Body Comp Calculator';
+  static const String title = 'WHtR Calculator';
 
   @override
   _BodyfatPageState createState() => _BodyfatPageState();
@@ -192,7 +192,7 @@ class _BodyfatPageState extends ConsumerState<BodyfatPage> {
               Padding(
                 padding: EdgeInsets.all(8),
                 child: PlatformButton(
-                  child: ButtonText(text: 'Save Body Composition'),
+                  child: ButtonText(text: 'Save WHtR'),
                   onPressed: () async {
                     wHtR.date = _dateController.text;
                     wHtR.rank = _rankController.text;
