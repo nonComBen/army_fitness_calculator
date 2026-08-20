@@ -3,13 +3,9 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:google_mobile_ads/google_mobile_ads.dart';
 
 import '../../classes/verbiage.dart';
 import '../../methods/theme_methods.dart';
-import '../../providers/premium_state_provider.dart';
-import '../../providers/shared_preferences_provider.dart';
-import '../../providers/tracking_provider.dart';
 import '../../widgets/platform_widgets/platform_expansion_list_tile.dart';
 import '../../widgets/platform_widgets/platform_scaffold.dart';
 
@@ -196,42 +192,18 @@ List<Verbiage> verbiages = <Verbiage>[
 ];
 
 class _AcftVerbiagePageState extends ConsumerState<AcftVerbiagePage> {
-  BannerAd? myBanner;
-
   @override
   void dispose() {
-    myBanner?.dispose();
     super.dispose();
   }
 
   @override
   void initState() {
     super.initState();
-    if (!Platform.environment.containsKey('FLUTTER_TEST')) {
-      bool trackingAllowed = ref.read(trackingProvider);
-      myBanner = BannerAd(
-        adUnitId: Platform.isAndroid
-            ? 'ca-app-pub-2431077176117105/7254941744'
-            : 'ca-app-pub-2431077176117105/4532397876',
-        size: AdSize.banner,
-        listener: BannerAdListener(),
-        request: AdRequest(nonPersonalizedAds: !trackingAllowed),
-      );
-
-      myBanner!.load();
-    }
   }
 
   @override
   Widget build(BuildContext context) {
-    bool isPremium = false;
-    if (Platform.environment.containsKey('FLUTTER_TEST')) {
-      isPremium = true;
-    } else {
-      final prefs = ref.read(sharedPreferencesProvider);
-      isPremium = ref.read(premiumStateProvider) ||
-          (prefs.getBool('isPremium') ?? false);
-    }
     final expansionTextStyle =
         TextStyle(color: getOnPrimaryColor(context), fontSize: 22);
     return PlatformScaffold(
@@ -278,16 +250,6 @@ class _AcftVerbiagePageState extends ConsumerState<AcftVerbiagePage> {
                 ],
               ),
             ),
-            if (!isPremium)
-              Container(
-                constraints: BoxConstraints(maxHeight: 90),
-                alignment: Alignment.center,
-                child: AdWidget(
-                  ad: myBanner!,
-                ),
-                width: myBanner!.size.width.toDouble(),
-                height: myBanner!.size.height.toDouble(),
-              )
           ],
         ),
       ),

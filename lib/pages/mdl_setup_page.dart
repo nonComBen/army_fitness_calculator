@@ -1,15 +1,9 @@
-import 'dart:io';
-
-import 'package:acft_calculator/providers/tracking_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:google_mobile_ads/google_mobile_ads.dart';
 
 import '../constants/mdl_setup_table.dart';
-import '../providers/shared_preferences_provider.dart';
 import '../widgets/mdl_setup_card.dart';
 import '../../widgets/platform_widgets/platform_scaffold.dart';
-import '../../providers/premium_state_provider.dart';
 
 class MdlSetupPage extends ConsumerWidget {
   const MdlSetupPage({Key? key}) : super(key: key);
@@ -18,28 +12,6 @@ class MdlSetupPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    bool isPremium = false;
-    late BannerAd myBanner;
-    if (Platform.environment.containsKey('FLUTTER_TEST')) {
-      isPremium = true;
-    } else {
-      final prefs = ref.read(sharedPreferencesProvider);
-      bool trackingAllowed = ref.read(trackingProvider);
-      isPremium = ref.read(premiumStateProvider) ||
-          (prefs.getBool('isPremium') ?? false);
-
-      myBanner = BannerAd(
-        adUnitId: Platform.isAndroid
-            ? 'ca-app-pub-2431077176117105/2476540786'
-            : 'ca-app-pub-2431077176117105/7916569725',
-        size: AdSize.banner,
-        listener: BannerAdListener(),
-        request: AdRequest(nonPersonalizedAds: !trackingAllowed),
-      );
-
-      myBanner.load();
-    }
-
     final width = MediaQuery.of(context).size.width;
     return PlatformScaffold(
       title: 'MDL Setup',
@@ -69,16 +41,6 @@ class MdlSetupPage extends ConsumerWidget {
                     .toList(),
               ),
             ),
-            if (!isPremium)
-              Container(
-                constraints: BoxConstraints(maxHeight: 90),
-                alignment: Alignment.center,
-                child: AdWidget(
-                  ad: myBanner,
-                ),
-                width: myBanner.size.width.toDouble(),
-                height: myBanner.size.height.toDouble(),
-              ),
           ],
         ),
       ),

@@ -3,7 +3,6 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../pages/apft_page.dart';
@@ -17,7 +16,7 @@ import '../../pages/settings_page.dart';
 import '../../pages/verbiage_pages/acft_verbiage_page.dart';
 import '../../pages/verbiage_pages/apft_verbiage_page.dart';
 import '../../pages/verbiage_pages/bodyfat_verbiage_page.dart';
-import '../../providers/purchases_provider.dart';
+// import '../../providers/purchases_provider.dart';
 import '../pages/verbiage_pages/prt_drills_page.dart';
 import '../providers/shared_preferences_provider.dart';
 import '../providers/theme_provider.dart';
@@ -49,12 +48,9 @@ void main() async {
 class MyApp extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    ref.read(purchasesProvider).initialize();
-    MobileAds.instance.initialize();
+    // ref.read(purchasesProvider).initialize();
     final dbHelper = DBHelper();
-    dbHelper.initDb().then((value) {
-      print('Database initialized: ${value.getVersion()}');
-    });
+    dbHelper.initDb();
     return Consumer(builder: (context, ref, child) {
       ThemeData themeState = ref.watch(themeStateNotifierProvider);
       return PlatformApp(

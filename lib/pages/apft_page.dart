@@ -1,12 +1,8 @@
-import 'dart:io';
-
 import 'package:acft_calculator/methods/theme_methods.dart';
 import 'package:acft_calculator/providers/premium_state_provider.dart';
-import 'package:acft_calculator/providers/tracking_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:intl/intl.dart';
 
@@ -79,7 +75,6 @@ class _ApftPageState extends ConsumerState<ApftPage> {
   DBHelper dbHelper = DBHelper();
   TextStyle headerStyle = TextStyle(fontSize: 22, fontWeight: FontWeight.bold);
   late PurchasesService purchasesService;
-  late BannerAd myBanner;
 
   final _ageController = new TextEditingController();
   final _ageFocus = new FocusNode();
@@ -116,18 +111,7 @@ class _ApftPageState extends ConsumerState<ApftPage> {
   void initState() {
     super.initState();
     dbHelper = new DBHelper();
-    purchasesService = ref.read(purchasesProvider);
-    bool trackingAllowed = ref.read(trackingProvider);
-    myBanner = BannerAd(
-      adUnitId: Platform.isAndroid
-          ? 'ca-app-pub-2431077176117105/9048806118'
-          : 'ca-app-pub-2431077176117105/4321694244',
-      size: AdSize.banner,
-      listener: BannerAdListener(),
-      request: AdRequest(nonPersonalizedAds: !trackingAllowed),
-    );
-
-    myBanner.load();
+    // purchasesService = ref.read(purchasesProvider);
 
     _puController.text = pu.toString();
     _suController.text = su.toString();
@@ -200,8 +184,6 @@ class _ApftPageState extends ConsumerState<ApftPage> {
     _suFocus.dispose();
     _minsFocus.dispose();
     _secsFocus.dispose();
-
-    myBanner.dispose();
   }
 
   void calcAll() {
@@ -1148,25 +1130,15 @@ class _ApftPageState extends ConsumerState<ApftPage> {
                               altPass: runPass ? 1 : 0,
                               pass: totalPass ? 1 : 0);
                           _saveApft(context, apft);
-                        } else {
-                          purchasesService.upgradeNeeded(context);
-                        }
+                        } //else {
+                        //   purchasesService.upgradeNeeded(context);
+                        // }
                       },
                     ),
                   )
                 ],
               ),
             ),
-            if (!isPremium)
-              Container(
-                constraints: BoxConstraints(maxHeight: 90),
-                alignment: Alignment.center,
-                child: AdWidget(
-                  ad: myBanner,
-                ),
-                width: myBanner.size.width.toDouble(),
-                height: myBanner.size.height.toDouble(),
-              ),
           ],
         ),
       ),

@@ -1,21 +1,12 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:fluttertoast/fluttertoast.dart';
-import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:rate_my_app/rate_my_app.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
 import '../../methods/theme_methods.dart';
 import '../../pages/apft_page.dart';
 import '../../pages/verbiage_pages/prt_drills_page.dart';
-import '../../providers/premium_state_provider.dart';
-import '../../providers/purchases_provider.dart';
-import '../../providers/shared_preferences_provider.dart';
-import '../../providers/tracking_provider.dart';
 import '../../widgets/header_text.dart';
-import '../../widgets/my_toast.dart';
 import '../../widgets/platform_widgets/platform_list_tile.dart';
 import '../acft_page.dart';
 import '../bmi_abcp_page.dart';
@@ -41,21 +32,6 @@ class OverflowTab extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final purchasesService = ref.read(purchasesProvider);
-    final prefs = ref.read(sharedPreferencesProvider);
-    bool trackingAllowed = ref.read(trackingProvider);
-    final isPremium =
-        ref.read(premiumStateProvider) || (prefs.getBool('isPremium') ?? false);
-    BannerAd myBanner = BannerAd(
-      adUnitId: Platform.isAndroid
-          ? 'ca-app-pub-2431077176117105/6231071083'
-          : 'ca-app-pub-2431077176117105/7676014691',
-      size: AdSize.banner,
-      listener: BannerAdListener(),
-      request: AdRequest(nonPersonalizedAds: !trackingAllowed),
-    );
-    myBanner.load();
-
     return Container(
       padding: const EdgeInsets.all(16.0),
       child: Column(
@@ -65,7 +41,7 @@ class OverflowTab extends ConsumerWidget {
               children: <Widget>[
                 Center(
                   child: HeaderText(
-                    text: 'Premium',
+                    text: 'Saved Scores',
                   ),
                 ),
                 PlatformListTile(
@@ -75,12 +51,8 @@ class OverflowTab extends ConsumerWidget {
                     color: getTextColor(context),
                   ),
                   onTap: () {
-                    if (isPremium) {
-                      Navigator.of(context, rootNavigator: true)
-                          .pushNamed(SavedAftsPage.routeName);
-                    } else {
-                      purchasesService.upgradeNeeded(context);
-                    }
+                    Navigator.of(context, rootNavigator: true)
+                        .pushNamed(SavedAftsPage.routeName);
                   },
                 ),
                 PlatformListTile(
@@ -90,12 +62,8 @@ class OverflowTab extends ConsumerWidget {
                     color: getTextColor(context),
                   ),
                   onTap: () {
-                    if (isPremium) {
-                      Navigator.of(context, rootNavigator: true)
-                          .pushNamed(SavedAcftsPage.routeName);
-                    } else {
-                      purchasesService.upgradeNeeded(context);
-                    }
+                    Navigator.of(context, rootNavigator: true)
+                        .pushNamed(SavedAcftsPage.routeName);
                   },
                 ),
                 PlatformListTile(
@@ -105,12 +73,8 @@ class OverflowTab extends ConsumerWidget {
                     color: getTextColor(context),
                   ),
                   onTap: () {
-                    if (isPremium) {
-                      Navigator.of(context, rootNavigator: true)
-                          .pushNamed(SavedApftsPage.routeName);
-                    } else {
-                      purchasesService.upgradeNeeded(context);
-                    }
+                    Navigator.of(context, rootNavigator: true)
+                        .pushNamed(SavedApftsPage.routeName);
                   },
                 ),
                 PlatformListTile(
@@ -120,12 +84,8 @@ class OverflowTab extends ConsumerWidget {
                     color: getTextColor(context),
                   ),
                   onTap: () {
-                    if (isPremium) {
-                      Navigator.of(context, rootNavigator: true)
-                          .pushNamed(SavedWHtRsPage.routeName);
-                    } else {
-                      purchasesService.upgradeNeeded(context);
-                    }
+                    Navigator.of(context, rootNavigator: true)
+                        .pushNamed(SavedWHtRsPage.routeName);
                   },
                 ),
                 PlatformListTile(
@@ -135,12 +95,8 @@ class OverflowTab extends ConsumerWidget {
                     color: getTextColor(context),
                   ),
                   onTap: () {
-                    if (isPremium) {
-                      Navigator.of(context, rootNavigator: true)
-                          .pushNamed(SavedBodyfatsPage.routeName);
-                    } else {
-                      purchasesService.upgradeNeeded(context);
-                    }
+                    Navigator.of(context, rootNavigator: true)
+                        .pushNamed(SavedBodyfatsPage.routeName);
                   },
                 ),
                 PlatformListTile(
@@ -150,12 +106,8 @@ class OverflowTab extends ConsumerWidget {
                     color: getTextColor(context),
                   ),
                   onTap: () {
-                    if (isPremium) {
-                      Navigator.of(context, rootNavigator: true)
-                          .pushNamed(SavedPpwsPage.routeName);
-                    } else {
-                      purchasesService.upgradeNeeded(context);
-                    }
+                    Navigator.of(context, rootNavigator: true)
+                        .pushNamed(SavedPpwsPage.routeName);
                   },
                 ),
                 const Divider(),
@@ -260,33 +212,33 @@ class OverflowTab extends ConsumerWidget {
                     launchUrlString('https://www.army.mil/aft/');
                   },
                 ),
-                PlatformListTile(
-                  title: const Text('Upgrade'),
-                  leading: Icon(
-                    Icons.monetization_on,
-                    color: getTextColor(context),
-                  ),
-                  onTap: () {
-                    if (isPremium) {
-                      FToast toast = FToast();
-                      toast.context = context;
-                      toast.showToast(
-                        child: MyToast(
-                          contents: [
-                            Text(
-                              'You are already upgraded to Premium',
-                              style: TextStyle(
-                                color: getOnPrimaryColor(context),
-                              ),
-                            ),
-                          ],
-                        ),
-                      );
-                    } else {
-                      purchasesService.upgrade(context);
-                    }
-                  },
-                ),
+                // PlatformListTile(
+                //   title: const Text('Upgrade'),
+                //   leading: Icon(
+                //     Icons.monetization_on,
+                //     color: getTextColor(context),
+                //   ),
+                //   onTap: () {
+                //     if (isPremium) {
+                //       FToast toast = FToast();
+                //       toast.context = context;
+                //       toast.showToast(
+                //         child: MyToast(
+                //           contents: [
+                //             Text(
+                //               'You are already upgraded to Premium',
+                //               style: TextStyle(
+                //                 color: getOnPrimaryColor(context),
+                //               ),
+                //             ),
+                //           ],
+                //         ),
+                //       );
+                //     } else {
+                //       purchasesService.upgrade(context);
+                //     }
+                //   },
+                // ),
                 PlatformListTile(
                   title: const Text('Rate App'),
                   leading: Icon(
@@ -333,16 +285,6 @@ class OverflowTab extends ConsumerWidget {
               ],
             ),
           ),
-          if (!isPremium)
-            Container(
-              constraints: BoxConstraints(maxHeight: 90),
-              alignment: Alignment.center,
-              child: AdWidget(
-                ad: myBanner,
-              ),
-              width: myBanner.size.width.toDouble(),
-              height: myBanner.size.height.toDouble(),
-            ),
         ],
       ),
     );

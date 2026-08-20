@@ -1,15 +1,11 @@
-import 'dart:io';
-
 import 'package:acft_calculator/calculators/whtr_calculator.dart';
 
 import '../../sqlite/w_ht_ratio.dart';
 import '../saved_pages/saved_whtr_page.dart';
 import '/methods/is_valid_date.dart';
-import '/providers/tracking_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -43,7 +39,6 @@ class _BodyfatPageState extends ConsumerState<BodyfatPage> {
   double wHtR = 0.55;
   late SharedPreferences prefs;
   late PurchasesService purchasesService;
-  late BannerAd myBanner;
 
   final _heightController = TextEditingController();
   final _waistController = TextEditingController();
@@ -54,17 +49,6 @@ class _BodyfatPageState extends ConsumerState<BodyfatPage> {
   @override
   void initState() {
     super.initState();
-    bool trackingAllowed = ref.read(trackingProvider);
-    myBanner = BannerAd(
-      adUnitId: Platform.isAndroid
-          ? 'ca-app-pub-2431077176117105/8950325543'
-          : 'ca-app-pub-2431077176117105/5634775918',
-      size: AdSize.banner,
-      listener: BannerAdListener(),
-      request: AdRequest(nonPersonalizedAds: !trackingAllowed),
-    );
-
-    myBanner.load();
 
     _waistController.text = waist.toString();
 
@@ -102,8 +86,6 @@ class _BodyfatPageState extends ConsumerState<BodyfatPage> {
 
     _heightFocus.dispose();
     _waistFocus.dispose();
-
-    myBanner.dispose();
   }
 
   void setBenchmarks() {
@@ -425,23 +407,13 @@ class _BodyfatPageState extends ConsumerState<BodyfatPage> {
                     whtPass: wHtRPass ? 1 : 0,
                   );
                   _saveBf(context, ratio);
-                } else {
-                  purchasesService = ref.read(purchasesProvider);
-                  purchasesService.upgradeNeeded(context);
-                }
+                } //else {
+                //   purchasesService = ref.read(purchasesProvider);
+                //   purchasesService.upgradeNeeded(context);
+                // }
               },
             ),
           ),
-          if (!isPremium)
-            Container(
-              constraints: BoxConstraints(maxHeight: 90),
-              alignment: Alignment.center,
-              child: AdWidget(
-                ad: myBanner,
-              ),
-              width: myBanner.size.width.toDouble(),
-              height: myBanner.size.height.toDouble(),
-            ),
         ],
       ),
     );

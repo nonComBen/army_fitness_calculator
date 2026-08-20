@@ -1,10 +1,7 @@
-import 'dart:io';
-
 import 'package:acft_calculator/methods/is_valid_date.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:intl/intl.dart';
 
@@ -13,7 +10,6 @@ import '../../providers/premium_state_provider.dart';
 import '../../methods/platform_show_modal_bottom_sheet.dart';
 import '../../methods/theme_methods.dart';
 import '../../providers/purchases_provider.dart';
-import '../../providers/tracking_provider.dart';
 import '../../widgets/button_text.dart';
 import '../../widgets/min_max_table.dart';
 import '../../widgets/platform_widgets/platform_button.dart';
@@ -87,7 +83,6 @@ class AcftPageState extends ConsumerState<AcftPage>
     fontSize: 22.0,
     fontWeight: FontWeight.bold,
   );
-  BannerAd? myBanner;
 
   final _ageController = TextEditingController();
   final _mdlController = TextEditingController();
@@ -268,10 +263,6 @@ class AcftPageState extends ConsumerState<AcftPage>
     _plkSecsFocus.dispose();
     _runMinsFocus.dispose();
     _runSecsFocus.dispose();
-
-    if (myBanner != null) {
-      myBanner!.dispose();
-    }
   }
 
   void calcAll() {
@@ -487,20 +478,6 @@ class AcftPageState extends ConsumerState<AcftPage>
   Widget build(BuildContext context) {
     final isPremium = ref.watch(premiumStateProvider) ||
         (prefs.getBool('isPremium') ?? false);
-    final trackingAllowed = ref.watch(trackingProvider);
-    if (!isPremium) {
-      ref.read(trackingProvider.notifier).init();
-      myBanner = BannerAd(
-        adUnitId: Platform.isAndroid
-            ? 'ca-app-pub-2431077176117105/8950325543'
-            : 'ca-app-pub-2431077176117105/4488336359',
-        size: AdSize.banner,
-        listener: BannerAdListener(),
-        request: AdRequest(nonPersonalizedAds: !trackingAllowed),
-      );
-
-      myBanner!.load();
-    }
 
     final backgroundColor = getBackgroundColor(context);
     final primaryColor = getPrimaryColor(context);
@@ -1986,26 +1963,16 @@ class AcftPageState extends ConsumerState<AcftPage>
                               altPass: didPassAerobic() ? 1 : 0,
                               pass: didPassAcft() ? 1 : 0);
                           _saveAcft(context, acft);
-                        } else {
-                          purchasesService = ref.read(purchasesProvider);
-                          purchasesService.upgradeNeeded(context);
-                        }
+                        } //else {
+                        //   purchasesService = ref.read(purchasesProvider);
+                        //   purchasesService.upgradeNeeded(context);
+                        // }
                       },
                     ),
                   ),
                 ],
               ),
             ),
-            if (!isPremium)
-              Container(
-                constraints: const BoxConstraints(maxHeight: 90),
-                alignment: Alignment.center,
-                child: AdWidget(
-                  ad: myBanner!,
-                ),
-                width: myBanner!.size.width.toDouble(),
-                height: myBanner!.size.height.toDouble(),
-              ),
           ],
         ),
       ),

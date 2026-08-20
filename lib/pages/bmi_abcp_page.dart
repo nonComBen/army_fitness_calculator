@@ -1,12 +1,8 @@
-import 'dart:io';
-
 import 'package:acft_calculator/methods/theme_methods.dart';
 import 'package:acft_calculator/providers/premium_state_provider.dart';
-import 'package:acft_calculator/providers/tracking_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:intl/intl.dart';
 
@@ -57,7 +53,6 @@ class _BmiAbcpPageState extends ConsumerState<BmiAbcpPage> {
       is540Exempt = false;
   late SharedPreferences prefs;
   late PurchasesService purchasesService;
-  late BannerAd myBanner;
 
   final List<String> ageGroups = ['17-20', '21-27', '28-39', '40+'];
 
@@ -78,17 +73,6 @@ class _BmiAbcpPageState extends ConsumerState<BmiAbcpPage> {
   @override
   void initState() {
     super.initState();
-    bool trackingAllowed = ref.read(trackingProvider);
-    myBanner = BannerAd(
-      adUnitId: Platform.isAndroid
-          ? 'ca-app-pub-2431077176117105/8950325543'
-          : 'ca-app-pub-2431077176117105/5634775918',
-      size: AdSize.banner,
-      listener: BannerAdListener(),
-      request: AdRequest(nonPersonalizedAds: !trackingAllowed),
-    );
-
-    myBanner.load();
 
     _weightController.text = weight.toString();
     _neckController.text = neck.toString();
@@ -170,8 +154,6 @@ class _BmiAbcpPageState extends ConsumerState<BmiAbcpPage> {
     _neckFocus.dispose();
     _waistFocus.dispose();
     _hipFocus.dispose();
-
-    myBanner.dispose();
   }
 
   void setBenchmarks() {
@@ -1110,26 +1092,16 @@ class _BmiAbcpPageState extends ConsumerState<BmiAbcpPage> {
                             is540Exempt: is540Exempt ? 1 : 0,
                           );
                           _saveBf(context, bf);
-                        } else {
-                          purchasesService = ref.read(purchasesProvider);
-                          purchasesService.upgradeNeeded(context);
-                        }
+                        } //else {
+                        //   purchasesService = ref.read(purchasesProvider);
+                        //   purchasesService.upgradeNeeded(context);
+                        // }
                       },
                     ),
                   ),
                 ],
               ),
             ),
-            if (!isPremium)
-              Container(
-                constraints: BoxConstraints(maxHeight: 90),
-                alignment: Alignment.center,
-                child: AdWidget(
-                  ad: myBanner,
-                ),
-                width: myBanner.size.width.toDouble(),
-                height: myBanner.size.height.toDouble(),
-              ),
           ]),
         ));
   }

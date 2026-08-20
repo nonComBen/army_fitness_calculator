@@ -1,12 +1,7 @@
-import 'dart:io';
-
-import 'package:acft_calculator/providers/tracking_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../methods/theme_methods.dart';
-import '../../providers/premium_state_provider.dart';
 import '../../widgets/platform_widgets/platform_checkbox_list_tile.dart';
 import '../../widgets/platform_widgets/platform_text_field.dart';
 import '../providers/shared_preferences_provider.dart';
@@ -29,7 +24,6 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
   Object gender = 'Male', rank = 'SGT';
   bool jrSoldier = true;
   late SharedPreferences prefs;
-  late BannerAd myBanner;
 
   final _ageController = TextEditingController();
   final _heightController = TextEditingController();
@@ -53,7 +47,6 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
   void dispose() {
     _ageController.dispose();
     _heightController.dispose();
-    myBanner.dispose();
     super.dispose();
   }
 
@@ -62,16 +55,6 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
     super.initState();
 
     prefs = ref.read(sharedPreferencesProvider);
-    bool trackingAllowed = ref.read(trackingProvider);
-
-    myBanner = BannerAd(
-      adUnitId: Platform.isAndroid
-          ? 'ca-app-pub-2431077176117105/4098295367'
-          : 'ca-app-pub-2431077176117105/9976296241',
-      size: AdSize.banner,
-      listener: BannerAdListener(),
-      request: AdRequest(nonPersonalizedAds: !trackingAllowed),
-    );
 
     if (prefs.getString('acft_event') != null) {
       acftEvent = prefs.getString('acft_event')!;
@@ -135,11 +118,6 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
 
   @override
   Widget build(BuildContext context) {
-    final isPremium =
-        ref.read(premiumStateProvider) || (prefs.getBool('isPremium') ?? false);
-    if (!isPremium) {
-      myBanner.load();
-    }
     double width = MediaQuery.of(context).size.width;
     return PlatformScaffold(
       title: 'Settings',
@@ -305,16 +283,6 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                 ],
               ),
             ),
-            if (!isPremium)
-              Container(
-                constraints: const BoxConstraints(maxHeight: 90),
-                alignment: Alignment.center,
-                child: AdWidget(
-                  ad: myBanner,
-                ),
-                width: myBanner.size.width.toDouble(),
-                height: myBanner.size.height.toDouble(),
-              )
           ],
         ),
       ),

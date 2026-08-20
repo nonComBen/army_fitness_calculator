@@ -1,10 +1,8 @@
-import 'dart:io';
-
 import 'package:acft_calculator/methods/is_valid_date.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:intl/intl.dart';
 
@@ -15,13 +13,12 @@ import '../../calculators/aft_plk_calculator.dart';
 import '../../calculators/aft_run_calculator.dart';
 import '../../calculators/aft_sdc_calculator.dart';
 import '../../methods/acft_age_group.dart';
-import '../../providers/premium_state_provider.dart';
 import '../../methods/platform_show_modal_bottom_sheet.dart';
 import '../../methods/theme_methods.dart';
 import '../../providers/purchases_provider.dart';
-import '../../providers/tracking_provider.dart';
 import '../../sqlite/aft.dart';
 import '../../widgets/button_text.dart';
+import '../../widgets/header_text.dart';
 import '../../widgets/min_max_table.dart';
 import '../../widgets/platform_widgets/platform_button.dart';
 import '../../sqlite/db_helper.dart';
@@ -80,7 +77,6 @@ class AftPageState extends ConsumerState<AftPage> with WidgetsBindingObserver {
     fontSize: 22.0,
     fontWeight: FontWeight.bold,
   );
-  BannerAd? myBanner;
 
   final _ageController = TextEditingController();
   final _mdlController = TextEditingController();
@@ -248,10 +244,6 @@ class AftPageState extends ConsumerState<AftPage> with WidgetsBindingObserver {
     _plkSecsFocus.dispose();
     _runMinsFocus.dispose();
     _runSecsFocus.dispose();
-
-    if (myBanner != null) {
-      myBanner!.dispose();
-    }
   }
 
   void calcAll() {
@@ -463,23 +455,42 @@ class AftPageState extends ConsumerState<AftPage> with WidgetsBindingObserver {
   }
 
   @override
+  @override
   Widget build(BuildContext context) {
-    final isPremium = ref.watch(premiumStateProvider) ||
-        (prefs.getBool('isPremium') ?? false);
-    final trackingAllowed = ref.watch(trackingProvider);
-    if (!isPremium) {
-      ref.read(trackingProvider.notifier).init();
-      myBanner = BannerAd(
-        adUnitId: Platform.isAndroid
-            ? 'ca-app-pub-2431077176117105/8950325543'
-            : 'ca-app-pub-2431077176117105/4488336359',
-        size: AdSize.banner,
-        listener: BannerAdListener(),
-        request: AdRequest(nonPersonalizedAds: !trackingAllowed),
-      );
-
-      myBanner!.load();
-    }
+    SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
+      print(
+          'AFT Page Build - Is New Login: ${prefs.getBool('isNewLogin') ?? true}');
+      if (prefs.getBool('isNewLogin') ?? true) {
+        print('New Login Detected');
+        prefs.setBool('isNewLogin', false);
+        showPlatformModalBottomSheet(
+          context: context,
+          builder: (context) => Container(
+            constraints: BoxConstraints(maxHeight: 300),
+            color: getBackgroundColor(context),
+            child: ListView(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Center(
+                      child: HeaderText(
+                          text: 'Army Fitness Calculator is Now Free!')),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text(
+                    'All features are now available to all users and ads have been removed. If you '
+                    'recently purchased the Premium Upgrade, you can request a refund through your '
+                    'app store. If you have any questions, please email me at armynoncomtools@gmail.com',
+                    style: TextStyle(fontSize: 18),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      }
+    });
 
     final backgroundColor = getBackgroundColor(context);
     final primaryColor = getPrimaryColor(context);
@@ -1779,49 +1790,34 @@ class AftPageState extends ConsumerState<AftPage> with WidgetsBindingObserver {
                       String runSeconds = runSecs.toString().length == 1
                           ? '0$runSecs'
                           : runSecs.toString();
-                      if (isPremium) {
-                        Aft aft = new Aft(
-                            id: null,
-                            date: null,
-                            rank: null,
-                            name: null,
-                            gender: gender.toString(),
-                            age: age.toString(),
-                            mdlRaw: mdlRaw.toString(),
-                            mdlScore: mdlScore.toString(),
-                            hrpRaw: hrpRaw.toString(),
-                            hrpScore: hrpScore.toString(),
-                            sdcRaw: '${sdcMins.toString()}:$sdcSeconds',
-                            sdcScore: sdcScore.toString(),
-                            plkRaw: '${plankMins.toString()}:$plankSeconds',
-                            plkScore: plankScore.toString(),
-                            runRaw: '${runMins.toString()}:$runSeconds',
-                            runScore: runScore.toString(),
-                            runEvent: aerobicEvent,
-                            total: total.toString(),
-                            altPass: didPassAerobic() ? 1 : 0,
-                            pass: didPassAcft() ? 1 : 0);
-                        _saveAft(context, aft);
-                      } else {
-                        purchasesService = ref.read(purchasesProvider);
-                        purchasesService.upgradeNeeded(context);
-                      }
+                      Aft aft = new Aft(
+                          id: null,
+                          date: null,
+                          rank: null,
+                          name: null,
+                          gender: gender.toString(),
+                          age: age.toString(),
+                          mdlRaw: mdlRaw.toString(),
+                          mdlScore: mdlScore.toString(),
+                          hrpRaw: hrpRaw.toString(),
+                          hrpScore: hrpScore.toString(),
+                          sdcRaw: '${sdcMins.toString()}:$sdcSeconds',
+                          sdcScore: sdcScore.toString(),
+                          plkRaw: '${plankMins.toString()}:$plankSeconds',
+                          plkScore: plankScore.toString(),
+                          runRaw: '${runMins.toString()}:$runSeconds',
+                          runScore: runScore.toString(),
+                          runEvent: aerobicEvent,
+                          total: total.toString(),
+                          altPass: didPassAerobic() ? 1 : 0,
+                          pass: didPassAcft() ? 1 : 0);
+                      _saveAft(context, aft);
                     },
                   ),
                 ),
               ],
             ),
           ),
-          if (!isPremium)
-            Container(
-              constraints: const BoxConstraints(maxHeight: 90),
-              alignment: Alignment.center,
-              child: AdWidget(
-                ad: myBanner!,
-              ),
-              width: myBanner!.size.width.toDouble(),
-              height: myBanner!.size.height.toDouble(),
-            ),
         ],
       ),
     );

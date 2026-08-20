@@ -1,12 +1,10 @@
 import 'dart:io';
 
 import '/methods/is_valid_date.dart';
-import '/providers/tracking_provider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -15,12 +13,10 @@ import '../../providers/premium_state_provider.dart';
 import '../../widgets/button_text.dart';
 import '../../widgets/platform_widgets/platform_item_picker.dart';
 import '../../methods/platform_show_modal_bottom_sheet.dart';
-import '../../providers/purchases_provider.dart';
 import '../../widgets/platform_widgets/platform_button.dart';
 import '../../calculators/award_pts_calculator.dart';
 import '../../calculators/pt_pts_calculator.dart';
 import '../../calculators/weapons_pts_calculator.dart';
-import '../../providers/shared_preferences_provider.dart';
 import '../../widgets/platform_widgets/platform_checkbox_list_tile.dart';
 import '../../widgets/platform_widgets/platform_expansion_list_tile.dart';
 import '../../widgets/platform_widgets/platform_icon_button.dart';
@@ -82,7 +78,6 @@ class _PromotionPointPageState extends ConsumerState<PromotionPointPage> {
   late TextStyle expansionTextStyle;
   late Color primaryColor;
   late Color onPrimaryColor;
-  late BannerAd myBanner;
 
   List<AwardDecoration> decorations = [];
   List<Map<String, String?>> _badges = [];
@@ -149,26 +144,11 @@ class _PromotionPointPageState extends ConsumerState<PromotionPointPage> {
     _mosCertsFocus.dispose();
     _crossCertsFocus.dispose();
     _personalCertsFocus.dispose();
-
-    myBanner.dispose();
   }
 
   @override
   void initState() {
     super.initState();
-
-    prefs = ref.read(sharedPreferencesProvider);
-    bool trackingAllowed = ref.read(trackingProvider);
-
-    myBanner = BannerAd(
-      adUnitId: Platform.isAndroid
-          ? 'ca-app-pub-2431077176117105/3104815499'
-          : 'ca-app-pub-2431077176117105/7432472116',
-      size: AdSize.banner,
-      listener: BannerAdListener(),
-      request: AdRequest(nonPersonalizedAds: !trackingAllowed),
-    );
-    myBanner.load();
 
     if (prefs.getString('rank') != null) {
       rank = prefs.getString('rank').toString();
@@ -1286,8 +1266,8 @@ class _PromotionPointPageState extends ConsumerState<PromotionPointPage> {
                         );
                         _savePpw(context, ppw);
                       } else {
-                        final purchasesService = ref.read(purchasesProvider);
-                        purchasesService.upgradeNeeded(context);
+                        // final purchasesService = ref.read(purchasesProvider);
+                        // purchasesService.upgradeNeeded(context);
                       }
                     },
                   ),
@@ -1295,16 +1275,6 @@ class _PromotionPointPageState extends ConsumerState<PromotionPointPage> {
               ],
             ),
           ),
-          if (!isPremium)
-            Container(
-              constraints: BoxConstraints(maxHeight: 90),
-              alignment: Alignment.center,
-              child: AdWidget(
-                ad: myBanner,
-              ),
-              width: myBanner.size.width.toDouble(),
-              height: myBanner.size.height.toDouble(),
-            ),
         ],
       ),
     );

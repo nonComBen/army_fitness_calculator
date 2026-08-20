@@ -1,14 +1,8 @@
-import 'dart:io';
-
-import 'package:acft_calculator/providers/tracking_provider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:google_mobile_ads/google_mobile_ads.dart';
 
 import '../../methods/theme_methods.dart';
-import '../../providers/premium_state_provider.dart';
-import '../../providers/shared_preferences_provider.dart';
 import '../../widgets/platform_widgets/platform_item_picker.dart';
 import '../../widgets/platform_widgets/platform_scaffold.dart';
 import '../../constants/pt_age_group_table.dart';
@@ -27,21 +21,9 @@ class _AcftTablePageState extends ConsumerState<AcftTablePage> {
   late String _ageGroup, _gender;
   List<String> _genders = ['Male', 'Female'];
 
-  late BannerAd myBanner;
-
   @override
   void initState() {
     super.initState();
-    bool trackingAllowed = ref.read(trackingProvider);
-    myBanner = BannerAd(
-      adUnitId: Platform.isAndroid
-          ? 'ca-app-pub-2431077176117105/5102704125'
-          : 'ca-app-pub-2431077176117105/2855814736',
-      size: AdSize.banner,
-      listener: BannerAdListener(),
-      request: AdRequest(nonPersonalizedAds: !trackingAllowed),
-    );
-    myBanner.load();
 
     _ageGroup = widget.ageGroup!;
     _gender = widget.gender!;
@@ -49,9 +31,6 @@ class _AcftTablePageState extends ConsumerState<AcftTablePage> {
 
   @override
   Widget build(BuildContext context) {
-    final prefs = ref.read(sharedPreferencesProvider);
-    final isPremium =
-        ref.read(premiumStateProvider) || (prefs.getBool('isPremium') ?? false);
     final width = MediaQuery.of(context).size.width;
     return PlatformScaffold(
       title: 'ACFT Table',
@@ -118,16 +97,6 @@ class _AcftTablePageState extends ConsumerState<AcftTablePage> {
                 ],
               ),
             ),
-            if (!isPremium)
-              Container(
-                constraints: BoxConstraints(maxHeight: 90),
-                alignment: Alignment.center,
-                child: AdWidget(
-                  ad: myBanner,
-                ),
-                width: myBanner.size.width.toDouble(),
-                height: myBanner.size.height.toDouble(),
-              ),
           ],
         ),
       ),
